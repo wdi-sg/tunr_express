@@ -14,7 +14,13 @@ class ArtistsIndex extends React.Component {
 
             return (
 
-                <li>{artist.id}. <a href={`/artists/${artist.id}`}>{artist.name}</a> ---------- <a href={linkPath}>(add song)</a></li>
+                <li>{artist.id}. <a href={`/artists/${artist.id}`}>{artist.name}
+                </a> ---------- <a href={linkPath}>(add song)
+                </a> ---------- <form method="POST" action={`/artists/${artist.id}?_method=DELETE`} onSubmit={this.handleSubmit} style={{display: 'inline-block'}}>
+                    <input type="hidden" name="id" value={artist.id} />
+                    <input type="submit" value="Delete" />
+                </form>
+                </li>
             );
         });
 

@@ -95,6 +95,27 @@ app.put('/artists/:id', (request, response) => {
 });
 
 
+app.delete('/artists/:id', (request, response) => {
+
+    console.log('Receiving DELETE request: ', request.body);
+
+    let text = `DELETE from artists WHERE id=${request.body.id}`;
+
+    pool.query(text, (err, result) => {
+
+        if (err) {
+
+            console.log(err);
+            response.status(500).send("pool.query error");
+
+        } else {
+
+            response.redirect(`/artists`);
+        };
+    });
+});
+
+
 app.get('/artists/:id/edit', (request, response) => {
 
     let text = `SELECT * FROM artists WHERE id = ${request.params.id}`;
