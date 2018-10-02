@@ -30,13 +30,29 @@ app.engine('jsx', reactEngine);
 
 // ROUTES
 
-// CREATE, SONGS BY AN ARTIST
-app.post('/artists/:id/songs', (req, res) => {
+app.post('/artists/new', (req, res) => {
 
-  res.redirect('/artists/:id');
+  let addArtist = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+
+  let values = [req.body.name,req.body.photo_url, req.body.nationality];
+
+  pool.query(addArtist, values, (error, result) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      response.status(500).send("Something went wrong.");
+    } else {
+      res.redirect('/artists/');
+    }
+  })
+
 })
 
-// SHOW, SONGS BY THE ARTIST
+app.get('/artists/new', (req, res) => {
+
+  res.render('artists/new');
+});
+
 app.get('/artists/:id', (req, res) => {
 
   let id = req.params.id;
@@ -68,8 +84,6 @@ app.get('/artists/:id', (req, res) => {
   })
 })
 
-
-// INDEX, SHOW ALL ARTISTS
 app.get('/artists/', (req, res) => {
 
   let listArtists = "SELECT * FROM artists";
@@ -85,11 +99,6 @@ app.get('/artists/', (req, res) => {
   })
 });
 
-// NEW, FORM TO SHOW NEW ARTIST
-app.get('/artists/new', (req, res) => {
-
-  res.render('artists/new');
-});
 
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
