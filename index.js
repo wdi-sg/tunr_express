@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'Haruspring',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,12 +48,32 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (req, res) => {
+app.get('/', (request, response) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  response.send('Hello World, it good to be home');
 });
+
+//artist path
+
+app.get('/artists', (request, response) => {
+
+  let sqlString = "SELECT * FROM artists";
+
+  pool.query(sqlString,(err,queryResults)=>{
+    if (err){
+        console.log("artist get err",err);
+        response.status(500).send("CUI!");
+    } else {
+        console.log(queryResults.rows)
+    }
+  })
+  // respond with HTML page with form to create new pokemon
+    response.send("ARTISTWORKS");
+  //response.render('new');
+});
+
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
@@ -68,10 +88,10 @@ app.get('/new', (request, response) => {
  */
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-server.on('close', () => {
-  console.log('Closed express server');
+// server.on('close', () => {
+//   console.log('Closed express server');
 
-  db.pool.end(() => {
-    console.log('Shut down db connection pool');
-  });
-});
+//   db.pool.end(() => {
+//     console.log('Shut down db connection pool');
+//   });
+// });
