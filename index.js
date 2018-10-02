@@ -43,16 +43,8 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/artists', (request, response) => {
-  const sql = 'SELECT * FROM artists';
-  pool.query(sql, (err, res) => {
-    if (err) {
-      console.log('query err:', err.message);
-      response.status(500).send('Error');
-    } else {
-      response.render('Artists', { artists: res.rows });
-    }
-  });
+app.get('/artists/new', (request, response) => {
+  response.render('ArtistsNew');
 });
 
 app.get('/artists/:id', (request, response) => {
@@ -67,6 +59,30 @@ app.get('/artists/:id', (request, response) => {
   });
 });
 
+app.get('/artists', (request, response) => {
+  const sql = 'SELECT * FROM artists';
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.render('Artists', { artists: res.rows });
+    }
+  });
+});
+
+app.post('/artists', (request, response) => {
+  const sql = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id`;
+  const values = [request.body.name, request.body.photoUrl, request.body.nationality];
+  pool.query(sql, values, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.redirect(`/artists/${res.rows[0].id}`);
+    }
+  });
+});
 /**
  * ===================================
  * Listen to requests on port 3000
