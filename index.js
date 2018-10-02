@@ -103,6 +103,40 @@ app.post('/artists', (req, res) => {
 });
 
 
+app.get('/artist/:id/edit', (req,res)=>{
+
+    let resId = req.params.id;
+    let sqlText = 'SELECT * FROM artists WHERE id =' + resId;
+
+    pool.query(sqlText, (error, queryResults) => {
+        if (error) {
+            console.log('error!', error);
+            res.status(500).send('DIDNT WORKS!!');
+        } else {
+            res.render('edit', { artists: queryResults.rows });
+        }
+    });
+})
+
+
+app.put('/artist/:id', (req, res) => {
+    // respond with HTML page displaying id-ed artist
+    let resId = req.params.id;
+    let name = req.body.name;
+    let nationality = req.body.nationality;
+    let imgUrl =req.body.photo_url;
+
+    let sqlText = `UPDATE artists SET name = '${name}', photo_url = '${imgUrl}', nationality = '${nationality}' WHERE id = ${resId}`;
+
+    pool.query(sqlText, (error, queryResults) => {
+        if (error) {
+            console.log('error!', error);
+            res.status(500).send('DIDNT WORKS!!');
+        } else {
+            res.redirect(`/artist/${resId}`);
+        }
+    });
+});
 
 
 
