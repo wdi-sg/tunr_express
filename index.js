@@ -253,6 +253,16 @@ app.delete('/songs/:id', (request, response) => {
 
 /**
  * ===================================
+ * Route: root
+ * ===================================
+ */
+
+app.get('/', (request, response) => {
+  response.render('Home');
+});
+
+/**
+ * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
