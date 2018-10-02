@@ -18,7 +18,9 @@ class Layout extends React.Component {
         <body>
           <header>
             <nav className="navbar navbar-light bg-light">
-              <a className="navbar-brand font-weight-bold">TUNR</a>
+              <a className="navbar-brand font-weight-bold" href="/artists">
+                TUNR
+              </a>
               <form className="form-inline">
                 <input
                   className="form-control mr-sm-2"

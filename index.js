@@ -37,8 +37,32 @@ app.post('/artists', async (appReq, appRes) => {
   });
 });
 
+app.put('/artists/:id', async (appReq, appRes) => {
+  console.log(appReq.body, appReq.params.id);
+  const values = [
+    appReq.params.id,
+    appReq.body.name,
+    appReq.body.photourl,
+    appReq.body.nationality,
+  ];
+  console.log(values);
+  const queryString = 'UPDATE artists SET (name, photo_url, nationality) = ($2,$3,$4) WHERE id = ($1)';
+  await pool.query(queryString, values, (updError, updRes) => {
+    if (updError) console.log('hello', updError.stack);
+    appRes.redirect(`/artists/${appReq.params.id}`);
+  });
+});
+
 app.get('/artists/new', (appReq, appRes) => {
   appRes.render('create');
+});
+
+app.get('/artists/:id/edit', async (appReq, appRes) => {
+  const values = [appReq.params.id];
+  const queryString = 'SELECT * FROM artists WHERE id = ($1)';
+  await pool.query(queryString, values, (artistError, artistRes) => {
+    appRes.render('update', { artist: artistRes.rows });
+  });
 });
 
 app.get('/artists/:id', async (appReq, appRes) => {
