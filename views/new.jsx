@@ -6,7 +6,7 @@ class New extends React.Component {
       <html>
         <head />
         <body>
-          <h3>Form Goes Here!</h3>
+          <h3>Create Dog</h3>
         </body>
       </html>
     );
