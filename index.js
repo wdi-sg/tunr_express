@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'taras',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  res.render('home');
 });
 
 app.get('/new', (request, response) => {
@@ -67,7 +67,7 @@ app.get('/new', (request, response) => {
  * ===================================
  */
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
-
+/*
 server.on('close', () => {
   console.log('Closed express server');
 
@@ -75,3 +75,4 @@ server.on('close', () => {
     console.log('Shut down db connection pool');
   });
 });
+*/
