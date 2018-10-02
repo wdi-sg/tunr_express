@@ -28,8 +28,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-// ROUTES
-
+// create new artist
 app.post('/artists/new', (req, res) => {
 
   let addArtist = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
@@ -48,6 +47,7 @@ app.post('/artists/new', (req, res) => {
 
 })
 
+// create new artist form
 app.get('/artists/new', (req, res) => {
 
   res.render('artists/new');
@@ -60,9 +60,6 @@ app.put('/artists/:id', (req, res) => {
   let name = req.body.name;
   let photo_url = req.body.photo_url;
   let nationality = req.body.nationality;
-
-  console.log(req.params.id);
-  console.log(req.body);
 
   let editArtist = `UPDATE artists
   SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id = ${id};`;
@@ -78,6 +75,25 @@ app.put('/artists/:id', (req, res) => {
   })
 })
 
+// delete artist
+app.delete('/artists/:id', (req, res) => {
+
+  let id = req.params.id;
+
+  let deleteArtist = `DELETE FROM artists WHERE id = ${id}`;
+
+  pool.query(deleteArtist, (error, result) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+      res.redirect(`/artists/`);
+    }
+  })
+})
+
+// edit artist form
 app.get('/artists/:id/edit', (req, res) => {
 
   let id = req.params.id;
@@ -97,6 +113,7 @@ app.get('/artists/:id/edit', (req, res) => {
   })
 })
 
+// read artist
 app.get('/artists/:id', (req, res) => {
 
   let id = req.params.id;
@@ -128,6 +145,7 @@ app.get('/artists/:id', (req, res) => {
   })
 })
 
+// list all artists
 app.get('/artists/', (req, res) => {
 
   let listArtists = "SELECT * FROM artists ORDER BY id ASC";
