@@ -94,7 +94,7 @@ app.post('/artist', (req, res) => {
         res.status(500).send("DOESN'T WORK!!");
       } else{
         // console.log(queryResult.rows);
-        res.render('artists/newartists', {artist: req.body});
+        res.render('artists/newartist', {artist: req.body});
     }
   });
 });
@@ -131,6 +131,38 @@ app.put('/artists/:id', (req, res) => {
   });
 })
 
+// delete artist
+app.get('/artists/:id/delete', (req, res) => {
+  let inputId = parseInt(req.params.id);
+  let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+  let values = [inputId];
+  pool.query(sqlText, values, (error, queryResult) => {
+    // console.log(queryResult.rows);
+      if (error){
+        console.log('error!', error);
+        res.status(500).send("DOESN'T WORK!!");
+      } else{
+        // console.log(queryResult.rows);
+        res.render('artists/delete', {artist: queryResult.rows});
+    }
+  });
+});
+
+app.delete('/artists/:id', (req, res) => {
+  let inputId = parseInt(req.params.id);
+  let sqlText = "DELETE FROM artists WHERE id = ($1)";
+  let values = [inputId];
+  pool.query(sqlText, values, (error, queryResult) => {
+    // console.log(queryResult.rows);
+      if (error){
+        console.log('error!', error);
+        res.status(500).send("DOESN'T WORK!!");
+      } else{
+        // console.log(queryResult.rows);
+        res.redirect(`/artists`);
+    }
+  });
+});
 /**
  * ===================================
  * Listen to requests on port 3000
