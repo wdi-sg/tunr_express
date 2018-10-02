@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Css from "./css.jsx";
+import Header from "./css.jsx";
 
 class Artists extends React.Component {
   render() {
@@ -8,7 +8,7 @@ class Artists extends React.Component {
     const artistsList = artistsArr.map(artist => {
       return (
           <body>
-        <div>
+        <div className="container">
             <a href={"/artists/" + artist.id}>
           {artist.name}
       </a>
@@ -21,7 +21,7 @@ class Artists extends React.Component {
     });
     return(
         <html>
-            <Css />
+            <Header />
             <div>
                 {artistsList}
             </div>;
