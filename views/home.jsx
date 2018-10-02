@@ -28,7 +28,7 @@ class Home extends React.Component {
       <html>
         <head />
         <body>
-          <Layout title="Index">
+          <Layout title="Artists">
             <h1>Welcome!</h1>
             <Artists artists={this.props.artists} />
           </Layout>

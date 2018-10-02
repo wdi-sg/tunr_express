@@ -167,6 +167,7 @@ app.get('/artists/', (req, res) => {
   })
 });
 
+// list all songs by an artist
 app.get('/artists/:id/songs/', (req, res) => {
 
   let id = req.params.id;
@@ -192,6 +193,37 @@ app.get('/artists/:id/songs/', (req, res) => {
         } else {
 
           res.render('songs/list', {artist: artist, songs: songsResult.rows});
+        }
+      })
+    }
+  })
+})
+
+// read song 
+app.get('/artists/:id/songs/:sid', (req, res) => {
+
+  let id = req.params.id;
+  let idSong = req.params.sid;
+
+  let findSong = `SELECT * FROM songs WHERE id = ${idSong} AND artist_id = ${id};`;
+
+  pool.query(findSong, (error, songResult) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+
+      let findArtist = `SELECT * FROM artists WHERE id = ${id}`;
+
+      pool.query(findArtist, (error, artistResult) => {
+
+        if (error) {
+          console.log("Error: ", error);
+          res.status(500).send("Something went wrong.");
+        } else {
+
+          res.render('songs/song', {artist: artistResult.rows[0], song: songResult.rows[0]});
         }
       })
     }

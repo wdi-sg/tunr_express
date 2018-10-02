@@ -4,16 +4,13 @@ var Layout = require('../layout/layout');
 class Songs extends React.Component {
   render () {
 
+    let artist = this.props.artist;
+
     let songs = this.props.songs.map (song => {
 
-      return (
-        <li key={song.id}>
-          <h2>{song.title}</h2>
-          <p>Album: {song.album}</p>
-          <p><a href={song.preview_link}>Preview</a></p>
-        </li>
-      )
+      let url = `/artists/${artist.id}/songs/${song.id}`;
 
+      return <li key={song.id}><a href={url}>{song.title}</a></li>
     })
 
     return (
@@ -30,13 +27,15 @@ class Home extends React.Component {
     let artist = this.props.artist;
     let songs = this.props.songs;
 
+    let title = `Songs by ${artist.name}`;
+
     return (
       <html>
         <head />
         <body>
-          <Layout title="Index">
+          <Layout title={title}>
             <h1>{artist.name}</h1>
-            <Songs songs={songs} />
+            <Songs songs={songs} artist={artist} />
             </Layout>
         </body>
       </html>

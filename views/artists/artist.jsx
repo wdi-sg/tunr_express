@@ -6,20 +6,15 @@ class Home extends React.Component {
 
     let artist = this.props.artist;
 
-    let songLink = `/artists/${artist.id}/songs/`
+    let songsList = `/artists/${artist.id}/songs/`
 
     return (
-      <html>
-        <head />
-        <body>
-          <Layout title="Index">
-            <h1>{artist.name}</h1>
-            <img src={artist.photo_url} />
-            <p>Nationality: {artist.nationality}</p>
-            <a href={songLink}>Songs</a>
-            </Layout>
-        </body>
-      </html>
+      <Layout title={artist.name}>
+        <h1>{artist.name}</h1>
+        <img src={artist.photo_url} />
+        <p>Nationality: {artist.nationality}</p>
+        <a href={songsList}>Songs</a>
+      </Layout>
     );
   }
 }
