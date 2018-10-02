@@ -64,10 +64,10 @@ app.get('/artists', (request, response) => {
   pool.query(sqlString,(err,queryResults)=>{
     if (err){
         console.log("artist get err",err);
-        response.status(500).send("CUI!");
+        response.status(500).send("GG!");
     } else {
         console.log("artist",queryResults.rows)
-        response.render('artist',{artists:queryResults.rows});
+        response.render('artists',{artists:queryResults.rows});
     }
   })
   // respond with HTML page with form to create new pokemon
@@ -75,11 +75,52 @@ app.get('/artists', (request, response) => {
 
 });
 
+//test one artist
+app.get('/artists/:id', (request, response) => {
 
-app.get('/new', (request, response) => {
+    let sqlString = "SELECT * FROM artists";
+
+
+
+    pool.query(sqlString,(err,queryResults)=>{
+
+    if (err){
+        console.log("artist get err",err);
+        response.status(500).send("GG!");
+    } else {
+
+        for(var i = 0; i<queryResults.rows.length; i++){
+            let inputId = parseInt(request.params.id);
+
+            if(inputId === queryResults.rows[i].id ){
+
+                console.log("singleartist",queryResults.rows[i])
+
+                //response.send("SINGLEARTISTWORKS");
+                response.render('singleartist',{artists:queryResults.rows[i]});
+
+            }
+
+
+
+        }
+
+
+        // console.log("artist",queryResults.rows[i])
+        // response.render('singleartist'{artists:queryResults.rows});
+
+      }
+    })
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+
+
 });
+
+
+// app.get('/new', (request, response) => {
+//   // respond with HTML page with form to create new pokemon
+//   response.render('new');
+// });
 
 
 /**
