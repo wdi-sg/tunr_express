@@ -39,7 +39,7 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes
+ * Routes: artists
  * ===================================
  */
 
@@ -117,6 +117,24 @@ app.delete('/artists/:id', (request, response) => {
       response.status(500).send('Error');
     } else {
       response.redirect('/artists');
+    }
+  });
+});
+
+/**
+ * ===================================
+ * Routes: songs
+ * ===================================
+ */
+
+app.get('/songs', (request, response) => {
+  const sql = 'SELECT * FROM songs ORDER BY id';
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.render('Songs', { songs: res.rows });
     }
   });
 });
