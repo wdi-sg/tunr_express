@@ -48,6 +48,43 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+app.get ('/edit/:id', (request, response) => {
+
+    let text = "SELECT * FROM artists WHERE id=" + request.params.id;
+
+    pool.query(text, (err, result) => {
+
+        if (err){
+            console.log("query err: ", err.message);
+        } else {
+
+            response.render('update', {selected: result.rows[0]});
+
+        }
+    })
+
+});
+
+app.put('/:id', (request, response) => {
+
+    let text = "UPDATE artists SET name=($1), nationality=($2), photo_url=($3) WHERE id=" + request.params.id;
+
+    let values = [request.body.name, request.body.nationality, request.body.photo_url];
+
+    pool.query(text, values, (err, result) => {
+
+        if (err) {
+
+            console.log("query error: ", err.message);
+
+        } else {
+
+            response.redirect("/" + request.params.id);
+        }
+    });
+
+});
+
 app.get('/new', (request, response) => {
 
     response.render('new');
@@ -97,6 +134,8 @@ app.get('/', (request, response) => {
   let text = "SELECT * FROM artists ORDER BY id"
 
   pool.query(text, (err, result) => {
+
+    console.log(result.rows)
 
     if (err) {
         console.log("query error: ", err.message);

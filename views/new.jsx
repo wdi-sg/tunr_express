@@ -9,11 +9,11 @@ class New extends React.Component {
           <h1>Enter A New Artist</h1>
           <form method="POST" action="/">
             <p>Name:</p>
-            <input type="text" name="name" autoComplete="off" />
+            <input type="text" name="name" autoComplete="off" required />
             <p>Nationality:</p>
-            <input type="text" name="nationality" autoComplete="off" />
+            <input type="text" name="nationality" autoComplete="off" required />
             <p>Photo URL:</p>
-            <input type="text" name="photo_URL" autoComplete="off" />
+            <input type="text" name="photo_url" autoComplete="off" required />
             <br/>
             <br/>
             <input type="submit" value="Submit" />

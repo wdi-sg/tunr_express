@@ -5,21 +5,24 @@ class Home extends React.Component {
 
     let artist = this.props.result.map((element) => {
 
-        return <tr>
-                <td>
-                    {element.id}
-                </td>
-                <td>
-                    {element.name}
-                </td>
-                <td>
-                    {element.nationality}
-                </td>
-                <td>
-                    <img height="100px" width="100px" src={element.photo_url}/>
-                </td>
+        let link = "/" + element.id;
+
+        return  <tr>
+                    <td>
+                        {element.id}
+                    </td>
+                    <td>
+                        {element.name}
+                    </td>
+                    <td>
+                        {element.nationality}
+                    </td>
+                    <td>
+                        <a href={link}><img height="100px" width="100px" src={element.photo_url} alt="Picture" /></a>
+                    </td>
                </tr>
-    })
+
+    });
 
     return (
       <html>
@@ -48,6 +51,7 @@ class Home extends React.Component {
             </tbody>
           </table>
           <a href="/new"><button>Add Artist</button></a>
+          <a href="/delete"><button>Delete</button></a>
         </body>
       </html>
     );
