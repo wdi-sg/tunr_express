@@ -117,6 +117,84 @@ app.post('/artists', (request, response) => {
     });
 });
 
+app.get('/artist/:id/edit', (request, response) => {
+
+    let sqlText = "SELECT * FROM artists";
+    let artId = request.params.id;
+
+    pool.query(sqlText, (error, queryResult) => {
+
+        for (var i = 0; i < queryResult.rows.length; i++) {
+          // console.log(queryResult.rows[i].id)
+  //          console.log(request.params.id)
+  if (queryResult.rows[i].id === parseInt(artId)) {
+
+            var foundArtist = queryResult.rows[i];
+            }
+    };
+
+      if( foundArtist ){
+
+          console.log("FOUND:", foundArtist );
+          // console.log("LIST:", banana );
+
+          response.render('artist_edit', {artists: foundArtist})
+          // response.render('pokemon', foundPokemon)
+      }else{
+          response.send("not a pokemon");
+      }
+  });
+});
+
+app.put('/artist/:id', (request, response) => {
+    let sqlText = "SELECT * FROM artists";
+    let artId = request.params.id;
+
+    pool.query(sqlText, (error, queryResult) => {
+
+        for (var i = 0; i < queryResult.rows.length; i++) {
+          // console.log(queryResult.rows[i].id)
+  //          console.log(request.params.id)
+  if (queryResult.rows[i].id === parseInt(artId)) {
+
+            var foundArtist = queryResult.rows[i];
+            }
+    };
+
+      if( foundArtist ){
+            let sqlText = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+
+            const values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+
+            pool.query(sqlText, values, (error, queryResult) => {
+            if (error){
+                console.log('error!', error);
+                response.status(500).send('DIDNT WORKS!!');
+
+      }else{
+
+        let newArtist = queryResult.rows;
+        response.send('Artist edited:'+newArtist);
+      }
+    })
+
+
+
+
+
+
+
+
+
+
+          }else{
+              response.send("something wrong");
+          }
+      });
+
+})
+
 
 /**
  * ===================================
