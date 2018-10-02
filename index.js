@@ -49,10 +49,31 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-//have to be at the top otherwise it will read new as an id
+//***have to be at the top otherwise it will read new as an id
 app.get('/artists/new', (request, res) => {
   res.render('artists/new');
 })
+
+//
+
+app.get('/artists/:id/songs', (request, res) => {
+  // query database for all artists
+  let sqlText = "SELECT * FROM songs WHERE artist_id =$1";
+
+  let values = [request.params.id];
+
+  pool.query(sqlText, values, (err, result) => {
+    if (err) {
+      console.log("error", err);
+      res.status(500).send("query not working");
+    } else {
+      //console.log(result.rows);
+      // respond with HTML page displaying all artists
+      res.render('songs/show', {songs: result.rows});
+    }
+  })
+});
+
 
 app.delete('/artists/:id', (request,res) => {
 

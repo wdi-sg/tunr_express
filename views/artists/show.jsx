@@ -5,6 +5,7 @@ class Show extends React.Component {
 
       let actionUrl = '/artists/'+this.props.id+'/edit';
       let actionUrl2 = '/artists/'+this.props.id+'?_method=delete';
+      let actionUrl3 = '/artists/'+this.props.id+'/songs';
 
       return (
         <html>
@@ -20,8 +21,13 @@ class Show extends React.Component {
             <form method="GET" action={actionUrl}>
               <input type="submit" value="Edit"/>
             </form>
+            <p></p>
             <form method="POST" action={actionUrl2}>
               <input type="submit" value="Delete"/>
+            </form>
+            <p></p>
+            <form method="GET" action={actionUrl3}>
+              <input type="submit" value="Songs List"/>
             </form>
           </ul>
         </div>
