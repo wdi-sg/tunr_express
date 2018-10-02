@@ -22,9 +22,7 @@ pool.on('error', function(err) {
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use(express.urlencoded({extended: true}));
 
 app.use(methodOverride('_method'));
 
@@ -43,11 +41,31 @@ app.engine('jsx', reactEngine);
 
 
 app.get('/', (req, response) => {
-    // query database for all pokemon
 
-    // respond with HTML page displaying all pokemon
     response.render('root');
 });
+
+
+app.get('/artists', (request, response) => {
+
+    let text = "SELECT * FROM artists";
+
+    pool.query(text, (err, result) => {
+
+        if (err) {
+
+            console.log(err);
+            response.status(500).send("pool.query error");
+
+        } else {
+
+            console.log("result.rows: ", result.rows);
+            response.render('artists_index', {artists: result.rows});
+        };
+    });
+});
+
+
 
 app.get('/new', (request, response) => {
     // respond with HTML page with form to create new pokemon
