@@ -1,12 +1,10 @@
-console.log("starting up!!");
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'mervyn',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,15 +47,36 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  res.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('/artists', (req, res) => {
+    let queryString = "SELECT * FROM artists";
+    pool.query(queryString, (err, queryResult) => {
+        if (err) {
+            console.log('Error!', err);
+            res.status(500).send('Error')
+        } else {
+            res.render('artists', {artists: queryResult.rows})
+        }
+    })
+});
+
+app.get('/artists/:id', (req, res) => {
+    let queryString = "SELECT * FROM artists WHERE id = ($1)"
+    values = [req.params.id]
+    pool.query(queryString, values, (err, queryResult) => {
+        if (err) {
+            console.log('Error!', err);
+            res.status(500).send('Error')
+        } else {
+            res.render('showartist', {artist: queryResult.rows})
+        }
+    })
+})
+
+app.get('/new', (req, res) => {
+  res.render('new');
 });
 
 
@@ -68,7 +87,7 @@ app.get('/new', (request, response) => {
  */
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-server.on('close', () => {
+pool.on('close', () => {
   console.log('Closed express server');
 
   db.pool.end(() => {
