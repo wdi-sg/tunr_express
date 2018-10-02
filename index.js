@@ -48,15 +48,23 @@ app.get('/artists', (request, response) => {
   pool.query(sql, (err, res) => {
     if (err) {
       console.log('query err:', err.message);
-      response.redirect(500).send('Error');
+      response.status(500).send('Error');
     } else {
       response.render('Artists', { artists: res.rows });
     }
   });
 });
 
-app.get('/new', (req, res) => {
-  res.render('new');
+app.get('/artists/:id', (request, response) => {
+  const sql = `SELECT * FROM artists WHERE id = ${request.params.id}`;
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.render('ArtistsShow', res.rows[0]);
+    }
+  });
 });
 
 /**
