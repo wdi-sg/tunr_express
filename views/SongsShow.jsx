@@ -9,7 +9,10 @@ class SongsShow extends React.Component {
           <h1>{this.props.title}</h1>
           <p>
             <strong>Album: </strong>
-            <a href={this.props.preview_link}>{this.props.album}</a>
+            {this.props.album}
+          </p>
+          <p>
+            <a href={this.props.preview_link}>Preview link</a>
           </p>
           <img src={this.props.artwork} alt={this.props.title} />
         </body>

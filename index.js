@@ -39,6 +39,16 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
+ * Utilities
+ * ===================================
+ */
+
+const trim = arr => {
+  return arr.map(str => str.trim());
+};
+
+/**
+ * ===================================
  * Routes: artists
  * ===================================
  */
@@ -84,8 +94,8 @@ app.get('/artists', (request, response) => {
 });
 
 app.post('/artists', (request, response) => {
-  const sql = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id`;
-  const values = [request.body.name, request.body.photoUrl, request.body.nationality];
+  const sql = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
+  const values = trim(Object.values(request.body));
   pool.query(sql, values, (err, res) => {
     if (err) {
       console.log('query err:', err.message);
@@ -98,7 +108,7 @@ app.post('/artists', (request, response) => {
 
 app.put('/artists/:id', (request, response) => {
   const sql = `UPDATE artists SET name = ($1), photo_url = ($2), nationality = ($3) WHERE id = ${request.params.id}`;
-  const values = [request.body.name, request.body.photoUrl, request.body.nationality];
+  const values = trim(Object.values(request.body));
   pool.query(sql, values, (err, res) => {
     if (err) {
       console.log('query err:', err.message);
@@ -127,6 +137,18 @@ app.delete('/artists/:id', (request, response) => {
  * ===================================
  */
 
+app.get('/songs/new', (request, response) => {
+  const sql = 'SELECT * FROM artists ORDER BY name';
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log(err);
+      response.status(500).send('Error');
+    } else {
+      response.render('SongsNew', { artists: res.rows });
+    }
+  });
+});
+
 app.get('/songs/:id', (request, response) => {
   const sql = `SELECT * FROM songs WHERE id = ${request.params.id}`;
   pool.query(sql, (err, res) => {
@@ -147,6 +169,20 @@ app.get('/songs', (request, response) => {
       response.status(500).send('Error');
     } else {
       response.render('Songs', { songs: res.rows });
+    }
+  });
+});
+
+app.post('/songs', (request, response) => {
+  const sql = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING id';
+  const values = trim(Object.values(request.body));
+  values[4] = parseInt(values[4]);
+  pool.query(sql, values, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.redirect(`/songs/${res.rows[0].id}`);
     }
   });
 });
