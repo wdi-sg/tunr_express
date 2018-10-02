@@ -235,7 +235,7 @@ app.get('/artists/:id/songs/:sid/edit', (req, res) => {
   let id = req.params.id;
   let idSong = req.params.sid;
 
-  let findArtists = `SELECT * FROM artists;`;
+  let findArtists = `SELECT * FROM artists ORDER BY id ASC;`;
 
   pool.query(findArtists, (error, artistsResult) => {
 

@@ -1,15 +1,12 @@
 body {
   font-family: "Roboto", sans-serif;
-  background-color: rgb(240,240,245);
+  background-color: rgb(225,225,225);
 }
 
 .container {
   width: 60vw;
   min-width: 600px;
   margin: 1rem auto;
-  border: 1px solid grey;
-  border-radius: 1rem;
-  background-color: white;
   padding: 0.5rem 2rem;
 }
 
@@ -21,7 +18,7 @@ footer {
 label, input, select {
   display: block;
   font-family: inherit;
-  width: 100%;
+  width: 96%;
   padding: 2px;
   box-sizing: border-box;
   margin: 0.5rem;
@@ -41,6 +38,6 @@ a {
 }
 
 footer a {
-  color: navy;
+  color: blue;
   font-size: 16px;
 }
