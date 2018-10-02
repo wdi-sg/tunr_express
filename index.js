@@ -72,7 +72,7 @@ app.get('/artists/:id', (request, response) => {
 });
 
 app.get('/artists', (request, response) => {
-  const sql = 'SELECT * FROM artists';
+  const sql = 'SELECT * FROM artists ORDER BY id';
   pool.query(sql, (err, res) => {
     if (err) {
       console.log('query err:', err.message);
@@ -105,6 +105,18 @@ app.put('/artists/:id', (request, response) => {
       response.status(500).send('Error');
     } else {
       response.redirect(`/artists/${request.params.id}`);
+    }
+  });
+});
+
+app.delete('/artists/:id', (request, response) => {
+  const sql = `DELETE from artists WHERE id = ${request.params.id}`;
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.redirect('/artists');
     }
   });
 });
