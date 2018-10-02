@@ -127,6 +127,18 @@ app.delete('/artists/:id', (request, response) => {
  * ===================================
  */
 
+app.get('/songs/:id', (request, response) => {
+  const sql = `SELECT * FROM songs WHERE id = ${request.params.id}`;
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.render('SongsShow', res.rows[0]);
+    }
+  });
+});
+
 app.get('/songs', (request, response) => {
   const sql = 'SELECT * FROM songs ORDER BY id';
   pool.query(sql, (err, res) => {
