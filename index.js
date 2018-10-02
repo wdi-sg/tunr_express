@@ -48,7 +48,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (req, res) => {
+app.get('/', (request, response) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
@@ -66,7 +66,7 @@ app.get('/new', (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
-app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 server.on('close', () => {
   console.log('Closed express server');
