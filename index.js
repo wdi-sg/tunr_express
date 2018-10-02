@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'benghui',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,17 +48,23 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+app.get('/artists', (req, res) => {
+  let sqlText = "SELECT * FROM artists";
+  pool.query(sqlText, (error, queryResult) => {
+      if (error){
+        console.log('error!', error);
+        res.status(500).send("DOESN'T WORK!!");
+      }else{
+        // console.log(queryResult.rows);
+        res.render('artists/home',{artists: queryResult.rows});
+    }
+  });
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+// app.get('/new', (req, res) => {
+//
+//   res.render('new');
+// });
 
 
 /**
@@ -66,7 +72,7 @@ app.get('/new', (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
-app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 server.on('close', () => {
   console.log('Closed express server');
