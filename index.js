@@ -52,6 +52,7 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
+//index page
 app.get('/artists', (request, response) => {
     //console.log(request.body);
 
@@ -67,10 +68,27 @@ app.get('/artists', (request, response) => {
             response.render('index',  {artist: queryResult.rows});
         }
     })
-
-    //response.render('index');
 })
 
+
+//show page
+app.get('/artists/:id', (request, response) => {
+    console.log('REQUEST.PARAMS ID FOR SHOW: ',request.params.id);
+    let parseId = [request.params.id];
+    let sqlText = "SELECT * FROM artists WHERE id = ($1)"; //to avoid SQL injection: https://stackoverflow.com/questions/41168942/how-to-input-a-nodejs-variable-into-an-sql-query
+
+    pool.query(sqlText, parseId, (error, queryResult) => {
+        if (error){
+            console.log('Error: ', error);
+            response.status(500).send('Didnt work!');
+        }
+        else {
+            console.log('Query results: ', queryResult.rows);
+            response.render('show',  {artist: queryResult.rows});
+        }
+    })
+
+})
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
