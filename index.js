@@ -48,6 +48,41 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+app.get ('/delete', (request, response) => {
+
+    let text = "SELECT * FROM artists ORDER BY id";
+
+    pool.query(text, (err, result) => {
+
+        if (err) {
+
+            console.log("query error: ", err.message);
+
+        } else {
+
+            response.render('delete', {result: result.rows});
+
+        }
+    })
+
+});
+
+app.delete('/', (request, response) => {
+
+    console.log(request.body.id)
+    let text = "DELETE from artists WHERE id=" + request.body.id;
+
+    pool.query(text, (err, result) => {
+
+        if(err) {
+            console.log("query error", err.message);
+        } else {
+            response.redirect('/');
+        }
+    });
+
+});
+
 app.get ('/edit/:id', (request, response) => {
 
     let text = "SELECT * FROM artists WHERE id=" + request.params.id;
