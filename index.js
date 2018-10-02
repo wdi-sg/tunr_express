@@ -55,7 +55,7 @@ app.get('/artists', (req, res) => {
       if (error){
         console.log('error!', error);
         res.status(500).send("DOESN'T WORK!!");
-      }else{
+      } else{
         // console.log(queryResult.rows);
         res.render('artists/home',{artists: queryResult.rows});
     }
@@ -72,7 +72,7 @@ app.get('/artists/:id', (req, res) => {
       if (error){
         console.log('error!', error);
         res.status(500).send("DOESN'T WORK!!");
-      }else{
+      } else{
         // console.log(queryResult.rows);
         res.render('artists/show',{artist: queryResult.rows});
     }
@@ -85,19 +85,51 @@ app.get('/artist/new',(req, res) => {
 });
 
 app.post('/artist', (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   let sqlText = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
   let values = [req.body.name, req.body.photo_url, req.body.nationality];
   pool.query(sqlText, values, (error, queryResult) => {
       if (error){
         console.log('error!', error);
         res.status(500).send("DOESN'T WORK!!");
-      }else{
+      } else{
         // console.log(queryResult.rows);
-        res.send("Artist Created!");
+        res.render('artists/newartists', {artist: req.body});
     }
   });
 });
+
+// edit artist
+app.get('/artists/:id/edit', (req, res) => {
+  let inputId = parseInt(req.params.id);
+  let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+  let values = [inputId];
+  pool.query(sqlText, values, (error, queryResult) => {
+    // console.log(queryResult.rows);
+      if (error){
+        console.log('error!', error);
+        res.status(500).send("DOESN'T WORK!!");
+      } else{
+        // console.log(queryResult.rows);
+        res.render('artists/edit', {artist: queryResult.rows});
+    }
+  });
+});
+
+app.put('/artists/:id', (req, res) => {
+  let inputId = parseInt(req.params.id);
+
+  let sqlText = "UPDATE artists SET (name, photo_url, nationality) = ($1, $2, $3) WHERE id = ($4)";
+  values = [req.body.name, req.body.photo_url, req.body.nationality, inputId ];
+  pool.query(sqlText, values, (error, queryResult) => {
+    if (error) {
+      console.log('error!', error);
+      res.status(500).send("DOESN'T WORK!!");
+    } else {
+        res.redirect(`/artists/${inputId}`);
+      }
+  });
+})
 
 /**
  * ===================================

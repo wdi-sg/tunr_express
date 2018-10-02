@@ -2,7 +2,7 @@ var React = require("react");
 
 class Show extends React.Component {
   render() {
-    console.log("INSIDE REACT INDEX", this.props.artist);
+    // console.log("INSIDE REACT INDEX", this.props.artist);
     return (
       <html>
         <head />

@@ -8,9 +8,9 @@ class New extends React.Component {
         <body>
           <h3>New Artist</h3>
           <form action="/artist" method="POST">
-        	<input type="text" name="name" placeholder = "Name"/>
+        	<input type="text" name="name" placeholder = "Artist Name"/>
           <input type="text" name="photo_url" placeholder = "Image URL" />
-          <input type="text" name="nationality" placeholder = "nationality"/>
+          <input type="text" name="nationality" placeholder = "Artist Nationality"/>
         	<input type="submit"/>
         </form>
         </body>

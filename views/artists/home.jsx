@@ -9,7 +9,7 @@ class Home extends React.Component {
 
     return (
       <li key = {artist.id} style={{ listStyleType: "none" }} >
-        <a href={linkPath}> {artist.name}</a>
+        <a href={linkPath}> {artist.name}</a> 
       </li>
     );
   });
@@ -27,6 +27,6 @@ class Home extends React.Component {
       </html>
     );
   }
-} 
+}
 
 module.exports = Home;
