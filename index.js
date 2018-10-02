@@ -46,7 +46,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-//2.1 INDEX Feature
+//2.1 INDEX Feature---------------------------------------------------------------------------------------
 app.get('/artists/', (req, res) => {
 
     let sqlText = "SELECT * FROM artists";
@@ -64,7 +64,7 @@ app.get('/artists/', (req, res) => {
     });
 });
 
-//2.2 SHOW feature
+//2.2 SHOW feature---------------------------------------------------------------------------------------
 app.get('/artists/:id', (req, res) => {
 
     let nameOfArtist= req.params.id;
@@ -85,7 +85,7 @@ app.get('/artists/:id', (req, res) => {
     });
 });
 
-//2.3 CREATE feature
+//2.3 CREATE feature---------------------------------------------------------------------------------------
 app.get('/new', (req, res) => {
 
     res.render('new');
@@ -113,28 +113,53 @@ app.post('/artists/', (req, res) => {
 });
 
 
+//2.4 EDIT feature----------------------------------------------------------------------------------------
+app.get('/artists/:id/edit', (req, res) => {
 
+    let nameOfArtist= req.params.id;
 
+    let sqlText = "SELECT * FROM artists WHERE name = ($1)";
+    const values = [nameOfArtist];
 
+    //query tunr_db database for all artists
+    pool.query(sqlText, values, (error, queryResult) => {
 
+        if (error) {
+           console.log('error!', error);
+            res.send('Error!');
+          } else {
+            for (i in queryResult.rows) {
+                if (queryResult.rows[i].name == nameOfArtist) {
+                    var selectedArtist = queryResult.rows[i];
+                }
+            }
+            res.render('edit', {artists: selectedArtist});
+          }
+    })
+})
 
+app.put("/artists/:id", (req, res) => {
 
+    // var artistId = req.body.id;
+    var nameInput = req.body.name;
+    var photoInput = req.body.photo_url;
+    var nationalityInput = req.body.nationality;
+    let nameOfArtist= req.params.id;
 
+    let sqlText = "UPDATE artists SET (name, photo_url, nationality) = ($1, $2, $3) WHERE name = ($4)";
+    const values = [nameInput, photoInput, nationalityInput, nameOfArtist];
 
+    //query tunr_db database for all artists
+    pool.query(sqlText, values, (error, queryResult) => {
 
-
-
-
-
-
-
-
-
-
-app.get('/new', (req, res) => {
-  // respond with HTML page with form to create new ...
-  res.render('new');
-});
+        if (error) {
+           console.log('error!', error);
+            res.send('Error!');
+          } else {
+            res.redirect('/artists/')
+          }
+    })
+})
 
 
 /**
