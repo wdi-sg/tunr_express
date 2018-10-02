@@ -5,10 +5,10 @@ class Home extends React.Component {
     // console.log("INSIDE REACT INDEX", this.props.artists );
     const artistsElements = this.props.artists.map((artist)=>{
 
-    let linkPath = "/artists/artist_id=" + artist.id;
+    let linkPath = "/artists/" + artist.id;
 
     return (
-      <li style={{ listStyleType: "none" }}>
+      <li key = {artist.id} style={{ listStyleType: "none" }} >
         <a href={linkPath}> {artist.name}</a>
       </li>
     );
@@ -27,6 +27,6 @@ class Home extends React.Component {
       </html>
     );
   }
-}
+} 
 
 module.exports = Home;

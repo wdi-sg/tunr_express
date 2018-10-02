@@ -48,8 +48,9 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// artists index
 app.get('/artists', (req, res) => {
-  let sqlText = "SELECT * FROM artists";
+  let sqlText = "SELECT * FROM artists ORDER BY id";
   pool.query(sqlText, (error, queryResult) => {
       if (error){
         console.log('error!', error);
@@ -57,6 +58,23 @@ app.get('/artists', (req, res) => {
       }else{
         // console.log(queryResult.rows);
         res.render('artists/home',{artists: queryResult.rows});
+    }
+  });
+});
+
+// artist show
+app.get('/artists/:id', (req, res) => {
+  let inputId = parseInt(req.params.id);
+  let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+  let values = [inputId];
+  pool.query(sqlText, values, (error, queryResult) => {
+    console.log(queryResult.rows);
+      if (error){
+        console.log('error!', error);
+        res.status(500).send("DOESN'T WORK!!");
+      }else{
+        // console.log(queryResult.rows);
+        res.render('artists/show',{artist: queryResult.rows});
     }
   });
 });
