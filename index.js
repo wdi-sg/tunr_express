@@ -68,7 +68,7 @@ app.get('/artists/:id', (req, res) => {
   let sqlText = "SELECT * FROM artists WHERE id = ($1)";
   let values = [inputId];
   pool.query(sqlText, values, (error, queryResult) => {
-    console.log(queryResult.rows);
+    // console.log(queryResult.rows);
       if (error){
         console.log('error!', error);
         res.status(500).send("DOESN'T WORK!!");
@@ -79,11 +79,25 @@ app.get('/artists/:id', (req, res) => {
   });
 });
 
-// app.get('/new', (req, res) => {
-//
-//   res.render('new');
-// });
+// create artist
+app.get('/artist/new',(req, res) => {
+  res.render('artists/new');
+});
 
+app.post('/artist', (req, res) => {
+  console.log(req.body)
+  let sqlText = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+  let values = [req.body.name, req.body.photo_url, req.body.nationality];
+  pool.query(sqlText, values, (error, queryResult) => {
+      if (error){
+        console.log('error!', error);
+        res.status(500).send("DOESN'T WORK!!");
+      }else{
+        // console.log(queryResult.rows);
+        res.send("Artist Created!");
+    }
+  });
+});
 
 /**
  * ===================================
