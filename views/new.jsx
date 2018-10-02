@@ -6,7 +6,23 @@ class New extends React.Component {
       <html>
         <head />
         <body>
-          <h3>Form Goes Here!</h3>
+          <h3>Insert new artist:</h3>
+            <div>
+                <form method = "POST" action ="/artists/">
+                    <div></div>
+                        Name:
+                        <input name="name"/>
+                        <br></br>
+                        Photo URL:
+                        <input name="photo_url"/>
+                        <br></br>
+                        Nationality:
+                        <input name="nationality"/>
+                        <br></br>
+                        <br></br>
+                    <input type = "submit" value = "Submit"></input>
+                </form>
+            </div>
         </body>
       </html>
     );
@@ -14,3 +30,4 @@ class New extends React.Component {
 }
 
 module.exports = New;
+

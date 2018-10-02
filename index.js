@@ -47,7 +47,7 @@ app.engine('jsx', reactEngine);
  */
 
 //2.1 INDEX Feature
-app.get('/', (req, res) => {
+app.get('/artists/', (req, res) => {
 
     let sqlText = "SELECT * FROM artists";
 
@@ -84,6 +84,50 @@ app.get('/artists/:id', (req, res) => {
           }
     });
 });
+
+//2.3 CREATE feature
+app.get('/new', (req, res) => {
+
+    res.render('new');
+});
+
+app.post('/artists/', (req, res) => {
+
+    var nameInput = req.body.name;
+    var photoInput = req.body.photo_url;
+    var nationalityInput = req.body.nationality;
+
+    let sqlText = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+    const values = [nameInput, photoInput, nationalityInput];
+
+    //query tunr_db database for all artists
+    pool.query(sqlText, values, (error, queryResult) => {
+        if (error) {
+           console.log('error!', error);
+            res.send('Error!');
+          } else {
+            var array = queryResult.rows;
+          }
+    res.redirect("/artists")
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
