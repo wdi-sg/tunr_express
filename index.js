@@ -1,12 +1,10 @@
-console.log("starting up!!");
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'admin',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,15 +47,15 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (req, res) => {
-  // query database for all pokemon
+  // query database for all ...
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  // respond with HTML page displaying all ...
+  res.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('/new', (req, res) => {
+  // respond with HTML page with form to create new ...
+  res.render('new');
 });
 
 
@@ -68,10 +66,10 @@ app.get('/new', (request, response) => {
  */
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-server.on('close', () => {
-  console.log('Closed express server');
+// server.on('close', () => {
+//   console.log('Closed express server');
 
-  db.pool.end(() => {
-    console.log('Shut down db connection pool');
-  });
-});
+  // db.pool.end(() => {
+  //   console.log('Shut down db connection pool');
+  // });
+// });
