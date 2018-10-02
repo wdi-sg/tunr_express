@@ -65,13 +65,33 @@ app.get('/artists', (request, response) => {
         response.status(500).send('DIDNT WORKS!!');
       }else{
 
-        console.log( queryResult.rows);
+         console.log( queryResult.rows[0].name);
 
         response.render('index', {artists: queryResult.rows} );
       }
     });
 });
 
+app.get('/artist/:id', (request, response) => {
+
+    let sqlText = "SELECT * FROM artists";
+    let artId = request.params.id;
+
+    pool.query(sqlText, (error, queryResult) => {
+
+        for (var i = 0; i < queryResult.rows.length; i++) {
+          // console.log(queryResult.rows[i].id)
+  //          console.log(request.params.id)
+  if (queryResult.rows[i].id === parseInt(artId)) {
+
+            var foundArtist = queryResult.rows[i];
+
+            console.log(foundArtist)
+            response.send(foundArtist)
+            }
+    };
+})
+});
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
