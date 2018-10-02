@@ -81,6 +81,12 @@ app.get('/artist/:id', (req, res) => {
 });
 
 
+app.get('/new', (request, response) => {
+    // respond with HTML page with form to create new artist page
+    response.render('new');
+});
+
+
 
 
 
