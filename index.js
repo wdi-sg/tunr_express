@@ -66,12 +66,13 @@ app.get('/artists', (request, response) => {
         console.log("artist get err",err);
         response.status(500).send("CUI!");
     } else {
-        console.log(queryResults.rows)
+        console.log("artist",queryResults.rows)
+        response.render('artist',{artists:queryResults.rows});
     }
   })
   // respond with HTML page with form to create new pokemon
-    response.send("ARTISTWORKS");
-  //response.render('new');
+   // response.send("ARTISTWORKS");
+
 });
 
 
