@@ -81,9 +81,25 @@ app.get('/artist/:id', (req, res) => {
 });
 
 
+
 app.get('/new', (request, response) => {
     // respond with HTML page with form to create new artist page
     response.render('new');
+});
+
+app.post('/artists', (req, res) => {
+    let sqlText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
+    let values = [req.body.name, req.body.photo_url, req.body.nationality]
+
+    pool.query(sqlText, values, (error, queryResults) => {
+        if (error) {
+            console.log('error!', error);
+            res.status(500).send('DIDNT WORKS!!');
+        } else {
+            res.redirect('/');
+        }
+    });
+
 });
 
 
