@@ -138,6 +138,21 @@ app.put('/artist/:id', (req, res) => {
     });
 });
 
+app.delete('/artist/:id', (req, res) => {
+    // respond with HTML page displaying id-ed artist
+    let resId = req.params.id;
+
+    let sqlText = `DELETE FROM artists WHERE id = ${resId}`;
+
+    pool.query(sqlText, (error, queryResults) => {
+        if (error) {
+            console.log('error!', error);
+            res.status(500).send('DIDNT WORKS!!');
+        } else {
+            res.redirect('/');
+        }
+    });
+});
 
 
 /**
