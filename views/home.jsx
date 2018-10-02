@@ -29,8 +29,9 @@ class Home extends React.Component {
         <head />
         <body>
           <Layout title="Artists">
-            <h1>Welcome!</h1>
+            <h1>Artists</h1>
             <Artists artists={this.props.artists} />
+            <p><a href="/artists/new">New Artist</a></p>
           </Layout>
         </body>
       </html>

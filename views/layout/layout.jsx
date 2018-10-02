@@ -13,10 +13,10 @@ class Layout extends React.Component {
           <link rel="stylesheet" href="/style.css" />
         </head>
         <div class="container">
-          <header><h1>Hello</h1></header>
           <body>
             {this.props.children}
           </body>
+          <footer><a href="/artists/">Back to Index</a></footer>
         </div>
       </html>
 

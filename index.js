@@ -17,6 +17,7 @@ pool.on('error', function (err) {
 
 const app = express();
 
+app.use(express.static('public'));
 app.use(express.urlencoded({
   extended: true
 }));

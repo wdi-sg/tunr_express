@@ -29,16 +29,14 @@ class Home extends React.Component {
 
     let title = `Songs by ${artist.name}`;
 
+    let newSongURL = `/artists/${artist.id}/songs/new`;
+
     return (
-      <html>
-        <head />
-        <body>
-          <Layout title={title}>
-            <h1>{artist.name}</h1>
-            <Songs songs={songs} artist={artist} />
-            </Layout>
-        </body>
-      </html>
+      <Layout title={title}>
+        <h1>Songs by {artist.name}</h1>
+        <Songs songs={songs} artist={artist} />
+        <p><a href={newSongURL}>Add Song</a></p>
+      </Layout>
     );
   }
 }
