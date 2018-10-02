@@ -47,6 +47,18 @@ app.get('/artists/new', (request, response) => {
   response.render('ArtistsNew');
 });
 
+app.get('/artists/:id/edit', (request, response) => {
+  const sql = `SELECT * FROM artists WHERE id = ${request.params.id}`;
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.render('ArtistsEdit', res.rows[0]);
+    }
+  });
+});
+
 app.get('/artists/:id', (request, response) => {
   const sql = `SELECT * FROM artists WHERE id = ${request.params.id}`;
   pool.query(sql, (err, res) => {
@@ -83,6 +95,20 @@ app.post('/artists', (request, response) => {
     }
   });
 });
+
+app.put('/artists/:id', (request, response) => {
+  const sql = `UPDATE artists SET name = ($1), photo_url = ($2), nationality = ($3) WHERE id = ${request.params.id}`;
+  const values = [request.body.name, request.body.photoUrl, request.body.nationality];
+  pool.query(sql, values, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.redirect(`/artists/${request.params.id}`);
+    }
+  });
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
