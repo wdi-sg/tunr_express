@@ -67,6 +67,23 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/:id', (req, res) => {
+  let id = req.params.id;
+  let text = "SELECT * FROM artists WHERE id = ($1)";
+  let value = [id];
+  pool.query(text, value, (error, queryResult) => {
+  if (error) 
+  {
+    console.log("query error: ",error);
+    res.status(500).send('DIDNT WORKS!!');
+  } else 
+  {
+    console.log(queryResult.rows);
+    res.render('home', {artists: queryResult.rows});
+  }
+  });
+});
+
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
