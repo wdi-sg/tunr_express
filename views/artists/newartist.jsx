@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Newartists extends React.Component {
+class Newartist extends React.Component {
   render() {
     // console.log("INSIDE REACT INDEX", this.props.artist);
     return (
@@ -24,4 +24,4 @@ class Newartists extends React.Component {
   }
 }
 
-module.exports = Newartists;
+module.exports = Newartist;
