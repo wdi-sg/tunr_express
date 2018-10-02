@@ -29,14 +29,28 @@ app.set('views', `${__dirname}/views`);
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-app.get('/artists', async (req, res) => {
-  await pool.query('SELECT * FROM artists', (queryError, response) => {
-    res.render('artists', { artists: response.rows });
+app.get('/artists/:id', async (appReq, appRes) => {
+  const values = [appReq.params.id];
+  const queryString = 'SELECT * FROM artists WHERE id = ($1)';
+  await pool.query(queryString, values, (artistError, artistRes) => {
+    appRes.render('profile', { artist: artistRes.rows });
+  });
+  // queryString = 'SELECT (album) WHERE artists_id = ($1)';
+  // await pool.query(queryString, values, (songError, songRes) => {
+  //   songs = songRes.rows;
+  // });
+});
+
+app.get('/artists', async (appReq, appRes) => {
+  const queryString = 'SELECT * FROM artists';
+  await pool.query(queryString, (queryError, queryResponse) => {
+    if (queryError) return appRes.send(queryError.stack);
+    return appRes.render('artists', { artists: queryResponse.rows });
   });
 });
 
 app.get('/', (req, res) => {
-  res.send('YOU TRIGGERED THE HOMEPAGE');
+  res.redirect('/artists');
 });
 
 app.listen(PORT);
