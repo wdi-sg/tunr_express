@@ -50,7 +50,7 @@ app.get('/artists/new', (request, response) => {
 
 app.post('/artists/new', (request, response) => {
 
-    console.log('Receiving post request: ', request.body);
+    console.log('Receiving POST request: ', request.body);
 
     let text = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
 
@@ -71,6 +71,48 @@ app.post('/artists/new', (request, response) => {
     });
 });
 
+
+app.put('/artists/:id', (request, response) => {
+
+    console.log('Receiving PUT request: ', request.body);
+
+    let text = `UPDATE artists SET (name, photo_url, nationality) = ($1, $2, $3) WHERE id=${request.params.id} RETURNING *`;
+
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(text, values, (err, result) => {
+
+        if (err) {
+
+            console.log(err);
+            response.status(500).send("pool.query error");
+
+        } else {
+
+            response.redirect(`/artists/${request.params.id}`);
+        };
+    });
+});
+
+
+app.get('/artists/:id/edit', (request, response) => {
+
+    let text = `SELECT * FROM artists WHERE id = ${request.params.id}`;
+
+    pool.query(text, (err, result) => {
+
+        if (err) {
+
+            console.log(err);
+            response.status(500).send("pool.query error");
+
+        } else {
+
+            console.log("result.rows: ", result.rows);
+            response.render('artist_edit', {artist: result.rows});
+        };
+    });
+});
 
 
 app.get('/artists/:id', (request, response) => {

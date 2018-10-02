@@ -6,7 +6,7 @@ class ArtistsIndex extends React.Component {
 
     render() {
 
-        console.log ( "INSIDE REACT ARTISTS INDEX: ", this.props.artists );
+        console.log ( "Rendering Artists Index: ", this.props.artists );
 
         const artistsElements = this.props.artists.map( (artist) => {
 
