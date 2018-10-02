@@ -1,0 +1,34 @@
+var React = require("react");
+
+class Show extends React.Component {
+  render() {
+
+      let actionUrl = '/artists/'+this.props.id+'/edit';
+      let actionUrl2 = '/artists/'+this.props.id+'?_method=delete';
+
+      return (
+        <html>
+        <head>
+          <link rel="stylesheet" type="text/css" href="/style.css"></link>
+        </head>
+        <body>
+        <div>
+          <ul>
+            <li>Name: {this.props.name}</li>
+            <li>Nationality: {this.props.nationality}</li>
+            <p><img src={this.props.photo_url}/></p>
+            <form method="GET" action={actionUrl}>
+              <input type="submit" value="Edit"/>
+            </form>
+            <form method="POST" action={actionUrl2}>
+              <input type="submit" value="Delete"/>
+            </form>
+          </ul>
+        </div>
+        </body>
+        </html>
+      );
+  }
+}
+
+module.exports = Show;
