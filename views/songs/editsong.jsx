@@ -26,8 +26,7 @@ class Home extends React.Component {
 
     return (
     <Layout title={title}>
-      <Layout title="Edit Artist" action={putString}>
-        <h1>Edit {song.title}</h1>
+      <h1>Edit {song.title}</h1>
         <form method="POST" action={putString}>
           <label>Title:</label>
           <input name="title" required autoComplete="off" defaultValue={song.title}/>
@@ -47,7 +46,6 @@ class Home extends React.Component {
           <input type="submit" value="Delete"/><br/>
         </form>
       </Layout>
-    </Layout>
     )
   }
 }

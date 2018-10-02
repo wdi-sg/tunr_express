@@ -44,7 +44,6 @@ app.post('/artists/new', (req, res) => {
       res.redirect('/artists/');
     }
   })
-
 })
 
 // new artist form
@@ -128,6 +127,24 @@ app.get('/artists/:id', (req, res) => {
     } else {
 
       res.render('artists/artist', {artist: artistResult.rows[0]});
+    }
+  })
+})
+
+// new song form
+app.get('/artists/:id/songs/new', (req, res) => {
+
+  let id = req.params.id;
+
+  let findArtist = `SELECT * FROM artists WHERE id = ${id};`;
+
+  pool.query(findArtist, (error, result) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+      res.render('songs/newsong', {artist: result.rows[0]});
     }
   })
 })
@@ -273,7 +290,7 @@ app.delete('/artists/:id/songs/:sid', (req, res) => {
 
   let deleteSong = `DELETE FROM songs WHERE id = ${sid}`;
 
-  pool.query(deleteSongs, (error, result) => {
+  pool.query(deleteSong, (error, result) => {
 
     if (error) {
       console.log("Error: ", error);
@@ -284,12 +301,30 @@ app.delete('/artists/:id/songs/:sid', (req, res) => {
   })
 })
 
-app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+// create new song
+app.post('/artists/:id/songs/new', (req, res) => {
 
-// server.on('close', () => {
-//   console.log('Closed express server');
-//
-//   db.pool.end(() => {
-//     console.log('Shut down db connection pool');
-//   });
-// });
+  let addSong = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)";
+
+  let values = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
+
+  pool.query(addSong, values, (error, result) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+      res.redirect(`/artists/${req.body.artist_id}/songs/`);
+    }
+  })
+})
+
+const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+
+server.on('close', () => {
+  console.log('Closed express server');
+
+  db.pool.end(() => {
+    console.log('Shut down db connection pool');
+  });
+});

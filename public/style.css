@@ -1,0 +1,12 @@
+body {
+  font-family: "Comfortaa", sans-serif;
+}
+
+.container {
+  width: 60vw;
+  min-width: 600px;
+}
+
+label, input {
+  display: block;
+}
