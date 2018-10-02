@@ -65,6 +65,23 @@ app.get('/', (req, res) => {
 });
 
 
+app.get('/artist/:id', (req, res) => {
+    // respond with HTML page displaying id-ed artist
+    let resId = req.params.id;
+    let sqlText = 'SELECT * FROM artists WHERE id =' + resId;
+
+    pool.query(sqlText, (error, queryResults) => {
+        if (error) {
+            console.log('error!', error);
+            res.status(500).send('DIDNT WORKS!!');
+        } else {
+            res.render('artist', { artists: queryResults.rows });
+        }
+    });
+});
+
+
+
 
 
 /**
