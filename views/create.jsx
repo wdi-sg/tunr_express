@@ -8,7 +8,7 @@ class Create extends React.Component {
       <Layout title="Artists">
         <div className="row mt-5 w-50 mx-auto">
           <div className="col">
-            <h1>Add new artist.</h1>
+            <h1>ADD</h1>
             <hr />
             <form action="/artists" method="post">
               <label htmlFor="name">Name</label>

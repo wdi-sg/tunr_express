@@ -45,11 +45,19 @@ app.put('/artists/:id', async (appReq, appRes) => {
     appReq.body.photourl,
     appReq.body.nationality,
   ];
-  console.log(values);
   const queryString = 'UPDATE artists SET (name, photo_url, nationality) = ($2,$3,$4) WHERE id = ($1)';
   await pool.query(queryString, values, (updError, updRes) => {
     if (updError) console.log('hello', updError.stack);
     appRes.redirect(`/artists/${appReq.params.id}`);
+  });
+});
+
+app.delete('/artists/:id', async (appReq, appRes) => {
+  const values = [appReq.params.id];
+  const queryString = 'DELETE FROM artists WHERE id = ($1)';
+  await pool.query(queryString, values, (updError, updRes) => {
+    if (updError) console.log('hello', updError.stack);
+    appRes.redirect('/artists');
   });
 });
 
