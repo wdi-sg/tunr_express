@@ -114,7 +114,7 @@ app.put('/artists/:id', (request, response) => {
       console.log('query err:', err.message);
       response.status(500).send('Error');
     } else {
-      response.redirect(`/artists/${request.params.id}`);
+      response.redirect(`/artists/${res.rows[0].id}`);
     }
   });
 });
@@ -136,6 +136,26 @@ app.delete('/artists/:id', (request, response) => {
  * Routes: songs
  * ===================================
  */
+
+app.get('/songs/:id/edit', (request, response) => {
+  let sql = `SELECT * FROM songs WHERE id = ${request.params.id}`;
+  pool.query(sql, (err, songRes) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      sql = 'SELECT * FROM artists';
+      pool.query(sql, (err, artistsRes) => {
+        if (err) {
+          console.log('query err:', err.message);
+          response.status(500).send('Error');
+        } else {
+          response.render('SongsEdit', { song: songRes.rows[0], artists: artistsRes.rows });
+        }
+      })
+    }
+  });
+});
 
 app.get('/songs/new', (request, response) => {
   const sql = 'SELECT * FROM artists ORDER BY name';
@@ -180,6 +200,20 @@ app.post('/songs', (request, response) => {
   pool.query(sql, values, (err, res) => {
     if (err) {
       console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.redirect(`/songs/${res.rows[0].id}`);
+    }
+  });
+});
+
+app.put('/songs/:id', (request, response) => {
+  const sql = 'UPDATE songs SET title = ($1), album = ($2), preview_link = ($3), artwork = ($4), artist_id = ($5) RETURNING id';
+  const values = trim(Object.values(request.body));
+  values[4] = parseInt(values[4]);
+  pool.query(sql, values, (err, res) => {
+    if (err) {
+      console.log('query err:', err);
       response.status(500).send('Error');
     } else {
       response.redirect(`/songs/${res.rows[0].id}`);
