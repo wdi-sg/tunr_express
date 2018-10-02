@@ -49,6 +49,24 @@ const trim = arr => {
 
 /**
  * ===================================
+ * Routes: nested
+ * ===================================
+ */
+
+app.get('/artists/:id/songs', (request, response) => {
+  let sql = `SELECT * FROM songs WHERE artist_id = ${request.params.id} ORDER BY title`;
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.render('ArtistsShowSongs', { songs: res.rows });
+    }
+  });
+});
+
+/**
+ * ===================================
  * Routes: artists
  * ===================================
  */

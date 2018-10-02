@@ -9,7 +9,9 @@ class SongsShow extends React.Component {
         <head />
         <body>
           <h1>{this.props.title}</h1>
-          <a href={editUrl}>Edit</a>
+          <form action={editUrl}>
+            <input type="submit" value="Edit" />
+          </form>
           <form method="POST" action={deleteUrl}>
             <input type="submit" value="Delete" />
           </form>
