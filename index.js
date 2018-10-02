@@ -52,6 +52,29 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
+//create page
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+    response.render('new');
+});
+
+app.post('/artists', (request, response) => {
+    console.log(request.body);
+    let req = request.body;
+    let sqlReqText = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+    let values = [req.name, req.url, req.nationality];
+    pool.query(sqlReqText, values, (error, queryResult) => {
+        if (error){
+            console.log('Error: ', error);
+            response.status(500).send('Didnt work!');
+        }
+        else {
+            console.log('Query results: ', queryResult.rows);
+            response.redirect('/artists');
+        }
+    })
+})
+
 //index page
 app.get('/artists', (request, response) => {
     //console.log(request.body);
@@ -90,10 +113,7 @@ app.get('/artists/:id', (request, response) => {
 
 })
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+
 
 
 /**
