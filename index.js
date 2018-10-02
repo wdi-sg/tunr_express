@@ -50,17 +50,27 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (req, res) => {
   // query database for all pokemon
-
+  let sqlText = "SELECT * FROM artists";
   // respond with HTML page displaying all pokemon
   //res.render('home');
-  res.send('hello world!')
+  //res.send('hello world!')
+  pool.query(sqlText, (error, queryResult) => {
+      if (error)
+      {
+        console.log('error!', error);
+        res.status(500).send('DIDNT WORKS!!');
+      }else
+      {
+        console.log(queryResult.rows);
+        res.render('home', {artists: queryResult.rows});
+      }
+  });
 });
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
-
 
 /**
  * ===================================
