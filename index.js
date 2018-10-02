@@ -47,13 +47,13 @@ app.post('/artists/new', (req, res) => {
 
 })
 
-// create new artist form
+// new artist form
 app.get('/artists/new', (req, res) => {
 
   res.render('artists/new');
 });
 
-// edit artist
+// update artist
 app.put('/artists/:id', (req, res) => {
 
   let id = req.params.id;
@@ -74,25 +74,6 @@ app.put('/artists/:id', (req, res) => {
     }
   })
 })
-
-// delete route that works for both songs and artists
-// app.delete('/:table/:id', (req, res) => {
-//
-//   let table = req.params.table;
-//   let id = req.params.id;
-//
-//   let deleteString = `DELETE FROM ${table} WHERE id = ${id}`;
-//
-//   pool.query(deleteString, (error, result) => {
-//
-//     if (error) {
-//       console.log("Error: ", error);
-//       res.status(500).send("Something went wrong.");
-//     } else {
-//       res.redirect(`/${table}/`);
-//     }
-//   })
-// })
 
 // delete artist
 app.delete('/artists/:id', (req, res) => {
@@ -132,7 +113,7 @@ app.get('/artists/:id/edit', (req, res) => {
   })
 })
 
-// read artist
+// show artist
 app.get('/artists/:id', (req, res) => {
 
   let id = req.params.id;
@@ -151,7 +132,7 @@ app.get('/artists/:id', (req, res) => {
   })
 })
 
-// list all artists
+// index all artists
 app.get('/artists/', (req, res) => {
 
   let listArtists = "SELECT * FROM artists ORDER BY id ASC";
@@ -167,7 +148,7 @@ app.get('/artists/', (req, res) => {
   })
 });
 
-// list all songs by an artist
+// index all songs by an artist
 app.get('/artists/:id/songs/', (req, res) => {
 
   let id = req.params.id;
@@ -199,7 +180,7 @@ app.get('/artists/:id/songs/', (req, res) => {
   })
 })
 
-// read song 
+// show song
 app.get('/artists/:id/songs/:sid', (req, res) => {
 
   let id = req.params.id;
@@ -226,6 +207,79 @@ app.get('/artists/:id/songs/:sid', (req, res) => {
           res.render('songs/song', {artist: artistResult.rows[0], song: songResult.rows[0]});
         }
       })
+    }
+  })
+})
+
+// edit song form
+app.get('/artists/:id/songs/:sid/edit', (req, res) => {
+
+  let id = req.params.id;
+  let idSong = req.params.sid;
+
+  let findArtists = `SELECT * FROM artists;`;
+
+  pool.query(findArtists, (error, artistsResult) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+
+      let findSong = `SELECT * FROM songs WHERE id = ${idSong} AND artist_id = ${id};`;
+
+      pool.query(findSong, (error, songResult) => {
+
+        if (error) {
+          console.log("Error: ", error);
+          res.status(500).send("Something went wrong.");
+        } else {
+
+          res.render(`songs/editsong`, {artist_id: id, artists: artistsResult.rows, song: songResult.rows[0]});
+        }
+      })
+    }
+  })
+})
+
+// update song
+app.put('/artists/:id/songs/:sid', (req, res) => {
+
+  let idSong = req.params.sid;
+  let title = req.body.title;
+  let album = req.body.album;
+  let preview_link = req.body.preview_link;
+  let artwork = req.body.artwork;
+  let artist_id = req.body.artist_id;
+
+  let editSong = `UPDATE songs
+  SET title='${title}', album='${album}', preview_link='${preview_link}', artwork='${artwork}', artist_id=${artist_id} WHERE id = ${idSong};`;
+
+  pool.query(editSong, (error, result) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+      res.redirect(`/artists/${artist_id}/songs/${idSong}`);
+    }
+  })
+})
+
+// delete song
+app.delete('/artists/:id/songs/:sid', (req, res) => {
+
+  let sid = req.params.sid;
+
+  let deleteSong = `DELETE FROM songs WHERE id = ${sid}`;
+
+  pool.query(deleteSongs, (error, result) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+      res.redirect(`/artists/${req.params.id}/songs/`);
     }
   })
 })

@@ -10,9 +10,11 @@ class Home extends React.Component {
 
     let deleteString  = `/artists/${artist.id}?_method=DELETE`;
 
+    let title = "Edit " + artist.name;
+
     return (
-    <Layout title="Edit Artist">
-      <h1>{artist.name}</h1>
+    <Layout title={title}>
+      <h1>Edit {artist.name}</h1>
       <form method="POST" action={putString}>
         <label>Name:</label>
         <input name="name" required autoComplete="off" defaultValue={artist.name}/>

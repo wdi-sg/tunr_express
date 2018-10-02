@@ -7,6 +7,7 @@ class Home extends React.Component {
     let artist = this.props.artist;
 
     let songsList = `/artists/${artist.id}/songs/`
+    let editURL = `/artists/${artist.id}/edit`
 
     return (
       <Layout title={artist.name}>
@@ -14,6 +15,7 @@ class Home extends React.Component {
         <img src={artist.photo_url} />
         <p>Nationality: {artist.nationality}</p>
         <a href={songsList}>Songs</a>
+        <p><a href={editURL}>Edit</a></p>
       </Layout>
     );
   }
