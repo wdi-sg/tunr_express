@@ -75,6 +75,25 @@ app.put('/artists/:id', (req, res) => {
   })
 })
 
+// delete route that works for both songs and artists
+// app.delete('/:table/:id', (req, res) => {
+//
+//   let table = req.params.table;
+//   let id = req.params.id;
+//
+//   let deleteString = `DELETE FROM ${table} WHERE id = ${id}`;
+//
+//   pool.query(deleteString, (error, result) => {
+//
+//     if (error) {
+//       console.log("Error: ", error);
+//       res.status(500).send("Something went wrong.");
+//     } else {
+//       res.redirect(`/${table}/`);
+//     }
+//   })
+// })
+
 // delete artist
 app.delete('/artists/:id', (req, res) => {
 
@@ -127,20 +146,7 @@ app.get('/artists/:id', (req, res) => {
       res.status(500).send("Something went wrong.");
     } else {
 
-      let artist = artistResult.rows[0];
-
-      let findSongs = `SELECT * FROM songs WHERE artist_id = ${id};`;
-
-      pool.query(findSongs, (error, songsResult) => {
-
-        if (error) {
-          console.log("Error: ", error);
-          res.status(500).send("Something went wrong.");
-        } else {
-
-          res.render('artists/artist', {artist: artist, songs: songsResult.rows});
-        }
-      })
+      res.render('artists/artist', {artist: artistResult.rows[0]});
     }
   })
 })
@@ -161,6 +167,37 @@ app.get('/artists/', (req, res) => {
   })
 });
 
+app.get('/artists/:id/songs/', (req, res) => {
+
+  let id = req.params.id;
+
+  let findArtist = `SELECT * FROM artists WHERE id = ${id};`;
+
+  pool.query(findArtist, (error, artistResult) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+
+      let artist = artistResult.rows[0];
+
+      let findSongs = `SELECT * FROM songs WHERE artist_id = ${id};`;
+
+      pool.query(findSongs, (error, songsResult) => {
+
+        if (error) {
+          console.log("Error: ", error);
+          res.status(500).send("Something went wrong.");
+        } else {
+
+          res.render('songs/list', {artist: artist, songs: songsResult.rows});
+        }
+      })
+    }
+  })
+})
+
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 // server.on('close', () => {
@@ -170,6 +207,3 @@ app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'
 //     console.log('Shut down db connection pool');
 //   });
 // });
-
-// GET '/artists/1/songs' - get songs
-// POST '/artists/1/songs' create songs
