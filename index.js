@@ -84,9 +84,9 @@ app.get('/:id', (req, res) => {
   });
 });
 
-app.get('/new', (request, response) => {
+app.get('/new', (req, res) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  res.render('new');
 });
 
 /**

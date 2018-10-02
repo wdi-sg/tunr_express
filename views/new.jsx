@@ -3,14 +3,21 @@ var React = require("react");
 class New extends React.Component {
   render() {
     return (
-      <html>
-        <head />
-        <body>
-          <h3>Form Goes Here!</h3>
-        </body>
-      </html>
+      <div>
+        <h1>New Artist</h1>
+        <form action="/new" method="POST">
+        <p>name</p>
+          <input type="text" name="name" />
+        <p>nationality</p>
+        <input type="text" name="nationality"/>
+        <p>photo_url</p>
+          <input type="image" name="photo_url"/>
+          <input type="submit" value="Submit"/>
+        </form>
+      </div>
     );
   }
 }
 
 module.exports = New;
+
