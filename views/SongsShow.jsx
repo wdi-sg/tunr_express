@@ -2,13 +2,17 @@ const React = require('react');
 
 class SongsShow extends React.Component {
   render() {
-    const url = `/songs/${this.props.id}/edit`;
+    const editUrl = `/songs/${this.props.id}/edit`;
+    const deleteUrl = `/songs/${this.props.id}?_method=DELETE`;
     return (
       <html>
         <head />
         <body>
           <h1>{this.props.title}</h1>
-          <a href={url}>Edit</a>
+          <a href={editUrl}>Edit</a>
+          <form method="POST" action={deleteUrl}>
+            <input type="submit" value="Delete" />
+          </form>
           <p>
             <strong>Album: </strong>
             {this.props.album}

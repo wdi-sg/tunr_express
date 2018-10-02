@@ -114,7 +114,7 @@ app.put('/artists/:id', (request, response) => {
       console.log('query err:', err.message);
       response.status(500).send('Error');
     } else {
-      response.redirect(`/artists/${res.rows[0].id}`);
+      response.redirect(`/artists/${request.params.id}`);
     }
   });
 });
@@ -208,7 +208,7 @@ app.post('/songs', (request, response) => {
 });
 
 app.put('/songs/:id', (request, response) => {
-  const sql = 'UPDATE songs SET title = ($1), album = ($2), preview_link = ($3), artwork = ($4), artist_id = ($5) RETURNING id';
+  const sql = `UPDATE songs SET title = ($1), album = ($2), preview_link = ($3), artwork = ($4), artist_id = ($5) WHERE id = ${request.params.id}`;
   const values = trim(Object.values(request.body));
   values[4] = parseInt(values[4]);
   pool.query(sql, values, (err, res) => {
@@ -216,7 +216,19 @@ app.put('/songs/:id', (request, response) => {
       console.log('query err:', err);
       response.status(500).send('Error');
     } else {
-      response.redirect(`/songs/${res.rows[0].id}`);
+      response.redirect(`/songs/${request.params.id}`);
+    }
+  });
+});
+
+app.delete('/songs/:id', (request, response) => {
+  const sql = `DELETE from songs WHERE id = ${request.params.id}`;
+  pool.query(sql, (err, res) => {
+    if (err) {
+      console.log('query err:', err.message);
+      response.status(500).send('Error');
+    } else {
+      response.redirect('/songs');
     }
   });
 });
