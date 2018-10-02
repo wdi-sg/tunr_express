@@ -46,12 +46,30 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//2.1 INDEX Feature
 app.get('/', (req, res) => {
-  // query database for all ...
 
-  // respond with HTML page displaying all ...
-  res.render('home');
+    let sqlText = "SELECT * FROM artists";
+
+    //query tunr_db database for all artists
+    pool.query(sqlText, (error, queryResult) => {
+
+        if (error) {
+           console.log('error!', error);
+            queryResult.status(500).send('Error!');
+          } else {
+            var array = queryResult.rows;
+            res.render('home', {artists: array});
+          }
+    });
 });
+
+
+
+
+
+
+
 
 app.get('/new', (req, res) => {
   // respond with HTML page with form to create new ...
