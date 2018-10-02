@@ -55,6 +55,24 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
+app.get('/artists', (request, response) => {
+
+    let sqlText = "SELECT * FROM artists";
+
+    pool.query(sqlText, (error, queryResult) => {
+      if (error){
+        console.log('error!', error);
+        response.status(500).send('DIDNT WORKS!!');
+      }else{
+
+        console.log( queryResult.rows);
+
+        response.render('index', {artists: queryResult.rows} );
+      }
+    });
+});
+
+
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
