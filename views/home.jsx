@@ -42,11 +42,12 @@ class Home extends React.Component {
                         PHOTO
                     </td>
                 </tr>
-                <tbody>
-                    {artist}
-                </tbody>
             </thead>
+            <tbody>
+                {artist}
+            </tbody>
           </table>
+          <a href="/new"><button>Add Artist</button></a>
         </body>
       </html>
     );

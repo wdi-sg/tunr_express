@@ -48,26 +48,43 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-// app.get('/new', (request, response) => {
+app.get('/new', (request, response) => {
 
-//   response.render('new');
-// });
+    response.render('new');
+
+});
+
+app.post('/', (request, response) => {
+
+    let text = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id, name ";
+
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(text, values, (err, result) => {
+
+        if (err) {
+
+            console.log("query error", err.message);
+
+        } else {
+
+            console.log("result", result.rows[0]);
+            response.redirect("/");
+        }
+
+    });
+});
 
 app.get('/:id', (request, response) => {
 
-    let id = request.params.id;
+    let text = "SELECT * FROM artists WHERE id=" + request.params.id;
 
-    let text = "SELECT * FROM artists WHERE id=($1) "
-
-    let value = [id];
-
-    pool.query(text, value, (err, result) => {
+    pool.query(text, (err, result) => {
 
         if (err) {
             console.log("query error: ",err);
         } else {
 
-            console.log("result:", result.rows[0]);
             response.render('show', {select: result.rows[0]});
         }
 
@@ -86,7 +103,6 @@ app.get('/', (request, response) => {
 
     } else {
 
-        console.log("result", result.rows);
         response.render('home', {result: result.rows});
 
     }

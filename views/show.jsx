@@ -4,6 +4,7 @@ class Show extends React.Component {
 
     render(){
 
+
         return(
 
             <html>
@@ -19,3 +20,5 @@ class Show extends React.Component {
 };
 
 module.exports = Show;
+
+
