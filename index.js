@@ -48,6 +48,33 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// app.get('/new', (request, response) => {
+
+//   response.render('new');
+// });
+
+app.get('/:id', (request, response) => {
+
+    let id = request.params.id;
+
+    let text = "SELECT * FROM artists WHERE id=($1) "
+
+    let value = [id];
+
+    pool.query(text, value, (err, result) => {
+
+        if (err) {
+            console.log("query error: ",err);
+        } else {
+
+            console.log("result:", result.rows[0]);
+            response.render('show', {select: result.rows[0]});
+        }
+
+    });
+
+});
+
 app.get('/', (request, response) => {
 
   let text = "SELECT * FROM artists ORDER BY id"
@@ -67,12 +94,6 @@ app.get('/', (request, response) => {
   });
 
 });
-
-// app.get('/new', (request, response) => {
-//   // respond with HTML page with form to create new pokemon
-//   response.render('new');
-// });
-
 
 /**
  * ===================================
