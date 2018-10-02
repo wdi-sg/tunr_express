@@ -1,3 +1,5 @@
+
+
 console.log("Starting up!");
 
 const express = require('express');
@@ -40,9 +42,23 @@ app.engine('jsx', reactEngine);
  */
 
 
-app.get('/', (req, response) => {
+app.get('/artists/:id', (request, response) => {
 
-    response.render('root');
+    let text = `SELECT * FROM artists WHERE id = ${request.params.id}`;
+
+    pool.query(text, (err, result) => {
+
+        if (err) {
+
+            console.log(err);
+            response.status(500).send("pool.query error");
+
+        } else {
+
+            console.log("result.rows: ", result.rows);
+            response.render('artist_show', {artist: result.rows});
+        };
+    });
 });
 
 
@@ -66,10 +82,9 @@ app.get('/artists', (request, response) => {
 });
 
 
+app.get('/', (req, response) => {
 
-app.get('/new', (request, response) => {
-    // respond with HTML page with form to create new pokemon
-    response.render('new');
+    response.render('root');
 });
 
 

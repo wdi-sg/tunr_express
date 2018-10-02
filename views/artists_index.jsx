@@ -6,7 +6,7 @@ class Artists extends React.Component {
 
     render() {
 
-        console.log ( "INSIDE REACT ARTISTS INDEX", this.props.artists );
+        console.log ( "INSIDE REACT ARTISTS INDEX: ", this.props.artists );
 
         const artistsElements = this.props.artists.map( (artist) => {
 
@@ -14,22 +14,22 @@ class Artists extends React.Component {
 
             return (
 
-                <li>{artist.id}. {artist.name} ---------- <a href={linkPath}>(add song)</a></li>
+                <li>{artist.id}. <a href={`/artists/${artist.id}`}>{artist.name}</a> ---------- <a href={linkPath}>(add song)</a></li>
             );
         });
 
 
-    return (
+        return (
 
-        <div>
+            <div>
 
-            <h1>All Artists</h1>
+                <h1>All Artists</h1>
 
-            <ul>
-            {artistsElements}
-            </ul>
+                <ul>
+                {artistsElements}
+                </ul>
 
-        </div>
+            </div>
 
         );
     };
