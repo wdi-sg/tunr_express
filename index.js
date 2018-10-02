@@ -29,6 +29,18 @@ app.set('views', `${__dirname}/views`);
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+app.post('/artists', async (appReq, appRes) => {
+  const values = [appReq.body.name, appReq.body.photourl, appReq.body.nationality];
+  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1,$2,$3)';
+  await pool.query(queryString, values, (insError, insRes) => {
+    appRes.redirect('/artists');
+  });
+});
+
+app.get('/artists/new', (appReq, appRes) => {
+  appRes.render('create');
+});
+
 app.get('/artists/:id', async (appReq, appRes) => {
   const values = [appReq.params.id];
   const queryString = 'SELECT * FROM artists WHERE id = ($1)';

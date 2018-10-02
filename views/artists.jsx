@@ -6,7 +6,7 @@ class Artists extends React.Component {
     const content = this.props.artists.map((artist) => {
       const url = `/artists/${artist.id}`;
       return (
-        <div className="col">
+        <div className="col mb-5">
           <div className="card h-100" style={{ width: '20rem' }}>
             <h5 className="card-header">{artist.name}</h5>
             <img className="card-img-top img-fluid" src={artist.photo_url} alt="Artist Image" />
