@@ -64,10 +64,26 @@ app.get('/', (req, res) => {
     });
 });
 
+//2.2 SHOW feature
+app.get('/artists/:id', (req, res) => {
 
+    let nameOfArtist= req.params.id;
 
+    let sqlText = "SELECT * FROM artists WHERE name = ($1)";
+    const values = [nameOfArtist];
 
+    //query tunr_db database for all artists
+    pool.query(sqlText, values, (error, queryResult) => {
 
+        if (error) {
+           console.log('error!', error);
+            res.send('Error!');
+          } else {
+            var array = queryResult.rows;
+            res.render('home', {artists: array});
+          }
+    });
+});
 
 
 
