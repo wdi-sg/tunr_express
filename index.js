@@ -93,9 +93,28 @@ app.get('/artist/:id', (request, response) => {
 })
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('/artists/new', (request, response) => {
+
+    response.render('new');
+});
+
+app.post('/artists', (request, response) => {
+    console.log( request.body )
+
+    let sqlText = "INSERT INTO artists (name, nationality) VALUES ($1, $2) RETURNING *";
+
+    const values = [request.body.name, request.body.nationality];
+
+    pool.query(sqlText, values, (error, queryResult) => {
+      if (error){
+        console.log('error!', error);
+        response.status(500).send('DIDNT WORKS!!');
+      }else{
+
+        let newArtist = queryResult.rows[0].name;
+        response.send('Artist added:'+newArtist);
+      }
+    });
 });
 
 
