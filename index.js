@@ -40,7 +40,7 @@ app.post('/artists/new', (req, res) => {
 
     if (error) {
       console.log("Error: ", error);
-      response.status(500).send("Something went wrong.");
+      res.status(500).send("Something went wrong.");
     } else {
       res.redirect('/artists/');
     }
@@ -53,6 +53,50 @@ app.get('/artists/new', (req, res) => {
   res.render('artists/new');
 });
 
+// edit artist
+app.put('/artists/:id', (req, res) => {
+
+  let id = req.params.id;
+  let name = req.body.name;
+  let photo_url = req.body.photo_url;
+  let nationality = req.body.nationality;
+
+  console.log(req.params.id);
+  console.log(req.body);
+
+  let editArtist = `UPDATE artists
+  SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id = ${id};`;
+
+  pool.query(editArtist, (error, result) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+      res.redirect(`/artists/${id}`);
+    }
+  })
+})
+
+app.get('/artists/:id/edit', (req, res) => {
+
+  let id = req.params.id;
+
+  let findArtist = `SELECT * FROM artists WHERE id = ${id};`;
+
+  pool.query(findArtist, (error, artistResult) => {
+
+    if (error) {
+      console.log("Error: ", error);
+      res.status(500).send("Something went wrong.");
+    } else {
+      let artist = artistResult.rows[0];
+
+      res.render('artists/edit', {artist: artist});
+    }
+  })
+})
+
 app.get('/artists/:id', (req, res) => {
 
   let id = req.params.id;
@@ -63,7 +107,7 @@ app.get('/artists/:id', (req, res) => {
 
     if (error) {
       console.log("Error: ", error);
-      response.status(500).send("Something went wrong.");
+      res.status(500).send("Something went wrong.");
     } else {
 
       let artist = artistResult.rows[0];
@@ -74,7 +118,7 @@ app.get('/artists/:id', (req, res) => {
 
         if (error) {
           console.log("Error: ", error);
-          response.status(500).send("Something went wrong.");
+          res.status(500).send("Something went wrong.");
         } else {
 
           res.render('artists/artist', {artist: artist, songs: songsResult.rows});
@@ -86,19 +130,18 @@ app.get('/artists/:id', (req, res) => {
 
 app.get('/artists/', (req, res) => {
 
-  let listArtists = "SELECT * FROM artists";
+  let listArtists = "SELECT * FROM artists ORDER BY id ASC";
 
   pool.query(listArtists, (error, result) => {
 
     if (error) {
       console.log("Error: ", error);
-      response.status(500).send("Something went wrong.");
+      res.status(500).send("Something went wrong.");
     } else {
       res.render('home', {artists: result.rows});
     }
   })
 });
-
 
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
