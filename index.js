@@ -42,6 +42,37 @@ app.engine('jsx', reactEngine);
  */
 
 
+app.get('/artists/new', (request, response) => {
+
+    response.render('artists_new');
+});
+
+
+app.post('/artists/new', (request, response) => {
+
+    console.log('Receiving post request: ', request.body);
+
+    let text = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(text, values, (err, result) => {
+
+        if (err) {
+
+            console.log(err);
+            response.status(500).send("pool.query error");
+
+        } else {
+
+            console.log("result.rows: ", result.rows);
+            response.redirect('/artists');
+        };
+    });
+});
+
+
+
 app.get('/artists/:id', (request, response) => {
 
     let text = `SELECT * FROM artists WHERE id = ${request.params.id}`;

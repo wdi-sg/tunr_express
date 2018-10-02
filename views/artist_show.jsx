@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-class Artists extends React.Component {
+class ArtistShow extends React.Component {
 
     render() {
 
@@ -16,6 +16,7 @@ class Artists extends React.Component {
             <div>
 
                 <a href='/artists'>{'<< '}Back to Artists</a>
+
                 <h1>{artist.name}</h1>
                 <h3>{artist.nationality}</h3>
                 <img src={`${artist.photo_url}`} />
@@ -27,4 +28,4 @@ class Artists extends React.Component {
 };
 
 
-module.exports = Artists;
+module.exports = ArtistShow;

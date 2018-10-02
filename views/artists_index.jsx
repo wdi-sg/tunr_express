@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-class Artists extends React.Component {
+class ArtistsIndex extends React.Component {
 
     render() {
 
@@ -26,7 +26,11 @@ class Artists extends React.Component {
                 <h1>All Artists</h1>
 
                 <ul>
+
+                <a href='/artists/new'>( Add new Artist )<br />&zwnj;</a>
+
                 {artistsElements}
+
                 </ul>
 
             </div>
@@ -36,4 +40,4 @@ class Artists extends React.Component {
 };
 
 
-module.exports = Artists;
+module.exports = ArtistsIndex;
