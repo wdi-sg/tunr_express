@@ -2,13 +2,14 @@ const React = require('react');
 
 class SongsShow extends React.Component {
   render() {
-    const editUrl = `/songs/${this.props.id}/edit`;
-    const deleteUrl = `/songs/${this.props.id}?_method=DELETE`;
+    const editUrl = `/songs/${this.props.song.id}/edit`;
+    const deleteUrl = `/songs/${this.props.song.id}?_method=DELETE`;
+    const artist = this.props.artist ? this.props.artist.name : 'Unknown';
     return (
       <html>
         <head />
         <body>
-          <h1>{this.props.title}</h1>
+          <h1>{this.props.song.title}</h1>
           <form action={editUrl}>
             <input type="submit" value="Edit" />
           </form>
@@ -16,13 +17,17 @@ class SongsShow extends React.Component {
             <input type="submit" value="Delete" />
           </form>
           <p>
-            <strong>Album: </strong>
-            {this.props.album}
+            <strong>Artist: </strong>
+            {artist}
           </p>
           <p>
-            <a href={this.props.preview_link}>Preview link</a>
+            <strong>Album: </strong>
+            {this.props.song.album}
           </p>
-          <img src={this.props.artwork} alt={this.props.title} />
+          <p>
+            <a href={this.props.song.preview_link}>Preview link</a>
+          </p>
+          <img src={this.props.song.artwork} alt={this.props.song.title} />
         </body>
       </html>
     );

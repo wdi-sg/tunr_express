@@ -54,7 +54,7 @@ const trim = arr => {
  */
 
 app.get('/artists/:id/songs', (request, response) => {
-  let sql = `SELECT * FROM songs WHERE artist_id = ${request.params.id} ORDER BY title`;
+  const sql = `SELECT * FROM songs WHERE artist_id = ${request.params.id} ORDER BY title`;
   pool.query(sql, (err, res) => {
     if (err) {
       console.log('query err:', err.message);
@@ -157,15 +157,15 @@ app.delete('/artists/:id', (request, response) => {
 
 app.get('/songs/:id/edit', (request, response) => {
   let sql = `SELECT * FROM songs WHERE id = ${request.params.id}`;
-  pool.query(sql, (err, songRes) => {
-    if (err) {
-      console.log('query err:', err.message);
+  pool.query(sql, (songErr, songRes) => {
+    if (songErr) {
+      console.log('query err:', songErr.message);
       response.status(500).send('Error');
     } else {
       sql = 'SELECT * FROM artists';
-      pool.query(sql, (err, artistsRes) => {
-        if (err) {
-          console.log('query err:', err.message);
+      pool.query(sql, (artistErr, artistsRes) => {
+        if (artistErr) {
+          console.log('query err:', artistErr.message);
           response.status(500).send('Error');
         } else {
           response.render('SongsEdit', { song: songRes.rows[0], artists: artistsRes.rows });
@@ -188,13 +188,23 @@ app.get('/songs/new', (request, response) => {
 });
 
 app.get('/songs/:id', (request, response) => {
-  const sql = `SELECT * FROM songs WHERE id = ${request.params.id}`;
-  pool.query(sql, (err, res) => {
-    if (err) {
-      console.log('query err:', err.message);
+  let sql = `SELECT * FROM songs WHERE id = ${request.params.id}`;
+  pool.query(sql, (songErr, songRes) => {
+    if (songErr) {
+      console.log('query err:', songErr.message);
       response.status(500).send('Error');
     } else {
-      response.render('SongsShow', res.rows[0]);
+      const song = songRes.rows[0];
+      sql = `SELECT * FROM artists WHERE id = ${song.artist_id}`;
+      pool.query(sql, (artistErr, artistRes) => {
+        console.log(artistRes.rows);
+        if (artistErr) {
+          console.log('query err:', artistErr.message);
+          response.status(500).send('Error');
+        } else {
+          response.render('SongsShow', { song: song, artist: artistRes.rows[0] });
+        }
+      });
     }
   });
 });
