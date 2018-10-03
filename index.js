@@ -163,6 +163,11 @@ app.delete('/artists/:id', (req, res) => {
     }
   });
 });
+
+//Catch all other paths
+app.all('*', (req, res) => {
+  res.status(404).send("not found");
+});
 /**
  * ===================================
  * Listen to requests on port 3000
