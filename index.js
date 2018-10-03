@@ -48,7 +48,7 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-//CREATES AND DISPLAYS INDEX
+//BUILT INDEX FEATURE (shows and displays)
 app.get('/', (req, res) => {
   // query database for all pokemon
 
@@ -67,6 +67,7 @@ app.get('/', (req, res) => {
   })
 });
 
+//built SHOW FEATURE
  app.get('/artists/:id', (req, res) => {
 
     let resId = req.parameters.id;
@@ -83,25 +84,84 @@ pool.query(sqlText, (error, queryResults) => {
   })
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Built CREATE FEATURE
 app.get('/new', (req, res) => {
   // respond with HTML page with form to create new pokemon
   req.render('new');
 });
+
+
+app.post('/artists', (req, res) => {
+    let sqlText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'
+    let values = [req.body.name, req.body.photo_url, req.body.nationality]
+
+pool.query(sqlText, values, (error, queryResults) => {
+    if (error) {
+        console.log('error!', error);
+        res.status(500).send('DIDNT WORK!!');
+    } else {
+    res.redirect('/');
+    }
+  });
+});
+
+
+//Built EDIT FEATURE
+
+ app.get('/artists/:id/edit', (req, res) => {
+
+    let resId = req.parameters.id;
+
+    let sqlText = 'SELECT * FROM artists WHERE id =' + resId;
+
+pool.query(sqlText, (error, queryResults) => {
+    if (error) {
+        console.log('error!', error);
+        res.status(500).send('DIDNT WORK!!');
+    } else {
+    res.render('edit', {artists: queryResults.rows})
+    }
+  });
+});
+
+ app.put('/artists/:id', (req, res) => {
+
+    let resId = req.parameters.id;
+    let name = req.body.name;
+    let nationality = req.body.nationality;
+    let imgUrl =req.body.photo_url;
+
+    let sqlText = `UPDATE artists SET name = '${name}', photo_url = '${imgUrl}', nationality = '${nationality}' WHERE id = ${resId}`;
+
+pool.query(sqlText, (error, queryResults) => {
+    if (error) {
+        console.log('error!', error);
+        res.status(500).send('DIDNT WORK!!');
+    } else {
+    res.render(`/artists/${resId})`);
+    }
+  });
+});
+
+ app.delete('/artists/:id', (req, res) => {
+
+    let resId = req.parameters.id;
+
+    let sqlText = 'DELETE * FROM artists WHERE id = ${resId}'
+
+pool.query(sqlText, (error, queryResults) => {
+    if (error) {
+        console.log('error!', error);
+        res.status(500).send('DIDNT WORK!!');
+    } else {
+        res.redirect('/');
+    }
+  });
+});
+
+
+
+
 
 /**
  * ===================================

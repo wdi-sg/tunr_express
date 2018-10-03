@@ -2,10 +2,10 @@ var React = require("react")
 var DefaultLayout = require('./layout/default')
 
 
-class Artist extends React.Component {
+class Artists extends React.Component {
     render() {
 
-    let artistname = this.props.artist[0].name;
+    let artistname = this.props.artists[0].name;
     let artistimg = this.props.artists[0].photo_url;
     let artistnationality = this.props.artists[0].nationality;
     let url='/artist/'+this.props.artists[0].id+'/edit'
@@ -28,4 +28,4 @@ class Artist extends React.Component {
    }
  }
 
- module.exports = Artist;
+ module.exports = Artists;
