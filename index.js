@@ -67,10 +67,10 @@ app.get('/artists/', (req, res) => {
 //2.2 SHOW feature---------------------------------------------------------------------------------------
 app.get('/artists/:id', (req, res) => {
 
-    let nameOfArtist= req.params.id;
+    let idOfArtist= req.params.id;
 
-    let sqlText = "SELECT * FROM artists WHERE name = ($1)";
-    const values = [nameOfArtist];
+    let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+    const values = [idOfArtist];
 
     //query tunr_db database for all artists
     pool.query(sqlText, values, (error, queryResult) => {
@@ -116,10 +116,10 @@ app.post('/artists/', (req, res) => {
 //2.4 EDIT feature----------------------------------------------------------------------------------------
 app.get('/artists/:id/edit', (req, res) => {
 
-    let nameOfArtist= req.params.id;
+    let idOfArtist= req.params.id;
 
-    let sqlText = "SELECT * FROM artists WHERE name = ($1)";
-    const values = [nameOfArtist];
+    let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+    const values = [idOfArtist];
 
     //query tunr_db database for all artists
     pool.query(sqlText, values, (error, queryResult) => {
@@ -129,11 +129,11 @@ app.get('/artists/:id/edit', (req, res) => {
             res.send('Error!');
           } else {
             for (i in queryResult.rows) {
-                if (queryResult.rows[i].name == nameOfArtist) {
+                if (queryResult.rows[i].id == idOfArtist) {
                     var selectedArtist = queryResult.rows[i];
                 }
             }
-            res.render('edit', {artists: selectedArtist});
+            res.render('edit', {artists: selectedArtist} );
           }
     })
 })
@@ -145,8 +145,9 @@ app.put("/artists/:id", (req, res) => {
     var photoInput = req.body.photo_url;
     var nationalityInput = req.body.nationality;
     let nameOfArtist= req.params.id;
+    console.log(nameOfArtist);
 
-    let sqlText = "UPDATE artists SET (name, photo_url, nationality) = ($1, $2, $3) WHERE name = ($4)";
+    let sqlText = "UPDATE artists SET (name, photo_url, nationality) = ($1, $2, $3) WHERE id = ($4)";
     const values = [nameInput, photoInput, nationalityInput, nameOfArtist];
 
     //query tunr_db database for all artists

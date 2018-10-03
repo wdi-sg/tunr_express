@@ -4,10 +4,9 @@ class New extends React.Component {
   render() {
 
 let artistSelected = this.props.artists;
-// console.log(artistSelected);
 
-let actionPath = "/artists/" + artistSelected.name + "?_method=PUT"
-console.log("------------------------------");
+let actionPath = "/artists/" + artistSelected.id + "?_method=PUT"
+// console.log("------------------------------");
 
     return (
       <html>
