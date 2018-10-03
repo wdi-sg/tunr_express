@@ -48,6 +48,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+
 // artists index
 app.get('/artists', (req, res) => {
   let sqlText = "SELECT * FROM artists ORDER BY id";
@@ -68,10 +69,12 @@ app.get('/artists/:id', (req, res) => {
   let sqlText = "SELECT * FROM artists WHERE id = ($1)";
   let values = [inputId];
   pool.query(sqlText, values, (error, queryResult) => {
-    // console.log(queryResult.rows);
+    console.log(queryResult.rows);
       if (error){
-        console.log('error!', error);
+        // console.log('error!', error);
         res.status(500).send("DOESN'T WORK!!");
+      } else if (queryResult.rows[0] === undefined){
+          res.status(404).send("Artist does not exist");
       } else{
         // console.log(queryResult.rows);
         res.render('artists/show',{artist: queryResult.rows});
@@ -109,7 +112,9 @@ app.get('/artists/:id/edit', (req, res) => {
       if (error){
         console.log('error!', error);
         res.status(500).send("DOESN'T WORK!!");
-      } else{
+      } else if (queryResult.rows[0] === undefined){
+          res.status(404).send("Artist does not exist");
+        } else{
         // console.log(queryResult.rows);
         res.render('artists/edit', {artist: queryResult.rows});
     }
@@ -141,7 +146,9 @@ app.get('/artists/:id/delete', (req, res) => {
       if (error){
         console.log('error!', error);
         res.status(500).send("DOESN'T WORK!!");
-      } else{
+      } else if (queryResult.rows[0] === undefined){
+          res.status(404).send("Artist does not exist");
+        } else{
         // console.log(queryResult.rows);
         res.render('artists/delete', {artist: queryResult.rows});
     }
@@ -164,7 +171,6 @@ app.delete('/artists/:id', (req, res) => {
   });
 });
 
-//Catch all other paths
 app.all('*', (req, res) => {
   res.status(404).send("not found");
 });

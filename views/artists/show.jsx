@@ -15,7 +15,7 @@ class Show extends React.Component {
                 <h3 key = {this.props.artist[0].id}>
                   {this.props.artist[0].nationality}
                 </h3>
-                <img style = {{height: 300}} src = {this.props.artist[0].photo_url} key = {this.props.artist[0].id}/>
+                <img style = {{height: 300}} src = {this.props.artist[0].photo_url} key = {this.props.artist[0].id} alt = {this.props.artist[0].name}/>
             </div>
         </body>
       </html>
