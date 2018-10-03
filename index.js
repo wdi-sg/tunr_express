@@ -88,6 +88,7 @@ app.get('/new', (request, response) => {
 });
 
 app.post('/artists', (req, res) => {
+    let image = req.body.photo_url
     let sqlText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
     let values = [req.body.name, req.body.photo_url, req.body.nationality]
 
