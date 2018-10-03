@@ -82,6 +82,40 @@ app.put('/:id', (req, res) => {
     });
  });
 
+app.get ('/:id/delete', (req, res) => {
+  let id = req.params.id;
+  let values = [id];
+  let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+
+  pool.query(sqlText, values, (error, queryResult) => {
+  if (error)
+  {
+    console.log("query error: ", error);
+    res.status(500).send('DIDNT WORKS!!');
+  } else 
+  {
+    res.render('delete', {artists: queryResult.rows});
+  }
+
+});
+});
+
+ app.delete('/:id', (req, res) => {
+   let id = req.params.id;
+   let sqlText = "DELETE FROM artists WHERE id = ($1)";
+   let values = [id];
+   pool.query(sqlText, values, (error, queryResult) => {
+         if (error) 
+        {
+          console.log("query error: ", error);
+          res.status(500).send('DIDNT WORKS!!');
+        } else 
+        {
+          res.redirect('/');
+        }
+    });
+ });
+ 
 app.get('/new', (req, res) => {
   // respond with HTML page with form to create new pokemon
   res.render('new');
