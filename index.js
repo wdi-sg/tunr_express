@@ -48,6 +48,46 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+app.get('/new', (req, res) => {
+  // respond with HTML page with form to create new pokemon
+  res.render('new');
+});
+
+app.get('/:id', (req, res) => {
+  let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+  let id = req.params.id;
+  let values = [id];
+
+  pool.query(sqlText, values, (error, queryResult) => {
+  if (error) 
+  {
+    console.log("query error: ", error);
+    res.status(500).send('DIDNT WORKS!!');
+  } else 
+  {
+    console.log(queryResult.rows);
+    res.render('home', {artists: queryResult.rows});
+  }
+  });
+});
+
+app.post('/', (req, res) => {
+    let sqlText = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+    const values = [req.body.name, req.body.photo_url, req.body.nationality];
+
+    pool.query(sqlText, values, (error, queryResult) => {
+      if (error)
+      {
+        console.log("query error: ", error);
+        res.status(500).send('DIDNT WORKS!!');
+      } else
+      {
+        //res.send('working fine!')
+        res.redirect('/');
+      }
+    });
+});
+
 app.get('/', (req, res) => {
   // query database for all pokemon
   let sqlText = "SELECT * FROM artists";
@@ -65,28 +105,6 @@ app.get('/', (req, res) => {
         res.render('home', {artists: queryResult.rows});
       }
   });
-});
-
-app.get('/:id', (req, res) => {
-  let id = req.params.id;
-  let text = "SELECT * FROM artists WHERE id = ($1)";
-  let value = [id];
-  pool.query(text, value, (error, queryResult) => {
-  if (error) 
-  {
-    console.log("query error: ",error);
-    res.status(500).send('DIDNT WORKS!!');
-  } else 
-  {
-    console.log(queryResult.rows);
-    res.render('home', {artists: queryResult.rows});
-  }
-  });
-});
-
-app.get('/new', (req, res) => {
-  // respond with HTML page with form to create new pokemon
-  res.render('new');
 });
 
 /**
