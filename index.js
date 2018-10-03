@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'xnithunx',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,17 +48,67 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (req, res) => {
-  // query database for all pokemon
+// app.get('/', (req, res) => {
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
-});
+//   response.render('home');
+// });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+// app.get('/new', (request, response) => {
+
+//       response.render('new');
+// });
+
+
+ // * ===================================
+ // * Create and display Index
+ // * ===================================
+
+app.get('/artists', (req, res) => {
+
+     let sqlText = "SELECT * FROM artists";
+
+     //creating query tunr_db for all artists
+     pool.query(sqlText, (error, queryResult) => {
+
+         if (error) {
+            console.log('error!', error);
+             queryResult.status(500).send('Error!');
+           } else {
+             var array = queryResult.rows;
+             res.render('home', {artists: array});
+           }
+     });
+ });
+
+ // * ===================================
+ // * Show Feature
+ // * ===================================
+
+app.get('/artists/:id', (req, res) => {
+
+     let nameOfArtist= req.params.id;
+
+     let sqlText = "SELECT * FROM artists WHERE name = ($1)";
+     const values = [nameOfArtist];
+
+     //query tunr_db database for all artists
+     pool.query(sqlText, values, (error, queryResult) => {
+
+         if (error) {
+            console.log('error!', error);
+             res.send('Error!');
+           } else {
+             var array = queryResult.rows;
+             res.render('home', {artists: array});
+           }
+     });
+ });
+
+
+
+
+
+
 
 
 /**
@@ -66,12 +116,12 @@ app.get('/new', (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
-app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+app.listen(3003, () => console.log('~~~ Tuning in to the waves of port 3003 ~~~'));
 
-server.on('close', () => {
-  console.log('Closed express server');
+// server.on('close', () => {
+//   console.log('Closed express server');
 
-  db.pool.end(() => {
-    console.log('Shut down db connection pool');
-  });
-});
+//   db.pool.end(() => {
+//     console.log('Shut down db connection pool');
+//   });
+// });
