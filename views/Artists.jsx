@@ -16,6 +16,9 @@ class Artists extends React.Component {
         <head />
         <body>
           <h1>Artists</h1>
+          <form action="/artists/new">
+            <input type="submit" value="New Artist" />
+          </form>
           <ul>
             {list}
           </ul>

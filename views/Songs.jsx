@@ -16,6 +16,9 @@ class Songs extends React.Component {
         <head />
         <body>
           <h1>Songs</h1>
+          <form action="/songs/new">
+            <input type="submit" value="New Song" />
+          </form>
           <ul>
             {list}
           </ul>

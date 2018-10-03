@@ -179,7 +179,7 @@ app.get('/songs/new', (request, response) => {
   const sql = 'SELECT * FROM artists ORDER BY name';
   pool.query(sql, (err, res) => {
     if (err) {
-      console.log(err);
+      console.log('query err:', err.message);
       response.status(500).send('Error');
     } else {
       response.render('SongsNew', { artists: res.rows });
@@ -197,7 +197,6 @@ app.get('/songs/:id', (request, response) => {
       const song = songRes.rows[0];
       sql = `SELECT * FROM artists WHERE id = ${song.artist_id}`;
       pool.query(sql, (artistErr, artistRes) => {
-        console.log(artistRes.rows);
         if (artistErr) {
           console.log('query err:', artistErr.message);
           response.status(500).send('Error');
