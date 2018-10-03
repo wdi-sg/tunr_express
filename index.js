@@ -54,7 +54,8 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-app.get('/artist', (req, res) => { //build the index
+//get the stuff for all artists (the index)
+app.get('/artist', (req, res) => {
 
     let queryText = 'SELECT * FROM Artists';
 
@@ -65,10 +66,28 @@ app.get('/artist', (req, res) => { //build the index
       }
       else{
         //console.log('queryResult.rows', queryResult.rows);
-        
+
         //Adding artist makes the queryResult into a obj so that it
         //can be a goes as input into jsx
         res.render('Index', {artists: queryResult.rows});
+      }
+    });
+});
+
+//get the stuff for one artist (the show)
+app.get('/artist/:id', (req, res) => {
+
+  let eachArtist = [req.params.id];
+  let queryText = "SELECT * FROM artists WHERE id = ($1)";
+  pool.query(queryText, eachArtist, (sqlError, queryResult) => {
+      if(sqlError){
+        console.error('error: ', sqlError);
+        //res.status(500).send('Not working, server down?');
+      }
+      else{
+        console.log('queryResult.rows', queryResult.rows);
+
+        res.render('Show', {artist : queryResult.rows});
       }
     });
 });
@@ -86,10 +105,10 @@ app.get('/artist', (req, res) => { //build the index
  */
 app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-// server.on('close', () => {
-//   console.log('Closed express server');
-//
-//   db.pool.end(() => {
-//     console.log('Shut down db connection pool');
-//   });
-//});
+app.on('close', () => {
+  console.log('Closed express server');
+
+  db.pool.end(() => {
+    console.log('Shut down db connection pool');
+  });
+});
