@@ -112,7 +112,7 @@ app.put('/artists/:id', (request, response) =>{
 app.get('/artists', (request, response) => {
     //console.log(request.body);
 
-    let sqlText = "SELECT * FROM artists";
+    let sqlText = "SELECT * FROM artists ORDER BY id";
 
     pool.query(sqlText, (error, queryResult) => {
         if (error){
