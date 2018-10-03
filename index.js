@@ -48,6 +48,40 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+app.get ('/:id/edit', (req, res) => {
+  let id = req.params.id;
+  let values = [id];
+  let sqlText = "SELECT * FROM artists WHERE id = ($1)";
+
+  pool.query(sqlText, values, (error, queryResult) => {
+  if (error)
+  {
+    console.log("query error: ", error);
+    res.status(500).send('DIDNT WORKS!!');
+  } else 
+  {
+    res.render('edit', {artists: queryResult.rows});
+  }
+
+});
+});
+
+app.put('/:id', (req, res) => {
+   let id = req.params.id;
+   let sqlText = "UPDATE artists SET (name, nationality, photo_url) = ($1, $2, $3) WHERE id =" + id;
+   let values = [req.body.name, req.body.nationality, req.body.photo_url,];
+   pool.query(sqlText, values, (error, queryResult) => {
+         if (error) 
+        {
+          console.log("query error: ", error);
+          res.status(500).send('DIDNT WORKS!!');
+        } else 
+        {
+          res.redirect('/');
+        }
+    });
+ });
+
 app.get('/new', (req, res) => {
   // respond with HTML page with form to create new pokemon
   res.render('new');
