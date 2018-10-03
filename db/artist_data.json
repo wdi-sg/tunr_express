@@ -1,7 +1,7 @@
 {
   "yeahyeahyeahs" : {
                   name: "Yeah Yeah Yeahs",
-                  photo_url: "http://www.athousandguitars.com/wp-content/uploads/2013/04/yeah-yeah-yeahs.jpg",
+                  photo_url: "https://consequenceofsound.files.wordpress.com/2017/10/yeah-yeah-yeahs.png",
                   nationality: "USA",
                 },
   "nosajthing" : {
@@ -16,12 +16,12 @@
                 },
   "lykkeli" : {
                   name: "Lykke Li",
-                  photo_url: "http://www.chartattack.com/wp-content/uploads/2012/07/lykke-li-newmain1-photo-by-daniel-jackson.jpg",
+                  photo_url: "http://www.huhmagazine.co.uk/wp-content/uploads/2018/06/lykkeli_tour.jpg",
                   nationality: "Sweeden",
                 },
   "kendricklamar" : {
                   name: "Kendrick Lamar",
-                  photo_url: "http://www.xxlmag.com/wp-content/uploads/2013/06/kendricklamar_001-1600.jpg",
+                  photo_url: "https://www.thewrap.com/wp-content/uploads/2018/01/Kendrick-1.png",
                   nationality: "USA",
                 }
 }

@@ -88,32 +88,35 @@ app.get('/artists/:id', (request, response) => {
         console.log("artist get err",err);
         response.status(500).send("GG!");
     } else {
-
+        //when havent start this var condition is false
+        let found = false;
+        //start looping to look fot the artist===
         for(var i = 0; i<queryResults.rows.length; i++){
+
             let inputId = parseInt(request.params.id);
 
-            if(inputId === queryResults.rows[i].id ){
+            if(inputId !== queryResults.rows[i].id){
+
+            } else if (inputId === queryResults.rows[i].id ){
 
                 console.log("singleartist",queryResults.rows[i])
 
+                found = true;
+
                 //response.send("SINGLEARTISTWORKS");
                 response.render('singleartist',{artists:queryResults.rows[i]});
-
-            }
-
-
+                break;
+            };
 
         }
-
-
-        // console.log("artist",queryResults.rows[i])
-        // response.render('singleartist'{artists:queryResults.rows});
+        //when come out the loop nothing found let found = false
+        if (found === false) {
+            response.status(400).send("NOT FOUND");
+        }
 
       }
     })
   // respond with HTML page with form to create new pokemon
-
-
 });
 
 

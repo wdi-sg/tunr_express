@@ -7,10 +7,10 @@ class allArtists extends React.Component {
     const artistsElements = this.props.artists.map((artist)=>{
 
     //let linkPath = "/artists/new?artist_id="+artist.id;
-    // let linkPath = "/artists/" + artist.id;
+    let linkPath = "/artists/" + artist.id;
     //{artist.photo_url}
     return (<li>
-          {artist.id} : <a href={artist.photo_url} target="_blank"> {artist.name} </a>
+          {artist.id} : <a href={linkPath} target="_blank"> {artist.name} </a>
         </li>);
 
 
