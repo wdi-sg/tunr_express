@@ -57,7 +57,7 @@ app.delete('/artists/:id', async (appReq, appRes) => {
   const queryString = 'DELETE FROM artists WHERE id = ($1)';
   await pool.query(queryString, values, (updError, updRes) => {
     if (updError) console.log('hello', updError.stack);
-    appRes.redirect('/artists');
+    appRes.redirect('/');
   });
 });
 
