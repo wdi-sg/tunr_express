@@ -41,23 +41,61 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
+
+
 /**
  * ===================================
  * Routes
  * ===================================
  */
+
+//INDEX ,SHOW ALL ARTISTS
 app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  // response.render('home');
-  res.send("HELLO");
+    let text = "SELECT * FROM artists";
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            res.send( result.rows );
+        }
+    });
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+//SHOW AN ARTIST
+app.get('/:artist', (req, res) => {
+    let text = `SELECT * FROM artists WHERE name='${req.params.artist}'`;
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            res.send( result.rows );
+        }
+    });
+
 });
+
+//CREATE NEW ARTIST
+app.post('/', (req, res) => {
+});
+
+//UPDATE AN ARTIST
+app.put('/:artist', (req, res) => {
+
+});
+
+//DELETE AN ARTIST
+app.delete('/:artist', (req, res) => {
+
+});
+
+
+
+
+
+
 
 
 /**
