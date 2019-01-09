@@ -9,7 +9,7 @@ class Home extends React.Component {
   render() {
     console.log(this.props.artists);
     const artist = this.props.artists.map ((each,index)=>{
-        let link = `/artists/${each.id}`;
+        let link = `/artist/${each.id}`;
         return <div key={index}>
                     <h4>Artist : <a href = {link}>{each.name}</a></h4>
                </div>
@@ -21,6 +21,7 @@ class Home extends React.Component {
         <body>
           <h1>All Artist</h1>
           {artist}
+          <button><a href= "/artist/new">New Artist</a></button>
         </body>
       </html>
     );

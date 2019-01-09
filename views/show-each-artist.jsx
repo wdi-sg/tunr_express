@@ -2,27 +2,20 @@ var React = require("react");
 
 class ShowEachArtist extends React.Component {
   render() {
-    console.log(this.props.artist);
-    console.log(this.props.songs);
 
-    const artistName = this.props.artist.map ((byArtist,index)=>{
-        return <h1 key = {index}>By Artist: {byArtist.name}</h1>
-    })
-
-    const songsByArtist = this.props.songs.map ((bySongs, index)=>{
-        return  <div key = {index}>
-                <h3>Songs Title: {bySongs.title}</h3>
-                <h3> Album: {bySongs.album}</h3>
-                <img src={bySongs.artwork} alt="artwork"/>
-                </div>
+    const eachArtist = this.props.artist.map ((byArtist,index)=>{
+        return <div key = {index}>
+               <h1 >Artist Name: {byArtist.name}</h1>
+               <img src={byArtist.photo_url} alt="artist_photo" height="150" width="200"/>
+               <h3>Nationality: {byArtist.nationality}</h3>
+               </div>
     })
 
     return (
       <html>
         <head />
         <body>
-          {artistName}
-          {songsByArtist}
+          {eachArtist}
         </body>
       </html>
     );

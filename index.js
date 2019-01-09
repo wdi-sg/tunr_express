@@ -48,39 +48,41 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-//Display all Artists
+//Display all Artists_The Index Feature
 app.get('/artists/', (request, response) => {
-  // query database for All Artists
-  const queryText = `SELECT * FROM artists`;
-  pool.query(queryText, (err, queryResult)=>{
-    console.log("Error occured " + err);
-    response.render('home', {artists:queryResult.rows});
-  });
-  // respond with HTML page displaying all Artists
+    const queryText = `SELECT * FROM artists`;                                        // query database for All Artists
 
-});
-
-//Show individual Artist
-app.get('/artists/:id', (request, response) => {
-  // respond with HTML page show individual Artists
-    let artistId = request.params.id;                                               //get the input of :id
-    const queryTextSongs = `SELECT * FROM songs where artist_id= ${artistId}`;      //query from SONGS where artis_id is input of :id
-    const queryTextArtists = `SELECT * FROM artists where id= ${artistId}`;         //query from Artist where id is input of :id
-
-    pool.query(queryTextArtists, (err, queryArtistsResult)=>{
-
-        pool.query(queryTextSongs, (err, querySongsResult)=>{
-            const result = {
-                artist: queryArtistsResult.rows,
-                songs:  querySongsResult.rows
-            }
-            console.log("Error occured " + err);
-            response.render('show-each-artist', {artist:result.artist, songs:result.songs});
-        });
+    pool.query(queryText, (err, queryResult)=>{
+        console.log("Error occured " + err);
+        response.render('home', {artists:queryResult.rows});
     });
 });
 
+//Show individual Artist_ The Show Feature
+app.get('/artist/:id', (request, response) => {
+  // respond with HTML page show individual Artists
+    let artistId = request.params.id;                                               //get the input of :id
+    const queryTextArtists = `SELECT * FROM artists where id= ${artistId}`;         //query from Artist where id is input of :id
 
+    pool.query(queryTextArtists, (err, queryArtistsResult)=>{                       //a callback within a callback, query Artist
+        const result = queryArtistsResult.rows;
+        console.log("Error occured " + err);
+        console.log(result);
+        response.render('show-each-artist', {artist:result});
+    });
+});
+
+//Create New Artist Form_The Create Feature
+app.get('/artist/new', (request, response) => {
+  // respond with HTML page with form to create new Artist
+  response.render('create-new-artist');
+});
+
+app.post('/artist',(request,response)=>{
+
+
+
+});
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new Artist
