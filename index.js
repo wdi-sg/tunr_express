@@ -129,13 +129,15 @@ app.get('/:artist/songs', (req, res) => {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
+            let artistResult = result.rows;
             let text = `SELECT * FROM songs WHERE artist_id='${result.rows[0].id}'`;
             pool.query(text, (err, result) => {
                 if (err) {
                     console.error('query error:', err.stack);
                     res.send( 'query error' );
                 } else {
-                    res.send(result.rows);
+                    let resultArr = [result.rows, artistResult];
+                    res.render('songs', resultArr);
                 }
             });
         }
@@ -143,39 +145,37 @@ app.get('/:artist/songs', (req, res) => {
 });
 
 //SHOW A SONG OF THIS ARTIST
-app.get('/:artist', (req, res) => {
-    let text = `SELECT * FROM artists WHERE name='${req.params.artist}'`;
+app.get('/:artist/songs/:song', (req, res) => {
+    let text = `SELECT * FROM songs WHERE title='${req.params.song}'`;
     pool.query(text, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            // res.send( result.rows );
-            res.render('artist', result.rows);
+            res.render('song', result.rows);
         }
     });
 
 });
 
 //CREATE NEW SONG FOR THIS ARTIST
-app.post('/', (req, res) => {
-    let text = `INSERT INTO artists(name, photo_url, nationality) VALUES ($1, $2, $3);`;
-
-    const values = [`${req.body.name}`, `${req.body.photo_url}`, `${req.body.nationality}`];
-
-    pool.query(text, values, (err, result) => {
-        if (err) {
-            console.error('query error:', err.stack);
-            res.send( 'query error' );
-        } else {
-            // res.send( result.rows );
-            res.redirect('/');
-        }
-    });
+app.post('/:artist/songs/new', (req, res) => {
+    // let text = `INSERT INTO songs(title, album, preview_link, artwork) VALUES ('${req.body.title}', '${req.body.album}', '${req.body.preview_link}', '${req.body.artwork}');`;
+    // pool.query(text, (err, result) => {
+    //     if (err) {
+    //         console.error('query error:', err.stack);
+    //         res.send( 'query error' );
+    //     } else {
+    //         // let resultArr = [result.rows, artistResult];
+    //         // res.render('songs', resultArr);
+    //         res.redirect(`/${req.params.artist}/songs`);
+    //     }
+    // });
+    console.log(req.body);
 });
 
 //UPDATE A SONG FOR THIS ARTIST
-app.put('/:artist', (req, res) => {
+app.put('/:artist/songs/:song', (req, res) => {
     let text = `UPDATE artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE name='${req.params.artist}'`;
 
     pool.query(text, (err, result) => {
