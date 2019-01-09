@@ -11,6 +11,8 @@ class Default extends React.Component {
                     <header>
                         <ul>
                             <li><a href="/">Home</a></li>
+                            <li><a href="/artists">Artists</a></li>
+                            <li><a href="/songs">Songs</a></li>
                             <li><a href="/artists/new">New Artist</a></li>
                         </ul>
                     </header>

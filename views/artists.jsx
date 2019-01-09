@@ -1,7 +1,7 @@
 var React = require('react');
 var Default = require('./default')
 
-class Home extends React.Component {
+class Artists extends React.Component {
     render() {
         let artists = this.props.artists.map(artist => {
             let artistLink = '/artists/' + artist.id;
@@ -21,4 +21,4 @@ class Home extends React.Component {
     }
 }
 
-module.exports = Home;
+module.exports = Artists;

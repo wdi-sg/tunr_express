@@ -53,6 +53,19 @@ app.get('/', (request, response) => {
     response.redirect('/artists/');
 })
 
+app.get('/songs/', (request, response) => {
+    const queryString = 'SELECT * FROM songs ORDER BY id'
+    pool.query(queryString, (err, result) => {
+        if (err) {
+          console.error('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          // redirect to home page
+          response.render('songs', {'songs': result.rows});
+        }
+      });
+});
+
 app.get('/artists/', (request, response) => {
     const queryString = 'SELECT * FROM artists ORDER BY id'
     pool.query(queryString, (err, result) => {
@@ -61,9 +74,25 @@ app.get('/artists/', (request, response) => {
           response.send( 'query error' );
         } else {
           // redirect to home page
-          response.render('home', {'artists': result.rows});
+          response.render('artists', {'artists': result.rows});
         }
       });
+});
+
+app.get('/artists/:id', (request, response) => {
+    const queryString = `SELECT * FROM artists WHERE id=${request.params.id}`
+    pool.query(queryString, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.render('artist', {'artist': result.rows[0]});
+    });
+});
+
+app.get('/songs/:id', (request, response) => {
+    const queryString = `SELECT * FROM songs WHERE id=${request.params.id}`
+    pool.query(queryString, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.render('song', {'song': result.rows[0]});
+    });
 });
 
 app.delete('/artists/:id/delete', (request, response) => {
@@ -79,13 +108,6 @@ app.get('/artists/new', (request, response) => {
     response.render('new');
 });
 
-app.get('/artists/:id', (request, response) => {
-    const queryString = `SELECT * FROM artists WHERE id=${request.params.id}`
-    pool.query(queryString, (err, result) => {
-        err ? console.error(err.stack) : null;
-        response.render('artist', {'artist': result.rows[0]});
-    });
-});
 
 app.get('/artists/:id/edit', (request, response) => {
     const queryString = `SELECT * FROM artists WHERE id=${request.params.id}`
