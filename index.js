@@ -58,10 +58,12 @@ app.engine('jsx', reactEngine);
 // /photos/:id  PATCH/PUT   update      UPDATE
 // /photos/:id  DELETE      destroy     DELETE
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
+app.get('/', (request, response) => {
+  response.send('Hello World');
 });
 
+
+//Build the index feature for artists
 app.get('/artists/', (request, response) => {
     pool.query('SELECT * FROM artists;',(err,queryResult) => {
         if (err) {
@@ -70,10 +72,44 @@ app.get('/artists/', (request, response) => {
             const artists = queryResult;
             response.render('artists', artists);
         }
-        })
+    })
 })
 
 
+//Build a feature that creates a new artist in the database.
+app.get('/artists/new', (request, response) => {
+    pool.query('SELECT * FROM artists',(err,queryResult) => {
+        if (err) {
+            console.log('query error', err.message);
+        } else {
+            const columns = queryResult;
+            response.render('artistNew', columns);
+        }
+    })
+});
+
+app.post('/artists', (request, response) => {
+    let text = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id;';
+    let values = [];
+    console.log(request.body);
+    values.push(request.body.name);
+    values.push(request.body.photo_url);
+    values.push(request.body.nationality);
+    console.log(values)
+    pool.query(text, values,(err,queryResult) => {
+        if (err) {
+            console.log('query error', err.message);
+        } else {
+
+            const newID = queryResult.rows[0].id;
+            console.log(newID);
+            response.redirect('/artists/'+newID);
+        }
+    })
+});
+
+
+//Build the show feature for an artist
 app.get('/artists/:id', (request, response) => {
     let id = request.params.id;
     pool.query('SELECT * FROM artists WHERE id ='+id,(err,queryResult) => {
@@ -84,9 +120,29 @@ app.get('/artists/:id', (request, response) => {
             console.log(artists);
             response.render('artistByID', artists);
         }
-        })
-})
+    })
+});
 
+
+//Build a feature that allows a user to edit an existing artist in the database
+
+
+
+
+
+//Build a feature that allows users to delete an existing artist from the database.
+
+
+
+//create the 7 RESTful Routes for songs
+
+
+
+//make routes forsongs that are nested under artists: /artist/1/songs
+
+
+
+//make route /artist/1/songs
 
 /**
  * ===================================
