@@ -29,11 +29,11 @@ class Artistlist extends React.Component{
                 <div className="homecont">
                     <ul>
                         Artist: {this.props.list.name} <br />
-                        <form method="GET" action={"/recipe/" + this.props.list.id + "/details"}>
-                            <input type="submit" className="details" value="Details" />
+                        <form method="GET" action={"/artist/" + this.props.list.id}>
+                            <input type="submit" className="details" value="Show Details" />
                         </form>
                         <form method="GET" action={"/recipe/" + this.props.list.id + "/edit"}>
-                            <input type="submit" className="edit" value="Edit artist" />
+                            <input type="submit" className="edit" value="Edit Artist" />
                         </form>
                         <input type="submit" className="delete" value="Delete" data-toggle="modal" data-target="#exampleModal"/>
                     </ul>

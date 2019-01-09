@@ -18,13 +18,13 @@ class DefaultLayout extends React.Component {
         <nav>
             <ul className="nav justify-content-center">
               <li className="nav-item">
-                <a className="nav-link text-info" href="/recipe">Home</a>
+                <a className="nav-link text-info" href="/">Home</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-info" href="/recipe/new">Create song</a>
+                <a className="nav-link text-info" href="/new">Create song</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-info" href="/recipe/ingredients">Artists</a>
+                <a className="nav-link text-info" href="/">Artists</a>
               </li>
               <li className="nav-item">
                 <a className="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact</a>

@@ -50,9 +50,19 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (req, res) => {
   pool.query('SELECT * FROM artists', (err, result) =>{
-    let artists =  result.rows;
+    let artists = result.rows;
 
     res.render('home', {list:artists});
+  })
+});
+
+app.get('/artist/:id', (req, res) => {
+    let id = req.params.id
+  pool.query('SELECT * FROM artists WHERE id = ' + id, (err, result) =>{
+    let artists =  result.rows;
+    console.log(artists)
+
+    res.render('artist', {list:artists});
   })
 });
 
