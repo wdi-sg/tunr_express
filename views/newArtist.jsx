@@ -2,6 +2,7 @@ var React = require ('react');
 
 class newArtist extends React.Component {
     render() {
+
         return (
                 <form className="new-artist" action="/artist/" method="POST">
                     <div>
@@ -10,11 +11,11 @@ class newArtist extends React.Component {
                     </div>
                     <div>
                         <h5>Photo URL for Artist:</h5>
-                        <textarea className="new-input" name="photo_url"></textarea>
+                        <input name="photo_url"></input>
                     </div>
                     <div>
                         <h5>Nationality:</h5>
-                        <textarea className="new-input" name="nationality"></textarea>
+                        <input name="nationality"></input>
                     </div>
                     <div>
                         <button type="submit"> Add New Artist </button>

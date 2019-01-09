@@ -3,7 +3,7 @@ var React = require('react');
 
 class UpdatedArtist extends React.Component {
     render() {
-        console.log(this.props)
+        // console.log(this.props)
         const updateArtist = this.props;
         return(
                 <div>

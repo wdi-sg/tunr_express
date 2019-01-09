@@ -91,9 +91,10 @@ pool.query(queryText, values, (err, res) => {
     if (err) {
       console.log("query error", err.message);
     } else {
-        let created = res.rows;
-      // console.log("thing you just created:" + res.rows);
-      response.render('createSuccess', created);
+        // let created = res.rows;
+        // console.log(created);
+      // console.log(res.rows);
+      response.render('createSuccess', values);
     }
 });
 
