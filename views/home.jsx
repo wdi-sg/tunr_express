@@ -13,9 +13,10 @@ return <li> {name.name} </li>
       <html>
         <head />
         <body>
-          <ul>
+        <h1> These are the list of Artists</h1>
+          <ol>
           {items}
-          </ul>
+          </ol>
         </body>
       </html>
     );

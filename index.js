@@ -50,7 +50,7 @@ app.engine('jsx', reactEngine);
 
 
 
-
+//display all artists as a list
 app.get('/', (req, res) => {
   // query database for all pokemon
 pool.query( 'SELECT * FROM artists',(err, artistResult) => {
@@ -67,20 +67,29 @@ console.log(artist);
 });
 });
 
+//display new form for artist
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
 
+//display one page on artist information
 app.get('/artist/:id', (req, res) => {
     let id = req.params.id;
 pool.query( 'SELECT * FROM artists WHERE id =' + id,(err, artistId) => {
-console.log(artistId.rows);
 
+let artist = {};
+artist.list = [];
+artist.list = artistId.rows;
+res.render('display', artist);
 
 });
 });
 
+
+app.get("/artist/new", (req,res) => {
+        res.render('newArtist');
+    });
 /**
  * ===================================
  * Listen to requests on port 3000
