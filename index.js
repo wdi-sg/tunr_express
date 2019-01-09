@@ -54,15 +54,7 @@ app.engine('jsx', reactEngine);
 
 let text = "";
 
-// const show = text => {
-//   pool.query(text,(err, res) => {
-//       response.send(res.rows);
-//   });
-// };
-
-app.get('/', (request, response) => {
-
-  text = 'SELECT * from artists';
+const showArtist =  ( text, response ) => {
   pool.query(text,(err, res) => {
     let artists = {};
     artists.list=[];
@@ -71,11 +63,9 @@ app.get('/', (request, response) => {
         }
     response.render('artists', artists);
   });
-});
+}
 
-app.get('/songs', (request, response) => {
-
-  text = 'SELECT * from songs';
+const showSong =  ( text, response ) => {
   pool.query(text,(err, res) => {
     let songs = {};
     songs.list=[];
@@ -84,7 +74,34 @@ app.get('/songs', (request, response) => {
         }
     response.render('songs', songs);
   });
+}
+
+
+app.get('/', (request, response) => {
+  text = 'SELECT * from artists';
+  showArtist(text, response);
 });
+
+app.get('/songs', (request, response) => {
+  text = 'SELECT * from songs';
+  showSong(text, response);
+});
+
+app.get('/artist/:id', (request, response) => {
+  text = `SELECT * from artists WHERE id= ${request.params.id}`;
+  showArtist(text, response);
+});
+
+app.get('/song/:id', (request, response) => {
+  text = `SELECT * from songs WHERE id= ${request.params.id}`;
+  showSong(text, response);
+});
+
+//pending search function
+//pending create artist function
+//pending create song function
+//pending edit function for artist and song
+
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
