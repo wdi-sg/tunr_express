@@ -54,7 +54,7 @@ app.get('/', (request, response) => {
 })
 
 app.get('/artists/', (request, response) => {
-    const queryString = 'SELECT * FROM artists'
+    const queryString = 'SELECT * FROM artists ORDER BY id'
     pool.query(queryString, (err, result) => {
         if (err) {
           console.error('query error:', err.stack);
@@ -64,6 +64,15 @@ app.get('/artists/', (request, response) => {
           response.render('home', {'artists': result.rows});
         }
       });
+});
+
+app.delete('/artists/:id/delete', (request, response) => {
+    const queryString = `DELETE FROM artists WHERE id=$1`;
+    let values = [request.params.id];
+    pool.query(queryString, values, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.redirect('/artists/');
+    })
 });
 
 app.get('/artists/new', (request, response) => {
@@ -78,9 +87,34 @@ app.get('/artists/:id', (request, response) => {
     });
 });
 
-app.post('/artists/new', (request, response) => {
-    console.log(request.body);
+app.get('/artists/:id/edit', (request, response) => {
+    const queryString = `SELECT * FROM artists WHERE id=${request.params.id}`
+    pool.query(queryString, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.render('edit', {'artist': result.rows[0]});
+    });
 });
+
+app.post('/artists/new', (request, response) => {
+    let submitted = request.body;
+    let values = [submitted.name, submitted.photo_url, submitted.nationality];
+    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)`;
+
+    pool.query(queryString, values, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.redirect('/');
+    });
+});
+
+app.put('/artists/:id/put', (request, response) => {
+    const queryString = `UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4`;
+    let values = [request.body.name, request.body.photo_url, request.body.nationality, request.params.id]
+    pool.query(queryString, values, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.redirect('/artists/' + request.params.id);
+    });
+});
+
 
 /**
  * ===================================
