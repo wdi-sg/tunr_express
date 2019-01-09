@@ -48,11 +48,15 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all
-
+app.get('/artists/', (request, response) => {
+  // query database for All Artist
+  const queryText = `SELECT * FROM artists`;
+  pool.query(queryText, (err, queryResult)=>{
+    console.log("Error occured " + err);
+    response.render('home', {artists:queryResult.rows});
+  });
   // respond with HTML page displaying all pokemon
-  response.render('home');
+
 });
 
 app.get('/new', (request, response) => {
