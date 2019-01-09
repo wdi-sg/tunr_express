@@ -6,10 +6,11 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'jasonw',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
+  password: '1234'
 };
 
 const pool = new pg.Pool(configs);
@@ -48,17 +49,87 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+// Get form for entering new artist
+app.get('/artists/new',(req,res) => {
+    res.render('new')
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+
+//Build the index feature for artists
+app.get('/artists', (req, res) => {
+
+// Get all the artists, output in object view
+    const queryText = `SELECT * FROM artists ORDER BY id ASC`;
+
+   pool.query(queryText,(err, queryResult) => {
+        if (err) {
+            console.log('Error: ', error);
+        } else {
+            console.log("Result: ", queryResult.rows);
+            //console.log(queryResult.rows);
+             res.render('home', {artists: queryResult.rows});
+         };
+    });
 });
+
+//Build the show feature for an artist
+app.get('/artists/:id', (req, res) => {
+
+    let id = req.params.id;
+    const queryText = `SELECT * FROM artists WHERE id = '${id}'`;
+
+   pool.query(queryText,(err, queryResult) => {
+        if (err) {
+            console.log("Error", err);
+        } else {
+            console.log("result", queryResult.rows);
+            res.render("displaySingleArtist", {artists: queryResult.rows});
+        };
+
+ //response.render('home');
+    });
+});
+
+
+/*app.get('/artists/:name', (req, res) => {
+
+    let name = req.params.name;
+    console.log(name);
+    const queryText = `SELECT * FROM artists WHERE name ='${name}'`;
+    console.log(queryText);
+
+   pool.query(queryText,(err, queryResult) => {
+        console.log(err);
+        console.log("result", queryResult.rows);
+
+        res.send(queryResult.rows);
+ //response.render('home');
+    });
+});*/
+
+
+app.post('/artist', (request, response) => {
+
+  //let id = request.params.id;
+  let queryText = 'INSERT INTO artists (name,photo_url,nationality) VALUES ($1,$2,$3)';
+  const values = [request.body.name,request.body.photo_url,request.body.nationality];
+
+  pool.query(queryText, values, (err, queryResult) => {
+            if (err) {
+                console.log('Error', err);
+            }
+            console.log("result", queryResult.rows);
+            response.render("new", queryResult.rows);
+  });
+});
+
+
+app.put('/artists/:id', (req, res) => {
+    let artistId = parseInt(req.params.id);
+    let artists;
+
+
+})
 
 
 /**
@@ -69,13 +140,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
