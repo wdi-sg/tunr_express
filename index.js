@@ -60,17 +60,45 @@ if(err) {
 let artist = {};
 artist.artlist = [];
 artist.artlist = artistResult.rows;
-console.log(artist);
+// console.log(artist);
 
   // respond with HTML page displaying all pokemon
   res.render('home', artist);
 });
 });
 
-//display new form for artist
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+
+app.get("/new", (req,res) => {
+        res.render('newArtist');
+    });
+
+
+// post data from form
+app.post('/artist', (request,response) => {
+
+// console.log(request.body);
+
+let list = request.body;
+let queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
+
+let values = [];
+values.push(list.name);
+values.push(list.photo_url);
+values.push(list.nationality);
+// console.log(values);
+
+pool.query(queryText, values, (err, res) => {
+    if (err) {
+      console.log("query error", err.message);
+    } else {
+        let created = res.rows;
+      // console.log("thing you just created:" + res.rows);
+      response.render('createSuccess', created);
+    }
+});
+
+        // response.render('addedrecipe', {recipes:newRecipe});
+
 });
 
 //display one page on artist information
@@ -87,9 +115,9 @@ res.render('display', artist);
 });
 
 
-app.get("/artist/new", (req,res) => {
-        res.render('newArtist');
-    });
+
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
@@ -108,6 +136,9 @@ let onClose = function(){
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
+
+
+
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
