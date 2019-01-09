@@ -1,16 +1,24 @@
-var React = require("react");
+var React = require('react');
+var Default = require('./default')
 
 class Home extends React.Component {
-  render() {
-    return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
-    );
-  }
+    render() {
+        let artists = this.props.artists.map(artist => {
+            let artistLink = '/artists/' + artist.id;
+            return (
+                <div key={artist.id}>
+                    <a href={artistLink} >
+                        <p>{artist.id}. {artist.name} ({artist.nationality})</p>
+                    </a>
+                </div>
+            )
+        })
+        return (
+            <Default>
+                {artists}
+            </Default>
+        );
+    }
 }
 
 module.exports = Home;

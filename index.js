@@ -50,18 +50,37 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-    // query database for all pokemon
+    response.redirect('/artists/');
+})
 
-    // respond with HTML page displaying all pokemon
-    response.send('Hello World');
-    // response.render('home');
+app.get('/artists/', (request, response) => {
+    const queryString = 'SELECT * FROM artists'
+    pool.query(queryString, (err, result) => {
+        if (err) {
+          console.error('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          // redirect to home page
+          response.render('home', {'artists': result.rows});
+        }
+      });
 });
 
-app.get('/new', (request, response) => {
-    // respond with HTML page with form to create new pokemon
+app.get('/artists/new', (request, response) => {
     response.render('new');
 });
 
+app.get('/artists/:id', (request, response) => {
+    const queryString = `SELECT * FROM artists WHERE id=${request.params.id}`
+    pool.query(queryString, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.render('artist', {'artist': result.rows[0]});
+    });
+});
+
+app.post('/artists/new', (request, response) => {
+    console.log(request.body);
+});
 
 /**
  * ===================================
