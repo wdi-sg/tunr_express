@@ -49,8 +49,20 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+
+//building the index feature (displays all artists)
 app.get('/', (request, response) => {
-  response.send('Hello World');
+    //responds with HTML page displaying all artists
+    let text = `SELECT * FROM artists`;
+
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        } else {
+            response.render('home', { artists: result.rows });
+        }
+    })
 });
 
 app.get('/new', (request, response) => {
