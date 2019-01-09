@@ -62,8 +62,24 @@ app.get('/', (request, response) => {
         } else {
             response.render('home', { artists: result.rows });
         }
-    })
+    });
 });
+
+//building the show feature (displays artist according to id)
+app.get('/artist/:id', (request, response) => {
+    let artistID = request.params.id;
+    let text = `SELECT * FROM artists WHERE id = ${artistID}`
+
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        } else {
+            response.render('artist', {artists: result.rows});
+        }
+    });
+});
+
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
