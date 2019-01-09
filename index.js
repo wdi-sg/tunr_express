@@ -6,10 +6,11 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'postgres',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
+  password: 'pg'
 };
 
 const pool = new pg.Pool(configs);
@@ -27,14 +28,12 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
 
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -47,12 +46,12 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-
 app.get('/', (req, res) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  // response.render('home');
+  res.send("HELLO");
 });
 
 app.get('/new', (request, response) => {
@@ -69,13 +68,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
