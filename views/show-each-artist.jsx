@@ -13,9 +13,9 @@ class ShowEachArtist extends React.Component {
 
     return (
       <html>
-        <head />
         <body>
           {eachArtist}
+          <button><a href="/artists/"> home </a></button>
         </body>
       </html>
     );

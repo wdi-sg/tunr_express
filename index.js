@@ -50,11 +50,33 @@ app.engine('jsx', reactEngine);
 
 //Display all Artists_The Index Feature
 app.get('/artists/', (request, response) => {
+
     const queryText = `SELECT * FROM artists`;                                        // query database for All Artists
 
     pool.query(queryText, (err, queryResult)=>{
         console.log("Error occured " + err);
         response.render('home', {artists:queryResult.rows});
+    });
+});
+
+//Create New Artist Form_The Create Feature
+app.get('/artist/new', (request, response) => {
+  // respond with HTML page with form to create new Artist
+  response.render('create-artist-form');
+});
+
+app.post('/artist',(request,response)=>{
+    const body = request.body;
+
+    const queryText = `INSERT INTO artists (name,photo_url,nationality) VALUES ($1, $2, $3)`;
+
+    const values = [body.name, body.photo, body.nationality];
+
+     pool.query(queryText, values, (err, queryResult)=>{
+        console.log("Error occured " + err);
+
+        response.render('artist-created', {new:body});
+
     });
 });
 
@@ -72,17 +94,10 @@ app.get('/artist/:id', (request, response) => {
     });
 });
 
-//Create New Artist Form_The Create Feature
-app.get('/artist/new', (request, response) => {
-  // respond with HTML page with form to create new Artist
-  response.render('create-new-artist');
-});
-
-app.post('/artist',(request,response)=>{
 
 
 
-});
+
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new Artist
