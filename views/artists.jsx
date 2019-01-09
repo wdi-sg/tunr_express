@@ -9,7 +9,8 @@ class ArtistList extends React.Component{
               <div class="card-body">
                 <h5 class="card-title">{this.props.list.name}</h5>
                 <p class="card-text">Nationality: {this.props.list.nationality}</p>
-                <a href={"/artist/" + this.props.list.id + "/songs/"}class="btn btn-secondary">Songs</a>
+                <a href={"/artist/" + this.props.list.id + "/songs/"}class="btn btn-info mr-3">Songs</a>
+                <a href={"/edit/artist/" + this.props.list.id}class="btn btn-success">Edit</a>
               </div>
             </div>
         );

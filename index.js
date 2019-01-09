@@ -76,6 +76,11 @@ const showSong =  ( text, response ) => {
   });
 }
 
+const editArtist =  ( text, response ) => {
+  pool.query(text,(err, res) => {
+    response.render('editArtist', res.rows);
+  });
+}
 
 app.get('/', (request, response) => {
   text = 'SELECT * from artists';
@@ -111,6 +116,17 @@ app.post('/create/newArtist', (request, response) => {
   showArtist(text, response);
 });
 
+app.get('/edit/artist/:id', (request, response) => {
+  text = `SELECT * from artists WHERE id= ${request.params.id}`;
+  editArtist(text, response);
+});
+
+app.post('/edit/editedArtist/:id', (request, response) => {
+  text = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id= ${request.params.id} RETURNING *`;
+  console.log(text);
+  showArtist(text, response);
+});
+
 // SELECT artist_id FROM songs WHERE id=${request.params.id}
 // name = res.row[0];
 // SELECT name FROM artists WHERE id={name}
@@ -119,13 +135,6 @@ app.post('/create/newArtist', (request, response) => {
 //pending create artist function
 //pending create song function
 //pending edit function for artist and song
-
-
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
-
 
 /**
  * ===================================
