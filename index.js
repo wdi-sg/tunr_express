@@ -113,8 +113,26 @@ app.put('/artists/:id', (req, res) => {
     });
 })
 
+app.get('/artists/:id/delete', (req, res) => {
 
+    let id = req.params.id;
+    let text = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query( text,(err, result) => {
+        res.render("delete", {artists: result.rows[0]});
 
+        // res.send(result.rows);
+
+    });
+})
+
+app.delete('/artists/:id', (req, res) => {
+    let text = "DELETE from artists WHERE id=$1";
+    const values = [req.params.id]
+
+    pool.query( text, values, (err, result) => {
+        res.redirect("/artists")
+    });
+})
 
 
 
