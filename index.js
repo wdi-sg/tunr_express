@@ -41,9 +41,6 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-
-
-
 /**
  * ===================================
  * Routes
@@ -58,7 +55,9 @@ app.get('/', (req, res) => {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            res.send( result.rows );
+            // res.send( result.rows );
+            let resultArr = [result.rows];
+            res.render('artists', resultArr);
         }
     });
 });
@@ -71,7 +70,8 @@ app.get('/:artist', (req, res) => {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            res.send( result.rows );
+            // res.send( result.rows );
+            res.render('artist', result.rows);
         }
     });
 
@@ -79,16 +79,47 @@ app.get('/:artist', (req, res) => {
 
 //CREATE NEW ARTIST
 app.post('/', (req, res) => {
+    let text = `INSERT INTO artists(name, photo_url, nationality) VALUES ($1, $2, $3);`;
+
+    const values = [`${req.body.name}`, `${req.body.photo_url}`, `${req.body.nationality}`];
+
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            // res.send( result.rows );
+            res.redirect('/');
+        }
+    });
 });
 
 //UPDATE AN ARTIST
 app.put('/:artist', (req, res) => {
+    let text = `UPDATE artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE name='${req.params.artist}'`;
 
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            res.redirect(`/${req.body.name}`);
+        }
+    });
 });
 
 //DELETE AN ARTIST
 app.delete('/:artist', (req, res) => {
+    let text = `DELETE from artists WHERE name='${req.params.artist}'`;
 
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            res.redirect('/');
+        }
+    });
 });
 
 
