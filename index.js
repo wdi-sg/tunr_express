@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'Sheryl',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,17 +48,86 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (req, res) => {
-  // query database for all pokemon
+//artists index
+app.get('/artists', (req, res) => {
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
-});
+    let text = "SELECT * FROM artists ORDER BY id ASC";
+    pool.query( text,(err, result) => {
+        // console.log("result", result.rows);
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+        res.render("home", {artists: result.rows});
+        // res.send(result.rows);
+    });
+})
+
+//INDIVIDUAL ARTIST
+app.get('/artists/:id', (req, res) => {
+
+    let id = req.params.id;
+    let text = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query( text,(err, result) => {
+        res.render("artist", {artists: result.rows[0]});
+
+        // res.send(result.rows);
+
+    });
+})
+
+
+// INSERT
+// app.get('/artists/new', (req, res) => {
+//         // console.log("result", result.rows);
+//         res.render("create")
+//     });
+
+
+// app.post('/artists', (req, res) => {
+
+//     let text = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'
+
+//     const values = [req.body.name, req.body.photo_url, req.body.nationality]
+
+//     pool.query( text, values, (err, result) => {
+//         res.render("create", {artists: result.rows});
+
+//     });
+// })
+
+app.get('/artists/:id/edit', (req, res) => {
+
+    let id = req.params.id;
+    let text = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query( text,(err, result) => {
+        res.render("edit", {artists: result.rows[0]});
+
+        // res.send(result.rows);
+
+    });
+})
+
+app.put('/artists/:id', (req, res) => {
+    let text = "UPDATE artists SET name = $2, photo_url=$3, nationality =$4 WHERE id = $1";
+    const values = [req.params.id, req.body.name, req.body.photo_url, req.body.nationality]
+    pool.query( text, values, (err, result) => {
+        res.redirect("/artists/" + req.params.id)
+    });
+})
+
+
+
+
+
+// app.get('/', (req, res) => {
+//   // query database for all pokemon
+
+//   // respond with HTML page displaying all pokemon
+//   res.render('home');
+// });
+
+// app.get('/new', (req, res) => {
+//   // respond with HTML page with form to create new pokemon
+//   res.render('new');
+// });
 
 
 /**
@@ -69,13 +138,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
