@@ -6,11 +6,15 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'postgres',
+  password: 'postgres',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
 };
+
+// sudo -u postgres createdb todolist
+// psql -d todolist -U postgres -f tables.sql;
 
 const pool = new pg.Pool(configs);
 
@@ -50,14 +54,16 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
   // query database for all pokemon
+  console.log("Hello!");
+  response.send("Hello");
 
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  // response.render('home');
 });
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  // response.render('new');
 });
 
 
