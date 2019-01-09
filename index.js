@@ -48,19 +48,42 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//Display all Artists
 app.get('/artists/', (request, response) => {
-  // query database for All Artist
+  // query database for All Artists
   const queryText = `SELECT * FROM artists`;
   pool.query(queryText, (err, queryResult)=>{
     console.log("Error occured " + err);
     response.render('home', {artists:queryResult.rows});
   });
-  // respond with HTML page displaying all pokemon
+  // respond with HTML page displaying all Artists
 
 });
 
+//Show individual Artist
+app.get('/artists/:id', (request, response) => {
+  // respond with HTML page show individual Artists
+    let artistId = request.params.id;                                               //get the input of :id
+    const queryTextSongs = `SELECT * FROM songs where artist_id= ${artistId}`;      //query from SONGS where artis_id is input of :id
+    const queryTextArtists = `SELECT * FROM artists where id= ${artistId}`;         //query from Artist where id is input of :id
+
+    pool.query(queryTextArtists, (err, queryArtistsResult)=>{
+
+        pool.query(queryTextSongs, (err, querySongsResult)=>{
+            const result = {
+                artist: queryArtistsResult.rows,
+                songs:  querySongsResult.rows
+            }
+            console.log("Error occured " + err);
+            response.render('show-each-artist', {artist:result.artist, songs:result.songs});
+        });
+    });
+});
+
+
+
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+  // respond with HTML page with form to create new Artist
   response.render('new');
 });
 

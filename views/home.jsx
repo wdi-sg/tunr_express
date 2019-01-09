@@ -9,8 +9,9 @@ class Home extends React.Component {
   render() {
     console.log(this.props.artists);
     const artist = this.props.artists.map ((each,index)=>{
+        let link = `/artists/${each.id}`;
         return <div key={index}>
-                    <h4>Artist : <span>{each.name}</span></h4>
+                    <h4>Artist : <a href = {link}>{each.name}</a></h4>
                </div>
     })
 
