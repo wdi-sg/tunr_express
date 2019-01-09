@@ -55,7 +55,6 @@ app.get('/', (req, res) => {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            // res.send( result.rows );
             let resultArr = [result.rows];
             res.render('artists', resultArr);
         }
@@ -70,7 +69,6 @@ app.get('/:artist', (req, res) => {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            // res.send( result.rows );
             res.render('artist', result.rows);
         }
     });
@@ -88,7 +86,6 @@ app.post('/', (req, res) => {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            // res.send( result.rows );
             res.redirect('/');
         }
     });
@@ -123,10 +120,87 @@ app.delete('/:artist', (req, res) => {
 });
 
 
+//ROUTES FOR SONGS
+//SHOW ALL SONGS FOR THIS ARTIST
+app.get('/:artist/songs', (req, res) => {
+    let text = `SELECT * FROM artists WHERE name='${req.params.artist}'`;
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            let text = `SELECT * FROM songs WHERE artist_id='${result.rows[0].id}'`;
+            pool.query(text, (err, result) => {
+                if (err) {
+                    console.error('query error:', err.stack);
+                    res.send( 'query error' );
+                } else {
+                    res.send(result.rows);
+                }
+            });
+        }
+    });
+});
 
+//SHOW A SONG OF THIS ARTIST
+app.get('/:artist', (req, res) => {
+    let text = `SELECT * FROM artists WHERE name='${req.params.artist}'`;
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            // res.send( result.rows );
+            res.render('artist', result.rows);
+        }
+    });
 
+});
 
+//CREATE NEW SONG FOR THIS ARTIST
+app.post('/', (req, res) => {
+    let text = `INSERT INTO artists(name, photo_url, nationality) VALUES ($1, $2, $3);`;
 
+    const values = [`${req.body.name}`, `${req.body.photo_url}`, `${req.body.nationality}`];
+
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            // res.send( result.rows );
+            res.redirect('/');
+        }
+    });
+});
+
+//UPDATE A SONG FOR THIS ARTIST
+app.put('/:artist', (req, res) => {
+    let text = `UPDATE artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE name='${req.params.artist}'`;
+
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            res.redirect(`/${req.body.name}`);
+        }
+    });
+});
+
+//DELETE A SONG FOR THIS ARTIST
+app.delete('/:artist', (req, res) => {
+    let text = `DELETE from artists WHERE name='${req.params.artist}'`;
+
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            res.redirect('/');
+        }
+    });
+});
 
 
 /**

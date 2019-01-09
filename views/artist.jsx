@@ -18,6 +18,10 @@ class Artist extends React.Component {
                 <input type="submit" class="btn btn-danger" value="Delete Recipe"/>
             </form>
 
+            <form method="GET" action={`/${this.props[0].name}/songs`}>
+                <input type="submit" class="btn btn-primary" value="Songs"/>
+            </form>
+
 
 
 
