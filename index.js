@@ -97,6 +97,24 @@ app.get('/song/:id', (request, response) => {
   showSong(text, response);
 });
 
+app.get('/artist/:id/songs', (request, response) => {
+  text = `SELECT * from songs WHERE artist_id= ${request.params.id}`;
+  showSong(text, response);
+});
+
+app.get('/create/artist', (request, response) => {
+  response.render('createArtist');
+});
+
+app.post('/create/newArtist', (request, response) => {
+  text = `INSERT INTO artists(name, photo_url, nationality) VALUES ('${request.body.name}', '${request.body.photo_url}', '${request.body.nationality}') RETURNING *`;
+  showArtist(text, response);
+});
+
+// SELECT artist_id FROM songs WHERE id=${request.params.id}
+// name = res.row[0];
+// SELECT name FROM artists WHERE id={name}
+
 //pending search function
 //pending create artist function
 //pending create song function
