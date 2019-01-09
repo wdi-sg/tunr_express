@@ -75,23 +75,23 @@ app.get('/artists/:id', (req, res) => {
 
 
 // INSERT
-// app.get('/artists/new', (req, res) => {
-//         // console.log("result", result.rows);
-//         res.render("create")
-//     });
+app.get('/artists/new', (req, res) => {
+        // console.log("result", result.rows);
+        res.render("create")
+    });
 
 
-// app.post('/artists', (req, res) => {
+app.post('/artists', (req, res) => {
 
-//     let text = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'
+    let text = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'
 
-//     const values = [req.body.name, req.body.photo_url, req.body.nationality]
+    const values = [req.body.name, req.body.photo_url, req.body.nationality]
 
-//     pool.query( text, values, (err, result) => {
-//         res.render("create", {artists: result.rows});
+    pool.query( text, values, (err, result) => {
+        res.render("create", {artists: result.rows});
 
-//     });
-// })
+    });
+})
 
 app.get('/artists/:id/edit', (req, res) => {
 
@@ -117,17 +117,7 @@ app.put('/artists/:id', (req, res) => {
 
 
 
-// app.get('/', (req, res) => {
-//   // query database for all pokemon
 
-//   // respond with HTML page displaying all pokemon
-//   res.render('home');
-// });
-
-// app.get('/new', (req, res) => {
-//   // respond with HTML page with form to create new pokemon
-//   res.render('new');
-// });
 
 
 /**
