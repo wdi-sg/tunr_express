@@ -7,7 +7,7 @@ class Home extends React.Component {
 let items = this.props.artlist.map(name => {
 return <li>
 <a href = {'/artist/'+name.id} > <h6>{name.name}</h6></a>
-<div class="col-md-4 center-block"><a href = {'/artist/'+name.id + '/songs'} class="btn btn-primary btn-sm active" role="button" aria-pressed="true"> View songs for this artist </a></div>
+<div className="col-md-4 center-block"><a href = {'/artist/'+name.id + '/songs'} className="btn btn-primary btn-sm active" role="button" aria-pressed="true"> View songs for this artist </a></div>
  </li>
 });
 

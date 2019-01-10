@@ -1,4 +1,4 @@
-CREATE TABLE artists (
+	CREATE TABLE artists (
   id SERIAL PRIMARY KEY,
   name TEXT,
   photo_url TEXT,

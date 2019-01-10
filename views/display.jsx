@@ -15,11 +15,11 @@ class Home extends React.Component {
             <img src = {pulled.photo_url} alt = "Photo not found"/>
             <h1> Nationality of Artist : {pulled.nationality}</h1>
 
-            <a href = {'/artist/'+ pulled.id +'/edit'}>
+            <a href = {'/artist/'+ pulled.id +'/edit'} className="btn btn-primary btn-md btn-primary my-3 active" role="button" aria-pressed="true">
                 Edit this Artist</a>
                  <form method="POST" action={actionPath}>
                             <input name="del-recipe" type="hidden"/>
-                                <button type="submit" value = "delete this"> Delete this Artist </button>
+                                <button type="submit" value = "delete this" className = "btn btn-danger btn-md active my-3" > Delete this Artist </button>
 
                         </form>
                         </div>
