@@ -64,16 +64,30 @@ app.get('/playlists', (req, res) => {
 
 //SHOW AN PLAYLIST
 app.get('/playlists/:playlist', (req, res) => {
-    // let text = `SELECT * FROM artists WHERE name='${req.params.artist}'`;
-    // pool.query(text, (err, result) => {
-    //     if (err) {
-    //         console.error('query error:', err.stack);
-    //         res.send( 'query error' );
-    //     } else {
-    //         res.render('artist', result.rows);
-    //     }
-    // });
-    console.log("**SHOW PLAYLIST**");
+    let text = `SELECT * FROM songs INNER JOIN playlists_songs ON (playlists_songs.song_id = songs.id) INNER JOIN playlists ON (playlists_songs.playlist_id = playlists.id) WHERE playlists.name = '${req.params.playlist}';`;
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            let resultArr = [result.rows];
+            res.render('playlist', resultArr);
+            // res.send(result.rows);
+        }
+    });
+});
+
+//DELETE A SONG IN PLAYLIST
+app.delete('/playlists/', (req, res) => {
+    let text = `DELETE from playlists_songs WHERE playlist_id=${req.body.playlist_id} AND song_id=${req.body.song_id}`;
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            res.redirect(`/playlists/${req.body.playlist}`);
+        }
+    });
 });
 
 //CREATE NEW PLAYLIST
@@ -122,6 +136,8 @@ app.delete('/playlists/:playlist', (req, res) => {
     // });
     console.log("**DELETE PLAYLIST**");
 });
+
+
 
 //ROUTES FOR ARTISTS
 //INDEX ,SHOW ALL ARTISTS
