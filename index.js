@@ -53,6 +53,7 @@ app.engine('jsx', reactEngine);
  */
 
 let text = "";
+let followUpText="";
 
 const showArtist =  ( text, response ) => {
   pool.query(text,(err, res) => {
@@ -91,6 +92,19 @@ const editSong =  ( text, response ) => {
 const createSongSpecific =  ( text, response ) => {
   pool.query(text,(err, res) => {
     response.render('createSongSpecific', res.rows);
+  });
+}
+
+const doubleQuerySong = ( text, followUpText, response ) => {
+  pool.query(text,(err, res) => {
+    pool.query(followUpText,(err, res) => {
+      let songs = {};
+      songs.list=[];
+      for(let i = 0; i < res.rows.length; i++){
+              songs.list.push(res.rows[i]);
+          }
+      response.render('songs', songs);
+    });
   });
 }
 
@@ -134,7 +148,7 @@ app.delete('/delete/song/:id', (request, response) => {
 });
 
 app.get('/artist/:id/songs/new', (request, response) => {
-  text = `SELECT id FROM artists WHERE id= ${request.params.id}`;
+  text = `SELECT id, name FROM artists WHERE id= ${request.params.id}`;
   createSongSpecific(text, response);
 });
 
@@ -147,8 +161,6 @@ app.get('/artist/:id/songs', (request, response) => {
           WHERE songs.artist_id= ${request.params.id}`;
   showSong(text, response);
 });
-
-
 
 app.get('/create/artist', (request, response) => {
   response.render('createArtist');
@@ -164,10 +176,20 @@ app.get('/create/song', (request, response) => {
 });
 
 app.post('/create/newSong', (request, response) => {
+
   text = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) 
           VALUES ('${request.body.title}', '${request.body.album}', '${request.body.preview_link}','${request.body.artwork}', ${request.body.artist_id}) 
           RETURNING *`;
-  showSong(text, response);
+
+  followUpText = `SELECT songs.*, artists.name
+          AS artist_name
+          FROM songs
+          INNER JOIN artists
+          ON songs.artist_id = artists.id
+          WHERE songs.title='${request.body.title}' 
+          AND songs.album='${request.body.album}'`
+
+  doubleQuerySong(text, followUpText, response);
 });
 
 app.get('/edit/artist/:id', (request, response) => {
@@ -187,12 +209,28 @@ app.get('/edit/song/:id', (request, response) => {
 });
 
 app.post('/edit/editedsong/:id', (request, response) => {
+
+  let album = request.body.album;
+  let updateAlbum = album.replace(`'`, `''`);
+
   text = `UPDATE songs 
-          SET title='${request.body.title}', album='${request.body.album}', preview_link='${request.body.preview_link}', artwork='${request.body.artwork}', artist_id='${request.body.artist_id}' 
-          WHERE id= ${request.params.id} RETURNING *`;
+          SET title='${request.body.title}', album='${updateAlbum}', preview_link='${request.body.preview_link}', artwork='${request.body.artwork}', artist_id='${request.body.artist_id}' 
+          WHERE id= ${request.params.id}`;
+
   console.log(text);
-  showSong(text, response);
+
+  followUpText = `SELECT songs.*, artists.name
+          AS artist_name
+          FROM songs
+          INNER JOIN artists
+          ON songs.artist_id = artists.id
+          WHERE songs.title='${request.body.title}' 
+          AND songs.album='${updateAlbum}'`
+
+  doubleQuerySong(text, followUpText, response);
+  
 });
+
 
 //pending search function
 
