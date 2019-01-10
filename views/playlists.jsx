@@ -10,7 +10,9 @@ class PlayItems extends React.Component{
                     <br/>
                     Album: {this.props.list.album}
                     <br/>
-                    Preview-Link: {this.props.list.preview_link}
+                        <a href={this.props.list.preview_link} 
+                        class="btn btn-success mr-2">Preview
+                        </a>
                     <br/>
                 </li>
             </React.Fragment>
@@ -27,7 +29,7 @@ class PlayList extends React.Component{
         return(
             <Navbar>
                 <div>
-                    <ul class="list-group">
+                    <ul class="list-group" style={{  width: '18rem'}}>
                       <li class="list-group-item active">{this.props.list[1].playlist}</li>
                       {playlists}
                     </ul>

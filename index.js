@@ -110,7 +110,7 @@ const doubleQuerySong = ( text, followUpText, response ) => {
   });
 }
 
-const showPlaylist =(text, followUpText, response) => {
+const insertSongPlaylist =(text, followUpText, response) => {
   pool.query(text,(err, res) => {
     pool.query(followUpText,(err, res) => {
       // response.send(res);
@@ -121,6 +121,17 @@ const showPlaylist =(text, followUpText, response) => {
           }
       response.render('playlists', items);
     });
+  });
+}
+
+const showPlaylist =(text, response) => {
+  pool.query(text,(err, res) => {
+    let items = {};
+      items.list=[];
+      for(let i = 0; i < res.rows.length; i++){
+              items.list.push(res.rows[i]);
+          }
+      response.render('playlists', items);
   });
 }
 
@@ -250,6 +261,19 @@ app.post('/edit/editedsong/:id', (request, response) => {
   
 });
 
+app.get('/playlists', (request, response) => {
+
+  text = `SELECT playlists.playlist, songs.*
+          FROM ((playlists
+          RIGHT JOIN relations
+          ON playlists.id = relations.playlist_id)
+          INNER JOIN songs
+          ON relations.song_id = songs.id)`;
+
+  showPlaylist(text, response);
+
+});
+
 app.post('/playlist/addsong/:id', (request, response) => {
 
   text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.id}, 1);`;
@@ -261,7 +285,7 @@ app.post('/playlist/addsong/:id', (request, response) => {
           INNER JOIN songs
           ON relations.song_id = songs.id)`;
 
-  showPlaylist(text, followUpText, response);
+  insertSongPlaylist(text, followUpText, response);
 
 });
 
