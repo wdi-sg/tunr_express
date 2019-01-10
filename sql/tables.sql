@@ -12,4 +12,17 @@ CREATE TABLE IF NOT EXISTS songs (
     preview_link TEXT,
     artwork TEXT,
     artist_id integer REFERENCES artists (id)
+    playlist_id integer REFERENCES playlists (id)
 );
+
+CREATE TABLE IF NOT EXISTS playlists (
+    id SERIAL PRIMARY KEY,
+    playlist TEXT
+);
+
+CREATE TABLE IF NOT EXISTS relations (
+    song_id integer REFERENCES songs (id),
+    playlist_id integer REFERENCES playlists (id)
+);
+
+INSERT INTO playlists(playlist) VALUES('Current Playlist');

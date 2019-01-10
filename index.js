@@ -13,6 +13,8 @@ const configs = {
   port: 5432,
 };
 
+// var tools = require('./functions.js');
+
 // sudo -u postgres createdb todolist
 // psql -d todolist -U postgres -f tables.sql;
 
@@ -104,6 +106,20 @@ const doubleQuerySong = ( text, followUpText, response ) => {
               songs.list.push(res.rows[i]);
           }
       response.render('songs', songs);
+    });
+  });
+}
+
+const showPlaylist =(text, followUpText, response) => {
+  pool.query(text,(err, res) => {
+    pool.query(followUpText,(err, res) => {
+      // response.send(res);
+    let items = {};
+      items.list=[];
+      for(let i = 0; i < res.rows.length; i++){
+              items.list.push(res.rows[i]);
+          }
+      response.render('playlists', items);
     });
   });
 }
@@ -234,11 +250,47 @@ app.post('/edit/editedsong/:id', (request, response) => {
   
 });
 
+app.post('/playlist/addsong/:id', (request, response) => {
 
-//pending search function
+  text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.id}, 1);`;
 
-//pending edit function for artist and song
+  followUpText = `SELECT playlists.playlist, songs.*
+          FROM ((playlists
+          RIGHT JOIN relations
+          ON playlists.id = relations.playlist_id)
+          INNER JOIN songs
+          ON relations.song_id = songs.id)`;
 
+  showPlaylist(text, followUpText, response);
+
+});
+
+
+// Add a table for playlist
+// add column at the side displaying title and artist in a table
+
+// Playlist song data is a join table between a playlist and songs. (each record in the join table records the adding of one song to the playlist)
+//???
+
+// /playlist - list all the playlists /playlist/new - render the form to create a new playlist /playlist/:id - show all the song titles inside this playlist
+
+// Further
+// For the form at /songs/new, add a dropdown of artists to select from when creating a new song.
+//see reference
+
+// Further: Playlist
+// Restrict the user from adding a song to a playlist twice.
+// disable if true
+
+// Further
+// Add a button to each song in the lists of songs ( /songs, /artist/:id/songs ) that goes to a new page.
+// This page will have a list of playlists. Let the user add the song to any playlist.
+
+
+// sub-futher: If a playlist already has the song in it, then don't render that playlist in the list.
+
+// Further
+// Add the ability for the user to add the song to multiple playlists at once. ( this is a checkbox form input )
 /**
  * ===================================
  * Listen to requests on port 3000

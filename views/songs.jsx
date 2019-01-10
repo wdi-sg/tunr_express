@@ -15,6 +15,9 @@ class SongList extends React.Component{
                 <form method="POST" action={"/delete/song/" + this.props.list.id + "?_method=DELETE"} class = "d-inline-block">
                     <button type="submit" className="btn btn-danger">Delete</button>
                 </form>
+                <form method="POST" action={"/playlist/addsong/" + this.props.list.id} class = "d-inline-block">
+                    <button type="submit" className="btn btn-info">Add to Playlist</button>
+                </form>
               </div>
             </div>
         );
