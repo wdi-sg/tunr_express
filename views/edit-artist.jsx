@@ -1,4 +1,5 @@
 var React = require ('React');
+var DefaultLayout = require ('./default');
 
 class EditArtist extends  React.Component {
     render(){
@@ -7,6 +8,7 @@ class EditArtist extends  React.Component {
 
         // console.log(this.props.list[0]);
        return(
+        <DefaultLayout>
         <div>
         <h1>You are editing the artist {this.props.list[0].name}</h1>
         <form action = {actionPath} method = "POST">
@@ -19,6 +21,7 @@ class EditArtist extends  React.Component {
         <button type = "submit">  Edit Artist </button>
         </form>
         </div>
+        </DefaultLayout>
         )
         // const editRecipe = this.props.edit;
         // const actionPath = `/recipes/${editRecipe.num}?_method=PUT`;

@@ -1,9 +1,11 @@
 var React = require ('react');
+var DefaultLayout = require ('./default');
 
 class newArtist extends React.Component {
     render() {
 
         return (
+            <DefaultLayout>
                 <form className="new-artist" action="/artist/" method="POST">
                     <div>
                         <h5>Artist name:</h5>
@@ -21,6 +23,7 @@ class newArtist extends React.Component {
                         <button type="submit"> Add New Artist </button>
                     </div>
                 </form>
+                </DefaultLayout>
         )
     }
 }

@@ -1,0 +1,18 @@
+body{
+	background: url("https://media.giphy.com/media/OK5LK5zLFfdm/giphy.gif") no-repeat;
+  background-size: 100%;
+	color: white;
+}
+
+a{
+	color:white ;
+}
+
+img{
+width: 30%;
+height: 40%;
+	}
+
+	li{
+		margin: 10px 0px;
+	}

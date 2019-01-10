@@ -1,5 +1,5 @@
 var React = require("react");
-
+var DefaultLayout = require ('./default');
 
 class Home extends React.Component {
     render() {
@@ -8,18 +8,22 @@ class Home extends React.Component {
         const actionPath = '/artist/' + pulled.id + '?_method=delete';
 
         return (
+            <DefaultLayout>
             <div>
-            <h1> The Id of this artist is {pulled.id} </h1>
-            <h1> His name is {pulled.name}</h1>
+            <h1> The id of this artist : {pulled.id} </h1>
+            <h1> Name of Artist: {pulled.name}</h1>
             <img src = {pulled.photo_url} alt = "Photo not found"/>
-            <h1> His nationality is {pulled.nationality}</h1>
+            <h1> Nationality of Artist : {pulled.nationality}</h1>
 
-
-            <form method="POST" action={actionPath}>
+            <a href = {'/artist/'+ pulled.id +'/edit'}>
+                Edit this Artist</a>
+                 <form method="POST" action={actionPath}>
                             <input name="del-recipe" type="hidden"/>
                                 <button type="submit" value = "delete this"> Delete this Artist </button>
+
                         </form>
                         </div>
+                        </DefaultLayout>
         );
     }
 }

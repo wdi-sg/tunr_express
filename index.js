@@ -32,6 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
+app.use(express.static(__dirname + '/public'));
 
 app.use(methodOverride('_method'));
 
@@ -69,7 +70,6 @@ app.get('/artist', (req, res) => {
 
 //render form for creating new artist
 app.get("/artist/new", (req, res) => {
-    console.log("inside new");
     res.render('newArtist');
 });
 
@@ -152,7 +152,6 @@ const queryText = `UPDATE artists SET name = '${newName}', photo_url = '${newURL
             console.log("Error occured " + err);
         } else {
             const result = queryResult.rows[0];
-            console.log(result);
             response.render('successedit', {list:result});
         }
     });
@@ -162,10 +161,7 @@ const queryText = `UPDATE artists SET name = '${newName}', photo_url = '${newURL
 app.delete('/artist/:id/', (request, response) => {
 
     let deleteId = request.params.id;
-    console.log("deletedid inside app delete", deleteId);
-    console.log("req.params.id inside app.delete",request.params.id);
     let qText = 'DELETE FROM artists WHERE id = ' + deleteId + ' RETURNING *';
-    console.log("inside delete", qText);
 
     pool.query(qText, (err, queryResult)=>{
         if(err){
@@ -173,11 +169,52 @@ app.delete('/artist/:id/', (request, response) => {
         } else {
             // console.log("inside query Rows", queryResult.rows[0]);
             const result = queryResult.rows[0];
-            console.log("inside render delete",result);
             response.render('delete-artist',{list:result});
         }
     });
 });
+
+
+// NEW for SONGS
+app.get('/artist/:id/songs', (req, res) => {
+    let id = req.params.id;
+
+    pool.query(`SELECT title FROM songs WHERE artist_id = ${id}`, (err, songResult) => {
+        if (err) {
+            console.log(err);
+        }
+        else{
+            console.log(songResult.rows);
+                    let songs = {};
+        songs.list = [];
+        songs.list = songResult.rows;
+        res.render('songsDisplay', songs);
+
+        }
+
+        // res.render('home', artist);
+    });
+});
+
+// app.get('/artist/:id/songs', (req, res) => {
+//     let id = req.params.id;
+
+//     pool.query(`SELECT title FROM songs WHERE artist_id = ${id}`, (err, songResult) => {
+//         if (err) {
+//             console.log(err);
+//         }
+//         else{
+//             console.log(songResult.rows);
+//                     let songs = {};
+//         songs.list = [];
+//         songs.list = songResult.rows;
+//         res.render('songsDisplay', songs);
+
+//         }
+
+//         // res.render('home', artist);
+//     });
+// });
 
 
 /**

@@ -1,4 +1,5 @@
 var React = require("react");
+var DefaultLayout = require ('./default');
 
 
 class Edit extends React.Component {
@@ -7,6 +8,7 @@ class Edit extends React.Component {
         console.log(pulled);
 
         return (
+            <DefaultLayout>
             <div>
             <h1> Artist Id: {pulled.id} is Successfully updated! </h1>
             <h2> Name is updated to : {pulled.name}</h2>
@@ -14,6 +16,7 @@ class Edit extends React.Component {
             <img src = {pulled.photo_url} alt = "Photo not found"/>
             <h2> Nationality is updated to : {pulled.nationality}</h2>
             </div>
+            </DefaultLayout>
         );
     }
 }
