@@ -202,9 +202,9 @@ app.post('/artist/:id/songs', (request, response) => {
   let artwork = request.body.artwork;
   
   let queryArgu = [title, album, preview, artwork, id];
-
+  
   queryText = `INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)`;
-
+  
   pool.query(queryText, queryArgu,(err, result) => {
     if (err) {
       console.log("Oh no, error in POST /artist/:id/songs : ", err);
@@ -232,6 +232,9 @@ app.get('/song/:id', (request, response) => {
 });
 
 
+
+
+
 // All Playlists
 app.get('/playlist', (request, response) => {
   queryText = `SELECT * FROM playlists`;
@@ -256,7 +259,7 @@ app.get('/playlist/new', (request, response) => {
 app.post('/playlist', (request, response) => {
   let queryArgu = [request.body.playlist];
   queryText = `INSERT INTO playlists (name) VALUES ($1)`;
-
+  
   pool.query(queryText, queryArgu, (err, result) => {
     if (err) {
       console.log("Oh no, error in POST /playlist: ", err);
@@ -272,19 +275,54 @@ app.post('/playlist', (request, response) => {
 app.get('/playlist/:id', (request, response) => {
   let id = parseInt(request.params.id);
 
-  queryText = `SELECT playlists.id AS playlist_id, playlists.name AS playlist_name, songs.id AS song_id, songs.name AS song_name FROM playlists INNER JOIN playlistsongs ON playlists.id = playlistsongs.playlist_id INNER JOIN songs ON playlistsongs.song_id = songs.id WHERE playlists.id = ${id}`;
+  queryText = `SELECT playlists.id AS playlist_id, playlists.name AS playlist_name, songs.id AS song_id, songs.title AS song_title FROM playlists INNER JOIN playlistsongs ON playlists.id = playlistsongs.playlist_id INNER JOIN songs ON playlistsongs.song_id = songs.id WHERE playlists.id = ${id}`;
   console.log(queryText);
   
   pool.query(queryText, (err, result) => {
     if (err) {
       console.log("Oh no, error in /playlist/:id : ", err);
     } else {
-      console.log(result.rows);
-      // TODO: response.render('eachPlaylist', {playlist: result.rows})  
+      // console.log(result.rows);
+      response.render('eachPlaylist', {id: id, results: result.rows});  
     }
   })
 });
 
+// Add song to playlist POST
+app.post('/playlist/:id/', (request, response) => {
+  let id = parseInt(request.params.id);
+  let song = request.body.song;
+
+  let queryArgu = [id, song];
+  
+  queryText = `INSERT INTO playlistsongs (playlist_id, song_id) VALUES ($1, $2)`;
+  
+  pool.query(queryText, queryArgu,(err, result) => {
+    if (err) {
+      console.log("Oh no, error in POST /artist/:id/ : ", err);
+    } else {
+      let link = "/playlist/" + id;
+      response.redirect(link);
+    }
+  })
+});
+
+
+// Add song to playlist
+app.get('/playlist/:id/new', (request, response) => {
+  let id = parseInt(request.params.id);
+  queryText = `SELECT songs.id AS song_id, songs.title AS song_title FROM songs;`;
+  console.log(queryText);
+  
+  pool.query(queryText, (err, result) => {
+    if (err) {
+      console.log("Oh no, error in /song/:id : ", err);
+    } else {
+      // console.log({id: id, songs: result.rows});
+      response.render('newPlaylistSong', {id: id, songs: result.rows})
+    }
+  })
+});
 
 
 // Server settings
@@ -294,9 +332,7 @@ let onClose = function(){
   console.log("Closing database~");
   
   server.close(() => {
-    
     console.log('Process terminated');
-    
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
