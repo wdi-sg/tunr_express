@@ -186,8 +186,16 @@ app.get('/playlist', (request, response) => {
     })
 });
 
-app.post('/playlist/:id/add/:songID', (request, response) => {
-    response.send(request.params.id + " " + request.params.songID);
+app.get('/playlist/:id', (request, response) => {
+
+    const queryString = 'SELECT * FROM songs INNER JOIN playlistedsongs ON (song_id = id) WHERE playlist_id = $1';
+    const values = [request.params.id];
+
+    pool.query(queryString, values, (err, result)=>{
+        err ? console.error(err.stack) : null;
+        response.render('songs', {'songs':result.rows});
+    })
+
 });
 
 /**

@@ -4,22 +4,24 @@ var Default = require('./default')
 class Songs extends React.Component {
     render() {
         let songs = this.props.songs.map(song => {
-            let songLink = '/songs/' + song.id;
             return (
-                <div key={song.id}>
-                    <a href={songLink} >
-                        <p>{song.id}. {song.title} [{song.album}]</p>
-                        <p>{song.preview_link}</p>
-                        <p>{song.artwork}</p>
-                        <p>Artist ID: {song.artist_id}</p>
-                    </a>
-                    <br/>
-                </div>
+                <tr key={song.title}>
+                    <td><a href={song.preview_link}>{song.title}</a></td>
+                    <td>{song.album}</td>
+                    <td><img src={song.artwork}/></td>
+                </tr>
             )
-        })
+        });
         return (
             <Default>
-                {songs}
+                <table>
+                    <tr>
+                        <td>Title</td>
+                        <td>Album</td>
+                        <td>Artwork</td>
+                    </tr>
+                    {songs}
+                </table>
             </Default>
         );
     }
