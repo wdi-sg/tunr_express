@@ -118,6 +118,20 @@ app.get('/artist/:id/edit', (request, response) => {
     });
 });
 
+app.put('/artist/:id', (request, response) => {
+    // respond with HTML page with form to create new Artist
+    const artistId = request.params.id;
+    const body = request.body;
+    const queryText = `UPDATE artists SET name = '${body.name}',photo_url = '${body.photo_url}',nationality = '${body.nationality}' WHERE id = ${artistId}`;
+
+        pool.query(queryText,(err,queryResult)=>{
+            if (err) {
+                console.log("Error occured" + err);
+            } else {
+                response.send ("okay!");
+            }
+        });
+});
 
 
 app.get('/new', (request, response) => {

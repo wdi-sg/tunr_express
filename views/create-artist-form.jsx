@@ -14,6 +14,7 @@ class New extends React.Component {
                 <label> Nationality: </label>
                 <input name="nationality" placeholder="Enter nationality"/>   <br/>
                 <button type="submit">Submit</button>
+                <button type="home"><a href="/artists/">Home</a></button>
             </form>
         </body>
       </html>
