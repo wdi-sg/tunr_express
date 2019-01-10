@@ -160,17 +160,25 @@ app.get('/:artist/songs/:song', (req, res) => {
 
 //CREATE NEW SONG FOR THIS ARTIST
 app.post('/:artist/songs/new', (req, res) => {
-    // let text = `INSERT INTO songs(title, album, preview_link, artwork) VALUES ('${req.body.title}', '${req.body.album}', '${req.body.preview_link}', '${req.body.artwork}');`;
-    // pool.query(text, (err, result) => {
-    //     if (err) {
-    //         console.error('query error:', err.stack);
-    //         res.send( 'query error' );
-    //     } else {
-    //         // let resultArr = [result.rows, artistResult];
-    //         // res.render('songs', resultArr);
-    //         res.redirect(`/${req.params.artist}/songs`);
-    //     }
-    // });
+    let text = `SELECT id FROM artists WHERE name = '${req.params.artist}'`;
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error', err.stack);
+            res.send( 'query error' );
+        } else {
+            let artistId = result.rows[0].id;
+            let text = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) VALUES ('${req.body.title}', '${req.body.album}', '${req.body.preview_link}', '${req.body.artwork}', '${artistId}');`;
+            pool.query(text, (err, result) => {
+                if (err) {
+                    console.error('query error:', err.stack);
+                    res.send( 'query error' );
+                } else {
+                    res.redirect(`/${req.params.artist}/songs`);
+                }
+            });
+        }
+    });
+
     console.log(req.body);
 });
 
