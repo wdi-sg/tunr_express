@@ -1,0 +1,30 @@
+body {
+    width:80%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+header {
+    position:fixed;
+    background-color: white;
+    width: 100%;
+    left: 0%;
+    top: 0%;
+    align-items: center;
+    z-index: 99;
+    padding: 10px 10px 10px 20px;
+
+}
+
+h3 {
+    margin-top: 90px;
+}
+
+img {
+    width: 60%;
+}
+
+
+.card {
+    border: 0;
+}
