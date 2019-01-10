@@ -27,6 +27,9 @@ class Defaultcss extends React.Component {
                 <a className="nav-link text-info" href="/songs">Songs</a>
               </li>
               <li className="nav-item">
+                <a className="nav-link text-info" href="/playlists">Playlists</a>
+              </li>
+              <li className="nav-item">
                 <a className="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Contact</a>
               </li>
             </ul>

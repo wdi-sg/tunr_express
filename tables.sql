@@ -14,3 +14,10 @@ CREATE TABLE IF NOT EXISTS songs (
     artist_id INT,
     FOREIGN KEY (artist_id) REFERENCES artists(id)
 );
+
+CREATE TABLE IF NOT EXISTS playlists (
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    song_id INT,
+    FOREIGN KEY (song_id) REFERENCES songs(id)
+);

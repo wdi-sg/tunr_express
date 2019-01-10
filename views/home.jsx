@@ -7,7 +7,7 @@ class Home extends React.Component {
         <Defaultcss>
             <h1>WELCOME!</h1>
             <div className="alert alert-danger alert-dismissible fade show text-white" role="alert">
-                      <strong>Please Read!</strong><br /> Use navbar to navigate to artists or songs.
+                      <strong>Please Read!</strong><br /> Use navbar to navigate to artists, songs and playlists.
                       <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>

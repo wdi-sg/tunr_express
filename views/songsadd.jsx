@@ -24,7 +24,7 @@ class Songsadd extends React.Component{
                     <br />
                     <br />
                     <form method="GET" action="/songs">
-                        <input type="submit" value="Home" />
+                        <input type="submit" value="songs" />
                     </form>
                 </div>
             </Defaultcss>

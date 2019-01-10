@@ -156,6 +156,42 @@ app.post('/artists/:id/songs/add', (req, res) => {
     })
 });
 
+app.get('/playlists', (req, res) => {
+    pool.query('SELECT DISTINCT title FROM playlists ORDER BY title ASC', (err, result) =>{
+        let playlists = result.rows;
+
+        res.render('playlistshome', {list:playlists});
+    })
+});
+
+app.get('/playlists/new', (req, res) => {
+        res.render('playlistsnew');
+});
+
+app.post('/playlists/playlist/add', (req, res) => {
+    let songId = req.body.song;
+    let title = req.body.title.charAt(0).toUpperCase() + req.body.title.slice(1);
+    let queryText = 'INSERT INTO playlists (title, song_id) VALUES ($1, $2)';
+    const values = [title, songId];
+    console.log(songId)
+    pool.query(queryText, values, (err, result) =>{
+        let playlists =  values;
+
+        res.render('playlistsadd', {list:playlists});
+    })
+});
+
+app.get('/playlists/playlist/:title', (req, res) => {
+    let title = req.params.title;
+    let queryText = `SELECT songs.title FROM songs INNER JOIN playlists ON (songs.id = song_id AND playlists.title = '${title}')`;
+    pool.query(queryText, (err, result) =>{
+        let playlists = {}
+        playlists.list =  result.rows;
+        playlists.title = title;
+        res.render('playlist', playlists);
+    })
+});
+
 // app.get('/new', (request, res) => {
 //   // respond with HTML page with form to create new pokemon
 //   res.render('new');
