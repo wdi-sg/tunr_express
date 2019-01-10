@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
     nationality: DataTypes.STRING
   }, {});
   Artist.associate = function(models) {
- };
+    Artist.hasMany(models.Song,{
+      foreignKey:'artist_id'
+    })
+
+  };
   return Artist;
 };
