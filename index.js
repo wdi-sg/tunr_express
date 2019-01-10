@@ -113,10 +113,10 @@ app.post('/artist/:id/songs', (req, res) => {
 
 
 
-app.get('/new', (request, response) => {
-    // respond with HTML page with form to create new pokemon
-    response.render('new');
-});
+// app.get('/new', (request, response) => {
+//     // respond with HTML page with form to create new pokemon
+//     response.render('new');
+// });
 
 
 /**
