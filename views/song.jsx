@@ -10,12 +10,12 @@ class Song extends React.Component {
                 <a href={this.props.song.preview_link}>Preview</a>
                 <a href={this.props.song.artwork}>Artwork</a>
                 <p>Artist ID: {this.props.song.artist_id}</p>
-                <form method='GET' action={'/songs/' + this.props.song.id + '/edit'}>
+                {/* <form method='GET' action={'/songs/' + this.props.song.id + '/edit'}>
                     <input type='submit' value='Edit'/>
                 </form>
                 <form method="POST" action ={'/songs/' + this.props.song.id + '/delete?_method=DELETE'}>
                     <input type="submit" value="Delete"/>
-                </form>
+                </form> */}
             </Default>
         );
     }

@@ -35,7 +35,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
-
+app.use(express.static(__dirname + '/public/'));
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -79,6 +79,10 @@ app.get('/artists/', (request, response) => {
       });
 });
 
+app.get('/artists/new', (request, response) => {
+    response.render('new');
+});
+
 app.get('/artists/:id', (request, response) => {
     const queryString = `SELECT * FROM artists WHERE id=${request.params.id}`
     pool.query(queryString, (err, result) => {
@@ -95,6 +99,25 @@ app.get('/songs/:id', (request, response) => {
     });
 });
 
+app.get('/songs/:id/add', (request, response) => {
+    const queryString = 'SELECT * FROM playlist';
+    pool.query(queryString, (err, result)=>{
+        err ? console.error(err.stack) : null;
+        response.render('playlistAdd', {'playlist': result.rows, 'songID': request.params.id});
+    })
+});
+
+app.post('/playlist/add/:id', (request, response) => {
+    let playlistID = request.body.playlistID;
+    let songID = request.params.id;
+    let queryString = 'INSERT INTO playlistedsongs (playlist_id, song_id) VALUES ($1, $2)';
+    let values = [playlistID, songID];
+    pool.query(queryString, values, (err, result) => {
+        err ? console.error(err.stack) : null;
+        response.redirect('/');
+    })
+});
+
 app.delete('/artists/:id/delete', (request, response) => {
     const queryString = `DELETE FROM artists WHERE id=$1`;
     let values = [request.params.id];
@@ -103,11 +126,6 @@ app.delete('/artists/:id/delete', (request, response) => {
         response.redirect('/artists/');
     })
 });
-
-app.get('/artists/new', (request, response) => {
-    response.render('new');
-});
-
 
 app.get('/artists/:id/edit', (request, response) => {
     const queryString = `SELECT * FROM artists WHERE id=${request.params.id}`
@@ -137,6 +155,40 @@ app.put('/artists/:id/put', (request, response) => {
     });
 });
 
+app.get('/artists/:id/songs', (request, response) => {  
+    const queryString = `SELECT * FROM songs WHERE artist_id=$1`;
+    const values = [request.params.id];
+    pool.query(queryString, values, (err, result)=>{
+        err ? console.error(err.stack) : null;
+        response.render('artistSongs', {'songs': result.rows, 'id': request.params.id})
+    })
+});
+
+app.get('/artists/:id/songs/new', (request, response) => {
+    response.render('newSong', {'id': request.params.id});
+})
+
+app.post('/artists/:id/songs/new',(request, response) => {
+    let info = request.body;
+    const queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)';
+    const values = [info.title, info.album, info.preview_link, info.artwork, request.params.id];
+    pool.query(queryString, values, (err, result)=>{
+        err ? console.error(err.stack) : null;
+        response.redirect('/artists/' + request.params.id + '/songs');
+    })
+})
+
+app.get('/playlist', (request, response) => {
+    const queryString = 'SELECT * FROM playlist';
+    pool.query(queryString, (err, result)=>{
+        err ? console.error(err.stack) : null;
+        response.render('playlist', {'playlist': result.rows});
+    })
+});
+
+app.post('/playlist/:id/add/:songID', (request, response) => {
+    response.send(request.params.id + " " + request.params.songID);
+});
 
 /**
  * ===================================

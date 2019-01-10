@@ -1,0 +1,15 @@
+body{
+    margin: 50px;
+}
+
+img{
+    width: 20%;
+}
+
+td{
+    border: 1px solid gray;
+}
+
+input{
+    display: block;
+}

@@ -6,6 +6,7 @@ class Default extends React.Component {
             <html>
                 <head>
                     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossOrigin="anonymous"/>
+                    <link rel="stylesheet" type="text/css" href="/style.css"/>
                 </head>
                 <body>
                     <header>
@@ -14,6 +15,7 @@ class Default extends React.Component {
                             <li><a href="/artists">Artists</a></li>
                             <li><a href="/songs">Songs</a></li>
                             <li><a href="/artists/new">New Artist</a></li>
+                            <li><a href="/playlist">Playlists</a></li>
                         </ul>
                     </header>
                     {this.props.children}

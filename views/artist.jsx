@@ -14,6 +14,9 @@ class Artist extends React.Component {
                 <form method="POST" action ={'/artists/' + this.props.artist.id + '/delete?_method=DELETE'}>
                     <input type="submit" value="Delete"/>
                 </form>
+                <form method="GET" action ={'/artists/' + this.props.artist.id + '/songs'}>
+                    <input type="submit" value="Songs"/>
+                </form>
             </Default>
         );
     }
