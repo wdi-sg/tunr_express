@@ -52,18 +52,22 @@ app.use(express.static('public'));
  */
 
 app.get('/', (req, res) => {
+    res.render('home');
+});
+
+app.get('/artists', (req, res) => {
     pool.query('SELECT * FROM artists ORDER BY id ASC', (err, result) =>{
         let artists = result.rows;
 
-        res.render('home', {list:artists});
+        res.render('artisthome', {list:artists});
     })
 });
 
-app.get('/artist/new', (req, res) => {
+app.get('/artists/artist/new', (req, res) => {
     res.render('artistnew');
 });
 
-app.post('/artist/add', (req, res) => {
+app.post('/artists/artist/add', (req, res) => {
     let name = req.body.name.charAt(0).toUpperCase() + req.body.name.slice(1);
     let photo = req.body.photo;
     let nat = req.body.nat.toUpperCase();
@@ -76,7 +80,7 @@ app.post('/artist/add', (req, res) => {
     })
 });
 
-app.get('/artist/:id', (req, res) => {
+app.get('/artists/artist/:id', (req, res) => {
     let id = req.params.id;
     pool.query('SELECT * FROM artists WHERE id = ' + id, (err, result) =>{
         let artists =  result.rows;
@@ -85,7 +89,7 @@ app.get('/artist/:id', (req, res) => {
     })
 });
 
-app.get('/artist/edit/:id', (req, res) => {
+app.get('/artists/artist/edit/:id', (req, res) => {
     let id = req.params.id;
     pool.query('SELECT * FROM artists WHERE id = ' + id, (err, result) =>{
         let artists =  result.rows;
@@ -94,22 +98,22 @@ app.get('/artist/edit/:id', (req, res) => {
     })
 });
 
-app.put('/edit/:id', (req, res) => {
+app.put('/artists/edit/:id', (req, res) => {
     let id = req.params.id;
     let name = req.body.name.charAt(0).toUpperCase() + req.body.name.slice(1);
     let photo = req.body.photo;
     let nat = req.body.nat.toUpperCase();
     let queryText = `UPDATE artists SET name = '${name}', photo_url = '${photo}', nationality = '${nat}' WHERE id = ${id}`;
     pool.query(queryText, (err, result) =>{
-        res.redirect('/');
+        res.redirect('/artists');
     })
 });
 
-app.delete('/artist/delete/:id', (req, res) => {
+app.delete('/artists/artist/delete/:id', (req, res) => {
     let id = req.params.id;
-    let queryText = `ALTER TABLE songs DROP CONSTRAINT songs_artist_id_fkey; DELETE from artists WHERE id = ${id}`;
+    let queryText = `ALTER TABLE songs DROP CONSTRAINT IF EXISTS songs_artist_id_fkey; DELETE from artists WHERE id = ${id}`;
     pool.query(queryText, (err, result) =>{
-        res.redirect('/');
+        res.redirect('/artists');
     })
 });
 
@@ -118,17 +122,6 @@ app.delete('/artist/delete/:id', (req, res) => {
 //   res.render('new');
 // });
 
-// let queryRsCallback = (err) => {
-//       let alter = `ALTER SEQUENCE items_id_seq RESTART`;
-
-//       client.query(alter, queryUpdCallback);
-// };
-
-// let queryUpdCallback = (err) => {
-//       let update = `UPDATE items set id = default;`;
-
-//       client.query(update);
-// };
 /**
  * ===================================
  * Listen to requests on port 3000

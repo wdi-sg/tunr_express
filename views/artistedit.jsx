@@ -12,7 +12,7 @@ class Artistedit extends React.Component{
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <form method="POST" action={"/edit/" + this.props.list[0].id + "?_method=PUT"}>
+                    <form method="POST" action={"/artists/edit/" + this.props.list[0].id + "?_method=PUT"}>
                     <h3>Edit ID {this.props.list[0].id} artist: </h3><br />
                     Artist Name:
                     <input type="text" className="form-control form-control-sm" name="name" minLength="5" required="required" pattern="[ a-zA-Z ]*$" defaultValue={this.props.list[0].name}/><br />

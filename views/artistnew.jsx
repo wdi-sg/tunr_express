@@ -12,7 +12,7 @@ class Artistnew extends React.Component{
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
-                    <form method="POST" action="/artist/add">
+                    <form method="POST" action="/artists/artist/add">
                     <h3>Create a new artist: </h3><br />
                     Artist Id:
                     <input type="text" className="form-control form-control-sm" name="id" readOnly placeholder="Auto generated" /><br />
@@ -26,7 +26,7 @@ class Artistnew extends React.Component{
                     </form>
                     <br />
                     <br />
-                    <form method="GET" action="/artist/add">
+                    <form method="GET" action="/artists/artist/add">
                         <input type="submit" value="Home" />
                     </form>
                 </div>
