@@ -54,8 +54,11 @@ app.get('/artists/', (request, response) => {
     const queryText = `SELECT * FROM artists`;                                        // query database for All Artists
 
     pool.query(queryText, (err, queryResult)=>{
-        console.log("Error occured " + err);
-        response.render('home', {artists:queryResult.rows});
+        if(err){
+            console.log("Error occured " + err);
+        } else {
+            response.render('home', {artists:queryResult.rows});
+        }
     });
 });
 
@@ -73,29 +76,47 @@ app.post('/artist',(request,response)=>{
     const values = [body.name, body.photo, body.nationality];
 
      pool.query(queryText, values, (err, queryResult)=>{
-        console.log("Error occured " + err);
-
-        response.render('artist-created', {new:body});
-
+        if(err){
+            console.log("Error occured " + err);
+        } else {
+            response.render('artist-created', {new:body});
+        }
     });
 });
 
 //Show individual Artist_ The Show Feature
 app.get('/artist/:id', (request, response) => {
   // respond with HTML page show individual Artists
-    let artistId = request.params.id;                                               //get the input of :id
-    const queryTextArtists = `SELECT * FROM artists where id= ${artistId}`;         //query from Artist where id is input of :id
+    const artistId = request.params.id;                                               //get the input of :id
+    const queryTextArtists = `SELECT * FROM artists where id = ${artistId}`;         //query from Artist where id is input of :id
 
     pool.query(queryTextArtists, (err, queryArtistsResult)=>{                       //a callback within a callback, query Artist
-        const result = queryArtistsResult.rows;
-        console.log("Error occured " + err);
-        console.log(result);
-        response.render('show-each-artist', {artist:result});
+        if (err){
+            console.log("Error occured " + err);
+        } else {
+            const result = queryArtistsResult.rows;
+            console.log(result);
+            response.render('show-each-artist', {artist:result});
+        }
     });
 });
 
 
+//Edit Artist Form
+app.get('/artist/:id/edit', (request, response) => {
 
+    const artistId = request.params.id;
+    const queryText = `SELECT * FROM artists where id = ${artistId}`;
+
+    pool.query(queryText, (err, queryResult)=>{
+        if(err){
+            console.log("Error occured " + err);
+        } else {
+            const result = queryResult.rows;
+            response.render('edit-artist',{artist:result});
+        }
+    });
+});
 
 
 

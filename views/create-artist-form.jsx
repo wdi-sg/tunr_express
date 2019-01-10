@@ -9,7 +9,7 @@ class New extends React.Component {
            <form action="/artist" method="POST">
                 <label> Artist Name: </label>
                 <input name="name" placeholder="Enter artist name"/>   <br/>
-                <label> Number: </label>
+                <label> Photo: </label>
                 <input name="photo_url" placeholder="Enter photo url"/>   <br/>
                 <label> Nationality: </label>
                 <input name="nationality" placeholder="Enter nationality"/>   <br/>
