@@ -49,7 +49,6 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (req, res) => {
-    // query database for all pokemon
     let text = `SELECT * FROM artists;`
     pool.query(text, (err, result) => {
         let passObj = result.rows;
@@ -57,8 +56,6 @@ app.get('/', (req, res) => {
             passObj: passObj
         });
     })
-    // respond with HTML page displaying all pokemon
-    // response.render('home', );
 });
 
 app.get('/artist/', (req, res) => {
