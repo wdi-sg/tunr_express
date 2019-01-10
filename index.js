@@ -145,25 +145,8 @@ app.get('/artist/:id/edit', (request, response) => {
  });
 
 
- 
- 
- // Display all Songs
- app.get('/song', (request, response) => {
-   queryText = `SELECT * FROM songs;`
-   
-   pool.query(queryText, (err, result) => {
-     if (err) {
-       console.log("Oh no, error in /song : ", err);
-      } else {
-        console.log(result.rows);
-        response.render('allSongs', {songs: result.rows})
-      }
-    })
-  });
-
-  
-// Display list of songs of a artist
-app.get('/artist/:id/songs', (request, response) => {
+ // Display list of songs of a artist
+ app.get('/artist/:id/songs', (request, response) => {
   let id = parseInt(request.params.id);
   queryText = `SELECT artists.id, artists.name AS artist_name, songs.id AS song_id, songs.title AS song_title FROM artists INNER JOIN songs ON artists.id = songs.artist_id WHERE artists.id = ${id}`;
 
@@ -181,7 +164,7 @@ app.get('/artist/:id/songs', (request, response) => {
 app.get('/artist/:id/songs/new', (request, response) => {
   let id = parseInt(request.params.id);
   queryText = `SELECT id ,name FROM artists WHERE artists.id = ${id}`;
-
+  
   pool.query(queryText, (err, result) => {
     if (err) {
       console.log("Oh no, error in /artist/:id/songs/new : ", err);
@@ -214,6 +197,57 @@ app.post('/artist/:id/songs', (request, response) => {
     }
   })
 })
+
+
+// Display all Songs
+app.get('/song', (request, response) => {
+  queryText = `SELECT * FROM songs;`
+  
+  pool.query(queryText, (err, result) => {
+    if (err) {
+      console.log("Oh no, error in /song : ", err);
+     } else {
+       console.log(result.rows);
+       response.render('allSongs', {songs: result.rows})
+     }
+   })
+ });
+
+
+// Add new songs to a artist
+app.post('/song', (request, response) => {
+  let title = request.body.title;
+  let album = request.body.album;
+  let preview = request.body.preview;
+  let artwork = request.body.artwork;
+  let artistId = request.body.artist;
+  
+  let queryArgu = [title, album, preview, artwork, artistId];
+  
+  queryText = `INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)`;
+  
+  pool.query(queryText, queryArgu,(err, result) => {
+    if (err) {
+      console.log("Oh no, error in POST /song : ", err);
+    } else {
+      let link = "/song" + artistId;
+      response.redirect(link);
+    }
+  })
+})
+
+// Add new song
+app.get('/song/new', (request, response) => {
+  queryText = `SELECT id, name FROM artists`;
+  
+  pool.query(queryText, (err, result) => {
+    if (err) {
+      console.log("Oh no, error in /song/new : ", err);
+    } else {
+      response.render('newSong', {artists: result.rows})
+    }
+  })
+});
 
 
 // Each song

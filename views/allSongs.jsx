@@ -12,6 +12,10 @@ class AllSongs extends React.Component {
         <head />
         <body>
           <h1>All Songs!</h1>
+          <h3>
+            <a href="/song/new">Add new songs</a>
+          </h3>
+          
           {eachSong}
         </body>
       </html>
