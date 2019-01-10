@@ -88,6 +88,12 @@ const editSong =  ( text, response ) => {
   });
 }
 
+const createSongSpecific =  ( text, response ) => {
+  pool.query(text,(err, res) => {
+    response.render('createSongSpecific', res.rows);
+  });
+}
+
 app.get('/', (request, response) => {
   text = 'SELECT * FROM artists';
   showArtist(text, response);
@@ -127,6 +133,11 @@ app.delete('/delete/song/:id', (request, response) => {
   showSong(text, response);
 });
 
+app.get('/artist/:id/songs/new', (request, response) => {
+  text = `SELECT id FROM artists WHERE id= ${request.params.id}`;
+  createSongSpecific(text, response);
+});
+
 app.get('/artist/:id/songs', (request, response) => {
   text = `SELECT songs.*, artists.name
           AS artist_name
@@ -136,6 +147,8 @@ app.get('/artist/:id/songs', (request, response) => {
           WHERE songs.artist_id= ${request.params.id}`;
   showSong(text, response);
 });
+
+
 
 app.get('/create/artist', (request, response) => {
   response.render('createArtist');
