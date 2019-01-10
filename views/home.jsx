@@ -15,24 +15,24 @@ class Artistlist extends React.Component{
                     </button>
                   </div>
                   <div className="modal-body text-danger">
-                    You are about to delete a recipe from the database. Click <strong>close</strong> to return to main menu or click <strong>confirm</strong> to proceed with the deletion.
+                    You are about to delete an artist from the database. Click <strong>close</strong> to return to main menu or click <strong>confirm</strong> to proceed with the deletion.
                   </div>
                   <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <form method="POST" action={"/recipe/" + this.props.list.id + "?_method=delete"}>
+                    <form method="POST" action={"/artist/delete/" + this.props.list.id + "?_method=delete"}>
                         <button type="submit" value="Delete" className="btn btn-primary">Confirm</button>
                     </form>
                   </div>
                 </div>
               </div>
             </div>
-                <div className="homecont">
+                <div>
                     <ul>
                         Artist: {this.props.list.name} <br />
                         <form method="GET" action={"/artist/" + this.props.list.id}>
                             <input type="submit" className="details" value="Show Details" />
                         </form>
-                        <form method="GET" action={"/recipe/" + this.props.list.id + "/edit"}>
+                        <form method="GET" action={"/artist/edit/" + this.props.list.id}>
                             <input type="submit" className="edit" value="Edit Artist" />
                         </form>
                         <input type="submit" className="delete" value="Delete" data-toggle="modal" data-target="#exampleModal"/>
@@ -50,6 +50,9 @@ class Home extends React.Component {
         });
     return (
         <Defaultcss>
+            <form method="GET" action="/artist/new">
+                <input type="submit" className="new" value="Create New Artist" />
+            </form>
             {artists}
         </Defaultcss>
     );

@@ -1,7 +1,7 @@
 var React = require('react');
 import React, { Component } from 'react';
 
-class DefaultLayout extends React.Component {
+class Defaultcss extends React.Component {
   render() {
     return (
       <html>
@@ -21,7 +21,7 @@ class DefaultLayout extends React.Component {
                 <a className="nav-link text-info" href="/">Home</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-info" href="/new">Create song</a>
+                <a className="nav-link text-info" href="/new">Create</a>
               </li>
               <li className="nav-item">
                 <a className="nav-link text-info" href="/">Artists</a>
@@ -51,4 +51,4 @@ class DefaultLayout extends React.Component {
   }
 }
 
-module.exports = DefaultLayout;
+module.exports = Defaultcss;

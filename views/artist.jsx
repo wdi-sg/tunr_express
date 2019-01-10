@@ -7,7 +7,7 @@ class Details extends React.Component{
             <div>
                 <ul>{this.props.list.id}</ul>
                 <ul>{this.props.list.name}</ul>
-                <ul><img src={this.props.list.photo_url} alt="broken link" height="270" width="270" /><br/>{this.props.list.photo_url}</ul>
+                <ul><img src={this.props.list.photo_url} alt="broken link" height="270" width="270" /><br/><span>{this.props.list.photo_url}</span></ul>
                 <ul>{this.props.list.nationality}</ul>
             </div>
             );
