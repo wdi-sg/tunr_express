@@ -47,6 +47,83 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//ROUTES FOR PLAYLISTS
+//INDEX ,SHOW ALL PLAYLISTSS
+app.get('/playlists', (req, res) => {
+    let text = "SELECT * FROM playlists";
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send( 'query error' );
+        } else {
+            let resultArr = [result.rows];
+            res.render('playlists', resultArr);
+        }
+    });
+});
+
+//SHOW AN PLAYLIST
+app.get('/playlists/:playlist', (req, res) => {
+    // let text = `SELECT * FROM artists WHERE name='${req.params.artist}'`;
+    // pool.query(text, (err, result) => {
+    //     if (err) {
+    //         console.error('query error:', err.stack);
+    //         res.send( 'query error' );
+    //     } else {
+    //         res.render('artist', result.rows);
+    //     }
+    // });
+    console.log("**SHOW PLAYLIST**");
+});
+
+//CREATE NEW PLAYLIST
+app.post('/playlists/new', (req, res) => {
+    // let text = `INSERT INTO artists(name, photo_url, nationality) VALUES ($1, $2, $3);`;
+
+    // const values = [`${req.body.name}`, `${req.body.photo_url}`, `${req.body.nationality}`];
+
+    // pool.query(text, values, (err, result) => {
+    //     if (err) {
+    //         console.error('query error:', err.stack);
+    //         res.send( 'query error' );
+    //     } else {
+    //         res.redirect('/');
+    //     }
+    // });
+    console.log("**CREATE PLAYLIST**");
+});
+
+//UPDATE AN PLAYLIST
+app.put('/playlists/:playlist', (req, res) => {
+    // let text = `UPDATE artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE name='${req.params.artist}'`;
+
+    // pool.query(text, (err, result) => {
+    //     if (err) {
+    //         console.error('query error:', err.stack);
+    //         res.send( 'query error' );
+    //     } else {
+    //         res.redirect(`/${req.body.name}`);
+    //     }
+    // });
+    console.log("**UPDATE PLAYLIST**");
+});
+
+//DELETE AN PLAYLIST
+app.delete('/playlists/:playlist', (req, res) => {
+    // let text = `DELETE from artists WHERE name='${req.params.artist}'`;
+
+    // pool.query(text, (err, result) => {
+    //     if (err) {
+    //         console.error('query error:', err.stack);
+    //         res.send( 'query error' );
+    //     } else {
+    //         res.redirect('/');
+    //     }
+    // });
+    console.log("**DELETE PLAYLIST**");
+});
+
+//ROUTES FOR ARTISTS
 //INDEX ,SHOW ALL ARTISTS
 app.get('/', (req, res) => {
     let text = "SELECT * FROM artists";
