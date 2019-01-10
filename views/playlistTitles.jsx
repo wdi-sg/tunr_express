@@ -5,9 +5,11 @@ class TitleList extends React.Component{
     render(){
         return(
             <React.Fragment>
-                <li class="list-group-item">
-                    {this.props.list.playlist}
-                </li>
+                <a href={"/playlists/select/" + this.props.list.id}>
+                    <li class="list-group-item">
+                        {this.props.list.playlist}
+                    </li>
+                </a>
             </React.Fragment>
         );
     }
@@ -22,7 +24,7 @@ class Titles extends React.Component{
             <Navbar>
                 <div>
                     <ul class="list-group" style={{  width: '18rem'}}>
-                      <li class="list-group-item active">Titles:</li>
+                      <li class="list-group-item active">Playlists:</li>
                       {titling}
                         <form action="http://localhost:3000/create/newPlaylist" method="post">
                             <div class="input-group mb-3">

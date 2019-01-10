@@ -15,10 +15,10 @@ class SongList extends React.Component{
                 <form method="POST" action={"/delete/song/" + this.props.list.id + "?_method=DELETE"} class = "d-inline-block">
                     <button type="submit" className="btn btn-danger mb-2">Delete</button>
                 </form>
-                <form method="POST" action={"/playlist/1/addsong/" + this.props.list.id} class = "d-inline-block mb-2">
+                <form method="POST" action={"/playlist/addsong/1/" + this.props.list.id} class = "d-inline-block mb-2">
                     <button type="submit" className="btn btn-info">Add to Playlist 1</button>
                 </form>
-                <form method="POST" action={"/playlist/2/addsong/" + this.props.list.id} class = "d-inline-block">
+                <form method="POST" action={"/playlist/addsong/2/" + this.props.list.id} class = "d-inline-block">
                     <button type="submit" className="btn btn-info">Add to Playlist 2</button>
                 </form>
               </div>

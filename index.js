@@ -125,6 +125,18 @@ const insertSongPlaylist =(text, followUpText, response) => {
   });
 }
 
+const showSongPlaylist =(text, response) => {
+  pool.query(text,(err, res) => {
+    let items = {};
+      items.list=[];
+      for(let i = 0; i < res.rows.length; i++){
+              items.list.push(res.rows[i]);
+          }
+      response.render('showPlaylist', items);
+      // response.send(items);
+  });
+}
+
 const listTitles =(text, response) => {
   pool.query(text,(err, res) => {
     let items = {};
@@ -264,14 +276,28 @@ app.post('/edit/editedsong/:id', (request, response) => {
 
 app.get('/playlists', (request, response) => {
 
-  text = `SELECT playlists.playlist
+  text = `SELECT playlists.playlist, playlists.id
           FROM playlists`;
 
   listTitles(text, response);
 
 });
 
-app.post('/playlist/:playlistID/addsong/:songID', (request, response) => {
+app.get('/playlists/select/:playlistID', (request, response) => {
+
+  text = `SELECT playlists.playlist, songs.*
+          FROM ((playlists
+          INNER JOIN relations
+          ON playlists.id = relations.playlist_id)
+          INNER JOIN songs
+          ON relations.song_id = songs.id)
+          WHERE playlists.id=${request.params.playlistID}`;
+
+  showSongPlaylist(text, response);
+
+});
+
+app.post('/playlist/addsong/:playlistID/:songID', (request, response) => {
 
   text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.songID}, ${request.params.playlistID});`;
 
@@ -292,7 +318,7 @@ app.post('/create/newplaylist', (request, response) => {
   text = `INSERT INTO playlists(playlist) VALUES('${request.body.playlist}') RETURNING *;`;
 
   listTitles(text, response);
-  
+
 });
 
 
