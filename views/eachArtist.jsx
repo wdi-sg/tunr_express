@@ -14,6 +14,7 @@ class EachArtist extends React.Component {
           <img src={imgLink}/>
           <h3>{name}</h3>
           <h5>{nationality}</h5><br/>
+          <a href={"/artist/" + id + "/songs"}>Display all {name}'s songs</a><br/>
           <a href={"/artist/" + id + "/edit"}>Edit {name}'s information</a>
         </body>
       </html>

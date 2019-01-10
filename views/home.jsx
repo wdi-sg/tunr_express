@@ -1,22 +1,21 @@
 var React = require("react");
 
-class Home extends React.Component {
+class NewArtistSong extends React.Component {
   render() {
 
-    let eachArtist = this.props.artists.map(artist => {
-      return (<a href={"/artist/" + artist.id}><h5>{artist.name}</h5></a>);
-    })
 
     return (
       <html>
-        <head />
+        <head/>
         <body>
-          <h1>Welcome!</h1>
-          {eachArtist}
+          <h2>Homepage</h2>
+          <a href="/artist">Artists</a><br/>
+          <a href="/song">Songs</a><br/>
+          <a href="/playlist">Playlist</a><br/>
         </body>
       </html>
     );
   }
 }
 
-module.exports = Home;
+module.exports = NewArtistSong;
