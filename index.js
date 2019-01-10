@@ -6,7 +6,8 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'kennethyeong',
+  password: '11111',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -27,7 +28,6 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -47,17 +47,61 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-
-app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+app.get('/artists', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  let queryString = 'SELECT * from artists';
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        res.send( 'query error' );
+    } else {
+        console.log('query result:', result);
+        response.send(result.rows);
+    };
+  })
 });
 
-app.get('/new', (request, response) => {
+
+//show single artist 
+app.get('/artists/:artname', (request, res) => {
+  let artname = request.params.artname; //splicing url to give artist name
+  let queryString = `SELECT * FROM artists WHERE name = '${artname}'`;
+  console.log(queryString)
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        let artId = result.rows[0]['id'] //parsing result of first query to artists db in psql
+        let queryString = `SELECT * FROM songs WHERE artist_id = '${artId}'`;
+        pool.query(queryString, (err, resultsongs) => {
+          if (err) {
+              console.error('query error:', err.stack);
+              res.send( 'query error' );
+          }
+          //console.log(result.rows[0]['id']);
+          //console.log('query result:', resultsongs.rows); // printing of song list by artist
+          res.send(resultsongs.rows); 
+        });
+    }
+  });
+});
+//show all artist
+app.get('/', (req, res) => {
+  let queryString = `SELECT * FROM artists`
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    }    
+    //console.log('query result:', result.rows); 
+    res.render('artists', {list:result.rows}); 
+  });
+});
+
+app.get('/new', (request, res) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  res.render('new');
 });
 
 
