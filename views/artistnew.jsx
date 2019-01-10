@@ -26,8 +26,8 @@ class Artistnew extends React.Component{
                     </form>
                     <br />
                     <br />
-                    <form method="GET" action="/artists/artist/add">
-                        <input type="submit" value="Home" />
+                    <form method="GET" action="/artists">
+                        <input type="submit" value="Back" />
                     </form>
                 </div>
             </Defaultcss>

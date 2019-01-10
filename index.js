@@ -117,6 +117,45 @@ app.delete('/artists/artist/delete/:id', (req, res) => {
     })
 });
 
+app.get('/songs', (req, res) => {
+    pool.query('SELECT * FROM songs ORDER BY artist_id ASC', (err, result) =>{
+        let songs = result.rows;
+
+        res.render('songshome', {list:songs});
+    })
+});
+
+app.get('/artists/:id/songs', (req, res) => {
+    let id = req.params.id;
+    pool.query('SELECT * FROM songs WHERE artist_id = ' + id, (err, result) =>{
+        let songs = result.rows;
+
+        res.render('songshome', {list:songs});
+    })
+});
+
+app.get('/artists/:id/songs/new', (req, res) => {
+    let id = req.params.id;
+    let artistId = [];
+    artistId.push(id);
+        res.render('songsnew', {artistId});
+});
+
+app.post('/artists/:id/songs/add', (req, res) => {
+    let id = req.params.id;
+    let title = req.body.title.charAt(0).toUpperCase() + req.body.title.slice(1);
+    let album = req.body.alb;
+    let preview = req.body.pl;
+    let artwork = req.body.art;
+    let queryText = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)';
+    const values = [title, album, preview, artwork, id];
+    pool.query(queryText, values, (err, result) =>{
+        let songs =  values;
+
+        res.render('songsadd', {list:songs});
+    })
+});
+
 // app.get('/new', (request, res) => {
 //   // respond with HTML page with form to create new pokemon
 //   res.render('new');

@@ -35,7 +35,10 @@ class Artistlist extends React.Component{
                         <form method="GET" action={"/artists/artist/edit/" + this.props.list.id}>
                             <input type="submit" className="edit" value="Edit Artist" />
                         </form>
-                        <input type="submit" className="delete" value="Delete" data-toggle="modal" data-target="#exampleModal"/>
+                        {/*<input type="submit" className="delete" value="Delete" data-toggle="modal" data-target="#exampleModal"/>*/}
+                        <form method="POST" action={"/artists/artist/delete/" + this.props.list.id + "?_method=delete"}>
+                            <button type="submit" value="Delete" className="btn btn-primary">Delete</button>
+                        </form>
                     </ul>
                 </div>
             </div>

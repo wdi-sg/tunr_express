@@ -42,6 +42,12 @@ span{
   border-color: #EF5350
 }
 
+.card{
+	margin-top: 10px;
+	color: pink;
+	text-shadow: none;
+}
+
 .modal{
 	text-shadow: none;
 }
