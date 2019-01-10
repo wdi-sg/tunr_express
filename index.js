@@ -67,7 +67,7 @@ app.get('/artist', (req, res) => {
     });
 });
 
-
+//render form for creating new artist
 app.get("/artist/new", (req, res) => {
     console.log("inside new");
     res.render('newArtist');
@@ -103,7 +103,7 @@ app.post('/artist', (request, response) => {
 
 });
 
-//display one page on artist information
+//Display one page on artist information
 app.get('/artist/:id', (req, res) => {
     // console.log("inside id");
     let id = req.params.id;
@@ -119,10 +119,11 @@ app.get('/artist/:id', (req, res) => {
     });
 });
 
+//Render form to edit artist
 app.get('/artist/:id/edit', (request, response) => {
 
-    const artistId = request.params.id;
-    const queryText = 'SELECT * FROM artists where id = ' + artistId;
+    let artistId = request.params.id;
+    let queryText = 'SELECT * FROM artists where id = ' + artistId;
 
     pool.query(queryText, (err, queryResult)=>{
         if(err){
@@ -135,6 +136,7 @@ app.get('/artist/:id/edit', (request, response) => {
     });
 });
 
+//edits the artist details and renders success form
 app.put('/artist/:id', (request,response) => {
 
 // console.log(request.body);
@@ -155,6 +157,26 @@ const queryText = `UPDATE artists SET name = '${newName}', photo_url = '${newURL
         }
     });
 
+});
+
+app.delete('/artist/:id/', (request, response) => {
+
+    let deleteId = request.params.id;
+    console.log("deletedid inside app delete", deleteId);
+    console.log("req.params.id inside app.delete",request.params.id);
+    let qText = 'DELETE FROM artists WHERE id = ' + deleteId + ' RETURNING *';
+    console.log("inside delete", qText);
+
+    pool.query(qText, (err, queryResult)=>{
+        if(err){
+            console.log("Error occured " + err);
+        } else {
+            // console.log("inside query Rows", queryResult.rows[0]);
+            const result = queryResult.rows[0];
+            console.log("inside render delete",result);
+            response.render('delete-artist',{list:result});
+        }
+    });
 });
 
 

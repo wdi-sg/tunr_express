@@ -1,6 +1,6 @@
 var React = require ('React');
 
-class EditRecipe extends  React.Component {
+class EditArtist extends  React.Component {
     render(){
         console.log(this.props.list[0].id);
         const actionPath = '/artist/' + this.props.list[0].id + '?_method=PUT';
@@ -26,4 +26,4 @@ class EditRecipe extends  React.Component {
     }
 }
 
-module.exports = EditRecipe;
+module.exports = EditArtist;
