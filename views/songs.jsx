@@ -9,7 +9,7 @@ class SongList extends React.Component{
               <div class="card-body">
                 <h5 class="card-title">{this.props.list.title}</h5>
                 <p class="card-text">Album: {this.props.list.album}</p>
-                <p class="card-text">Artist: {this.props.list.artist_id}</p>
+                <p class="card-text">Artist: {this.props.list.artist_name}</p>
                 <a href={this.props.list.preview_link} class="btn btn-secondary">Preview</a>
               </div>
             </div>

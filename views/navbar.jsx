@@ -45,13 +45,3 @@ class Navbar extends React.Component{
 }
 
 module.exports =Navbar;
-
-// <li className="nav-item active">
-//                         <a className="nav-link" href="/api/recipes/get/1">Recipe 1 <span className="sr-only">(current)</span></a>
-//                       </li>
-//                       <li className="nav-item active">
-//                         <a className="nav-link" href="/api/recipes/new">New <span className="sr-only">(current)</span></a>
-//                       </li>
-//                       <li className="nav-item active">
-//                          <a className="nav-link" href="/api/recipes/edit/4">Edit <span className="sr-only">(current)</span></a>
-//                     </li>

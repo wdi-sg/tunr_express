@@ -88,7 +88,7 @@ app.get('/', (request, response) => {
 });
 
 app.get('/songs', (request, response) => {
-  text = 'SELECT * from songs';
+  text = 'SELECT songs.*, artists.name AS artist_name from songs INNER JOIN artists ON songs.artist_id = artists.id';
   showSong(text, response);
 });
 
@@ -97,13 +97,23 @@ app.get('/artist/:id', (request, response) => {
   showArtist(text, response);
 });
 
-app.get('/song/:id', (request, response) => {
-  text = `SELECT * from songs WHERE id= ${request.params.id}`;
+app.get('/songs/:id', (request, response) => {
+  text = `SELECT songs.*, artists.name
+          AS artist_name
+          FROM songs
+          INNER JOIN artists
+          ON songs.artist_id = artists.id
+          WHERE songs.id=${request.params.id}`;
   showSong(text, response);
 });
 
 app.get('/artist/:id/songs', (request, response) => {
-  text = `SELECT * from songs WHERE artist_id= ${request.params.id}`;
+  text = `SELECT songs.*, artists.name
+          AS artist_name
+          FROM songs
+          INNER JOIN artists
+          ON songs.artist_id = artists.id 
+          WHERE songs.artist_id= ${request.params.id}`;
   showSong(text, response);
 });
 
