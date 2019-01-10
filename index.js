@@ -82,13 +82,23 @@ const editArtist =  ( text, response ) => {
   });
 }
 
+const editSong =  ( text, response ) => {
+  pool.query(text,(err, res) => {
+    response.render('editSong', res.rows);
+  });
+}
+
 app.get('/', (request, response) => {
   text = 'SELECT * FROM artists';
   showArtist(text, response);
 });
 
 app.get('/songs', (request, response) => {
-  text = 'SELECT songs.*, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id';
+  text = `SELECT songs.*, artists.name 
+          AS artist_name 
+          FROM songs 
+          INNER JOIN artists 
+          ON songs.artist_id = artists.id`;
   showSong(text, response);
 });
 
@@ -98,7 +108,6 @@ app.get('/artist/:id', (request, response) => {
 });
 
 app.delete('/delete/artist/:id', (request, response) => {
-  console.log(`deleting artist ${request.params.id}`)
   text = `DELETE FROM artists WHERE id= ${request.params.id} RETURNING *`;
   showArtist(text, response);
 });
@@ -110,6 +119,11 @@ app.get('/songs/:id', (request, response) => {
           INNER JOIN artists
           ON songs.artist_id = artists.id
           WHERE songs.id=${request.params.id}`;
+  showSong(text, response);
+});
+
+app.delete('/delete/song/:id', (request, response) => {
+  text = `DELETE FROM songs WHERE id= ${request.params.id} RETURNING *`;
   showSong(text, response);
 });
 
@@ -132,6 +146,17 @@ app.post('/create/newArtist', (request, response) => {
   showArtist(text, response);
 });
 
+app.get('/create/song', (request, response) => {
+  response.render('createSong');
+});
+
+app.post('/create/newSong', (request, response) => {
+  text = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) 
+          VALUES ('${request.body.title}', '${request.body.album}', '${request.body.preview_link}','${request.body.artwork}', ${request.body.artist_id}) 
+          RETURNING *`;
+  showSong(text, response);
+});
+
 app.get('/edit/artist/:id', (request, response) => {
   text = `SELECT * FROM artists WHERE id= ${request.params.id}`;
   editArtist(text, response);
@@ -143,13 +168,21 @@ app.post('/edit/editedArtist/:id', (request, response) => {
   showArtist(text, response);
 });
 
-// SELECT artist_id FROM songs WHERE id=${request.params.id}
-// name = res.row[0];
-// SELECT name FROM artists WHERE id={name}
+app.get('/edit/song/:id', (request, response) => {
+  text = `SELECT * FROM songs WHERE id= ${request.params.id}`;
+  editSong(text, response);
+});
+
+app.post('/edit/editedsong/:id', (request, response) => {
+  text = `UPDATE songs 
+          SET title='${request.body.title}', album='${request.body.album}', preview_link='${request.body.preview_link}', artwork='${request.body.artwork}', artist_id='${request.body.artist_id}' 
+          WHERE id= ${request.params.id} RETURNING *`;
+  console.log(text);
+  showSong(text, response);
+});
 
 //pending search function
-//pending create artist function
-//pending create song function
+
 //pending edit function for artist and song
 
 /**

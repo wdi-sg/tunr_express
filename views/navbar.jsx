@@ -25,7 +25,10 @@ class Navbar extends React.Component{
                       </li>    
                       <li className="nav-item active">
                         <a className="nav-link" href="/create/artist">Create Artist<span className="sr-only">(current)</span></a>
-                      </li>            
+                      </li>
+                      <li className="nav-item active">
+                        <a className="nav-link" href="/create/song">Create Song<span className="sr-only">(current)</span></a>
+                      </li>         
                     </ul>
                   </div>
                 </nav>

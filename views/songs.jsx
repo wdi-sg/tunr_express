@@ -10,7 +10,11 @@ class SongList extends React.Component{
                 <h5 class="card-title">{this.props.list.title}</h5>
                 <p class="card-text">Album: {this.props.list.album}</p>
                 <p class="card-text">Artist: {this.props.list.artist_name}</p>
-                <a href={this.props.list.preview_link} class="btn btn-success">Preview</a>
+                <a href={this.props.list.preview_link} class="btn btn-success mr-2">Preview</a>
+                <a href={"/edit/song/" + this.props.list.id}class="btn btn-secondary mr-2">Edit</a>
+                <form method="POST" action={"/delete/song/" + this.props.list.id + "?_method=DELETE"} class = "d-inline-block">
+                    <button type="submit" className="btn btn-danger">Delete</button>
+                </form>
               </div>
             </div>
         );
