@@ -15,7 +15,7 @@ class Song extends React.Component {
               Edit Song
             </button>
 
-            <form method="POST" action={`/${this.props[1]}?_method=DELETE`}>
+            <form method="POST" action={`/${this.props[1]}/songs/${this.props[0][0].title}?_method=DELETE`}>
                 <input type="submit" class="btn btn-danger" value="Delete Song"/>
             </form>
 

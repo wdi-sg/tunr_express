@@ -197,15 +197,15 @@ app.put('/:artist/songs/:song', (req, res) => {
 });
 
 //DELETE A SONG FOR THIS ARTIST
-app.delete('/:artist', (req, res) => {
-    let text = `DELETE from artists WHERE name='${req.params.artist}'`;
+app.delete('/:artist/songs/:song', (req, res) => {
+    let text = `DELETE from songs WHERE title='${req.params.song}'`;
 
     pool.query(text, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            res.redirect('/');
+            res.redirect(`/${req.params.artist}/songs`);
         }
     });
 });
