@@ -15,11 +15,13 @@ class SongList extends React.Component{
                 <form method="POST" action={"/delete/song/" + this.props.list.id + "?_method=DELETE"} class = "d-inline-block">
                     <button type="submit" className="btn btn-danger mb-2">Delete</button>
                 </form>
-                <form method="POST" action={"/playlist/addsong/1/" + this.props.list.id} class = "d-inline-block mb-2">
-                    <button type="submit" className="btn btn-info">Add to Playlist 1</button>
-                </form>
-                <form method="POST" action={"/playlist/addsong/2/" + this.props.list.id} class = "d-inline-block">
-                    <button type="submit" className="btn btn-info">Add to Playlist 2</button>
+                <form method="POST" action={"/playlist/addsong/" + this.props.list.id} id="playlistform">
+                  <select name="playlist">
+                      <option value="1">Current Playlist</option>
+                      <option value="2">Second Playlist</option>
+                      <option value="5">Another Playlist</option>
+                    </select>
+                  <input type="submit"/>
                 </form>
               </div>
             </div>
@@ -44,3 +46,19 @@ class Songs extends React.Component{
 }
 
 module.exports = Songs;
+
+
+
+                    // <div class="dropdown">
+                    //   <a class="btn btn-secondary dropdown-toggle" href="#" role="button" type="submit" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    //     Add to playlist
+                    //   </a>
+                    //   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    //     <a class="dropdown-item" href={"/playlist/addsong/1/" + this.props.list.id}>Current Playlist</a>
+                    //     <a class="dropdown-item" href={"/playlist/addsong/2/" + this.props.list.id}>Second Playlist</a>
+                    //     <a class="dropdown-item" href={"/playlist/addsong/3/" + this.props.list.id}>Another Playlist</a>
+                    //   </div>
+                    // </div>
+                // <form method="POST" action={"/playlist/addsong/2/" + this.props.list.id} class = "d-inline-block">
+                //     <button type="submit" className="btn btn-info">Add to Playlist 2</button>
+                // </form>

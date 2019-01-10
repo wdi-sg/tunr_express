@@ -297,9 +297,9 @@ app.get('/playlists/select/:playlistID', (request, response) => {
 
 });
 
-app.post('/playlist/addsong/:playlistID/:songID', (request, response) => {
-
-  text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.songID}, ${request.params.playlistID});`;
+app.post('/playlist/addsong/:songID', (request, response) => {
+  
+  text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.songID}, ${request.body.playlist});`;
 
   followUpText = `SELECT playlists.playlist, songs.*
           FROM ((playlists
@@ -307,7 +307,7 @@ app.post('/playlist/addsong/:playlistID/:songID', (request, response) => {
           ON playlists.id = relations.playlist_id)
           INNER JOIN songs
           ON relations.song_id = songs.id)
-          WHERE playlists.id=${request.params.playlistID}`;
+          WHERE playlists.id=${request.body.playlist}`;
 
   insertSongPlaylist(text, followUpText, response);
 
