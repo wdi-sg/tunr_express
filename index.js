@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'tengchoonhong',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,17 +48,52 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (req, res) => {
-  // query database for all pokemon
+app.get('/', (request, response) => {
+  response.redirect('home');
+});
 
-  // respond with HTML page displaying all pokemon
+app.get('/home', (request, response) => {
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+app.get('/home/index', (request, response) => {
+  let text = `SELECT * FROM artists`;
+
+  pool.query(text, (err, indexResult) => {
+    response.send(indexResult.rows)
+  });
+})
+
+app.get('/home/show', (request, response) => {
+
+});
+
+app.get('/home/new', (request, response) => {
   response.render('new');
 });
+
+app.post('/home/new', (request, response) => {
+  let text = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)`
+  const values = [request.body.name, request.body.photo, request.body.nationality]
+
+  pool.query(text, values, (err, newArtist) => {
+    response.send(newArtist.rows)
+  });
+});
+
+// app.post('/pokemons', (request, response) => {
+
+//   let text = 'INSERT INTO pokemons (name, img, weight, height) VALUES ($1, $2, $3, $4)'
+
+//   const values = [request.body.name, request.body.img, request.body.weight, request.body.height]
+
+//   pool.query( text, values, (err, queryResult) => {
+//       console.log("result", queryResult.rows);
+
+//       response.send(queryResult.rows)
+//   })
+
+// })
 
 
 /**

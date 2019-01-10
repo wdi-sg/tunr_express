@@ -1,14 +1,14 @@
 var React = require("react");
 var Default = require("./default")
 
-class Home extends React.Component {
+class ArtistIndex extends React.Component {
   render() {
     return (
       <Default>
-        <h2>HOME</h2>
+        <h2>Artist Index</h2>
       </Default>
     );
   }
 }
 
-module.exports = Home;
+module.exports = ArtistIndex;
