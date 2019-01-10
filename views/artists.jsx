@@ -9,13 +9,18 @@ class ArtistList extends React.Component{
               <div class="card-body">
                 <h5 class="card-title">{this.props.list.name}</h5>
                 <p class="card-text">Nationality: {this.props.list.nationality}</p>
-                <a href={"/artist/" + this.props.list.id + "/songs/"}class="btn btn-info mr-3">Songs</a>
-                <a href={"/edit/artist/" + this.props.list.id}class="btn btn-success">Edit</a>
+                <a href={"/artist/" + this.props.list.id + "/songs/"}class="btn btn-info mr-2">Songs</a>
+                <a href={"/edit/artist/" + this.props.list.id}class="btn btn-success mr-2">Edit</a>
+                <form method="POST" action={"/delete/artist/" + this.props.list.id + "?_method=DELETE"} class = "d-inline-block">
+                    <button type="submit" className="btn btn-danger">Delete</button>
+                </form>
+
               </div>
             </div>
         );
     }
 }
+                // <a href={"/delete/artist/" + this.props.list.id} data-method="delete" class="btn btn-danger">Delete</a>
 
 class Artist extends React.Component{
     render(){

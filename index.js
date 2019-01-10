@@ -83,17 +83,23 @@ const editArtist =  ( text, response ) => {
 }
 
 app.get('/', (request, response) => {
-  text = 'SELECT * from artists';
+  text = 'SELECT * FROM artists';
   showArtist(text, response);
 });
 
 app.get('/songs', (request, response) => {
-  text = 'SELECT songs.*, artists.name AS artist_name from songs INNER JOIN artists ON songs.artist_id = artists.id';
+  text = 'SELECT songs.*, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id';
   showSong(text, response);
 });
 
 app.get('/artist/:id', (request, response) => {
-  text = `SELECT * from artists WHERE id= ${request.params.id}`;
+  text = `SELECT * FROM artists WHERE id= ${request.params.id}`;
+  showArtist(text, response);
+});
+
+app.delete('/delete/artist/:id', (request, response) => {
+  console.log(`deleting artist ${request.params.id}`)
+  text = `DELETE FROM artists WHERE id= ${request.params.id} RETURNING *`;
   showArtist(text, response);
 });
 
@@ -127,7 +133,7 @@ app.post('/create/newArtist', (request, response) => {
 });
 
 app.get('/edit/artist/:id', (request, response) => {
-  text = `SELECT * from artists WHERE id= ${request.params.id}`;
+  text = `SELECT * FROM artists WHERE id= ${request.params.id}`;
   editArtist(text, response);
 });
 
