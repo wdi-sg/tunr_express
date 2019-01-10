@@ -1,18 +1,22 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Songs extends React.Component {
   render() {
-    const artistList = this.props.passObj.map((obj, index) => {
+    const songList = this.props.passObj.map((obj, index) => {
       return (
-        <div className="card m-3" style={{ width: "18rem" }}>
-          <img className="card-img-top" src={obj.photo_url} alt="Card image cap" />
-          <div className="card-body">
-            <h5 className="card-title">{obj.name}</h5>
-            <p className="card-text">Nationality: {obj.nationality}</p>
-            <a href={'/artist/' + obj.id + '/songs'} className="btn btn-primary mr-1">View Songs</a>
-            <a href={'/artist/' + obj.id + '/songs/new'} className="btn btn-primary mr-1">Add Songs</a>
+        <a href="#" className="list-group-item list-group-item-action" data-toggle="modal"
+          data-target="#exampleModal"
+        >
+          <h3>Title: {obj.title}</h3><br />
+          <h4>Album: {obj.album}</h4><br />
+          <audio controls name="media">
+            <source src={obj.preview_link} type="audio/mp4" />
+          </audio>
+          <div className="form-check">
+            <input type="checkbox" className="form-check-input" id="exampleCheck1" />
+            <label className="form-check-label" for="exampleCheck1">Add to playlist</label>
           </div>
-        </div >
+        </a>
       )
     })
     return (
@@ -35,12 +39,12 @@ class Home extends React.Component {
         <body>
           <ul className="nav nav-pills navHeight sticky-top" style={{ background: "lightblue", height: "3.5rem" }}>
             <li className="nav-item" style={{ margin: "auto 5px" }}>
-              <a className="nav-link active" href="/artist/">
+              <a className="nav-link" href="/artist/">
                 Home
               </a>
             </li>
           </ul>
-          <div className="midWidth">{artistList}</div>
+          <div className="midWidth">{songList}</div>
           <script
             src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
             integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -62,4 +66,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = Songs;

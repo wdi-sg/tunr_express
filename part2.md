@@ -8,11 +8,14 @@ Build relationships into the tunr app.
 
 GET `/artist/1/songs`
 This page displays a list of songs for this artist
+<!-- SELECT * FROM songs WHERE artist_id = 1; -->
 
 GET `/artist/1/songs/new`
 This page renders a form to create a new song.
 
+
 The `action` of the form can be set to send the appropriate artist id needed to create the song.
+
 
 POST `/artist/1/songs`
 This route creates a new song with the appropriate artist.

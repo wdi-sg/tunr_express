@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS songs (
   preview_link TEXT,
   artwork TEXT,
   artist_id INTEGER
-)
+);
