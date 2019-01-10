@@ -177,8 +177,11 @@ app.get('/create/song', (request, response) => {
 
 app.post('/create/newSong', (request, response) => {
 
+  let album = request.body.album;
+  let updateAlbum = album.replace(`'`, `''`);
+
   text = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) 
-          VALUES ('${request.body.title}', '${request.body.album}', '${request.body.preview_link}','${request.body.artwork}', ${request.body.artist_id}) 
+          VALUES ('${request.body.title}', '${updateAlbum}', '${request.body.preview_link}','${request.body.artwork}', ${request.body.artist_id}) 
           RETURNING *`;
 
   followUpText = `SELECT songs.*, artists.name
@@ -187,7 +190,7 @@ app.post('/create/newSong', (request, response) => {
           INNER JOIN artists
           ON songs.artist_id = artists.id
           WHERE songs.title='${request.body.title}' 
-          AND songs.album='${request.body.album}'`
+          AND songs.album='${updateAlbum}'`
 
   doubleQuerySong(text, followUpText, response);
 });
