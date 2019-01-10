@@ -6,7 +6,9 @@ class New extends React.Component {
       <html>
         <head />
         <body>
-          <h3>Form Goes Here!</h3>
+          <form method='POST' action=''>
+            
+          </form>
         </body>
       </html>
     );

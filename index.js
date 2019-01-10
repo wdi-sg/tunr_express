@@ -6,9 +6,9 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'jonchow',
   host: '127.0.0.1',
-  database: 'tunr_db',
+  database: 'test',
   port: 5432,
 };
 
@@ -49,14 +49,14 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  
+  pool.query( 'SELECT * FROM artists INNER JOIN songs ON (artists.id = songs.artist_id)',(err, resPQ) => {
+    console.log(resPQ);
+    res.render('home', resPQ.rows);
+  });
 });
 
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   response.render('new');
 });
 
