@@ -11,6 +11,5 @@ CREATE TABLE IF NOT EXISTS songs (
 	album TEXT,
 	preview_link TEXT,
 	artwork TEXT,
-	artist_id INT,
-	FOREIGN KEY (artist_id) REFERENCES artists(id)
+	artist_id INT
 );

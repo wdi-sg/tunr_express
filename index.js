@@ -51,7 +51,7 @@ app.engine('jsx', reactEngine);
 //Display all Artists_The Index Feature
 app.get('/artists/', (request, response) => {
 
-    const queryText = `SELECT * FROM artists`;                                        // query database for All Artists
+    const queryText = `SELECT * FROM artists ORDER BY id ASC`;                                        // query database for All Artists
 
     pool.query(queryText, (err, queryResult)=>{
         if(err){
@@ -128,15 +128,25 @@ app.put('/artist/:id', (request, response) => {
             if (err) {
                 console.log("Error occured" + err);
             } else {
-                response.send ("okay!");
+                response.render ('updated-artist');
             }
         });
 });
 
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new Artist
-  response.render('new');
+app.delete('/artist/:id', (request, response) => {
+
+    const artistId = request.params.id;
+    const queryText = `DELETE FROM artists WHERE id = ${artistId}`;
+
+    pool.query(queryText,(err,queryResult)=> {
+        if (err) {
+            console.log("Error occured " + err);
+        } else {
+            response.render('deleted-artist');
+        }
+    });
+
 });
 
 
