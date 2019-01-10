@@ -152,7 +152,8 @@ app.get('/:artist/songs/:song', (req, res) => {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            res.render('song', result.rows);
+            let resultArr = [result.rows, req.params.artist];
+            res.render('song', resultArr);
         }
     });
 
@@ -178,20 +179,19 @@ app.post('/:artist/songs/new', (req, res) => {
             });
         }
     });
-
-    console.log(req.body);
 });
 
 //UPDATE A SONG FOR THIS ARTIST
 app.put('/:artist/songs/:song', (req, res) => {
-    let text = `UPDATE artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE name='${req.params.artist}'`;
+    let text = `UPDATE songs SET title='${req.body.title}', album='${req.body.album}', preview_link='${req.body.preview_link}', artwork='${req.body.artwork}' WHERE title='${req.params.song}'`;
+    console.log(req.body);
 
     pool.query(text, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             res.send( 'query error' );
         } else {
-            res.redirect(`/${req.body.name}`);
+            res.redirect(`/${req.body.artist}/songs/${req.body.title}`);
         }
     });
 });
