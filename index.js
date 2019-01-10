@@ -119,19 +119,20 @@ const insertSongPlaylist =(text, followUpText, response) => {
       for(let i = 0; i < res.rows.length; i++){
               items.list.push(res.rows[i]);
           }
-      response.render('playlists', items);
+      response.render('showPlaylist', items);
+      // response.send(items);
     });
   });
 }
 
-const showPlaylist =(text, response) => {
+const listTitles =(text, response) => {
   pool.query(text,(err, res) => {
     let items = {};
       items.list=[];
       for(let i = 0; i < res.rows.length; i++){
               items.list.push(res.rows[i]);
           }
-      response.render('playlists', items);
+      response.render('playlistTitles', items);
   });
 }
 
@@ -263,31 +264,37 @@ app.post('/edit/editedsong/:id', (request, response) => {
 
 app.get('/playlists', (request, response) => {
 
-  text = `SELECT playlists.playlist, songs.*
-          FROM ((playlists
-          RIGHT JOIN relations
-          ON playlists.id = relations.playlist_id)
-          INNER JOIN songs
-          ON relations.song_id = songs.id)`;
+  text = `SELECT playlists.playlist
+          FROM playlists`;
 
-  showPlaylist(text, response);
+  listTitles(text, response);
 
 });
 
-app.post('/playlist/addsong/:id', (request, response) => {
+app.post('/playlist/:playlistID/addsong/:songID', (request, response) => {
 
-  text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.id}, 1);`;
+  text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.songID}, ${request.params.playlistID});`;
 
   followUpText = `SELECT playlists.playlist, songs.*
           FROM ((playlists
-          RIGHT JOIN relations
+          INNER JOIN relations
           ON playlists.id = relations.playlist_id)
           INNER JOIN songs
-          ON relations.song_id = songs.id)`;
+          ON relations.song_id = songs.id)
+          WHERE playlists.id=${request.params.playlistID}`;
 
   insertSongPlaylist(text, followUpText, response);
 
 });
+
+app.post('/create/newplaylist', (request, response) => {
+
+  text = `INSERT INTO playlists(playlist) VALUES('${request.body.playlist}') RETURNING *;`;
+
+  listTitles(text, response);
+  
+});
+
 
 
 // Add a table for playlist
@@ -295,8 +302,6 @@ app.post('/playlist/addsong/:id', (request, response) => {
 
 // Playlist song data is a join table between a playlist and songs. (each record in the join table records the adding of one song to the playlist)
 //???
-
-// /playlist - list all the playlists /playlist/new - render the form to create a new playlist /playlist/:id - show all the song titles inside this playlist
 
 // Further
 // For the form at /songs/new, add a dropdown of artists to select from when creating a new song.
@@ -337,4 +342,4 @@ let onClose = function(){
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
 
-//testing new branch
+

@@ -21,7 +21,7 @@ class PlayItems extends React.Component{
 }
 // Artist: {this.props.list.artist_name}
          
-class PlayList extends React.Component{
+class ShowPlayList extends React.Component{
     render(){
         const playlists = this.props.list.map( playSongs => {
             return <PlayItems list={playSongs}></PlayItems>;
@@ -30,7 +30,7 @@ class PlayList extends React.Component{
             <Navbar>
                 <div>
                     <ul class="list-group" style={{  width: '18rem'}}>
-                      <li class="list-group-item active">{this.props.list[1].playlist}</li>
+                      <li class="list-group-item active">{this.props.list[0].playlist}</li>
                       {playlists}
                     </ul>
                 </div>
@@ -39,4 +39,4 @@ class PlayList extends React.Component{
     }
 }
 
-module.exports = PlayList;
+module.exports = ShowPlayList;

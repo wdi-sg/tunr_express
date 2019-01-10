@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS songs (
     preview_link TEXT,
     artwork TEXT,
     artist_id integer REFERENCES artists (id)
-    playlist_id integer REFERENCES playlists (id)
 );
 
 CREATE TABLE IF NOT EXISTS playlists (

@@ -10,13 +10,16 @@ class SongList extends React.Component{
                 <h5 class="card-title">{this.props.list.title}</h5>
                 <p class="card-text">Album: {this.props.list.album}</p>
                 <p class="card-text">Artist: {this.props.list.artist_name}</p>
-                <a href={this.props.list.preview_link} class="btn btn-success mr-2">Preview</a>
-                <a href={"/edit/song/" + this.props.list.id}class="btn btn-secondary mr-2">Edit</a>
+                <a href={this.props.list.preview_link} class="btn btn-success mr-2  mb-2">Preview</a>
+                <a href={"/edit/song/" + this.props.list.id}class="btn btn-secondary mr-2  mb-2">Edit</a>
                 <form method="POST" action={"/delete/song/" + this.props.list.id + "?_method=DELETE"} class = "d-inline-block">
-                    <button type="submit" className="btn btn-danger">Delete</button>
+                    <button type="submit" className="btn btn-danger mb-2">Delete</button>
                 </form>
-                <form method="POST" action={"/playlist/addsong/" + this.props.list.id} class = "d-inline-block">
-                    <button type="submit" className="btn btn-info">Add to Playlist</button>
+                <form method="POST" action={"/playlist/1/addsong/" + this.props.list.id} class = "d-inline-block mb-2">
+                    <button type="submit" className="btn btn-info">Add to Playlist 1</button>
+                </form>
+                <form method="POST" action={"/playlist/2/addsong/" + this.props.list.id} class = "d-inline-block">
+                    <button type="submit" className="btn btn-info">Add to Playlist 2</button>
                 </form>
               </div>
             </div>
