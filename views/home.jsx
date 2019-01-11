@@ -1,13 +1,9 @@
-var React = require("react");
-// class ListArtists extendes React.Component {
-//     render() {
-//         return
-//     }
-// }
+var React = require('react');
+var DefaultLayout = require('./default');
 
 class Home extends React.Component {
   render() {
-    console.log(this.props.artists);
+
     const artist = this.props.artists.map ((each,index)=>{
         let link = `/artist/${each.id}`;
         return <div key={index}>
@@ -16,13 +12,13 @@ class Home extends React.Component {
     })
 
     return (
-      <html>
-        <body>
-          <h1>All Artist</h1>
-          {artist}
-          <button><a href= "/artist/new">New Artist</a></button>
-        </body>
-      </html>
+        <DefaultLayout>
+            <h1>All Artist</h1>
+            <button type="button" className="btn btn-info my-4"><a href= "/artist/new">New Artist</a></button>
+            {artist}
+
+        </DefaultLayout>
+
     );
   }
 }
