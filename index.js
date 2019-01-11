@@ -1,10 +1,13 @@
-console.log("starting up!!");
+/**
+ * ===================================
+ * Configurations and set up
+ * ===================================
+ */
 
-const express = require('express');
 const methodOverride = require('method-override');
-const pg = require('pg');
 
-// Initialise postgres client
+/*-----------Postgres-----------*/
+const pg = require('pg');
 const configs = {
   user: 'the574life',
   host: '127.0.0.1',
@@ -18,23 +21,21 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
-/**
- * ===================================
- * Configurations and set up
- * ===================================
- */
-
+/*-----------Express-----------*/
 // Init express app
+const express = require('express');
+
 const app = express();
 
 
+// this line sets css files path
+app.use(express.static(__dirname+'/public/'));
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
 
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -49,17 +50,35 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
   res.render('home');
 });
 
 
 app.get('/new', (request, res) => {
-  // respond with HTML page with form to create new pokemon
   res.render('new');
 });
+
+
+// The Index Feature
+app.get('/artists/', (req, res) => {
+    let queryString = `SELECT * FROM artists`;
+
+    pool.query(queryString, (err, queryResult) => {
+        let artists = {};
+        artists.list = [];
+        for(let i = 0; i < queryResult.rows.length; i++){
+            artists.list.push(queryResult.rows[i]);
+        }
+        // console.log(artists.listing);
+        res.render('artistPage', artists);
+    })
+})
+
+
+// The Create Feature
+app.get('/artists/new', (req, res) => {
+        res.render('newArtist');
+})
 
 
 /**
