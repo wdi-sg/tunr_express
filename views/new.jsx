@@ -5,7 +5,8 @@ class New extends React.Component {
   render() {
     return (
       <Default>
-        <form method="POST" action="/home/new">
+        <h3>NEW</h3>
+        <form method="POST" action="/home/artistnew/new">
           Name of Artist<br/>
           <input type="text" name="name"/><br/>
           Artist Photo<br/>

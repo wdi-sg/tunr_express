@@ -57,43 +57,52 @@ app.get('/home', (request, response) => {
 });
 
 app.get('/home/index', (request, response) => {
-  let text = `SELECT * FROM artists`;
+  let text = `SELECT * FROM artists;`;
 
   pool.query(text, (err, indexResult) => {
-    response.send(indexResult.rows)
+    response.render('artistsIndex', {obj:indexResult.rows})
   });
 })
 
-app.get('/home/show', (request, response) => {
+app.get('/home/artist/:id', (request, response) => {
+  let text = `SELECT * FROM artists WHERE id = ${request.params.id};`;
 
-});
+  pool.query(text, (err, indexResult) => {
+    response.render('artistsShow', indexResult.rows)
+  });
+})
 
-app.get('/home/new', (request, response) => {
+app.get('/home/artistnew', (request, response) => {
   response.render('new');
 });
 
-app.post('/home/new', (request, response) => {
-  let text = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)`
-  const values = [request.body.name, request.body.photo, request.body.nationality]
+app.post('/home/artistnew/new', (request, response) => {
+  let text = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3);`;
+  const values = [request.body.name, request.body.photo_url, request.body.nationality]
 
   pool.query(text, values, (err, newArtist) => {
     response.send(newArtist.rows)
   });
 });
 
-// app.post('/pokemons', (request, response) => {
+app.get('/home/artistedit', (request, response) => {
+  response.render('artistsEdit');
+});
 
-//   let text = 'INSERT INTO pokemons (name, img, weight, height) VALUES ($1, $2, $3, $4)'
+app.put('/home/artist/:id/update', (request, response) => {
+  let text = `UPDATE artists SET name = $1 , photo_url = $2, nationlity = $3, where id = $4;`;
+  const values = [request.body.name, request.body.photo_url, request.body.nationality, request.params.id]
+  pool.query(text, values, (err, result) => {
+    response.send(result.rows)
+  });
+});
 
-//   const values = [request.body.name, request.body.img, request.body.weight, request.body.height]
-
-//   pool.query( text, values, (err, queryResult) => {
-//       console.log("result", queryResult.rows);
-
-//       response.send(queryResult.rows)
-//   })
-
-// })
+app.delete('/home/artist/:id/delete', (request, response) => {
+  let text = `DELETE FROM artists WHERE id = ${request.params.id};`;
+  pool.query(text, (err, result) => {
+    response.redirect("/home/index")
+  });
+});
 
 
 /**
