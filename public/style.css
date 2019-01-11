@@ -1,0 +1,16 @@
+body {
+	background-image: url("https://www.apple.com/v/apple-music/e/images/shared/og_image.png?201810010915");
+	color: white;
+}
+
+.top-nav {
+	background-color: #0066cc;
+}
+
+a {
+	color: white;
+}
+
+a:hover {
+	color: #cc0066;
+}

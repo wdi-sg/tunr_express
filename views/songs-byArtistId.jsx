@@ -1,30 +1,32 @@
 var React = require('react');
 var DefaultLayout = require('./default');
 
-class ShowEachArtist extends React.Component {
+class SongssongId extends React.Component {
   render() {
 
-    const eachArtist = this.props.artist.map ((byArtist,index)=>{
-        let editLink = `/artist/${byArtist.id}/edit`;
-        let actionDelete = `/artist/${byArtist.id}?_method=DELETE`;
+    const eachArtist = this.props.artist.map ((song,index)=>{
+        let editLink = `/song/${song.id}/${song.album}/edit`;
+        let actionDelete = `/song/${song.title}?_method=DELETE`;
         return <div className="container-fluid" key = {index}>
-                    <div className="row">
+
+                     <div className="row">
                         <div className="col">
-                            <h1>Artist Name: {byArtist.name}</h1>
+                            <h2>Artis Id: {song.artist_id}</h2>
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
-                            <img src={byArtist.photo_url} alt="artist_photo" height="150" width="200"/>
+                            <h4>Song Title: {song.title}</h4>
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col">
-                            <h3>Nationality: {byArtist.nationality}</h3>
+                            <h4>Album Title: {song.album}</h4>
                         </div>
                     </div>
+
 
                     <div className="row">
                         <div className="col-1">
@@ -47,4 +49,4 @@ class ShowEachArtist extends React.Component {
   }
 }
 
-module.exports = ShowEachArtist;
+module.exports = SongssongId;
