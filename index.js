@@ -51,15 +51,22 @@ app.engine('jsx', reactEngine);
 app.get('/', (req, res) => {
   
   pool.query( 'SELECT * FROM artists INNER JOIN songs ON (artists.id = songs.artist_id)',(err, resPQ) => {
-    console.log(resPQ);
-    res.render('home', resPQ.rows);
+    let array = {artist: []};
+    for (key in resPQ.rows) {
+      array.artist.push(resPQ.rows[key]);
+    };
+    console.log(array)
+    res.render('home', array);
   });
 });
 
-app.get('/new', (request, response) => {
+app.get('/artist/songs/new', (request, response) => {
   response.render('new');
 });
 
+app.post('/artist/songs/new', (request, response) => {
+  response.render('new');
+});
 
 /**
  * ===================================
