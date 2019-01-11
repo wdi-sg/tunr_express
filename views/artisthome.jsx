@@ -5,7 +5,7 @@ class Artistlist extends React.Component{
     render(){
         return(
             <div>
-                <div className="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal fade" id={"exampleModal" + this.props.list.id} tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div className="modal-dialog" role="document">
                     <div className="modal-content">
                       <div className="modal-header">
@@ -35,10 +35,7 @@ class Artistlist extends React.Component{
                         <form method="GET" action={"/artists/artist/edit/" + this.props.list.id}>
                             <input type="submit" className="edit" value="Edit Artist" />
                         </form>
-                        {/*<input type="submit" className="delete" value="Delete" data-toggle="modal" data-target="#exampleModal"/>*/}
-                        <form method="POST" action={"/artists/artist/delete/" + this.props.list.id + "?_method=delete"}>
-                            <button type="submit" value="Delete" className="btn btn-primary">Delete</button>
-                        </form>
+                        <input type="submit" className="delete" value="Delete" data-toggle="modal" data-target={"#exampleModal" + this.props.list.id}/>
                     </ul>
                 </div>
             </div>

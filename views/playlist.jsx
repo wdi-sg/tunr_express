@@ -22,6 +22,9 @@ class Playlist extends React.Component {
             <br />
             List of Songs in this playlist:-
             {playlists}
+            <form method="GET" action="/playlists">
+                <input type="submit" className="new" value="Back" />
+            </form>
         </Defaultcss>
     );
   }

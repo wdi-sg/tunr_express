@@ -24,8 +24,8 @@ class Artistedit extends React.Component{
                     </form>
                     <br />
                     <br />
-                    <form method="GET" action="/">
-                        <input type="submit" value="Home" />
+                    <form method="GET" action="/artists">
+                        <input type="submit" value="Back" />
                     </form>
                 </div>
             </Defaultcss>
