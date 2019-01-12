@@ -97,9 +97,24 @@ const createSongSpecific =  ( text, response ) => {
   });
 }
 
+const doubleQuerySongValues = ( text, followUpText, values, response ) => {
+  pool.query(text, values, (err, res) => {
+    pool.query(followUpText, (err, res) => {
+      console.log(followUpText);
+      let songs = {};
+      songs.list=[];
+      for(let i = 0; i < res.rows.length; i++){
+              songs.list.push(res.rows[i]);
+          }
+      response.render('songs', songs);
+    });
+  });
+}
+
 const doubleQuerySong = ( text, followUpText, response ) => {
-  pool.query(text,(err, res) => {
-    pool.query(followUpText,(err, res) => {
+  pool.query(text, (err, res) => {
+    pool.query(followUpText, (err, res) => {
+      console.log(followUpText);
       let songs = {};
       songs.list=[];
       for(let i = 0; i < res.rows.length; i++){
@@ -217,11 +232,25 @@ app.get('/create/song', (request, response) => {
 
 app.post('/create/newSong', (request, response) => {
 
-  let album = request.body.album;
-  let updateAlbum = album.replace(`'`, `''`);
+  // let album = request.body.album;
+  // let updateAlbum = album.replace(`'`, `''`);
+
+    const values = [
+    request.body.title,
+    request.body.album,
+    request.body.preview_link,
+    request.body.artwork,
+    request.body.artist_id
+    ];
+
+  // console.log(values);
+
+  // text = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) 
+  //         VALUES ('${request.body.title}', '${updateAlbum}', '${request.body.preview_link}','${request.body.artwork}', ${request.body.artist_id}) 
+  //         RETURNING *`;
 
   text = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) 
-          VALUES ('${request.body.title}', '${updateAlbum}', '${request.body.preview_link}','${request.body.artwork}', ${request.body.artist_id}) 
+          VALUES  ($1, $2, $3, $4, $5) 
           RETURNING *`;
 
   followUpText = `SELECT songs.*, artists.name
@@ -229,10 +258,29 @@ app.post('/create/newSong', (request, response) => {
           FROM songs
           INNER JOIN artists
           ON songs.artist_id = artists.id
-          WHERE songs.title='${request.body.title}' 
-          AND songs.album='${updateAlbum}'`
+          WHERE songs.title='${request.body.title}'
+          `;
+  // followUpText = `SELECT songs.*, artists.name
+  //         AS artist_name
+  //         FROM songs
+  //         INNER JOIN artists
+  //         ON songs.artist_id = artists.id
+  //         WHERE songs.title= IN ($1)
+  //         `
+  // SELECT songs.*, artists.name
+  //         AS artist_name
+  //         FROM songs
+  //         INNER JOIN artists
+  //         ON songs.artist_id = artists.id
+  //         WHERE songs.title= ANY ($1)
+  //          [ 'Minor Mistake',
+  //             'Pew Pew\'s Meal',
+  //             'http://a1748.phobos.apple.com/us/r1000/074/Music/d4/97/e7/mzm.bigdtgoz.aac.p.m4a',
+  //             'http://a3.mzstatic.com/us/r30/Features/d6/ba/99/dj.homcvzwl.60x60-50.jpg',
+  //             '8' ]
 
-  doubleQuerySong(text, followUpText, response);
+
+  doubleQuerySongValues(text, followUpText, values, response);
 });
 
 app.get('/edit/artist/:id', (request, response) => {
@@ -256,11 +304,11 @@ app.post('/edit/editedsong/:id', (request, response) => {
   let album = request.body.album;
   let updateAlbum = album.replace(`'`, `''`);
 
-  text = `UPDATE songs 
-          SET title='${request.body.title}', album='${updateAlbum}', preview_link='${request.body.preview_link}', artwork='${request.body.artwork}', artist_id='${request.body.artist_id}' 
-          WHERE id= ${request.params.id}`;
+    text = `UPDATE songs 
+            SET title='${request.body.title}', album='${updateAlbum}', preview_link='${request.body.preview_link}', artwork='${request.body.artwork}', artist_id='${request.body.artist_id}' 
+            WHERE id= ${request.params.id}`;
 
-  console.log(text);
+  // console.log(text);
 
   followUpText = `SELECT songs.*, artists.name
           AS artist_name
@@ -268,7 +316,7 @@ app.post('/edit/editedsong/:id', (request, response) => {
           INNER JOIN artists
           ON songs.artist_id = artists.id
           WHERE songs.title='${request.body.title}' 
-          AND songs.album='${updateAlbum}'`
+          AND songs.album='${updateAlbum}'`;
 
   doubleQuerySong(text, followUpText, response);
   
@@ -298,7 +346,7 @@ app.get('/playlists/select/:playlistID', (request, response) => {
 });
 
 app.post('/playlist/addsong/:songID', (request, response) => {
-  
+
   text = `INSERT INTO relations(song_id, playlist_id) VALUES(${request.params.songID}, ${request.body.playlist});`;
 
   followUpText = `SELECT playlists.playlist, songs.*
@@ -321,13 +369,7 @@ app.post('/create/newplaylist', (request, response) => {
 
 });
 
-
-
-// Add a table for playlist
 // add column at the side displaying title and artist in a table
-
-// Playlist song data is a join table between a playlist and songs. (each record in the join table records the adding of one song to the playlist)
-//???
 
 // Further
 // For the form at /songs/new, add a dropdown of artists to select from when creating a new song.
@@ -336,11 +378,6 @@ app.post('/create/newplaylist', (request, response) => {
 // Further: Playlist
 // Restrict the user from adding a song to a playlist twice.
 // disable if true
-
-// Further
-// Add a button to each song in the lists of songs ( /songs, /artist/:id/songs ) that goes to a new page.
-// This page will have a list of playlists. Let the user add the song to any playlist.
-
 
 // sub-futher: If a playlist already has the song in it, then don't render that playlist in the list.
 
