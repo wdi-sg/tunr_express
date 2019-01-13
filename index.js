@@ -68,14 +68,21 @@ const showArtist =  ( text, response ) => {
   });
 }
 
-const showSong =  ( text, response ) => {
-  pool.query(text,(err, res) => {
+const showSong =  ( playListText, text, response ) => {
+  pool.query(playListText,(err, res) => {
     let songs = {};
-    songs.list=[];
+    songs.playlist=[];
     for(let i = 0; i < res.rows.length; i++){
-            songs.list.push(res.rows[i]);
+            songs.playlist.push(res.rows[i]);
         }
-    response.render('songs', songs);
+    pool.query(text,(err, res) => {
+      songs.list=[];
+      for(let i = 0; i < res.rows.length; i++){
+              songs.list.push(res.rows[i]);
+          }
+      // console.log(songs);
+      response.render('songs', songs);
+    });
   });
 }
 
@@ -169,12 +176,14 @@ app.get('/', (request, response) => {
 });
 
 app.get('/songs', (request, response) => {
+  playListText = `SELECT playlists.*
+                  FROM playlists`;
   text = `SELECT songs.*, artists.name 
           AS artist_name 
           FROM songs 
           INNER JOIN artists 
           ON songs.artist_id = artists.id`;
-  showSong(text, response);
+  showSong(playListText, text, response);
 });
 
 app.get('/artist/:id', (request, response) => {
