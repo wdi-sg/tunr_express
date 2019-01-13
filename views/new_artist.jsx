@@ -10,7 +10,7 @@ class New extends React.Component {
           <h1>Add new artist to the list</h1>
         </head>
         <body> 
-          <form action="/artists/updated" method="POST" >  
+          <form action="/artists" method="POST" >  
             <h3>Artist Name</h3>
             <input type="text" name="name"></input>
             <h3>Photo</h3>
