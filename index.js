@@ -91,25 +91,7 @@ app.get('/artists/:id', (req, res) => {
 });
 
 
-/*app.get('/artists/:name', (req, res) => {
-
-    let name = req.params.name;
-    console.log(name);
-    const queryText = `SELECT * FROM artists WHERE name ='${name}'`;
-    console.log(queryText);
-
-   pool.query(queryText,(err, queryResult) => {
-        console.log(err);
-        console.log("result", queryResult.rows);
-
-        res.send(queryResult.rows);
- //response.render('home');
-    });
-});*/
-
-
 app.post('/artist', (request, response) => {
-
   //let id = request.params.id;
   let queryText = 'INSERT INTO artists (name,photo_url,nationality) VALUES ($1,$2,$3)';
   const values = [request.body.name,request.body.photo_url,request.body.nationality];
@@ -123,13 +105,109 @@ app.post('/artist', (request, response) => {
   });
 });
 
+// gets the ID for the editing of artist in edit form?
+app.get('/artists/:id/edit', (request, response) => {
+    let id = (request.params.id) -1;
+    const queryText = `SELECT * FROM artists WHERE id = '${id}'`;
 
-app.put('/artists/:id', (req, res) => {
-    let artistId = parseInt(req.params.id);
-    let artists;
+    pool.query(queryText,(err, queryResult) => {
+        if (err) {
+            console.log("Error", err);
+        } else {
+            console.log("result", queryResult.rows);
+            response.render("editArtist", {artists: queryResult.rows});
+        };
+
+    });
+            //let searchedArtist = obj.artists[id];
+});
 
 
-})
+app.get('/artists/:id/delete', (request, response) => {
+    let id = (request.params.id) -1;
+    const queryText = `SELECT * FROM artists WHERE id = '${id}'`;
+
+    pool.query(queryText,(err, queryResult) => {
+        if (err) {
+            console.log("Error", err);
+        } else {
+            console.log("result", queryResult.rows);
+            response.render("deleteArtist", {artists: queryResult.rows});
+        };
+
+    });
+            //let searchedArtist = obj.artists[id];
+});
+
+//Build a feature that allows a user to edit an existing artist in the database
+app.put('/artists/:id/', (req, res) => {
+
+    let id = (req.params.id) -1;
+    let queryText = `UPDATE artists SET (name,photo_url,nationality) VALUES ($1,$2,$3) WHERE id ='${id}'`;
+     const values = [req.body.name,req.body.photo_url,req.body.nationality];
+
+    //let artistId = parseInt(req.params.id) -1;
+    //let artists;
+    pool.query(queryText, values, (err, queryResult) => {
+        if (err) {
+            console.log("Error", err);
+        } else {
+            res.render('home', {artist:queryResult.rows});
+        }
+        //res.send(queryResult.rows);
+    });
+});
+
+//Build a feature that allows users to delete an existing artist from the database.
+app.delete('/artists/:id', (req, res) => {
+    let id = (request.params.id) -1;
+    let queryText = `DELETE from artists WHERE id = '${id}'`;
+
+    pool.query(queryText, (err, queryResult) => {
+        if (err) {
+            console.log("Error", err);
+        } else {
+            res.redirect('/artists');
+        }
+    });
+});
+
+//========================================//
+//       TUNR RELATIONSHIPS --------------//
+//=======================================//
+
+app.get('/artists/:id/songs', (req, res) => {
+
+    let id = req.params.id; // artist ID
+    const queryText = `SELECT * FROM songs  WHERE id = '${id}'`;
+
+   pool.query(queryText,(err, queryResult) => {
+        if (err) {
+            console.log("Error", err);
+        } else {
+            console.log("result", queryResult.rows);
+            res.render("displayArtistSongs", {songs: queryResult.rows});
+        };
+
+ //response.render('home');
+    });
+});
+
+app.post('/artist/:id/songs', (request, response) => {
+  //let id = request.params.id;
+  let queryText = 'INSERT INTO songs (title, album, preview_link, artwork ) VALUES ($1,$2,$3,$4)';
+  const values = [request.body.title,request.body.album,request.body.preview_link, request.body.artwork];
+
+  pool.query(queryText, values, (err, queryResult) => {
+            if (err) {
+                console.log('Error', err);
+            }
+            console.log("result", queryResult.rows);
+            response.render("addSongs", queryResult.rows);
+  });
+});
+
+
 
 
 /**
@@ -153,3 +231,20 @@ let onClose = function(){
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+
+/*app.get('/artists/:name', (req, res) => {
+
+    let name = req.params.name;
+    console.log(name);
+    const queryText = `SELECT * FROM artists WHERE name ='${name}'`;
+    console.log(queryText);
+
+   pool.query(queryText,(err, queryResult) => {
+        console.log(err);
+        console.log("result", queryResult.rows);
+
+        res.send(queryResult.rows);
+ //response.render('home');
+    });
+});*/
