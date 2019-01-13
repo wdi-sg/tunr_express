@@ -8,7 +8,7 @@ class New extends React.Component {
         <body>
           <h1>Tuner</h1>
           <h3>
-            <form method="POST" action="/artists">
+            {/* <form method="POST" action="/artists">
               <input
                 type="hidden"
                 name="id"
@@ -44,6 +44,35 @@ class New extends React.Component {
                 value="delete"
                 formaction="/artists/?_method=delete"
               />
+            </form> */}
+
+            <form method="POST" action="/artists/songs">
+              <input type="hidden" name="id" value={this.props.id} />
+              Albums's Name:{" "}
+              <input
+                type="text"
+                name="album"
+                value={this.props.artist ? this.props.artist.name : ""}
+              />{" "}
+              <br />
+              <br />
+              Preview URL:{" "}
+              <input
+                type="text"
+                name="preview_link"
+                value={this.props.artist ? this.props.artist.photo_url : " "}
+              />{" "}
+              <br />
+              <br />
+              Song Title:{" "}
+              <input
+                type="text"
+                name="title"
+                value={this.props.artist ? this.props.artist.nationality : " "}
+              />{" "}
+              <br />
+              <br />
+              <input type="submit" value="submit" />
             </form>
           </h3>
         </body>

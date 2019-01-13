@@ -145,6 +145,49 @@ app.delete("/artists", (req, res) => {
   );
 });
 
+app.get("/artists/:id/songs", (req, res) => {
+  let artistID = parseInt(req.params.id);
+
+  pool.query(
+    "SELECT * FROM songs where artist_id = $1",
+    [artistID],
+    (err, queryResult) => {
+      // respond with HTML page displaying all artists
+
+      if (queryResult.rowCount > 0) {
+        console.log(queryResult.rows);
+        res.render("home", { songs: queryResult.rows });
+      } else {
+        res.send("not found");
+      }
+    }
+  );
+});
+
+app.get("/artists/:id/songs/new", (req, res) => {
+  res.render("new", { id: req.params.id });
+});
+
+app.post("/artists/songs", (req, res) => {
+  pool.query(
+    "INSERT INTO songs (title,album,preview_link,artist_id) VALUES ($1,$2,$3,$4)",
+    [
+      req.body.title,
+      req.body.album,
+      req.body.preview_link,
+      parseInt(req.body.id)
+    ],
+    (err, queryResult) => {
+      console.log(req.body.title);
+      console.log(req.body.album);
+      console.log(req.body.preview_link);
+      console.log(req.body.id);
+      console.log(err);
+      res.send("New Song for Artist Created");
+    }
+  );
+});
+
 /**
  * ===================================
  * Listen to requests on port 8080
