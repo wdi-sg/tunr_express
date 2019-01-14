@@ -155,19 +155,19 @@ app.get('/songs', (request, response) => {
   });
 });
 
-// // /******Songs - The Show Feature *******/
-// app.get('/songs/:id', (request, response) => {
+// /******Songs - The Show Feature *******/
+app.get('/songs/:id', (request, response) => {
   
-//   let id = request.params.id;
+  let id = request.params.id;
 
-//   pool.query('SELECT * FROM songs WHERE id='+id,(err, queryResult) => {
+  pool.query('SELECT * FROM songs WHERE id='+id,(err, queryResult) => {
 
-//     //console.log("result", queryResult.rows);
+    //console.log("result", queryResult.rows);
 
-//     response.send(queryResult.rows);  
+    response.send(queryResult.rows);  
   
-//   });
-// });
+  });
+});
 
 /*****************Songs - The Create Feature*************/
 app.get('/song/new', (request,response)=> { 
@@ -217,7 +217,7 @@ app.put('/songs/:id', (request,response) => {
 });
 
 /************************song - The Delete Feature***************************/
-app.get('/song/delete/:id', (request,response) => {
+app.delete('/song/delete/:id', (request,response) => {
 
   
   let id = request.params.id;
@@ -230,16 +230,18 @@ app.get('/song/delete/:id', (request,response) => {
 
   });
 });
-//// Delete doesnt work when app.delete is used but works when app.get is used /////////////
 
 
-/************************artist/id/songs ****************************/
 
-app.get('/songs/:id', (request, response) => {
+/************************list of songs for this artist ****************************/
+
+app.get('/artist/:id/songs', (request, response) => {
   
   let id = request.params.id;
 
-  pool.query('SELECT * FROM songs WHERE id='+id,(err, queryResult) => {
+  pool.query('SELECT * FROM artists WHERE id='+id,(err, queryResult) => {
+
+    pool.query('SELECT * FROM songs WHERE artist_id='+id,(err, queryResult) => {
 
     console.log("result", queryResult.rows);
 
@@ -247,7 +249,27 @@ app.get('/songs/:id', (request, response) => {
   
 });
 });
+});
+/************************create a new song ****************************/
+app.get('/artist/:id/songs/new', (request,response)=> { 
 
+  //response.send(request.body);
+
+  response.render('artist_new_song');
+
+});
+/*****************create a new song*************/
+app.post('/song', (request, response) => {
+  
+  //console.log(request.body);
+  let queryText = 'INSERT INTO songs (title, album, preview_link,artwork) VALUES ($1, $2, $3, $4) RETURNING id';
+  const values = [request.body.title, request.body.album, request.body.preview_link,request.body.artwork];
+  pool.query(queryText, values, (err, res) => {
+
+    response.send(request.body);
+    
+  });  
+});
 
 /**
  * ===================================
