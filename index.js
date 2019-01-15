@@ -62,6 +62,7 @@ app.get('/artists', (request, response) => {
 });
 
 
+
 //show single artist 
 app.get('/artists/:artname', (request, res) => {
   let artname = request.params.artname; //splicing url to give artist name

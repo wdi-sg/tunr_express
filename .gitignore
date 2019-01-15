@@ -1,5 +1,7 @@
 node_modules/
 ####### NODE
+notes.md
+notes3.md
 
 # Logs
 logs
@@ -92,4 +94,5 @@ Icon
 .AppleDesktop
 Network Trash Folder
 Temporary Items
-.apdisk
+
+
