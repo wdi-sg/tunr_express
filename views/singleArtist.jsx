@@ -3,7 +3,12 @@ var DefaultLayout = require('./default');
 
 class Artists extends React.Component {
   render() {
-    console.log(this.props.list)
+    console.log(this.props.list);
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+    
     const artists = this.props.list.map( (artist) => {
             return (
                 <div style={{marginTop: '50px'}}>

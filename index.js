@@ -80,8 +80,8 @@ app.get('/artists/:artname', (request, res) => {
               res.send( 'query error' );
           }
           //console.log(result.rows[0]['id']);
-          //console.log('query result:', resultsongs.rows); // printing of song list by artist
-          res.send(resultsongs.rows); 
+          console.log('query result:', resultsongs.rows); // printing of song list by artist
+          res.render('artists', {list:resultsongs.rows}); 
         });
     }
   });
@@ -96,6 +96,20 @@ app.get('/', (req, res) => {
     }    
     //console.log('query result:', result.rows); 
     res.render('artists', {list:result.rows}); 
+  });
+});
+
+app.get('/:id', (req, res) => {
+  console.log('hiiiii this is /:id '+ parseInt( request.params.id ));
+  let artId = parseInt( request.params.id );
+  let queryString = `SELECT * FROM songs WHERE artist_id =  '${artId}`;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    }    
+    //console.log('query result:', result.rows); 
+    res.render('singleArtist', {list:result.rows}); 
   });
 });
 
