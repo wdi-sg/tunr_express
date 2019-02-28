@@ -13,7 +13,7 @@ class Artist extends React.Component {
                 <p>{this.props.artists.nationality}</p>
 
                 <button type="submit"><a href={"/artists/" + this.props.artists.id + "/edit"} style={{textDecoration: "none", color: "grey"}}>Edit</a></button>
-                <button type="submit"><a href="/" style={{textDecoration: "none", color: "grey"}}>Delete</a></button>
+                <button type="submit"><a href="/" style={{textDecoration: "Delete", color: "grey"}}>Delete</a></button>
             </div>
         </body>
       </html>
