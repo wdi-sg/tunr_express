@@ -178,6 +178,34 @@ app.put(`/artist/:id`,(request, response)=>{
 });
 
 //DELETE EXISTING ARTIST:
+app.get('/artist/:id/delete', (request, response)=>{
+  let artistId = parseInt(request.params.id);
+  let queryString = `SELECT * from artists WHERE id = ${artistId}`;
+  pool.query(queryString, (err, result)=>{
+    if (err){
+      console.error('query error:', err.stack);
+    }else{
+      console.log('query resulttt:', result.rows);
+      const data = {artistId: result.rows};
+      response.render('delete',data);
+      console.log("Done with passing data from artist/;id/delete to the delete render form");
+    };
+  });
+});
+
+app.delete(`/artist/:id`, (request, response)=>{
+   console.log("this is request body:",request.body);
+   let artistId = parseInt(request.params.id);
+   let queryString = `DELETE FROM artists WHERE id=${artistId} RETURNING *`;
+   pool.query(queryString, (err, result)=>{
+     if (err){
+       console.error('query error:', err.stack);
+     }else{
+       console.log(`query resulttt has been deleted: ${result.rows[0].name}`, result.rows);
+       response.redirect(`/artists`);
+     };
+   });
+})
 
 
 
