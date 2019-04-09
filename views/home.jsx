@@ -1,15 +1,16 @@
 var React = require("react");
+var Layout = require("./layout");
 
 class Home extends React.Component {
   render() {
-    return (
+    return (<Layout>
       <html>
         <head />
         <body>
-          <h1>Welcome! Hello World!</h1>
+          <h3>Welcome! Hello World!</h3>
         </body>
       </html>
-    );
+    </Layout>);
   }
 }
 

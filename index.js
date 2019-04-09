@@ -78,7 +78,19 @@ app.get('/artists', (request, response)=>{
 });
 
 app.get('/artist/:id', (request, response)=>{
-  
+  let artistId = parseInt(request.params.id);
+
+  const queryString = "SELECT * FROM artists WHERE id=" + artistId;
+
+  pool.query(queryString, (err, result)=>{
+    if (err){
+      console.error('query error:', err.stack);
+    }else{
+      console.log('query resulttt:', result.rows);
+      const data = {artist: result.rows};
+      response.render('artist',data);
+    };
+  });
 });
 
 

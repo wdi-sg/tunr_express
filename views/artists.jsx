@@ -1,10 +1,11 @@
 var React = require("react");
+var Layout = require("./layout");
 
 class Artists extends React.Component {
   render() {
     console.log("Printing out this.props: "+this.props);
       console.log("Printing out this.props.artists: "+this.props.artists);
-      //this.props refers to the pokeList which is an array of pokemons' stats.
+
       console.log("Creating a loop now");
 
       let allArtistsStatsArr = this.props.artists.map(thisArtistStats=>{
@@ -15,10 +16,12 @@ class Artists extends React.Component {
           return(
             // <li>{id} {num} {name}</li>
             <div>
-              <h5>Artists ID: </h5>
+              <h3>Artist ID: </h3>
               <p>{id}</p>
               <h4>Artist's Name: </h4>
-              <p>{name}</p>
+                <a href={`/artist/${id}`}>
+                  <p>{name}</p>
+                </a>
               <h4>Photo: </h4>
               <img src = {photo}/>
               <h4>Artist's Nationality: </h4>
@@ -26,11 +29,11 @@ class Artists extends React.Component {
             </div>
           )
       });
-      return (
+      return (<Layout>
         <div>
           {allArtistsStatsArr}
         </div>
-      )
+      </Layout>)
   }
 }
 
