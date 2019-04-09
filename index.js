@@ -73,6 +73,35 @@ pool.query(queryString, (errorObj, result) => {
   // response.render('home');
 });
 
+app.get('/:id', (request, response) => {
+  console.log(request.params.id);
+  let artistId = request.params.id;
+  // SELECT * FROM songs where artist_id = 4 ORDER BY id  LIMIT 5;
+  const queryString = `SELECT * FROM songs where artist_id = ${artistId} ORDER BY id LIMIT 15`;
+  // const queryString = `SELECT title FROM songs where artist_id = ${artistId} ORDER BY id LIMIT 5`;
+
+  pool.query(queryString, (errorObj, result) => {
+    console.log(result.rows);
+    // errorObj is not null if there's an error
+    if (!errorObj) {
+      // console.log('query resulttttttt:', result.rows);
+      const data = {ccb : result.rows};
+      // console.log(data);
+      // response.send(data);
+      response.render('new', data);
+    } else {
+      console.log(errorObj,"fedv");
+      console.error('query error:');
+      // res.send( 'query error' );
+
+    }
+  });
+
+
+  // response.render('new');
+});
+
+
 app.get('/new', (request, response) => {
   response.render('new');
 });
