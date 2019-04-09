@@ -6,7 +6,7 @@ class Home extends React.Component {
       <html>
         <head />
         <body>
-          <h1>Welcome!</h1>
+          <h1>Welcome to Music that will TUNR YOU!</h1>
         </body>
       </html>
     );
