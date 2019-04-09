@@ -61,11 +61,46 @@ app.get('/', (request, response) => {
 //   response.render('new');
 // });
 
+
+
+app.get('/artists/add', (request, response) => {
+    const queryString = 'SELECT * FROM artists ORDER BY id DESC LIMIT 1';
+    console.log(queryString);
+    pool.query(queryString, (err, result) => {
+
+        // console.log( err, result );
+        if (err === undefined ) {
+            const data = {data: result.rows}
+            // console.log(data);
+            response.render('new', data);
+        } else {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        }
+    });
+});
+
+app.post('/artists/:id', (request, response) => {
+    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
+    const values = [request.body.name, request.body.photo_url, request.body.nationality];
+    pool.query(queryString, values, (err, result) => {
+
+        // console.log( err, result );
+        if (err === undefined ) {
+            const data = {artists: result.rows}
+            response.render('home', data);
+        } else {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        }
+    });
+});
+
 app.get('/artists', (request, response) => {
     const queryString = 'SELECT * FROM artists';
     pool.query(queryString, (err, result) => {
 
-        console.log( err, result );
+        // console.log( err, result );
         if (err === undefined ) {
             const data = {artists: result.rows }
             response.render('home', data );
@@ -80,7 +115,7 @@ app.get('/artists/:id', (request, response) => {
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
     pool.query(queryString, (err, result) => {
 
-        console.log( err, result );
+        // console.log( err, result );
         if (err === undefined ) {
             const data = {artists: result.rows}
             response.render('home', data );
