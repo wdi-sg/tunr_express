@@ -60,6 +60,27 @@ app.get('/new', (request, response) => {
 
 });
 
+app.post('/new', (request, response) => {
+
+    console.log(request.body);
+
+    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${request.body.name}', '${request.body.photo_url}', '${request.body.nationality}') RETURNING *`;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        } else {
+            const data = result.rows;
+            response.render('artists', {artists: data});
+        }
+
+    })
+
+
+})
+
 app.get('/artists/:id', (request, response) => {
 
     let index = request.params.id;
