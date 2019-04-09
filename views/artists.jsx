@@ -15,17 +15,14 @@ class Artists extends React.Component {
         let nationality = thisArtistStats.nationality;
           return(
             // <li>{id} {num} {name}</li>
-            <div>
-              <h3>Artist ID: </h3>
-              <p>{id}</p>
-              <h4>Artist's Name: </h4>
-                <a href={`/artist/${id}`}>
-                  <p>{name}</p>
+            <div className="card" styleName ={"width: 18rem;"}>
+            <img className ="card-img-top" src = {photo} alt= "Artist's image"/>
+              <div className = "card-body">
+              <a href={`/artist/${id}`}>
+                <h4 className = "card-title">{name}</h4>
                 </a>
-              <h4>Photo: </h4>
-              <img src = {photo}/>
-              <h4>Artist's Nationality: </h4>
-              <p>{nationality}</p>
+              <h5>Nationality: {nationality}</h5>
+              </div>
             </div>
           )
       });
