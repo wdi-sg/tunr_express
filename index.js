@@ -63,14 +63,13 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
-
+//DUMMY DIRECTORY:
+app.get('/', (request, response)=>{
   // respond with HTML page displaying all stuff?
   response.render('home');
 });
 
-
+//HOME DIRECTORY THAT SHOWS ALL ARTISTS:
 app.get('/artists', (request, response)=>{
   //respond with HTML page to display all stats about artists
   const queryString = 'SELECT * from artists';
@@ -88,6 +87,7 @@ app.get('/artists', (request, response)=>{
   });
 });
 
+//VIEW SINGLE ARTIST:
 app.get('/artist/:id', (request, response)=>{
   let artistId = parseInt(request.params.id);
 
@@ -104,7 +104,7 @@ app.get('/artist/:id', (request, response)=>{
   });
 });
 
-
+//CREATE NEW FORM TO ADD ARTIST:
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new page
   response.render('new');
@@ -138,6 +138,47 @@ app.post('/artists',(request, response)=>{
      }
    });
  });
+
+//EDIT EXISTING ARTIST:
+app.get(`/artist/:id/edit`,(request, response)=>{
+  let artistId = parseInt(request.params.id);
+
+  let queryString = `SELECT * from artists WHERE id = ${artistId}`;
+  pool.query(queryString, (err, result)=>{
+    if (err){
+      console.error('query error:', err.stack);
+    }else{
+      console.log('query resulttt:', result.rows);
+      const data = {artistId: result.rows};
+      response.render('edit',data);
+      console.log("Done with passing from artist/edit to the render form");
+    };
+  });
+});
+
+app.put(`/artist/:id`,(request, response)=>{
+   console.log("this is request body:",request.body);
+   let artistId = parseInt(request.params.id);
+   let editArtist = request.body;
+   // console.log(`Printing out editArtist[0].name: ${editArtist[0].name}`);
+   // console.log(`Printing out editArtist.name: ${editArtist.name}`);
+   console.log(`Printing out editArtist.name: ${editArtist.name}`);
+
+   let queryString = `UPDATE artists SET name='${editArtist.name}', photo_url='${editArtist.photo_url}', nationality='${editArtist.nationality}' WHERE id=${artistId} RETURNING *`;
+
+   pool.query(queryString, (err, result)=>{
+     if (err){
+       console.error('query error:', err.stack);
+     }else{
+       console.log('query resulttt:', result.rows);
+       const data = {artist: result.rows};
+       response.render('artist',data);
+     };
+   });
+});
+
+//DELETE EXISTING ARTIST:
+
 
 
 /**

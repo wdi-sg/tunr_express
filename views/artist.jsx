@@ -7,13 +7,14 @@ class Artist extends React.Component {
       console.log("Printing out this.props.artist: "+this.props.artist);
 
         let id = parseInt(this.props.artist[0].id);
+        console.log("Printing out this.props.artist[0].id: "+this.props.artist[0].id);
         let name = this.props.artist[0].name;
         let photo = this.props.artist[0].photo_url;
         let nationality = this.props.artist[0].nationality;
-          return(
-            // <li>{id} {num} {name}</li>
+          // <li>{id} {num} {name}</li>
+          return(<Layout>
             <div>
-            <a href='/artists/'>Return to view all artist</a>
+            <a href='/artists/'>Return to view all artists</a>
               <div className="card" styleName ={"width: 18rem;"}>
               <img className ="card-img-top" src = {photo} alt= "Artist's image"/>
                 <div className = "card-body">
@@ -24,7 +25,7 @@ class Artist extends React.Component {
                 </div>
               </div>
             </div>
-          );
+          </Layout>);
       };
   };
 
