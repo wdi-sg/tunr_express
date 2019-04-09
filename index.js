@@ -54,6 +54,10 @@ app.get('/', (request, response) => {
 
 });
 
+/*
+                    ADD NEW ARTIST
+*/
+
 app.get('/new', (request, response) => {
 
   response.render('new');
@@ -78,6 +82,9 @@ app.post('/new', (request, response) => {
 
     })
 
+/*
+                        INDEX, SHOW
+*/
 
 })
 
@@ -123,8 +130,87 @@ app.get('/artists', (request, response) => {
 
 });
 
+/*
+                        EDIT
+*/
+
+app.get('/artists/:id/edit', (request, response) => {
+
+    let index = request.params.id;
+    const queryString = `SELECT * FROM artists WHERE id=${index}`;
+
+    pool.query(queryString, (err, result) => {
+
+    if (err) {
+        console.log('query error', err.stack);
+        response.send('query error');
+    } else {
+        console.log('query result', result.rows);
+        const data = result.rows;
+        response.render('edit', {artists: data});
+    }
+
+    })
+})
 
 
+app.put('/artists/:id', (request, response) => {
+
+   let index = request.params.id;
+
+   const queryString = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id=${index} RETURNING *`;
+
+       pool.query(queryString, (err, result) => {
+
+            if (err) {
+                console.log('query error', err.stack);
+                response.send('query error');
+            } else {
+                let data = result.rows;
+                response.render('artists', {artists: data});
+            }
+        })
+
+});
+
+/*
+                        DELETE
+*/
+
+app.get('/artists/:id/delete', (request, response) => {
+
+    let index = request.params.id;
+   const queryString = `SELECT * FROM artists WHERE id=${index}`;
+
+    pool.query(queryString, (err, result) => {
+
+            if (err) {
+                console.log('query error', err.stack);
+                response.send('query error');
+            } else {
+                const data = result.rows;
+                response.render('delete', {artists: data});
+            }
+    })
+
+})
+
+app.delete('/artists/:id', (request, response) => {
+
+    let index = request.params.id;
+    const queryString = `DELETE FROM artists WHERE id=${index}`;
+
+    pool.query(queryString, (err, result) => {
+
+            if (err) {
+                console.log('query error', err.stack);
+                response.send('query error');
+            } else {
+                response.send("Deleted!");
+            }
+    })
+
+})
 
 
 
