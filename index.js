@@ -1,8 +1,20 @@
+/*===========================================
+//===========================================
+//===========================================
+//===========================================
+//===========================================
+//===========================================
+//===========================================
+//===========================================
+//===========================================
+============================================*/
+
 console.log("starting up!!");
 
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+
 
 // Initialise postgres client
 const configs = {
@@ -11,7 +23,7 @@ const configs = {
   database: 'tunr_db',
   port: 5432,
 };
-
+const client = new pg.Client(configs)
 const pool = new pg.Pool(configs);
 
 pool.on('error', function (err) {
@@ -29,7 +41,7 @@ const app = express();
 
 
 app.use(express.json());
-app.use(express.urlencoded({
+app.use(express.urlencoded({ //allows us to use request.body;
   extended: true
 }));
 
@@ -58,10 +70,6 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new page
-  response.render('new');
-});
 
 app.get('/artists', (request, response)=>{
   //respond with HTML page to display all stats about artists
@@ -95,6 +103,41 @@ app.get('/artist/:id', (request, response)=>{
     };
   });
 });
+
+
+app.get('/new', (request, response) => {
+  // respond with HTML page with form to create new page
+  response.render('new');
+});
+
+app.post('/artists',(request, response)=>{
+  console.log("Printing request body: "+request.body);
+  let newArtist = request.body;
+   //console.log("Printing out newArtist.id: "+newArtist.id);
+   console.log("Printing out newArtist.name: "+newArtist.name);
+   console.log("Printing out newArtist.photo_url: "+newArtist.photo_url);
+   console.log("Printing out newArtist.nationality: "+newArtist.nationality);
+
+    console.log("about to do queryString for new Artist");
+
+   let queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${newArtist.name}', '${newArtist.photo_url}', '${newArtist.nationality}') RETURNING *`;
+    console.log("queryString for adding new artist into DB is done");
+
+    //console.log("values for adding new artist into DB is done");
+
+   pool.query(queryString, (err, result)=>{
+     console.log("running client query now");
+     if (err) {
+       console.error('query error:', err.stack);
+       response.send('query error');
+     } else {
+    //   console.log('query resulttttttt:', result.rows);
+      console.log(`Added ${result.rows[0].name} into artists DB`);
+       console.log(`Added ${newArtist.name} into artists DB`);
+       response.redirect(`/artists`);
+     }
+   });
+ });
 
 
 /**
