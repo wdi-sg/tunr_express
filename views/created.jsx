@@ -7,7 +7,7 @@ class Created extends React.Component {
         return (
 
         <body>
-            <h1>Recipe</h1>
+            <h1>Artist Created:</h1>
                 <div>
                     <div>Artist Name:
                         <p>{this.props.artist[0].name}</p>

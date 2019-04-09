@@ -48,7 +48,9 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//===================================
 // INDEX
+
 app.get('/artists', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists';
@@ -57,7 +59,7 @@ app.get('/artists', (request, response) => {
         // errorObj is null if there's no error
         if (errorObj === undefined) {
 
-            console.log(result.rows);
+            // console.log(result.rows);
             const data = { artists : result.rows };
             // respond with HTML page displaying all artists
             response.render('index', data);
@@ -68,12 +70,10 @@ app.get('/artists', (request, response) => {
     });
 });
 
-/**
- * ===================================
- * ===================================
- */
 
+//===================================
 // CREATE
+
 //displaying the form to add new artist
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new songs
@@ -104,12 +104,9 @@ app.post('/artists', (request, response) => {
     });
 });
 
-/**
- * ===================================
- * ===================================
- */
-
+//===================================
 // SHOW
+
 app.get('/artists/:id', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
@@ -130,12 +127,9 @@ app.get('/artists/:id', (request, response) => {
     });
 });
 
-/**
- * ===================================
- * ===================================
- */
-
+//===================================
 //EDIT
+
 app.get('/artists/:id/edit', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
@@ -174,6 +168,48 @@ app.put('/artists/:id', (request, response) => {
         }
     });
 });
+
+//===================================
+//DELETE
+
+app.get('/artists/:id/delete', (request, response) => {
+    // query database for all artists
+    const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
+        // response.send(queryString);
+    pool.query(queryString, (errorObj, result) => {
+        // console.log(errorObj, result);
+        // errorObj is null if there's no error
+        if (errorObj === undefined) {
+
+            // console.log('Query results: ', result.rows);
+            const data = { artist : result.rows };
+            // respond with HTML page displaying all artists
+            response.render('delete', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
+app.delete('/artists/:id', (request, response) => {
+
+    const queryString = "DELETE FROM artists WHERE id=" + request.params.id + " RETURNING *";
+
+    pool.query(queryString, (errorObj, result) => {
+
+        // errorObj is null if there's no error
+        if (errorObj === undefined) {
+
+            const data = { artists : result.rows };
+            response.render('deleted', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
 
 /**
  * ===================================

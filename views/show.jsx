@@ -3,8 +3,14 @@ var React = require("react");
 class Show extends React.Component {
   render() {
 
-    const theArtist = this.props.artist.map((selectArtist) => {
-        return <li>{selectArtist.name}</li>;
+    const theArtist = this.props.artist.map((artist) => {
+        return (
+            <React.Fragment>
+                <li>Artist Name: {artist.name}</li>
+                <li>Photo URL: {artist.photo_url}</li>
+                <li>Nationality: {artist.nationality}</li>
+            </React.Fragment>
+                );
     });
 
     return (
