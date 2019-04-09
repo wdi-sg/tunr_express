@@ -52,12 +52,37 @@ app.get('/', (request, response) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
-  response.send('hello');
+  // response.render('home');
+  response.send('hello its me');
 });
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
+});
+
+app.get('/artists', (request, response) => {
+    const queryString = 'SELECT * FROM artists';
+  //     response.send( queryString );
+  // return;
+
+  pool.query(queryString, (err, result) => {
+
+    console.log( err, result );
+
+    if (err === undefined ) {
+
+      // console.log('query resulttttttt:', result.rows);
+      // const data = {  students : result.rows};
+      const data = {artists: result.rows }
+      response.render('home', data );
+    } else {
+
+      console.error('query error:', err.stack);
+      response.send( 'query error' );
+
+    }
+  });
 });
 
 
