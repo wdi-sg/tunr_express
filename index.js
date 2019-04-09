@@ -55,9 +55,56 @@ app.get('/', (request, response) => {
 });
 
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+
   response.render('new');
+
 });
+
+app.get('/artists/:id', (request, response) => {
+
+    let index = request.params.id;
+    const queryString = `SELECT * FROM artists WHERE id=${index}`;
+
+    pool.query(queryString, (err, result) => {
+
+    if (err) {
+        console.log('query error', err.stack);
+        response.send('query error');
+    } else {
+        console.log('query result', result.rows);
+
+        const data = result.rows;
+        response.render('artists', {artists: data});
+    }
+
+    })
+
+});
+
+app.get('/artists', (request, response) => {
+
+    const queryString = 'SELECT * FROM artists';
+
+    pool.query(queryString, (err, result) => {
+
+        console.log(err, result);
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result:', result.rows);
+
+            const data = result.rows;
+            response.render('artists', {artists: data});
+
+        }
+    })
+
+});
+
+
+
+
 
 
 /**
