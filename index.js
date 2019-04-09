@@ -44,11 +44,30 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes
+ * Function Declarations For Routes
  * ===================================
  */
 
-app.get('/', (request, response) => {
+let lookupArtistById = (request, response) => {
+    // get id from request
+    let inputId = parseInt( request.params.id );
+    // form query string
+    let queryText = `SELECT * FROM artists WHERE id = ${inputId}`;
+    // query database for id
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.log("query error", err.message);
+            response.send('query error');
+        }
+        else {
+            // respond with HTML page displaying artist's details
+            console.log(result.rows);
+            response.render('ViewArtist', {artist: result.rows[0]});
+        }
+    });
+}
+
+let homepage = (request, response) => {
     // form query string
     let queryText = 'SELECT * FROM artists';
     // query database for so and so
@@ -60,10 +79,30 @@ app.get('/', (request, response) => {
         else {
             // respond with HTML page displaying welcome message
             // console.log(result.rows);
-            response.render('home', {artists:result.rows});
+            // find a way to query both tables at the same time?
+            response.render('home', {artists: result.rows});
         }
     });
-});
+}
+
+let redirectToHomepage = (request, response) => {
+    response.redirect('/');
+}
+
+/**
+ * ===================================
+ * Routes
+ * ===================================
+ */
+
+// get a specified artist's details by ID
+app.get('/artist/:id', lookupArtistById);
+
+// redirects /artists to default index page
+app.get('/artists', redirectToHomepage);
+
+// default index page
+app.get('/', homepage);
 
 app.get('/new', (request, response) => {
     // respond with HTML page with new form - to update

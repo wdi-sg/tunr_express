@@ -4,7 +4,7 @@ class Home extends React.Component {
   render() {
     let artists = this.props.artists;
     let artistList = artists.map((artist)=> {
-        let artistLink = '/artists/' + artist.id;
+        let artistLink = '/artist/' + artist.id;
         return (
             <tr>
                 <th>{artist.id}</th>
