@@ -15,27 +15,24 @@ class Head extends React.Component{
     }
 }
 
-class Home extends React.Component {
+class View extends React.Component {
   render() {
 
     let data = this.props.data
-    console.log('in the home JSX........:');
+    console.log('in the view artist JSX........:');
     console.log(data);
     let outList = data.map(item=>{
         return  <div class="card-item">
-                    <img src={item.photo_url}/>
-                    <a class="card-body" href={`/artist/${item.id}`}>
-                    <h4>{item.id}. {item.name}</h4>
-                    <h5>{item.nationality}</h5>
-                    </a>
+                    <h4>{item.title} {item.album}</h4>
+                    <h5>{item.nationality} {item.preview_link}</h5>
                 </div>
-
     })
     return (
       <html>
         <Head/>
         <body>
           <h1>Mildly Comparable Audiophalse</h1>
+          <a href='/'>Return to view all artist</a>
           <div class="content">
             {outList}
           </div>
@@ -45,4 +42,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = View;

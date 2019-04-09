@@ -27,6 +27,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
+app.use(express.static(__dirname+'/public/'));
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -47,17 +48,36 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-
+//VIEW ALL ARTIST
 app.get('/', (req, res) => {
   // query database for all pokemon
   const queryString = `SELECT * FROM artists`;
-    pool.query(queryString,(errobj, result)=>{
-        if(errobj === undefined){
+    pool.query(queryString,(errObj, result)=>{
+        if(errObj === undefined){
             console.log('This where results come to.', result.rows);
             // console.log(result.rows);
             const data = result.rows;
 
             res.render('home', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+});
+
+//VIEW SONGS FROM SINGLE ARTIST
+app.get('/artist/:id', (req,res)=>{
+
+    artistId = parseInt(req.params.id);
+
+    const queryString = `SELECT * FROM songs WHERE artist_id = ${artistId}`;
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
+            console.log('This where results come to.', result.rows);
+            // console.log(result.rows);
+            const data = result.rows;
+            res.render('viewartist', {data});
         } else {
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
