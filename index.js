@@ -72,7 +72,7 @@ app.get('/', (request, response)=>{
 //HOME DIRECTORY THAT SHOWS ALL ARTISTS:
 app.get('/artists', (request, response)=>{
   //respond with HTML page to display all stats about artists
-  const queryString = 'SELECT * from artists';
+  let queryString = 'SELECT * from artists';
 
   pool.query(queryString, (err, result) => {
 
@@ -81,7 +81,7 @@ app.get('/artists', (request, response)=>{
       response.send('query error');
     } else {
    //   console.log('query resulttttttt:', result.rows);
-      const data = {artists: result.rows};
+      let data = {artists: result.rows};
       response.render('artists', data);
     }
   });
@@ -188,7 +188,7 @@ app.get('/artist/:id/delete', (request, response)=>{
       console.log('query resulttt:', result.rows);
       const data = {artistId: result.rows};
       response.render('delete',data);
-      console.log("Done with passing data from artist/;id/delete to the delete render form");
+      console.log("Done with passing data from artist/:id/delete to the delete render form");
     };
   });
 });
@@ -207,7 +207,21 @@ app.delete(`/artist/:id`, (request, response)=>{
    });
 })
 
-
+//GET AND DISPLAY ALL SONGS TIED TO AN ARTIST:
+app.get(`/artist/:id/songs`, (request,response)=>{
+  let artistId = parseInt(request.params.id);
+  let queryString = `SELECT * FROM songs WHERE artist_id = ${artistId}`;
+  pool.query(queryString, (err, result)=>{
+    if (err){
+      console.error('query error:', err.stack);
+    }else{
+      console.log('query resulttt:', result.rows);
+      let data = {artistId: result.rows};
+      response.render('songs',data);
+      console.log("Done with passing data from artist/:id/songs to the songs render form");
+    };
+  });
+});
 
 /**
  * ===================================
