@@ -48,7 +48,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-// the index feature
+// INDEX
 app.get('/artists', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists';
@@ -73,9 +73,9 @@ app.get('/artists', (request, response) => {
  * ===================================
  */
 
-//the create feature
+// CREATE
 //displaying the form to add new artist
-app.get('/artist/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new songs
     response.render('new');
 });
@@ -109,8 +109,8 @@ app.post('/artists', (request, response) => {
  * ===================================
  */
 
-//the show feature
-app.get('/artist/:id', (request, response) => {
+// SHOW
+app.get('/artists/:id', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
         // response.send(queryString);
@@ -119,7 +119,7 @@ app.get('/artist/:id', (request, response) => {
         // errorObj is null if there's no error
         if (errorObj === undefined) {
 
-            console.log('Query results: ', result.rows);
+            // console.log('Query results: ', result.rows);
             const data = { artist : result.rows };
             // respond with HTML page displaying all artists
             response.render('show', data);
@@ -135,6 +135,45 @@ app.get('/artist/:id', (request, response) => {
  * ===================================
  */
 
+//EDIT
+app.get('/artists/:id/edit', (request, response) => {
+    // query database for all artists
+    const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
+        // response.send(queryString);
+    pool.query(queryString, (errorObj, result) => {
+        // console.log(errorObj, result);
+        // errorObj is null if there's no error
+        if (errorObj === undefined) {
+
+            // console.log('Query results: ', result.rows);
+            const data = { artist : result.rows };
+            // respond with HTML page displaying all artists
+            response.render('edit', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
+app.put('/artists/:id', (request, response) => {
+
+    const queryString = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=" + request.params.id;
+
+    const values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(queryString, values, (errorObj) => {
+        // errorObj is null if there's no error
+        if (errorObj === undefined) {
+
+            const data = { artists : values };
+            response.render('edited', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
 
 /**
  * ===================================
