@@ -48,7 +48,8 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
+// the index feature
+app.get('/artists', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists';
 
@@ -67,6 +68,28 @@ app.get('/', (request, response) => {
     });
 });
 
+//the show feature
+app.get('/artists/:id', (request, response) => {
+    // query database for all artists
+    const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
+        // response.send(queryString);
+    pool.query(queryString, (errorObj, result) => {
+        // console.log(errorObj, result);
+        // errorObj is null if there's no error
+        if (errorObj === undefined) {
+
+            console.log('Query results: ', result.rows);
+            const data = { artist : result.rows };
+            // respond with HTML page displaying all artists
+            response.render('show', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
+//the create feature
 app.get('/new', (request, response) => {
     // respond with HTML page with form to create new songs
     response.render('new');
