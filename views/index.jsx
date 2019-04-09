@@ -2,16 +2,17 @@ var React = require("react");
 
 class Index extends React.Component {
   render() {
-    let data = this.props.artists;
-    console.log("home.jsx", data);
+    // let data = this.props.artists;
+    // console.log("home.jsx", data);
     const all_artists = this.props.artists.map( artist => {
         return (
             <React.Fragment>
-
                 <h1>{ artist.name }</h1>
                 <h2>{ artist.nationality }</h2>
                 <img src={ artist.photo_url } style={{display: 'inline-block', width: '40%', height: '50%'}} />
-                <br/><br/>
+                <br/>
+                <a href={`/artists/${artist.id}`} class="btn btn-primary">View Artist</a>
+                <br/><br/><br/><br/>
                 </React.Fragment>
                 )
     })
@@ -22,7 +23,7 @@ class Index extends React.Component {
                 <meta charset="UTF-8"/>
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
                 <link rel="stylesheet" type="text/css" href="/indexstyle.css"/>
-                <title>Pokedex:Edit</title>
+                <title>Index Page</title>
             </head>
         <body>
           <div class="artists">

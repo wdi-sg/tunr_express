@@ -82,6 +82,26 @@ app.get('/artists/', (request, response) => {
 });
 
 
+app.get('/artists/:id', (request, response) => {
+  // query database for all pokemon
+
+  const artistId = request.params.id;
+
+  const queryString = "SELECT * FROM artists WHERE id=" + artistId;
+
+  pool.query(queryString, (errorObj, result) => {
+    if(errorObj) {
+        console.log(errorObj.stack);
+        response.send("query error");
+    } else {
+        const data = { artist: result.rows }
+
+        response.render( "show", data );
+    }
+  })
+
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
