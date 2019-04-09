@@ -51,18 +51,18 @@ app.engine('jsx', reactEngine);
 app.get('/', (req, res) => {
   // query database for all pokemon
   const queryString = `SELECT * FROM artists`;
-pool.query(queryString,(errobj, result)=>{
-    if(errobj === undefined){
-        console.log('This where results come to.', result.rows);
-        res.send(result.rows);
-    } else {
-        console.error('query error:', errObj.stack);
-        res.send( 'query error' );
-    }
-})
-  // respond with HTML page displaying all pokemon
-  // response.render('home');
-    // res.send('hello');
+    pool.query(queryString,(errobj, result)=>{
+        if(errobj === undefined){
+            console.log('This where results come to.', result.rows);
+            // console.log(result.rows);
+            const data = result.rows;
+
+            res.render('home', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
 });
 
 app.get('/new', (req, res) => {
@@ -93,3 +93,24 @@ let onClose = function(){
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+/*
+The Index Feature
+Build the index feature for artists:
+1. Render on DOM to show artist(?)
+
+
+The Show Feature
+Build the show feature for an artist
+1. click
+
+The Create Feature
+Build a feature that creates a new artist in the database.
+
+The Edit Feature
+Build a feature that allows a user to edit an existing artist in the database
+
+The Delete Feature
+Build a feature that allows users to delete an existing artist from the database.
+
+*/
