@@ -48,6 +48,28 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+let sendArtistNewRequest = (request, response) => {
+    response.render('CreateArtist');
+}
+
+// INSERT INTO movies (title, description, rating) VALUES('Cars', 'a movie', 9);
+let createNewArtist = (request, response) => {
+    let queryText = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${request.body.name}', '${request.body.photo_url}', '${request.body.nationality}')`;
+    console.log(queryText);
+    // save the request body
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.log("query error:", err.message);
+            response.send('query error');
+        }
+        else {
+            // response.send("hello")
+            response.redirect(`/`);
+        }
+    });
+    // response.send("hello")
+}
+
 let lookupArtistById = (request, response) => {
     // get id from request
     let inputId = parseInt( request.params.id );
@@ -94,6 +116,11 @@ let redirectToHomepage = (request, response) => {
  * Routes
  * ===================================
  */
+
+// send request to create a new artist in the database
+app.get('/artist/new', sendArtistNewRequest);
+// create a new artist
+app.post('/artist', createNewArtist);
 
 // get a specified artist's details by ID
 app.get('/artist/:id', lookupArtistById);

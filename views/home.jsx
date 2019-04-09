@@ -1,5 +1,19 @@
 var React = require("react");
 
+// NewArtistButton redirects to /artist/new
+class NewPokeButton extends React.Component {
+    render() {
+        return (
+            <div>
+                <form method="get" action="/artist/new">
+                Want to add a new artist?&nbsp;&nbsp;
+                <input type="submit" value="Create new artist"/>
+                </form>
+            </div>
+        )
+    }
+};
+
 class Home extends React.Component {
   render() {
     let artists = this.props.artists;
@@ -21,6 +35,8 @@ class Home extends React.Component {
         <body>
             <h1>Tunr 1.0 Database</h1>
             <div className="displayContainer">
+            <NewPokeButton/>
+            <br/>
             <table>
                 <thead>
                     <tr>
