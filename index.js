@@ -49,10 +49,20 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
+    // form query string
+    let queryText = 'SELECT * FROM artists';
     // query database for so and so
-
-    // respond with HTML page displaying welcome message
-    response.render('home');
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.log("query error", err.message);
+            response.send('query error');
+        }
+        else {
+            // respond with HTML page displaying welcome message
+            // console.log(result.rows);
+            response.render('home', {artists:result.rows});
+        }
+    });
 });
 
 app.get('/new', (request, response) => {
