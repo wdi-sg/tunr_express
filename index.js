@@ -6,7 +6,8 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'moses',
+  password:'password',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
