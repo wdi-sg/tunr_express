@@ -211,7 +211,7 @@ app.delete('/artists/:id', (request, response) => {
 
 
 //===================================
-//SHOW SONGS
+//SHOW SELECTED ARTIST SONGS
 
 app.get('/artists/:id/songs', (request, response) => {
 
@@ -231,36 +231,25 @@ app.get('/artists/:id/songs', (request, response) => {
 });
 
 //===================================
-//SHOW SONGS
+//CREATE NEW SONG FOR SELECTED ARTIST
 
+//displaying the form to add new song to artist
 app.get('/artists/:id/songs/new', (request, response) => {
-    // respond with HTML page with form to create new songs
-    response.render('newsong');
-});
 
-//retrieving the form with user input
-app.post('/artists/:id/songs', (request, response) => {
+    const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
 
-    // console.log(request.body);
+    pool.query(queryString, (errorObj, result) => {
 
-    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
-
-    const values = [request.body.name, request.body.photo_url, request.body.nationality];
-
-    pool.query(queryString, values, (errorObj, result) => {
-        // errorObj is null if there's no error
         if (errorObj === undefined) {
-
-            // console.log(result.rows);
-
             const data = { artist : result.rows };
-            response.render('created', data);
+            response.render('newsong', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
         }
     });
 });
+
 
 /**
  * ===================================

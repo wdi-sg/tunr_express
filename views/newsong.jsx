@@ -7,7 +7,7 @@ class Newsong extends React.Component {
       <html>
         <head />
         <body>
-            <h3>Add new song:</h3>
+            <h3>Add new song for {this.props.artist[0].name}:</h3>
                 <form method="POST" action="/artists/:id/songs">
                     Song Title: <br/>
                         <textarea name="title" cols="40" rows="10" value="e.g. Half Moon"></textarea><br/>
@@ -17,8 +17,6 @@ class Newsong extends React.Component {
                     <textarea name="preview_link" cols="40" rows="10" value="e.g. https://open.spotify.com/track/6jAyMqsMuu7NTmefJVE8Pc?si=1P9QnOSzQCu_52qF-8eoeg"></textarea><br/>
                     Artwork URL: <br/>
                     <textarea name="artwork" cols="40" rows="10" value="e.g. blindpilot.jpg"></textarea><br/>
-                    Artist: <br/>
-                    <textarea name="artist_id" cols="40" rows="10" value="e.g. Blind Pilot"></textarea><br/>
                 <input type="submit" value="Add New Song"/>
             </form>
         </body>
