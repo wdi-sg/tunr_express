@@ -77,7 +77,7 @@ app.get('/artists', (request, response) => {
 //displaying the form to add new artist
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new songs
-    response.render('new');
+    response.render('newartist');
 });
 
 //retrieving the form with user input
@@ -230,6 +230,37 @@ app.get('/artists/:id/songs', (request, response) => {
     });
 });
 
+//===================================
+//SHOW SONGS
+
+app.get('/artists/:id/songs/new', (request, response) => {
+    // respond with HTML page with form to create new songs
+    response.render('newsong');
+});
+
+//retrieving the form with user input
+app.post('/artists/:id/songs', (request, response) => {
+
+    // console.log(request.body);
+
+    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+    const values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(queryString, values, (errorObj, result) => {
+        // errorObj is null if there's no error
+        if (errorObj === undefined) {
+
+            // console.log(result.rows);
+
+            const data = { artist : result.rows };
+            response.render('created', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
 
 /**
  * ===================================
