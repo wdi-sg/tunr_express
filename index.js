@@ -49,8 +49,13 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
+  response.send('Hello World');
+});
+
+//Build the index feature for artists
+app.get('/artists', (request, response) => {
   // query database for all artists
-const queryString = 'SELECT * from artists';
+const queryString = 'SELECT * FROM artists ORDER BY id';
   // respond with HTML page displaying all artists
   pool.query(queryString, (err, result) => {
 
@@ -60,7 +65,7 @@ const queryString = 'SELECT * from artists';
     } else {
       console.log('query result:', result.rows);
       const data = {  artists : result.rows};
-      response.render('home', data);
+      response.render('artists', data);
     }
   // response.render('home');
 });
@@ -68,7 +73,7 @@ const queryString = 'SELECT * from artists';
 });
 
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+  // respond with HTML page with form to create new artist
   response.render('new');
 });
 
