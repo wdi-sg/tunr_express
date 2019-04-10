@@ -15,24 +15,40 @@ class Head extends React.Component{
     }
 }
 
+class Navigation extends React.Component{
+    render(){
+        return(
+            <nav>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
+                    </li>
+                    <li class="nav-item">
+                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Return to view all artist</a>
+                    </li>
+                </ul>
+            </nav>
+        );
+    }
+}
+
 class View extends React.Component {
   render() {
 
     let data = this.props.data
-    console.log('in the view artist JSX........:');
-    console.log(data);
     let outList = data.map(item=>{
         return  <div class="card-item">
-                    <h4>{item.title} {item.album}</h4>
-                    <h5>{item.nationality} {item.preview_link}</h5>
+                    <a href={`${item.preview_link}`}>
+                    <h4>{item.album}</h4><h4>{item.title}</h4>
+                    </a>
                 </div>
     })
     return (
       <html>
         <Head/>
         <body>
-          <h1>Mildly Comparable Audiophalse</h1>
-          <a href='/'>Return to view all artist</a>
+            <Navigation/>
+          <h1>Mildly Comparable Audiophalse (Song List)</h1>
           <div class="content">
             {outList}
           </div>

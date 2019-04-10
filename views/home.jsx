@@ -15,12 +15,29 @@ class Head extends React.Component{
     }
 }
 
+class Navigation extends React.Component{
+    render(){
+        return(
+            <nav>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
+                    </li>
+                    <li class="nav-item">
+                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a>
+                    </li>
+                </ul>
+            </nav>
+        );
+    }
+}
+
 class Home extends React.Component {
   render() {
 
     let data = this.props.data
-    console.log('in the home JSX........:');
-    console.log(data);
+    // console.log('in the home JSX........:');
+    // console.log(data);
     let outList = data.map(item=>{
         return  <div class="card-item">
                     <img src={item.photo_url}/>
@@ -28,6 +45,7 @@ class Home extends React.Component {
                     <h4>{item.id}. {item.name}</h4>
                     <h5>{item.nationality}</h5>
                     </a>
+                    <a href={`/artist/${item.id}/edit`}>Edit</a>
                 </div>
 
     })
@@ -35,6 +53,7 @@ class Home extends React.Component {
       <html>
         <Head/>
         <body>
+            <Navigation/>
           <h1>Mildly Comparable Audiophalse</h1>
           <div class="content">
             {outList}
