@@ -1,29 +1,25 @@
 var React = require("react");
 var Layout = require('./layout');
 
-class ArtistSongs extends React.Component {
+class DisplaySongs extends React.Component {
   render() {
 
-    const artistSongs = this.props.artistSongs;
+    const artistSongs = this.props.songs;
     // return the artist array of objects
 
-    let allArtistSongs = artistSongs.map(obj => {
-        //const link = `artist/${obj.id}`;
+    let allAlbumSongs = artistSongs.map(obj => {
 
         return  <div class="indvSong-container">
-                    <div class="albumName-container">
-                        <h2>{obj.album}</h2>
-                    </div>
 
                     <div class="title-container">
                         <h3>{obj.title}</h3>
                     </div>
 
-                    <div class="preview-container">
+{/*                    <div class="preview-container">
                         <audio controls>
                             <source src={obj.preview} type="audio/m4a" />
                         </audio>
-                    </div>
+                    </div>*/}
                 </div>
 
 
@@ -35,7 +31,7 @@ class ArtistSongs extends React.Component {
     return (<Layout>
         <div class="mainSong-container">
 
-                {allArtistSongs}
+                {allAlbumSongs}
 
         </div>
 
@@ -46,4 +42,4 @@ class ArtistSongs extends React.Component {
   }
 }
 
-module.exports = ArtistSongs;
+module.exports = DisplaySongs;

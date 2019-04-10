@@ -8,20 +8,30 @@ class Home extends React.Component {
     // return the artist array of objects
 
     let allArtist = artistInfo.map(obj => {
-        const link = `artist/${obj.id}`;
+        const link = `album/${obj.id}`;
+        /*const link = `artist/${obj.id}`;*/
         const actionDelete = `/artist/${obj.id}?_method=delete`;
+        const editLink = `/artist/${obj.id}/edit`;
+       /* const addSongLink = `/artist/${obj.id}/songs/new`;*/
 
-        return <div class="artistMain-container">
-        <div class="card">
-                    <img src={obj.photo_url} class="card-img-top" id="photoUrl"/>
-                    <div class="card-body">
-                        <h5 class="card-title"><a href={link}>{obj.name}</a></h5>
+        return <div class="artist-container">
+                    <div class="artistImage-container">
+                        <img src={obj.photo_url} id="photoUrl" alt="Image not found"/>
                     </div>
 
-                    <form method="POST" action={actionDelete}>
-                        <button type="submit" class="btn btn-danger btn-lg" id="deleteButton">Delete</button>
-                    </form>
-               </div>
+                    <div class="artistName-container">
+                        <h5><a href={link}>{obj.name}</a></h5>
+                    </div>
+
+                    <div class="artistButton-container">
+                        <form method="POST" action={actionDelete}>
+                            <button type="submit" class="btn btn-danger btn-lg" id="deleteButton">Delete</button>
+                        </form>
+
+                        <a href={editLink} class="btn btn-warning btn-lg">Edit</a>
+
+                    </div>
+
                </div>
 
 
@@ -31,11 +41,9 @@ class Home extends React.Component {
 
 
     return (<Layout>
-            <div class="card-group">
+            <div class="artistMain-container">
                 {allArtist}
             </div>
-
-            <a href="/artist/new" class="btn btn-outline-success btn-lg">Add Artist</a>
     </Layout>);
   }
 }

@@ -132,7 +132,7 @@ app.get('/artist/:id/edit', (request, response) => {
 });  // end of get for edit
 
 
-//  update the recipe
+//  update the artist
 app.put('/artist/:id', (request, response) => {
     const artistId = parseInt(request.params.id);
     const input = request.body;
@@ -169,6 +169,148 @@ app.delete('/artist/:id', (request, response) => {
     })  // end of pool query
 
 })  // end of delete
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*app.get('/artist/:id/songs/new', (request, response) => {
+    const artistId = parseInt(request.params.id);
+
+    // need artist name from id
+    const getArtistQuery = `SELECT name FROM artists WHERE id = '${artistId}'`;
+
+    pool.query(getArtistQuery, (err, result) => {
+        if (err) {
+            console.log(err.message);
+            response.send("Query Error for new song form");
+
+        } else {
+            response.render('newSong', result.rows[0]);
+        }
+
+    })  // end of pool query
+});  // end of get song new*/
+
+/*
+app.post('/songs', (request, response) => {
+    const input = request.body;
+    const id = parseInt(input.artist_id);
+    response.send(input);
+    //  get the artist id from artist name first
+   const artistIdQuery = `SELECT id FROM artists WHERE name = '${input.artistName}'`;
+
+    pool.query(artistIdQuery, (err, result) => {
+        if (err) {
+            console.log(err.message);
+            response.send("Query Error for new song");
+
+        } else {
+            const id = result.rows[0].id;
+            const insertSongQuery = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING id';
+            const values = [input.title, input.album, input.preview_link, input.artwork, id];
+
+            pool.query(insertSongQuery, values, (err, result) => {
+                if (err) {
+                    console.log(err.message);
+                    response.send("Query Error for insert song");
+
+                } else {
+                    response.send("Add song - Successful");
+                }
+            })  // end of pool query
+        }
+
+
+    })  // end of pool query
+});  // end of /song post
+*/
+
+app.get('/songs/new', (request, response) => {
+    const artistId = parseInt(request.params.id);
+
+    // need artist name
+    const getArtistQuery = `SELECT id, name FROM artists`;
+
+    pool.query(getArtistQuery, (err, result) => {
+        if (err) {
+            console.log(err.message);
+            response.send("Query Error for get artist for new song");
+
+        } else {
+            console.log(result.rows);
+            response.render('newSong', {artistName: result.rows});
+        }
+
+    })  // end of pool query
+});  // end of get song new
+
+
+app.post('/songs', (request, response) => {
+    const input = request.body;
+    const id = parseInt(input.artist_id);
+
+    const insertSongQuery = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING id';
+    const values = [input.title, input.album, input.preview_link, input.artwork, id];
+
+    pool.query(insertSongQuery, values, (err, result) => {
+        if (err) {
+            console.log(err.message);
+            response.send("Query Error for insert song");
+
+        } else {
+            response.send("Add song - Successful");
+        }
+    })  // end of pool query
+});  // end of /song post
+
+
+app.get('/album/:id', (request, response) => {
+    const artistId = parseInt(request.params.id);
+
+    // need artist name
+    const groupAlbumQuery = `SELECT album, artwork FROM SONGS WHERE artist_id = '${artistId}' GROUP BY album, artwork`;
+
+    pool.query(groupAlbumQuery, (err, result) => {
+        if (err) {
+            console.log(err.message);
+            response.send("Query Error for grouping album");
+
+        } else {
+            //response.send(result.rows);
+            response.render('displayAlbums', {albums: result.rows});
+        }
+
+    })  // end of pool query
+});  // end of get song new
+
+//  display songs from specific album
+app.get('/:albumName', (request, response) => {
+    //response.send("path workds")
+    const albumName = request.params.albumName;
+    //console.log("albumNma " + albumName)
+
+    // need artist name
+    const groupAlbumQuery = `SELECT title FROM SONGS WHERE album = '${albumName}' GROUP BY title`;
+
+    pool.query(groupAlbumQuery, (err, result) => {
+        if (err) {
+            console.log(err.message);
+            response.send("Query Error for display songs of album");
+
+        } else {
+            // /response.send(result.rows);
+            response.render('displaySongs', {songs: result.rows});
+        }
+
+    })  // end of pool query
+});  // end of get song new
+
+
+
+
+
 
 
 /**
