@@ -11,8 +11,9 @@ class Home extends React.Component {
         const link = `artist/${obj.id}`;
         const actionDelete = `/artist/${obj.id}?_method=delete`;
 
-        return <div class="card">
-                    <img src={obj.photo_url} class="card-img-top" />
+        return <div class="artistMain-container">
+        <div class="card">
+                    <img src={obj.photo_url} class="card-img-top" id="photoUrl"/>
                     <div class="card-body">
                         <h5 class="card-title"><a href={link}>{obj.name}</a></h5>
                     </div>
@@ -20,6 +21,7 @@ class Home extends React.Component {
                     <form method="POST" action={actionDelete}>
                         <button type="submit" class="btn btn-danger btn-lg" id="deleteButton">Delete</button>
                     </form>
+               </div>
                </div>
 
 

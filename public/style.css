@@ -8,7 +8,7 @@
 }
 
 .indvSong-container {
-	border: 2px solid red;
+	border: 2px solid gray;
 	height: 350px;
 	width: 350px;
 	margin: 10px;
@@ -17,4 +17,12 @@
 .form-container {
 	display: flex;
 	justify-content: center;
+}
+
+#photoUrl {
+	border-radius: 10px;
+	width: 200px;
+	height: 200px;
+	object-fit: cover;
+
 }
