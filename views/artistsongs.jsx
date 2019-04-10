@@ -1,12 +1,13 @@
 var React = require("react");
 
-class New extends React.Component {
+class ArtistSongs extends React.Component {
   render() {
 
         const songs = this.props.ccb.map((song) =>{
     return <div>
     <p> {song.album} </p>
     <p> {song.title} </p>
+    <img src={song.artwork} style={{width: '300px'}}/>
     </div>
 });
 
@@ -23,4 +24,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = ArtistSongs;

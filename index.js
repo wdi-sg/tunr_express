@@ -73,7 +73,74 @@ pool.query(queryString, (errorObj, result) => {
   // response.render('home');
 });
 
-app.get('/:id', (request, response) => {
+
+app.get('/artist/new', (request, response) => {
+
+      response.render("artistnew");
+
+});
+
+app.post('/artist/new', (request, response) => {
+      console.log(request.body);
+      let id = request.body.id;
+      let name = request.body.name;
+      let nationality = request.body.nationality;
+      let photo = request.body.photo_url;
+      console.log(id);
+      console.log(name);
+      console.log(nationality);
+      console.log(photo);
+
+      const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${name}', '${photo}', '${nationality}')`;
+      console.log(queryString);
+      response.send("HARRO");
+    pool.query(queryString, (errorObj, result) => {
+    // errorObj is not null if there's an error
+
+        // if (!errorObj) {
+        //   // console.log('query resulttttttt:', result.rows);
+        //   // console.log(data);
+        //   // response.send(data);
+        //   response.send("artist created!");
+        // } else {
+        //   console.log(errorObj,"fedv");
+        //   console.error('query error:');
+        //   // res.send( 'query error' );
+
+        // }
+  });
+
+
+});
+
+app.get('/artist/:id', (request, response) => {
+  console.log(request.params.id);
+  let artistId = request.params.id;
+  // SELECT * FROM songs where artist_id = 4 ORDER BY id  LIMIT 5;
+  const queryString = `SELECT * FROM artists where id = ${artistId}`;
+  // const queryString = `SELECT title FROM songs where artist_id = ${artistId} ORDER BY id LIMIT 5`;
+
+  pool.query(queryString, (errorObj, result) => {
+    console.log(result.rows);
+    // errorObj is not null if there's an error
+    if (!errorObj) {
+      // console.log('query resulttttttt:', result.rows);
+      const data = {ccb : result.rows};
+      // console.log(data);
+      // response.send(data);
+      response.render('artist', data);
+    } else {
+      console.log(errorObj,"fedv");
+      console.error('query error:');
+      // res.send( 'query error' );
+
+    }
+  });
+
+});
+
+
+app.get('/artist/:id/songs', (request, response) => {
   console.log(request.params.id);
   let artistId = request.params.id;
   // SELECT * FROM songs where artist_id = 4 ORDER BY id  LIMIT 5;
@@ -88,7 +155,7 @@ app.get('/:id', (request, response) => {
       const data = {ccb : result.rows};
       // console.log(data);
       // response.send(data);
-      response.render('new', data);
+      response.render('artistsongs', data);
     } else {
       console.log(errorObj,"fedv");
       console.error('query error:');
@@ -97,9 +164,9 @@ app.get('/:id', (request, response) => {
     }
   });
 
-
-  // response.render('new');
 });
+
+
 
 
 app.get('/new', (request, response) => {
