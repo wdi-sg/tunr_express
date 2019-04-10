@@ -214,6 +214,35 @@ app.get('/artist/:id/songs', (request, response) => {
     })
 })
 
+app.get('/artist/:id/songs/add', (request, response) => {
+    const queryString = 'SELECT * FROM songs ORDER BY id DESC LIMIT 1;';
+    pool.query(queryString, (err, result) => {
+
+            if (err) {
+                console.log('query error', err.stack);
+                response.send('query error');
+            } else {
+                const data = {artistId: request.params.id};
+                response.render("newsong", {artistId: request.params.id});
+            }
+    })
+});
+
+app.get('/artist/:id/songs', (request, response) => {
+    const queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5);';
+    const values = [request.body.title, request.body.album, request.body.artwork, request.body.artist_id];
+    pool.query(queryString, values, (err, result) => {
+
+            if (err) {
+                console.log('query error', err.stack);
+                response.send('query error');
+            } else {
+                const data = {songs: result.rows};
+                response.render("songs", data);
+            }
+    })
+});
+
 
 /**
  * ===================================
