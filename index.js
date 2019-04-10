@@ -47,8 +47,8 @@ let getArtistsRequestHandler = async function (request, response) {
     try {
         const sqlQuery = `SELECT * FROM artists`;
 
-        const result = await pool.query(sqlQuery);
-        response.send(result.rows);
+        const artistResult = await pool.query(sqlQuery);
+        response.send(artistResult.rows);
 
     } catch(e) {
         console.log(e);
@@ -76,7 +76,7 @@ let getArtistSongListRequestHandler = async function (request, response) {
     }
 }
 
-let newArtistRequestHandler = function (request, response) {
+let newArtistRequestHandler = async function (request, response) {
     response.render('addArtist');
 }
 
@@ -101,7 +101,7 @@ let editArtistRequestHandler = async function (request, response) {
                           WHERE id= $1`;
 
         const artistResult = await pool.query(sqlQuery, values);
-        const data = {  artist : artistResult.rows[0] };
+        const data = {  'artist' : artistResult.rows[0] };
 
         response.render('editArtist', data);
 
@@ -132,7 +132,7 @@ let deleteArtistRequestHandler = async function (request, response) {
                           WHERE id= $1`;
 
         const artistResult = await pool.query(sqlQuery, values);
-        const data = {  artist : artistResult.rows[0] };
+        const data = {  'artist' : artistResult.rows[0] };
 
         response.render('deleteArtist', data);
 
@@ -176,7 +176,7 @@ let newArtistSongRequestHandler = async function (request, response) {
                           WHERE id= $1`;
 
         const artistResult = await pool.query(sqlQuery, values);
-        const data = {  artist : artistResult.rows[0] };
+        const data = {  'artist' : artistResult.rows[0] };
 
         response.render('addSong', data);
 
@@ -199,10 +199,74 @@ let addNewArtistSongRequestHandler = async function (request, response) {
     }
 }
 
+let getPlaylistRequestHandler = async function (request, response) {
+    try {
+        const sqlQuery = `SELECT * FROM playlists`;
+
+        const playlistResult = await pool.query(sqlQuery);
+        response.send(playlistResult.rows);
+
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+let newPlaylistRequestHandler = async function (request, response) {
+    try {
+        const sqlQuery = `SELECT * FROM songs`;
+
+        const songResult = await pool.query(sqlQuery);
+        const data = {  'songs' : songResult.rows };
+
+        response.render('addPlaylist', data);
+
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+let addNewPlaylistRequestHandler = async function (request, response) {
+    try {
+        const values = [request.body.name];
+        let playlistSqlQuery = `INSERT INTO playlists (name) VALUES ($1) RETURNING id`;
+        let songSqlQueryTBC = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES `;
+
+        const playlistResult = await pool.query(playlistSqlQuery, values);
+
+        request.body.songs.forEach((song, index) => {
+            songSqlQueryTBC += `(${ playlistResult.rows[0].id }, ${ song }),`;
+        });
+
+        // final step to remove a comma to complete the query string
+        let songSqlQuery = songSqlQueryTBC.slice(0, -1);
+
+        await pool.query(songSqlQuery);
+
+        response.send("Added new Playlist!");
+
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+let getPlaylistByIdRequestHandler = async function (request, response) {
+    try {
+        const values = [request.params.id];
+        const sqlQuery = `SELECT s.id, s.title, s.album FROM playlist_songs ps
+                          INNER JOIN songs s ON (s.id = ps.song_id)
+                          WHERE ps.playlist_id = $1 `;
+
+        const playlistResult = await pool.query(sqlQuery, values);
+        response.send(playlistResult.rows);
+
+    } catch(e) {
+        console.log(e);
+    }
+}
 
 /**
  * ===================================
- * Routes
+ * Artists Routes
  * ===================================
  */
 app.get('/artists', getArtistsRequestHandler);
@@ -217,17 +281,38 @@ app.put('/artists/:id', editExistingArtistRequestHandler);
 app.get('/artists/:id/delete', deleteArtistRequestHandler);
 app.delete('/artists/:id', deleteExistingArtistRequestHandler);
 
+app.get('/artists/:id', getArtistByIdRequestHandler);
+
+
+/**
+ * ===================================
+ * Songs Routes
+ * ===================================
+ */
 app.get('/artists/:id/songs/new', newArtistSongRequestHandler);
 app.post('/artists/:id/songs', addNewArtistSongRequestHandler);
 
-app.get('/artists/:id', getArtistByIdRequestHandler);
+
+/**
+ * ===================================
+ * Playlist Routes
+ * ===================================
+ */
+
+app.get('/playlist', getPlaylistRequestHandler);
+
+app.get('/playlist/new', newPlaylistRequestHandler);
+app.post('/playlist', addNewPlaylistRequestHandler);
+
+app.get('/playlist/:id', getPlaylistByIdRequestHandler);
+
 
 /**
  * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000);
+const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function() {
     console.log("closing off server process...");

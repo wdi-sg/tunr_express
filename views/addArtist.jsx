@@ -1,7 +1,7 @@
 var React = require('react');
 var DefaultLayout = require('./layouts/default');
 
-class Add extends React.Component {
+class AddArtist extends React.Component {
   render() {
     return (
         <DefaultLayout title="Add New Artist">
@@ -17,4 +17,4 @@ class Add extends React.Component {
   }
 }
 
-module.exports = Add;
+module.exports = AddArtist;

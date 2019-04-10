@@ -1,7 +1,7 @@
 var React = require('react');
 var DefaultLayout = require('./layouts/default');
 
-class Delete extends React.Component {
+class DeleteArtist extends React.Component {
   render() {
 
     let formAttribute = `/artists/${this.props.artist.id}?_method=DELETE`;
@@ -21,4 +21,4 @@ class Delete extends React.Component {
   }
 }
 
-module.exports = Delete;
+module.exports = DeleteArtist;

@@ -1,7 +1,7 @@
 var React = require('react');
 var DefaultLayout = require('./layouts/default');
 
-class Edit extends React.Component {
+class EditArtist extends React.Component {
   render() {
 
     let formAttribute = `/artists/${this.props.artist.id}?_method=PUT`;
@@ -20,4 +20,4 @@ class Edit extends React.Component {
   }
 }
 
-module.exports = Edit;
+module.exports = EditArtist;
