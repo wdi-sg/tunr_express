@@ -197,13 +197,15 @@ app.get('/artist/:id/songs', (req,res)=>{
     const queryString = `SELECT * FROM songs WHERE artist_id = ${artistId}`;
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
-            console.log('This where results come to.', result.rows);
-            // console.log(result.rows);
+
             const data = result.rows;
             res.render('viewartist', {data});
+
         } else {
+
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
+
         }
     })
 })
@@ -244,6 +246,107 @@ app.post('/artist/:id/songs',(req,res)=>{
         }
     })
 })
+
+//LIST ALL PLAYLIST
+app.get('/playlist', (req,res)=>{
+    let queryString = `SELECT * FROM playlist;`
+
+    pool.query(queryString,(errobj,result)=>{
+        if(errobj === undefined){
+
+            const data = result.rows;
+            res.render('viewplaylist', {data})
+
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+})
+//FORM FOR CREATING PLAYLIST
+app.get('/playlist/new', (req,res)=>{
+    res.render('playlistform');
+})
+//REQEST FOR CREATING NEW PLAYLIST
+app.post('/playlist', (req,res)=>{
+    let data = req.body;
+    let playlistTitle = req.body.title;
+
+    const queryString = `INSERT INTO playlist
+                        (title)
+                        VALUES
+                        ('${playlistTitle}')
+                        RETURNING *`;
+
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
+            // console.log('This where results come to.', result);
+            // console.log(result.rows);
+            const data = result.rows;
+
+            res.send('added playlist!');
+            // res.render('addeditsuccess', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+})
+
+//SHOWS SONGS INSIDE PLAYLIST
+app.get('/playlist/:id', (req,res)=>{
+
+    const playlistId = req.params.id;
+
+    let queryString = `SELECT playlist_songs.playlist_id, songs.title, songs.id, songs.preview_link, songs.album, songs.artist_id
+                       FROM songs
+                       INNER JOIN playlist_songs
+                       ON (playlist_songs.song_id = songs.id)
+                       WHERE playlist_songs.playlist_id = ${playlistId};`
+
+    pool.query(queryString,(errobj,result)=>{
+        if(errobj === undefined){
+            const data = [result.rows,playlistId];
+            console.log("recall FIUCK");
+            console.log(data);
+
+            res.render('songsfromplaylist', {data});
+
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+})
+
+//ADD SONGS TO PLAYLIST
+app.post('/playlist/:id', (req,res)=>{
+
+    let playlistId = req.params.id;
+    let data = req.body;
+    let songId = data.id;
+
+    const queryString = `INSERT INTO playlist_songs
+                        (playlist_id, song_id)
+                        VALUES
+                        ('${playlistId}', '${songId}' )
+                        RETURNING *`;
+
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
+            // console.log('This where results come to.', result);
+            // console.log(result.rows);
+            const data = result.rows;
+
+            // res.send('added Song!');
+            res.render('addeditsuccess', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+})
+
 
 
 

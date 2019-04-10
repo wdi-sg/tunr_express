@@ -5,7 +5,7 @@ class Head extends React.Component{
         return(
             <head>
                 <meta charSet="utf-8"/>
-                <title>TUNR EXPRESS</title>
+                <title>TUNR EXPRESS: Add New Artist</title>
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossOrigin="anonymous"/>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -21,7 +21,7 @@ class Navigation extends React.Component{
             <nav>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a>
+                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Return to view all artist</a>
                     </li>
                     <li class="nav-item">
                         <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
@@ -35,38 +35,40 @@ class Navigation extends React.Component{
     }
 }
 
-class Home extends React.Component {
+class NewPlayListForm extends React.Component{
+    render(){
+
+            let formAction = '/playlist';
+
+        return(
+            <html>
+                <form method="POST" action={formAction}>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label >Playlist Name: </label>
+                            <input type="text" name="title" class="form-control" placeholder="Name your Playlist" required/>
+                        </div>
+                    </div>
+                    <input type="submit" value="Create New Playlist"  class="btn btn-primary"/>
+                </form>
+            </html>
+        )
+    }
+}
+
+class NewPlayList extends React.Component {
   render() {
-
-    let data = this.props.data
-    // console.log('in the home JSX........:');
-    // console.log(data);
-    let outList = data.map(item=>{
-        return  <div class="card-item">
-                    <div class= "rows">
-                        <img src={item.photo_url}/>
-                        <a class="card-body" href={`/artist/${item.id}`}>
-                            <h4>{item.id}. {item.name}</h4>
-                            <h5>{item.nationality}</h5>
-                        </a>
-                    </div>
-                    <div class="rows">
-                        <a href={`/artist/${item.id}/Songs`}>View All Artist Songs</a><br></br>
-                        <a href={`/artist/${item.id}/edit`}>Edit</a><br></br>
-                        <a href={`/artist/${item.id}/songs/new`}>Add Songs</a><br></br>
-                        <a href={`/artist/${item.id}/delete`}>Delete</a><br></br>
-                    </div>
-                </div>
-
-    })
     return (
       <html>
         <Head/>
         <body>
             <Navigation/>
+
           <h1>Mildly Comparable Audiophalse</h1>
+          <br></br>
+          <h3>NEW PLAYLIST</h3>
           <div class="content">
-            {outList}
+            <NewPlayListForm/>
           </div>
         </body>
       </html>
@@ -74,4 +76,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = NewPlayList;
