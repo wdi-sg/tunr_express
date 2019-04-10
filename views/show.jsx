@@ -8,9 +8,9 @@ class Show extends React.Component {
     return (
       <html>
         <body>
-            <h1>{this.props.artists.id} {this.props.artists.name}</h1>
-            <img src={this.props.artists.photo_url}/>
-            <p>Nationality: {this.props.artists.nationality}</p>
+            <h1>{this.props.artists[0].id} {this.props.artists[0].name}</h1>
+            <img src={this.props.artists[0].photo_url}/>
+            <p>Nationality: {this.props.artists[0].nationality}</p>
         </body>
       </html>
     );

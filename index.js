@@ -64,6 +64,24 @@ app.get('/', (request, response) => {
     });
 })
 
+app.get('/new', (request, response) => {
+    response.render('new');
+})
+
+app.post('/artist', (request,response)=> {
+    console.log(request.body)
+    const queryString = 'INSERT INTO artists(name, photo_url, nationality) VALUES ($1,$2,$3) RETURNING *';
+    const value = [request.body.name, request.body.photo_url,request.body.nationality]
+    pool.query(queryString, value, (errorObj)=> {
+        if (errorObj === undefined) {
+            response.redirect(`/${result.rows[0].id}`);
+        } else {
+            console.error('query error:', errorObj.stack);
+            response.send( 'query error' );
+        }
+    })
+})
+
 app.get('/:id', (request, response) => {
     const queryString = 'SELECT * from artists WHERE id =' + request.params.id;
     pool.query(queryString, (errorObj, result) => {
@@ -78,19 +96,7 @@ app.get('/:id', (request, response) => {
     });
 })
 
-app.get('/new', (request, response) => {
-    const queryString = 'SELECT * from artists WHERE id =' + request.params.id;
-    pool.query(queryString, (errorObj, result) => {
-        if (errorObj === undefined) {
-            console.log('query result:', result.rows);
-            const data = {  artists : result.rows};
-            response.render('show', data);
-        } else {
-            console.error('query error:', errorObj.stack);
-            response.send( 'query error' );
-        }
-    });
-})
+
 
 
 /**
