@@ -36,6 +36,7 @@ class View extends React.Component {
   render() {
 
     let data = this.props.data
+
     let outList = data.map(item=>{
         return  <div class="card-item">
                     <a href={`${item.preview_link}`}>

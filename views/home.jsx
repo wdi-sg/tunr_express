@@ -41,11 +41,12 @@ class Home extends React.Component {
     let outList = data.map(item=>{
         return  <div class="card-item">
                     <img src={item.photo_url}/>
-                    <a class="card-body" href={`/artist/${item.id}`}>
+                    <a class="card-body" href={`/artist/${item.id}/songs`}>
                     <h4>{item.id}. {item.name}</h4>
                     <h5>{item.nationality}</h5>
                     </a>
                     <a href={`/artist/${item.id}/edit`}>Edit</a>
+                    <a href={`/artist/${item.id}/delete`}>Delete</a>
                 </div>
 
     })

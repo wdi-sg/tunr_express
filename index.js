@@ -48,6 +48,7 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
+
 //VIEW ALL ARTIST (INDEX PAGE)
 app.get('/', (req, res) => {
   // query database for all pokemon
@@ -66,45 +67,43 @@ app.get('/', (req, res) => {
     })
 });
 
-//VIEW SONGS FROM SINGLE ARTIST
+///VIEW INDIVIDUAL ARTIST PAGE (NOT DONE)
 app.get('/artist/:id', (req,res)=>{
 
-    artistId = parseInt(req.params.id);
+    res.send('VIEWING ARTIST ONLY');
 
-    const queryString = `SELECT * FROM songs WHERE artist_id = ${artistId}`;
-    pool.query(queryString,(errObj,result)=>{
-        if(errObj === undefined){
-            console.log('This where results come to.', result.rows);
-            // console.log(result.rows);
-            const data = result.rows;
-            res.render('viewartist', {data});
-        } else {
-            console.error('query error:', errObj.stack);
-            res.send( 'query error' );
-        }
-    })
-});
+})
+
 
 //ADD ARTIST FORM & REQUEST
 app.get('/new', (req, res) => {
+
     res.render('new');
+
 });
 app.post('/new/artistadded', (req,res)=>{
     let data = req.body;
     let artistName = req.body.name;
     let artistPhotoUrl = req.body.photo_url;
     let artistNationality = req.body.nationality;
+    console.log('req.body');
+    console.log(data);
 
     const queryString = `INSERT INTO artists
                         (name, photo_url, nationality)
                         VALUES
-                        ('${artistName}','${artistPhotoUrl}','${artistNationality}') RETURN *;`
+                        ('${artistName}','${artistPhotoUrl}','${artistNationality}')
+                        RETURNING *`;
+
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
             // console.log('This where results come to.', result);
             // console.log(result.rows);
             const data = result.rows;
-            res.render('viewartist', {data});
+            console.log("AT ADD");
+            console.log(data);
+
+            res.render('addeditsuccess', {data});
         } else {
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
@@ -137,28 +136,83 @@ app.put('/artist/:id/', (req,res)=>{
     let artistPhotoUrl = data.photo_url;
     let artistNationality = data.nationality;
 
-//     UPDATE Customers
-// SET ContactName='Alfred Schmidt', City='Frankfurt'
-// WHERE CustomerID=1;
-
     const queryString = `UPDATE artists
                          SET name = '${artistName}' , photo_url = '${artistPhotoUrl}' , nationality = '${artistNationality}'
-                         WHERE id = ${id};`
-                         // RETURN *;`
-    // res.send('hello');
+                         WHERE id = ${id}
+                         RETURNING *;`
+
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
-            // console.log('This where results come to.', result);
+            const data = result.rows;
+            res.render('addeditsuccess', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+})
+
+//DELETE ARTIST FORM AND REQUEST
+app.get('/artist/:id/delete', (req,res)=>{
+    artistId = parseInt(req.params.id);
+
+    const queryString = `SELECT * FROM artists WHERE id= ${artistId}`;
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
+            // console.log('This where results come to.', result.rows);
             // console.log(result.rows);
-            const data = result;
-            console.log(data);
-            // res.send('hello success');
+            const data = result.rows;
+            res.render('deleteform', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+})
+app.delete('/artist/:id', (req,res)=>{
+    let id = req.params.id;
+    let data = req.body;
+    let artistName = data.name;
+    let artistPhotoUrl = data.photo_url;
+    let artistNationality = data.nationality;
+
+    const queryString = `DELETE FROM artists
+                         WHERE id=${id}`
+
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
+            const data = result.rows;
+            res.render('home', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
+})
+
+
+//VIEW SONGS FROM SINGLE ARTIST
+app.get('/artist/:id/songs', (req,res)=>{
+
+    artistId = parseInt(req.params.id);
+
+    const queryString = `SELECT * FROM songs WHERE artist_id = ${artistId}`;
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
+            console.log('This where results come to.', result.rows);
+            // console.log(result.rows);
+            const data = result.rows;
             res.render('viewartist', {data});
         } else {
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
         }
     })
+})
+app.get('/artist/:id/songs/new', (req,res) =>{
+
+    res.send('hello');
+
 })
 
 

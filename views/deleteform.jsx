@@ -35,11 +35,11 @@ class Navigation extends React.Component{
 class EditArtistForm extends React.Component{
     render(){
             let data = this.props.data.data[0];
-            let formAction = '/artist/' + data.id + '?_method=PUT';
+            let formActionDelete = '/artist/' + data.id + '?_method=DELETE';
 
         return(
             <html>
-                <form method="POST" action={formAction}>
+                <form method="POST" action={formActionDelete}>
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
                             <label >Name: </label>
@@ -62,7 +62,7 @@ class EditArtistForm extends React.Component{
 }
 
 
-class Edit extends React.Component {
+class Delete extends React.Component {
   render() {
 
     let data = this.props;
@@ -72,7 +72,6 @@ class Edit extends React.Component {
         <Head/>
         <body>
             <Navigation/>
-
           <h1>Mildly Comparable Audiophalse</h1>
           <br></br>
           <h3>Edit Artist</h3>
@@ -85,4 +84,4 @@ class Edit extends React.Component {
   }
 }
 
-module.exports = Edit;
+module.exports = Delete;

@@ -32,52 +32,26 @@ class Navigation extends React.Component{
     }
 }
 
-class EditArtistForm extends React.Component{
-    render(){
-            let data = this.props.data.data[0];
-            let formAction = '/artist/' + data.id + '?_method=PUT';
-
-        return(
-            <html>
-                <form method="POST" action={formAction}>
-                    <div class="form-row">
-                        <div class="col-md-4 mb-3">
-                            <label >Name: </label>
-                            <input type="text" name="name" class="form-control" value={`${data.name}`} required/>
-                        </div>
-                        <div class="col-md-4 mb-3 ml-5">
-                            <label>Photo Url: </label>
-                            <input type="text" name="photo_url" class="form-control" value={`${data.photo_url}`} required/>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Nationality: </label>
-                            <input type="text" name="nationality" class="form-control" value={`${data.nationality}`} required/>
-                        </div>
-                    </div>
-                    <input type="submit" value="Submit Artist"  class="btn btn-primary"/>
-                </form>
-            </html>
-        )
-    }
-}
-
-
-class Edit extends React.Component {
+class AddEdit extends React.Component {
   render() {
 
-    let data = this.props;
+    let data = this.props.data[0]
 
     return (
       <html>
         <Head/>
         <body>
             <Navigation/>
-
-          <h1>Mildly Comparable Audiophalse</h1>
-          <br></br>
-          <h3>Edit Artist</h3>
+          <h1>Mildly Comparable Audiophalse (Song List)</h1>
           <div class="content">
-            <EditArtistForm data={data}/>
+            <div class="card-item">
+                    <img src={data.photo_url}/>
+                    <a class="card-body" href={`/artist/${data.id}`}>
+                    <h4>{data.id}. {data.name}</h4>
+                    <h5>{data.nationality}</h5>
+                    </a>
+                    <a href={`/artist/${data.id}/edit`}>Edit</a>
+                </div>
           </div>
         </body>
       </html>
@@ -85,4 +59,4 @@ class Edit extends React.Component {
   }
 }
 
-module.exports = Edit;
+module.exports = AddEdit;
