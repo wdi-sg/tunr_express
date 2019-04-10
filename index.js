@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'Admin',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,12 +48,43 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
+app.get('/artists', (request, response) => {
+  const queryString = 'SELECT * FROM artists ORDER BY id';
+  console.log(queryString)
   // query database for all pokemon
+   pool.query(queryString, (errorObj, result) => {
+    // if (errorObj) {
+    //   console.log("query error")
+    // } else {
+    //   response.send(result.rows);
+    // }
+
+
+    // errorObj is not null if there's an error
+    if (errorObj === undefined) {
+      console.log ('query results:', result.rows);
+      const data = {artists : result.rows};
+      response.render('artists', data);
+
+      //console.log('query resulttttttt:', result.rows);
+      //const data = {  students : result.rows};
+      //response.render('home', );
+    } else {
+
+      console.error('query error:', errorObj);
+      response.send( 'query error' );
+
+    }
+  });
+
+
+});
+
+
 
   // respond with HTML page displaying all pokemon
-  response.render('home');
-});
+//   response.render('home');
+// });
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
@@ -66,7 +97,7 @@ app.get('/new', (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const server = app.listen(8080, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
   
