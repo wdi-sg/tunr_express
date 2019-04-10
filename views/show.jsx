@@ -1,4 +1,5 @@
 var React = require("react");
+var Layout = require("./layout");
 
 class Show extends React.Component {
   render() {

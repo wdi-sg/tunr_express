@@ -49,7 +49,7 @@ app.engine('jsx', reactEngine);
  */
 
 //===================================
-// INDEX
+// INDEX ARTISTS
 
 app.get('/artists', (request, response) => {
     // query database for all artists
@@ -72,7 +72,7 @@ app.get('/artists', (request, response) => {
 
 
 //===================================
-// CREATE
+// CREATE AN ARTIST
 
 //displaying the form to add new artist
 app.get('/artists/new', (request, response) => {
@@ -105,7 +105,7 @@ app.post('/artists', (request, response) => {
 });
 
 //===================================
-// SHOW
+// SHOW AN ARTIST
 
 app.get('/artists/:id', (request, response) => {
     // query database for all artists
@@ -128,7 +128,7 @@ app.get('/artists/:id', (request, response) => {
 });
 
 //===================================
-//EDIT
+// EDIT AN ARTIST
 
 app.get('/artists/:id/edit', (request, response) => {
     // query database for all artists
@@ -170,7 +170,7 @@ app.put('/artists/:id', (request, response) => {
 });
 
 //===================================
-//DELETE
+// DELETE AN ARTIST
 
 app.get('/artists/:id/delete', (request, response) => {
     // query database for all artists
@@ -200,9 +200,29 @@ app.delete('/artists/:id', (request, response) => {
 
         // errorObj is null if there's no error
         if (errorObj === undefined) {
-
             const data = { artists : result.rows };
             response.render('deleted', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
+
+//===================================
+//SHOW SONGS
+
+app.get('/artists/:id/songs', (request, response) => {
+
+    let artistIdInput = request.params.id;
+    const queryString = 'SELECT * FROM songs WHERE artist_id=' + artistIdInput;
+
+    pool.query(queryString, (errorObj, result) => {
+
+        if (errorObj === undefined) {
+            const data = { songs : result.rows };
+            response.render('songs', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
