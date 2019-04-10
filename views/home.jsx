@@ -21,10 +21,10 @@ class Navigation extends React.Component{
             <nav>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
+                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a>
                     </li>
                     <li class="nav-item">
-                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a>
+                        <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
                     </li>
                 </ul>
             </nav>
@@ -40,13 +40,19 @@ class Home extends React.Component {
     // console.log(data);
     let outList = data.map(item=>{
         return  <div class="card-item">
-                    <img src={item.photo_url}/>
-                    <a class="card-body" href={`/artist/${item.id}/songs`}>
-                    <h4>{item.id}. {item.name}</h4>
-                    <h5>{item.nationality}</h5>
-                    </a>
-                    <a href={`/artist/${item.id}/edit`}>Edit</a>
-                    <a href={`/artist/${item.id}/delete`}>Delete</a>
+                    <div class= "rows">
+                        <img src={item.photo_url}/>
+                        <a class="card-body" href={`/artist/${item.id}`}>
+                            <h4>{item.id}. {item.name}</h4>
+                            <h5>{item.nationality}</h5>
+                        </a>
+                    </div>
+                    <div class="rows">
+                        <a href={`/artist/${item.id}/Songs`}>View All Artist Songs</a><br></br>
+                        <a href={`/artist/${item.id}/edit`}>Edit</a><br></br>
+                        <a href={`/artist/${item.id}/songs/new`}>Add Songs</a><br></br>
+                        <a href={`/artist/${item.id}/delete`}>Delete</a><br></br>
+                    </div>
                 </div>
 
     })

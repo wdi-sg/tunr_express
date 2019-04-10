@@ -71,7 +71,6 @@ app.get('/', (req, res) => {
 app.get('/artist/:id', (req,res)=>{
 
     res.send('VIEWING ARTIST ONLY');
-
 })
 
 
@@ -79,7 +78,6 @@ app.get('/artist/:id', (req,res)=>{
 app.get('/new', (req, res) => {
 
     res.render('new');
-
 });
 app.post('/new/artistadded', (req,res)=>{
     let data = req.body;
@@ -209,10 +207,42 @@ app.get('/artist/:id/songs', (req,res)=>{
         }
     })
 })
+
+//ADD SONG FORM & REQUEST FROM SINGLE ARTIST
 app.get('/artist/:id/songs/new', (req,res) =>{
+    let data = req.params.id;
+    console.log('at add new song');
+    console.log(data);
+    res.render('newsong', {data});
+})
+app.post('/artist/:id/songs',(req,res)=>{
+    let data = req.body;
+    let songTitle = req.body.title;
+    let songAlbum = req.body.album;
+    let songPreview = req.body.preview_link;
+    let songArtwork = req.body.artwork;
+    let songArtistId = req.body.artist_id;
 
-    res.send('hello');
+    console.log('req.body');
+    console.log(data);
 
+    const queryString = `INSERT INTO songs
+                        (title, album, preview_link, artwork, artist_id)
+                        VALUES
+                        ('${songTitle}','${songAlbum}','${songPreview}', '${songArtwork}', '${songArtistId}')
+                        RETURNING *`;
+
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
+
+            const data = result.rows;
+
+            res.render('addeditsuccess', {data});
+        } else {
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        }
+    })
 })
 
 
