@@ -49,7 +49,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
+app.get('/artists', (request, response) => {
 
   const queryString = "SELECT * FROM artists";
 
@@ -65,14 +65,116 @@ app.get('/', (request, response) => {
   });
 });
 
-// app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
+  response.render('new');
+});
 
-//   response.render('new');
-// });
+app.post('/artists', (request, response) => {
 
+  const queryString = "INSERT INTO artists(name, nationality, photo_url) VALUES($1,$2,$3) RETURNING id";
+  const values = Object.values(request.body);
 
+  pool.query(queryString, values, (err, result) => {
+    if (err) {
+      console.error('80 query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      response.redirect(`/artists/${result.rows[0].id}`);
+    }
+  });
+});
 
+app.get('/artists/:id/edit', (request, response) => {
 
+  const id = request.params.id;
+
+  const queryString = `SELECT * FROM artists WHERE id='${id}'`;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('96 query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      const data = { artist: result.rows };
+      response.render('editArtist', data );
+    }
+  });
+});
+
+app.put('/artists/:id', (request, response) => {
+
+  const id = request.params.id;
+  const object = request.body;
+  const name = object.name;
+  const nationality = object.nationality;
+  const url = object.url;
+
+  const queryString = `UPDATE artists SET name='${name}', nationality='${nationality}', photo_url='${url}' WHERE id='${id}' RETURNING id`;
+
+  pool.query(queryString, (err, result) => {
+    if (err) {
+      console.error('117 query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      response.redirect(`/artists/${result.rows[0].id}`);
+    }
+  });
+});
+
+app.get('/artists/:id/delete', (request, response) => {
+
+  const id = request.params.id;
+
+  const queryString = `SELECT * FROM artists WHERE id='${id}'`;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('134 query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      const data = { artist: result.rows };
+      response.render('deleteArtist', data );
+    }
+  });
+});
+
+app.delete('/artists/:id', (request, response) => {
+
+  const id = request.params.id;
+
+  const queryString = 
+  `DELETE FROM artists WHERE id='${id}'`;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('134 query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      response.redirect('/artists');
+    }
+  });
+});
+
+app.get('/artists/:id', (request, response) => {
+
+  const id = request.params.id;
+
+  const queryString = `SELECT * FROM artists WHERE id='${id}'`;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('152 query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      const data = { artist: result.rows };
+      response.render('showSingleArtist', data );
+    }
+  });
+});
 
 
 
