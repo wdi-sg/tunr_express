@@ -27,24 +27,3 @@ class ArtistNew extends React.Component {
 }
 
 module.exports = ArtistNew;
-
-
-
-            // <input type="text" name="id" value={json.pokemon.length + 1} readonly="readonly"/>
-
-            // <label for="num">num</label>
-            // <input type="text" name="num" value={json.pokemon.length + 1} readonly="readonly"/>
-
-            // <br/> <br/>
-
-            // <label for="name">name</label>
-            // <input type="text" name="name"/>
-
-            // <label for="img">img</label>
-            // <input type="text" name="img"/>
-
-            // <label for="height">height</label>
-            // <input type="text" name="height"/>
-
-            // <label for="weight">weight</label>
-            // <input type="text" name="weight"/>
