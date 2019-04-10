@@ -4,7 +4,7 @@ var Layout = require("./layout");
 class New extends React.Component {
   render() {
       return (<Layout>
-         <form method = "POST" action = {'/artists'}>
+         <form method = "POST" action = {'/'}>
            <h4>Artist's Name:</h4>
            <input type= "text" name = "name" value = {this.props.name}/><br/>
            <h4>Photo Url: </h4>

@@ -63,14 +63,8 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-//DUMMY DIRECTORY:
-app.get('/', (request, response)=>{
-  // respond with HTML page displaying all stuff?
-  response.render('home');
-});
-
 //HOME DIRECTORY THAT SHOWS ALL ARTISTS:
-app.get('/artists', (request, response)=>{
+app.get('/', (request, response)=>{
   //respond with HTML page to display all stats about artists
   let queryString = 'SELECT * from artists';
 
@@ -82,7 +76,7 @@ app.get('/artists', (request, response)=>{
     } else {
    //   console.log('query resulttttttt:', result.rows);
       let data = {artists: result.rows};
-      response.render('artists', data);
+      response.render('home', data);
     }
   });
 });

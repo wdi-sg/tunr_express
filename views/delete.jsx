@@ -13,7 +13,7 @@ class Delete extends React.Component {
      return(
        <Layout>
        <div>
-       <a href='/artists/'>Return to view all artists</a>
+       <a href='/'>Return to view all artists</a>
          <div className="card" styleName ={"width: 18rem;"}>
          <img className ="card-img-top" src = {photo} alt= "Artist's image"/>
            <div className = "card-body">
