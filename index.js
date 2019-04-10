@@ -70,6 +70,11 @@ app.get("/artist/create", (request, response) => {
   let obj = {};
   response.render("create-artist", obj);
 });
+app.get("/song/create", (request, response) => {
+objVariableToSend = {}
+
+response.render('create-song', objVariableToSend);
+});
 app.post("/artist/create/add", (request, response) => {
   objVariableToSend = {};
   // console.log(request.body.name);
