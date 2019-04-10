@@ -12,8 +12,8 @@ const configs = {
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-    console.log('idle client error', err.message, err.stack);
+pool.on('error', function (e) {
+    console.log('idle client error', e.message, e.stack);
 });
 
 /**
@@ -229,7 +229,7 @@ app.get('/artists/:id', getArtistByIdRequestHandler);
  */
 const server = app.listen(3000);
 
-let onClose = async function() {
+let onClose = function() {
     console.log("closing off server process...");
 
     server.close(() => {
