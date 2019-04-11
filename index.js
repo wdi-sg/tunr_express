@@ -57,13 +57,7 @@ let getArtistsRequestHandler = async function (request, response) {
 
 let getArtistSongListRequestHandler = async function (request, response) {
     try {
-        const values1 = [request.params.id];
-        const sqlQuery1 = `SELECT * FROM artists
-                           WHERE id = $1`;
-
-        const artistResult = await pool.query(sqlQuery1, values1);
-
-        const values2 = [artistResult.rows[0].id];
+        const values2 = [request.params.id];
         const sqlQuery2 = `SELECT * FROM songs
                            WHERE artist_id = $1`;
 
@@ -228,17 +222,17 @@ let newPlaylistRequestHandler = async function (request, response) {
 let addNewPlaylistRequestHandler = async function (request, response) {
     try {
         const values = [request.body.name];
-        let playlistSqlQuery = `INSERT INTO playlists (name) VALUES ($1) RETURNING id`;
-        let songSqlQueryTBC = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES `;
-
+        const playlistSqlQuery = `INSERT INTO playlists (name) VALUES ($1) RETURNING id`;
         const playlistResult = await pool.query(playlistSqlQuery, values);
 
+        let songSqlQuery = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES `;
+
         request.body.songs.forEach((song, index) => {
-            songSqlQueryTBC += `(${ playlistResult.rows[0].id }, ${ song }),`;
+            songSqlQuery += `(${ playlistResult.rows[0].id }, ${ song }),`;
         });
 
         // final step to remove a comma to complete the query string
-        let songSqlQuery = songSqlQueryTBC.slice(0, -1);
+        songSqlQuery= songSqlQueryTBC.slice(0, -1);
 
         await pool.query(songSqlQuery);
 

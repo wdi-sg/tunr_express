@@ -22,6 +22,7 @@ class AddPlaylist extends React.Component {
         <DefaultLayout title="Add New Playlist">
             <form className="add" method="POST" action= "/playlist">
                 <h1>Add New Playlist</h1>
+                <audio src="demo.mp3" controls></audio>
                 Name: <input className="form-control" name="name"/><br/>
                 Songs: <Songs songs={this.props.songs}/><br/>
                 <input className="btn btn-primary" type="submit" value="Add new Playlist"/>
