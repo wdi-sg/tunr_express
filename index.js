@@ -18,7 +18,7 @@ pool.on("error", function(err) {
   console.log("idle client error", err.message, err.stack);
 });
 
-/**t
+/**
  * ===================================
  * Configurations and set up
  * ===================================
@@ -26,6 +26,7 @@ pool.on("error", function(err) {
 
 // Init express app
 const app = express();
+
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -43,30 +44,42 @@ app.engine("jsx", reactEngine);
 
 /**
  * ===================================
+ **Route handlers
+ * ===================================
+ */
+const showArtists = response => {
+  const queryStr = "SELECT * FROM artists";
+
+  pool.query(queryStr, (err, res) => {
+    if (err) {
+      console.log("Something went wrong!!!!");
+      console.log(err);
+    }
+
+    // for (let i in res.rows){
+    //     console.log(res.rows[i])}
+    //this is what return res.rows does
+    response.render("home", { idontknow: res.rows });
+  });
+};
+
+/**
+ * ===================================
  * Routes
  * ===================================
  */
 
 app.get("/", (request, response) => {
-  // form query string
-  let queryText = "SELECT * FROM artists";
-  // query database for so and so
-  pool.query(queryText, (err, result) => {
-    if (err) {
-      console.log("query error", err.message);
-      response.send("query error");
-    } else {
-      // respond with HTML page displaying welcome message
-      // console.log(result.rows);
-      response.render("home", { artists: result.rows });
-    }
-  });
+  // query database for all pokemon
+  showArtists(response);
+  // respond with HTML page displaying all pokemon
+  // response.render('home',{data:showArtists()});
 });
 
-app.get("/new", (request, response) => {
-  // respond with HTML page with new form - to update
-  response.render("new");
-});
+// app.get('/new', (request, response) => {
+//   // respond with HTML page with form to create new pokemon
+//   response.render('new');
+// });
 
 /**
  * ===================================
