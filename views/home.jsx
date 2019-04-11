@@ -1,7 +1,7 @@
 var React = require("react");
 
 // NewArtistButton redirects to /artist/new
-class NewPokeButton extends React.Component {
+class NewArtistButton extends React.Component {
     render() {
         return (
             <div>
@@ -35,7 +35,7 @@ class Home extends React.Component {
         <body>
             <h1>Tunr 1.0 Database</h1>
             <div className="displayContainer">
-            <NewPokeButton/>
+            <NewArtistButton/>
             <br/>
             <table>
                 <thead>

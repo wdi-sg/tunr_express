@@ -1,6 +1,23 @@
 var React = require("react");
 // maybe merge with createArtist??
 
+// CancelEditButton redirects to /artist/:id/
+class CancelEditButton extends React.Component {
+    render() {
+        let id = parseInt(this.props.id);
+        console.log("id is: "+ id);
+        let goWhere = "/artist/"+id;
+        console.log("goWhere: "+ goWhere);
+        return (
+            <div>
+                <form method="get" action={goWhere}>
+                <input type="submit" value="Cancel"/>
+                </form>
+            </div>
+        )
+    }
+};
+
 class EditArtist extends React.Component {
     render() {
         let artist = this.props.artist;
@@ -23,6 +40,7 @@ class EditArtist extends React.Component {
                 </div>
             </form>
                     </div>
+                    <CancelEditButton id={artist.id}/>
                 </body>
             </html>
         )

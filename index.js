@@ -35,6 +35,8 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+// tell app to use public folder for css files
+app.use(express.static('public'));
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -85,6 +87,42 @@ let editArtist = (request, response) => {
     // response.send("hello")
 }
 
+let sendArtistDeleteRequest = (request, response) => {
+    let artistId = parseInt( request.params.id );
+    let queryText = `SELECT * FROM artists WHERE id = ${artistId}`;
+    // query database for id
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.log("query error", err.message);
+            response.send('query error');
+        }
+        else {
+            // respond with HTML page with edit form
+            // console.log(result.rows);
+            response.render('deleteArtist', {artist: result.rows[0]});
+        }
+    });
+};
+
+let deleteArtist = (request, response) => {
+    console.log("deleting: ",request.body);
+    let artistId = parseInt( request.params.id );
+    let queryText = `DELETE from artists WHERE id = ${artistId}`;
+    // let queryText = `UPDATE artists SET photo_url = ${request.body.photo_url} WHERE id = ${artistId}`;
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.log("query error: ", err.message);
+            response.send('query error');
+        }
+        else {
+            // respond with HTML page with edit form
+            console.log(artistId + " has been deleted")
+            response.redirect('/');
+        }
+    });
+    // response.send("hello")
+}
+
 let sendArtistNewRequest = (request, response) => {
     response.render('CreateArtist');
 }
@@ -115,7 +153,7 @@ let lookupArtistById = (request, response) => {
     // query database for id
     pool.query(queryText, (err, result) => {
         if (err) {
-            console.log("query error: ", err.message);
+            console.log("lookupArtistById query error: ", err.message);
             response.send('query error');
         }
         else {
@@ -164,11 +202,16 @@ app.get('/artist/:id/edit', sendArtistEditRequest);
 // edit the data for a given artist
 app.put('/artist/:id/put', editArtist);
 
+// send request to edit the data for a given artist
+app.get('/artist/:id/delete', sendArtistDeleteRequest);
+// edit the data for a given artist
+app.delete('/artist/:id', deleteArtist);
+
 // get a specified artist's details by ID
 app.get('/artist/:id', lookupArtistById);
 
 // redirects /artists to default index page
-app.get('/artists', redirectToHomepage);
+app.get('/artist', redirectToHomepage);
 // default index page
 app.get('/', homepage);
 
