@@ -250,6 +250,23 @@ app.get('/artists/:id/songs/new', (request, response) => {
     });
 });
 
+app.post('/artists/:id/songs', (request, response) => {
+
+    const queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+
+    const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.params.id];
+
+    pool.query(queryString, values, (errorObj, result) => {
+        if (!errorObj) {
+            response.send(`New song "${values[0]}" created.`)
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
+
 
 /**
  * ===================================

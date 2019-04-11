@@ -1,14 +1,16 @@
 var React = require("react");
 
 class Newsong extends React.Component {
-  render() {
+    render() {
+
+    let artistIdInput = this.props.artist[0].id
 
     return (
       <html>
         <head />
         <body>
             <h3>Add new song for {this.props.artist[0].name}:</h3>
-                <form method="POST" action="/artists/:id/songs">
+                <form method="POST" action={`/artists/${artistIdInput}/songs`}>
                     Song Title: <br/>
                         <textarea name="title" cols="40" rows="10" value="e.g. Half Moon"></textarea><br/>
                     Album Name: <br/>
