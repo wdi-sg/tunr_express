@@ -125,7 +125,7 @@ app.put ('/artists/:id', (request, response) => {
     const nationality = object.nationality;
     const url = object.url;
   //update the database with the new values that have been updated into the form using the app.get above
-    const queryString = `UPDATE artists SET name ='${name}', photo_url = '${url}', nationality = '${nationality}' WHERE id = ${id} RETURNING *;`
+    const queryString = `UPDATE artists SET name ='${name}', photo_url = '${url}', nationality = '${nationality}' WHERE id = '${id}' RETURNING *;`
 
     pool.query(queryString, (err, result) => {
         if (err) {
