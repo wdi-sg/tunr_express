@@ -14,13 +14,25 @@ CREATE TABLE IF NOT EXISTS songs (
     artist_id INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS playlist (
+-- CREATE TABLE IF NOT EXISTS playlist (
+--     id SERIAL PRIMARY KEY,
+--     playlist_name TEXT
+-- );
+
+-- CREATE TABLE IF NOT EXISTS playlist_songs (
+--     id SERIAL PRIMARY KEY,
+--     playlist_name TEXT,
+--     song_title TEXT
+-- );
+
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    playlist_name TEXT
+    username VARCHAR(30),
+    password TEXT
 );
 
-CREATE TABLE IF NOT EXISTS playlist_songs (
+CREATE TABLE IF NOT EXISTS favorites (
     id SERIAL PRIMARY KEY,
-    playlist_name TEXT,
-    song_title TEXT
+    song_id INTEGER,
+    user_id INTEGER
 );

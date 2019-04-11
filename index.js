@@ -3,6 +3,9 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser');
+const SALT = 'applebeescatsdogs';
 
 // Initialise postgres client
 const configs = {
@@ -42,6 +45,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(cookieParser());
 
 /**
  *
@@ -289,19 +293,160 @@ app.post('/artists/:id/songs', (request, response) => {
 //   console.log(values);
 //   console.log(valuesString);
 
-  // const queryString = `INSERT INTO playlist_songs(playlist_name, song_title) VALUES($1,$2)`;
+//   const queryString = `INSERT INTO playlist_songs(playlist_name, song_title) VALUES($1,$2)`;
   
 
 
-  // pool.query(queryString, values, (err, result) => {
-  //   if (err) {
-  //     console.error('270 query error:', err.stack);
-  //     response.send( 'query error' );
-  //   } else {
-  //     response.redirect(`/playlist`);
-  //   }
-  // });
+//   pool.query(queryString, values, (err, result) => {
+//     if (err) {
+//       console.error('270 query error:', err.stack);
+//       response.send( 'query error' );
+//     } else {
+//       response.redirect(`/playlist`);
+//     }
+//   });
 // });
+
+
+/**
+ *
+ *
+ * ===================================
+ * Part 3
+ * ===================================
+ *
+ *
+ *
+ */
+
+app.get('/register', (request, response) => {
+  response.render('registerNewUser');
+})
+
+app.post('/register', (request, response) => {
+
+  const hash = sha256(request.body.password + SALT);
+  const queryString = "INSERT INTO users (username, password) VALUES ($1, $2);"
+  const values = [request.body.username, hash];
+  console.log("332");
+  console.log(values);
+
+  pool.query(queryString, values, (err, result) => {
+    if (err) {
+      console.error('337 query error:', err.stack);
+      response.send( 'query error' );
+    }
+
+  const hashLoggedIn = sha256(SALT+values.username);
+  response.cookie('username', request.body.username);
+  response.cookie('loggedIn', hashLoggedIn);
+  
+  response.redirect('/artists');
+  })
+})
+
+
+app.get('/login', (request, response) => {
+  response.render('login');
+})
+
+app.post('/login', (request, response) => {
+
+  const usernameInput = request.body.username;
+  const passwordInput = request.body.password;
+  const passwordInputHash = sha256(passwordInput + SALT);
+  console.log("363");
+  console.log(usernameInput);
+  console.log(passwordInput);
+  const queryString = `SELECT * from users WHERE username='${usernameInput}'`;
+
+  pool.query(queryString, (err, result) => {
+    if (err) {
+      console.error('370 query error:', err.stack);
+      response.send( 'query error' );
+    }
+    console.log("373");
+    console.log(result.rows[0].password);
+    console.log("375");
+    console.log(passwordInputHash);
+    if (result.rows.length === 1) {
+      if (passwordInputHash === result.rows[0].password) {
+
+        const hashLoggedIn = sha256(SALT+usernameInput);
+
+        response.cookie('username', usernameInput);
+        response.cookie('loggedIn', hashLoggedIn);
+        response.redirect('/artists');
+      } else {
+        response.send('Incorrect password. Please refresh page and try again')
+      }
+
+    } else {
+      response.send('Incorrect username. Please refresh page and try again')
+    }
+
+  });
+})
+
+app.get('/favorites/new', (request, response) => {
+
+  if (request.cookies.username === undefined) {
+    response.send("You must be logged in to view this page. Please log in and try again.");
+  }
+  else {
+    const username = request.cookies.username;
+    console.log("398");
+    console.log(username);
+    let queryString = "SELECT id, title FROM songs ORDER BY title";
+    
+    pool.query(queryString, (err, result) => {
+      if (err) {
+        console.error('404 query error:', err.stack);
+        response.send( 'query error' );
+      }
+      const data={songs: result.rows};
+      response.render('addFavorites', data);
+    })
+  }
+})
+
+app.post('/favorites', (request, response) => {
+  const username = request.cookies.username;
+  const userIdQuery = `SELECT users.id FROM users WHERE username='hello2'`;
+
+  pool.query(userIdQuery, (err, result) => {
+    if (err) {
+      console.error('419 query error:', err.stack);
+      response.send( 'query error' );
+    }
+    let userId = result.rows[0].id;
+
+    let object = request.body;
+    let arrayOfFavoriteSongs = Object.values(object);
+    
+    let valuesString = "";
+    for (i=0; i<arrayOfFavoriteSongs.length; i++) {
+      if (i < arrayOfFavoriteSongs.length-1) {
+        valuesString += `(${userId}, ${arrayOfFavoriteSongs[i]}), `; 
+      } else {
+        valuesString += `(${userId}, ${arrayOfFavoriteSongs[i]})`;
+      }
+    }
+
+    let queryString = `INSERT INTO favorites (user_id, song_id) VALUES ${valuesString}`;
+    
+    pool.query(queryString, (err, result) => {
+      if (err) {
+        console.error('440 query error:', err.stack);
+        response.send( 'query error' );
+      }
+      response.send("ok!");
+    })
+
+  });
+
+})
+
 
 
 /**

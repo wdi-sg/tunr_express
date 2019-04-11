@@ -9,11 +9,13 @@ function setUpEvents() {
 		p1.innerHTML = `Song ${i}: `;
 		div.appendChild(p1);
 
-		let songInput = document.createElement("input");
-		songInput.type = "text";
-		songInput.name = "song"+i;
-		songInput.placeholder ="Photograph";
-		div.appendChild(songInput);
+		let select = document.createElement("select");
+		let option = document.createElement("option");
+		// let songInput = document.createElement("input");
+		// songInput.type = "text";
+		// songInput.name = "song"+i;
+		// songInput.placeholder ="Photograph";
+		// div.appendChild(songInput);
 
 		fieldset.appendChild(div);
 		i++;
