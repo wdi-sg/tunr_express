@@ -71,7 +71,7 @@ class ViewSongsPlayList extends React.Component {
         outList = data[0].map((item,index)=>{
         return  <div class="card-item">
                     <a href={`${item.preview_link}`}>
-                    <h4>{index}. {item.album}</h4><h4>{item.title}</h4>
+                    <h4>{index+1}. {item.album}</h4><h4>{item.title}</h4>
                     </a>
                 </div>
         })
@@ -79,7 +79,7 @@ class ViewSongsPlayList extends React.Component {
         outList = data[0].map((item,index)=>{
         return  <div class="card-item">
                     <a href={`${item.preview_link}`}>
-                    <h4>{index}. {item.album}</h4><h4>{item.title}</h4>
+                    <h4>{index+1}. {item.album}</h4><h4>{item.title}</h4>
                     </a>
                 </div>
         })

@@ -3,6 +3,10 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
+
+const app = express();
+
 
 // Initialise postgres client
 const configs = {
@@ -24,8 +28,7 @@ pool.on('error', function (err) {
  * ===================================
  */
 
-// Init express app
-const app = express();
+
 
 app.use(express.static(__dirname+'/public/'));
 
@@ -35,7 +38,6 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -48,6 +50,102 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
+
+
+  /**
+ * ===================================
+ * REGISTER AND LOGIN STUFF
+ * ===================================
+ */
+
+app.get('/register', (req,res)=>{
+
+    res.render('loginRegister/register')
+})
+app.post('/register', (req,res)=>{
+    const data = req.body;
+    const hashPass = sha256(data.password);
+    const queryAddUsers = `INSERT INTO users(username, password) VALUES ('${data.username}', '${hashPass}') RETURNING *`;
+
+    pool.query(queryAddUsers, (errObj, result)=>{
+            if(errObj!=undefined){
+                console.error('query error:', errObj.stack);
+                res.send( 'query error' );
+            } else {
+
+                let cookieUser = result.rows[0].username;
+                let cookieHashed = result.rows[0].password;
+                let cookieId = result.rows[0].id;
+
+                res.cookie('username', cookieUser);
+                res.cookie('loggedIn', cookieHashed);
+                res.cookie('userId', cookieId);
+
+                const queryString = `SELECT * FROM artists`;
+                pool.query(queryString,(errObj, result)=>{
+                if(errObj === undefined){
+
+                    const data = result.rows;
+
+                    res.render('home', {data});
+                } else {
+                    console.error('query error:', errObj.stack);
+                    res.send( 'query error' );
+                }
+            })
+        }
+    })
+})
+
+app.get('/login',(req,res)=>{
+
+    res.render('loginRegister/login')
+})
+app.post('/login',(req,res)=>{
+
+    const data = req.body;
+    const hashPass = sha256(data.password);
+    console.log(data);
+    const queryExistingUser = `SELECT password,id FROM users where username='${data.username}'`;
+
+    pool.query(queryExistingUser, (errObj, result)=>{
+        if(errObj!=undefined){
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        } else {
+
+
+            console.log(result.rows[0]);
+            if(result.rows[0].password == hashPass){
+                const queryString = `SELECT * FROM artists`;
+                pool.query(queryString,(errObj, result)=>{
+                     if(errObj === undefined){
+
+                    const data = result.rows;
+
+                    let cookieUser = result.rows[0].username;
+                    // let cookieHashed = result.rows[0].password;
+                    let cookieHashed = 'Verified';
+                    let cookieId = result.rows[0].id;
+
+                    res.cookie('username', cookieUser);
+                    res.cookie('loggedIn', cookieHashed);
+                    res.cookie('userId', cookieId);
+
+                    res.render('home', {data});
+                    } else {
+                    console.error('query error:', errObj.stack);
+                    res.send( 'query error' );
+                    }
+                })
+            } else {
+                res.send('Entered Wrong Password');
+            }
+        }
+    })
+})
+
+
 
  /**
  * ===================================
