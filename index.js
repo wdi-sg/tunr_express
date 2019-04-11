@@ -48,23 +48,23 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all artists
+//index
+app.get('/artist', (request, response) => {
     const queryString = 'SELECT * from artists';
     pool.query(queryString, (errorObj, result) => {
         if (errorObj === undefined) {
             console.log('query result:', result.rows);
-            const data = {  artists : result.rows};
+            const data = { artists : result.rows};
             response.render('home', data);
         } else {
             console.error('query error:', errorObj.stack);
             response.send( 'query error' );
         }
-  // respond with HTML page displaying all artists
     });
 })
 
-app.get('/new', (request, response) => {
+//create
+app.get('/artist/new', (request, response) => {
     response.render('new');
 })
 
@@ -74,7 +74,7 @@ app.post('/artist', (request,response)=> {
     const value = [request.body.name, request.body.photo_url,request.body.nationality]
     pool.query(queryString, value, (errorObj)=> {
         if (errorObj === undefined) {
-            response.redirect(`/${result.rows[0].id}`);
+            response.redirect('/artist');
         } else {
             console.error('query error:', errorObj.stack);
             response.send( 'query error' );
@@ -82,7 +82,8 @@ app.post('/artist', (request,response)=> {
     })
 })
 
-app.get('/:id', (request, response) => {
+//show
+app.get('/artist/:id', (request, response) => {
     const queryString = 'SELECT * from artists WHERE id =' + request.params.id;
     pool.query(queryString, (errorObj, result) => {
         if (errorObj === undefined) {
@@ -96,8 +97,71 @@ app.get('/:id', (request, response) => {
     });
 })
 
+//edit
+app.get('/artist/:id/edit', (request, response) => {
+    const queryString = 'SELECT * from artists WHERE id =' + request.params.id;
+    pool.query(queryString, (errorObj, result) => {
+        if (errorObj === undefined) {
+            console.log('query result:', result.rows);
+            const data = { artists : result.rows};
+            response.render('edit', data);
+        } else {
+            console.error('query error:', errorObj.stack);
+            response.send( 'query error' );
+        }
+    });
+})
 
+app.put('/artist/:id', (request,response)=> {
+    const queryString = 'UPDATE artists SET name = ($1), photo_url = ($2), nationality= ($3) WHERE id =' + request.params.id;
+    const value = [request.body.name, request.body.photo_url,request.body.nationality]
+    pool.query(queryString, value, (errorObj)=> {
+        if (errorObj === undefined) {
+            response.redirect('/artist');
+        } else {
+            console.error('query error:', errorObj.stack);
+            response.send( 'query error' );
+        }
+    });
+})
 
+//delete
+
+//get songs from artist
+app.get('/artist/:id/songs', (request, response) => {
+    console.log(request.params.id);
+    const queryString = 'SELECT * FROM songs WHERE artist_id =' + request.params.id;
+    pool.query(queryString, (errorObj, result) => {
+        if (errorObj === undefined) {
+            console.log('query result:', result.rows);
+            const data = {  songs : result.rows};
+            response.render('artistsongs', data);
+        } else {
+            console.error('query error:', errorObj.stack);
+            response.send( 'query error' );
+        }
+    });
+})
+
+//artist new song
+app.get('/artist/:id/songs/new', (request, response) => {
+    let data = {data:request.params.id};
+    response.render('artistSongNew',data);
+})
+
+app.post('/artist/:id/songs', (request,response)=> {
+    console.log(request.body)
+    const queryString= 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1,$2,$3,$4,$5) RETURNING *';
+    const value = [request.body.title, request.body.album,request.body.preview_link,request.body.artwork,request.body.artist_id]
+    pool.query(queryString, value, (errorObj)=> {
+        if (errorObj === undefined) {
+            response.redirect('/artist');
+        } else {
+            console.error('query error:', errorObj.stack);
+            response.send( 'query error' );
+        }
+    })
+})
 
 /**
  * ===================================
