@@ -20,3 +20,20 @@ INSERT INTO playlist_songs(playlist_id, song_id) VALUES(1, 44);
 INSERT INTO playlist_songs(playlist_id, song_id) VALUES(1, 43);
 INSERT INTO playlist_songs(playlist_id, song_id) VALUES(2, 32);
 INSERT INTO playlist_songs(playlist_id, song_id) VALUES(2, 78);
+
+
+-- INSERT INTO favourites(user_id, song_id) VALUES(1 , 23);
+-- INSERT INTO favourites(user_id, song_id) VALUES(1 , 34);
+-- INSERT INTO favourites(user_id, song_id) VALUES(1 , 25);
+-- INSERT INTO favourites(user_id, song_id) VALUES(1 , 26);
+-- INSERT INTO favourites(user_id, song_id) VALUES(1 , 27);
+-- INSERT INTO favourites(user_id, song_id) VALUES(1 , 63);
+-- INSERT INTO favourites(user_id, song_id) VALUES(1 , 63);
+
+-- INSERT INTO favourites(user_id, song_id) VALUES(10 , 23);
+-- INSERT INTO favourites(user_id, song_id) VALUES(10 , 34);
+-- INSERT INTO favourites(user_id, song_id) VALUES(10 , 25);
+-- INSERT INTO favourites(user_id, song_id) VALUES(10 , 26);
+-- INSERT INTO favourites(user_id, song_id) VALUES(10 , 27);
+-- INSERT INTO favourites(user_id, song_id) VALUES(10 , 63);
+-- INSERT INTO favourites(user_id, song_id) VALUES(10 , 63);

@@ -31,7 +31,7 @@ class Login extends React.Component {
                         <div class="col-6 ">
                         <form method="POST" action="/login">
                             <input name="username" placeholder="name" class="form-control" required/>
-                            <input name="password" placeholder="password" class="form-control" required/>
+                            <input type="password" name="password" placeholder="password" class="form-control" required/>
                             <button type="submit" class="btn" aria-label="Left Align">
                             <span class="glyphicon glyphicon-record btn btn-primary glyphicon-align-left" aria-hidden="true"></span>
                             </button>

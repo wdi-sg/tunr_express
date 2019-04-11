@@ -4,7 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const sha256 = require('js-sha256');
-
+const cookieParser = require('cookie-parser')
 const app = express();
 
 
@@ -45,6 +45,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+app.use(cookieParser());
 /**
  * ===================================
  * Routes
@@ -57,11 +58,12 @@ app.engine('jsx', reactEngine);
  * REGISTER AND LOGIN STUFF
  * ===================================
  */
-
+//REGISTER PAGE
 app.get('/register', (req,res)=>{
 
     res.render('loginRegister/register')
 })
+//REGISTER FORM
 app.post('/register', (req,res)=>{
     const data = req.body;
     const hashPass = sha256(data.password);
@@ -97,49 +99,59 @@ app.post('/register', (req,res)=>{
     })
 })
 
+//LOGIN PAGE
 app.get('/login',(req,res)=>{
 
     res.render('loginRegister/login')
 })
+//LOGIN FORM
 app.post('/login',(req,res)=>{
 
-    const data = req.body;
-    const hashPass = sha256(data.password);
-    console.log(data);
-    const queryExistingUser = `SELECT password,id FROM users where username='${data.username}'`;
+    const dataForm = req.body;
+    const hashPass = sha256(dataForm.password);
+    //SEND QUERY TO CHECK IF USER NAME EXIST, AND IF YES, RETRIEVE HASHED PASSWORD IN DB
+    const queryExistingUser = `SELECT password,id FROM users where username='${dataForm.username}'`;
 
     pool.query(queryExistingUser, (errObj, result)=>{
+
         if(errObj!=undefined){
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
         } else {
+            if(result.rows.length == 0){
 
+                res.send('You have entered incorrect login details!');
 
-            console.log(result.rows[0]);
-            if(result.rows[0].password == hashPass){
+            } else if(result.rows[0].password == hashPass){
+
+                let cookieUser = dataForm.username;
+                let cookieHashed = 'Verified';
+                let cookieId = result.rows[0].id;
+
+                res.cookie('username', cookieUser);
+                res.cookie('loggedIn', cookieHashed);
+                res.cookie('userId', cookieId);
+                //CHECKS IF USER ENTERED PASSWORD(HASHED) MATCHES DB PASSWORD(HASHED)
                 const queryString = `SELECT * FROM artists`;
+
                 pool.query(queryString,(errObj, result)=>{
+
                      if(errObj === undefined){
-
+                    //IF PASSWORD MATCH
                     const data = result.rows;
-
-                    let cookieUser = result.rows[0].username;
-                    // let cookieHashed = result.rows[0].password;
-                    let cookieHashed = 'Verified';
-                    let cookieId = result.rows[0].id;
-
-                    res.cookie('username', cookieUser);
-                    res.cookie('loggedIn', cookieHashed);
-                    res.cookie('userId', cookieId);
-
                     res.render('home', {data});
+
                     } else {
+
                     console.error('query error:', errObj.stack);
                     res.send( 'query error' );
+
                     }
                 })
             } else {
+
                 res.send('Entered Wrong Password');
+
             }
         }
     })
@@ -158,14 +170,18 @@ app.get('/', (req, res) => {
   // query database for all pokemon
   const queryString = `SELECT * FROM artists`;
     pool.query(queryString,(errObj, result)=>{
+
         if(errObj === undefined){
 
             const data = result.rows;
 
             res.render('home', {data});
+
         } else {
+
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
+
         }
     })
 });
@@ -180,7 +196,7 @@ app.get('/artist/:id', (req,res)=>{
 //ADD ARTIST FORM & REQUEST
 app.get('/new', (req, res) => {
 
-    res.render('new');
+    res.render('artist/new');
 });
 app.post('/new/artistadded', (req,res)=>{
     let data = req.body;
@@ -218,7 +234,7 @@ app.get('/artist/:id/edit', (req,res)=>{
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
             const data = result.rows;
-            res.render('editartist', {data});
+            res.render('artist/editartist', {data});
         } else {
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
@@ -260,7 +276,7 @@ app.get('/artist/:id/delete', (req,res)=>{
 
             const data = result.rows;
 
-            res.render('deleteform', {data});
+            res.render('artist/deleteform', {data});
         } else {
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
@@ -304,7 +320,7 @@ app.get('/artist/:id/songs', (req,res)=>{
         if(errObj === undefined){
 
             const data = result.rows;
-            res.render('viewartist', {data});
+            res.render('artist/viewartist', {data});
 
         } else {
 
@@ -321,7 +337,7 @@ app.get('/artist/:id/songs/new', (req,res) =>{
     let data = req.params.id;
     console.log('at add new song');
     console.log(data);
-    res.render('newsong', {data});
+    res.render('song/newsong', {data});
 })
 app.post('/artist/:id/songs',(req,res)=>{
     let data = req.body;
@@ -367,7 +383,7 @@ app.get('/playlist', (req,res)=>{
         if(errobj === undefined){
 
             const data = result.rows;
-            res.render('viewplaylist', {data})
+            res.render('playlist/viewplaylist', {data})
 
         } else {
             console.error('query error:', errObj.stack);
@@ -384,7 +400,7 @@ app.get('/playlist/new', (req,res)=>{
 
             let data = result.rows;
 
-          res.render('playlistform', {data} );
+          res.render('playlist/playlistform', {data} );
     })
 })
 
@@ -418,6 +434,7 @@ app.post('/playlist', (req,res)=>{
                     res.send( 'query error' );
                 } else {
                     const data = result.rows;
+                    //TO EXPAND UPON. RENDER SOMETHING WITH RESULTS
                     res.send('Playlist Added!');
                 }
             })
@@ -438,10 +455,11 @@ app.get('/playlist/:id', (req,res)=>{
 
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
-            const data = [result.rows,playlistId];
-            console.log(data);
 
-            res.render('songsfromplaylist', {data});
+            const data = [ result.rows , playlistId ];
+
+
+            res.render('song/songsfromplaylist', {data});
         } else {
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
@@ -449,7 +467,7 @@ app.get('/playlist/:id', (req,res)=>{
     })
 })
 
-//ADD SONGS TO PLAYLIST
+//ADD SONGS TO PLAYLIST ( ONE BY ONE)
 app.post('/playlist/:id', (req,res)=>{
 
     let playlistId = req.params.id;
@@ -476,8 +494,80 @@ app.post('/playlist/:id', (req,res)=>{
 
 
 
+/**
+ * ===================================
+ * FAVOURITES PATHS
+ * ===================================
+ */
+
+//CREATE FORM FOR USER TO SELECT SONGS TO FAVOURITE
+app.get('/favourites/new', (req,res)=>{
+
+    const queryString = `SELECT * FROM songs;`
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj!=undefined){
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        } else {
+            let cookies = req.cookies
+            let dataSongs = result.rows;
+            let data = {dataSongs , cookies};
+
+            res.render('favourite/favouriteform', {data});
+        }
+    })
+})
+
+// { userId: '1', songs: [ '247', '248' ] }
+app.post('/favourites', (req,res)=>{
+
+    const songIdToAdd = req.body.songs;
+    const userId = req.body.userId;
+
+    let queryInsert = `INSERT INTO favourites (user_id, song_id) VALUES`;
+
+    songIdToAdd.forEach((song,index)=>{
+        queryInsert += `(${userId}, ${song}),`;
+    })
+
+    queryInsert = queryInsert.slice(0,-1);
+    queryInsert = queryInsert + ` RETURNING *`;
+
+    pool.query(queryInsert,(errObj,result)=>{
+        if(errObj!=undefined){
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        } else {
+            const data = result.rows;
+            //EXPAND USING DATA TO RENDER
+            res.send('Playlist Added!');
+        }
+    })
+})
+
+app.get('/favourites', (req,res)=>{
+
+    const userId = req.cookies.userId;
+    let queryString = `SELECT favourites.user_id, songs.title, songs.id, songs.preview_link, songs.album, songs.artist_id
+                       FROM songs
+                       INNER JOIN favourites
+                       ON (favourites.song_id = songs.id)
+                       WHERE favourites.user_id = ${userId};`
+
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj!== undefined){
+            console.error('query error:', errObj.stack);
+            res.send( 'query error' );
+        } else {
+            // const data = [result.rows.playlistId];
+             const data = [ result.rows , userId ];
 
 
+            res.render('favourite/songsfromfavourite', {data});
+            // res.render('song/songsfromplaylist', {data});
+        }
+    })
+})
 
 /**
  * ===================================

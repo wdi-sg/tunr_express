@@ -30,3 +30,9 @@ id SERIAL PRIMARY KEY,
 username TEXT,
 password TEXT
 );
+
+CREATE TABLE IF NOT EXISTS favourites (
+id SERIAL PRIMARY KEY,
+user_id INTEGER,
+song_id INTEGER
+);

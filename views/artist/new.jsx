@@ -58,7 +58,7 @@ class NewArtistForm extends React.Component{
     }
 }
 
-class NewArist extends React.Component {
+class New extends React.Component {
   render() {
     return (
       <html>
@@ -78,4 +78,4 @@ class NewArist extends React.Component {
   }
 }
 
-module.exports = NewArist;
+module.exports = New;

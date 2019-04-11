@@ -31,13 +31,18 @@ class Register extends React.Component {
                         <div class="col-6 ">
                         <form method="POST" action="/register">
                             <input name="username" placeholder="name" class="form-control" required/>
-                            <input name="password" placeholder="password" class="form-control" required/>
+                            <input id="password" name="password" placeholder="password" class="form-control" required/>
                             <button type="submit" class="btn" aria-label="Left Align">
                             <span class="glyphicon glyphicon-record btn btn-danger glyphicon-align-left" aria-hidden="true"></span>
                             </button>
                         </form>
                         </div>
                     </div>
+                    <ul class="row align-items-start justify-content-center p-4 m-4">
+                        <li class="col-5">
+                        <a method="GET" href="/login"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>Have an Account? Login Here!</a>
+                        </li>
+                    </ul>
                 </div>
             </body>
         </html>);
