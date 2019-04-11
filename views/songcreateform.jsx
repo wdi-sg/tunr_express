@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Newsong extends React.Component {
+class Songcreateform extends React.Component {
     render() {
 
     let artistIdInput = this.props.artist[0].id
@@ -27,4 +27,4 @@ class Newsong extends React.Component {
   }
 }
 
-module.exports = Newsong;
+module.exports = Songcreateform;

@@ -1,6 +1,6 @@
 var React = require('react');
 
-class Created extends React.Component {
+class Artistcreated extends React.Component {
 
     render() {
 
@@ -24,4 +24,4 @@ class Created extends React.Component {
     }
 }
 
-module.exports = Created;
+module.exports = Artistcreated;

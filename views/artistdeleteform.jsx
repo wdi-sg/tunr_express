@@ -1,6 +1,6 @@
 var React = require('react');
 
-class Delete extends React.Component {
+class Artistdeleteform extends React.Component {
 
     render() {
 
@@ -23,4 +23,4 @@ class Delete extends React.Component {
     }
 }
 
-module.exports = Delete;
+module.exports = Artistdeleteform;

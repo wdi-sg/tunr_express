@@ -1,7 +1,7 @@
 var React = require("react");
 var Layout = require("./layout");
 
-class Songs extends React.Component {
+class Songshow extends React.Component {
   render() {
 
     const theSongs = this.props.songs.map((song) => {
@@ -30,4 +30,4 @@ class Songs extends React.Component {
   }
 }
 
-module.exports = Songs;
+module.exports = Songshow;

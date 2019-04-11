@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Edited extends React.Component {
+class Artistedited extends React.Component {
   render() {
 
     const themArtists = this.props.artists.map((artist) => {
@@ -21,4 +21,4 @@ class Edited extends React.Component {
   }
 }
 
-module.exports = Edited;
+module.exports = Artistedited;

@@ -1,6 +1,6 @@
 var React = require('react');
 
-class Edit extends React.Component {
+class Artisteditform extends React.Component {
 
     render() {
 
@@ -23,4 +23,4 @@ class Edit extends React.Component {
     }
 }
 
-module.exports = Edit;
+module.exports = Artisteditform;

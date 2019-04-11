@@ -62,7 +62,7 @@ app.get('/artists', (request, response) => {
             // console.log(result.rows);
             const data = { artists : result.rows };
             // respond with HTML page displaying all artists
-            response.render('index', data);
+            response.render('artistindex', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -77,7 +77,7 @@ app.get('/artists', (request, response) => {
 //displaying the form to add new artist
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new songs
-    response.render('newartist');
+    response.render('artistcreateform');
 });
 
 //retrieving the form with user input
@@ -96,7 +96,7 @@ app.post('/artists', (request, response) => {
             // console.log(result.rows);
 
             const data = { artist : result.rows };
-            response.render('created', data);
+            response.render('artistcreated', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -119,7 +119,7 @@ app.get('/artists/:id', (request, response) => {
             // console.log('Query results: ', result.rows);
             const data = { artist : result.rows };
             // respond with HTML page displaying all artists
-            response.render('show', data);
+            response.render('artistshow', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -142,7 +142,7 @@ app.get('/artists/:id/edit', (request, response) => {
             // console.log('Query results: ', result.rows);
             const data = { artist : result.rows };
             // respond with HTML page displaying all artists
-            response.render('edit', data);
+            response.render('artisteditform', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -161,7 +161,7 @@ app.put('/artists/:id', (request, response) => {
         if (errorObj === undefined) {
 
             const data = { artists : values };
-            response.render('edited', data);
+            response.render('artistedited', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -184,7 +184,7 @@ app.get('/artists/:id/delete', (request, response) => {
             // console.log('Query results: ', result.rows);
             const data = { artist : result.rows };
             // respond with HTML page displaying all artists
-            response.render('delete', data);
+            response.render('artistdeleteform', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -201,7 +201,7 @@ app.delete('/artists/:id', (request, response) => {
         // errorObj is null if there's no error
         if (errorObj === undefined) {
             const data = { artists : result.rows };
-            response.render('deleted', data);
+            response.render('artistdeleted', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -222,7 +222,7 @@ app.get('/artists/:id/songs', (request, response) => {
 
         if (errorObj === undefined) {
             const data = { songs : result.rows };
-            response.render('songs', data);
+            response.render('songshow', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
@@ -242,7 +242,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
 
         if (errorObj === undefined) {
             const data = { artist : result.rows };
-            response.render('newsong', data);
+            response.render('songcreateform', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');

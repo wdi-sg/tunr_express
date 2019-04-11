@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Index extends React.Component {
+class Artistindex extends React.Component {
   render() {
 
     const themArtists = this.props.artists.map((artist) => {
@@ -21,4 +21,4 @@ class Index extends React.Component {
   }
 }
 
-module.exports = Index;
+module.exports = Artistindex;

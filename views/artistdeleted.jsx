@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Deleted extends React.Component {
+class Artistdeleted extends React.Component {
   render() {
 
 
@@ -30,4 +30,4 @@ class Deleted extends React.Component {
   }
 }
 
-module.exports = Deleted;
+module.exports = Artistdeleted;

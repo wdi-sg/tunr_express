@@ -1,7 +1,7 @@
 var React = require("react");
 var Layout = require("./layout");
 
-class Show extends React.Component {
+class Artistshow extends React.Component {
   render() {
 
     const theArtist = this.props.artist.map((artist) => {
@@ -28,4 +28,4 @@ class Show extends React.Component {
   }
 }
 
-module.exports = Show;
+module.exports = Artistshow;
