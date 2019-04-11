@@ -42,6 +42,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
 /**
  * ===================================
  * Routes
@@ -51,6 +52,30 @@ app.engine('jsx', reactEngine);
 app.get('/', (request, response) => {
 
   response.render('home');
+
+});
+
+/*
+                SHOW AN ARTIST'S SONGS
+*/
+
+app.get('/artists/:id/songs', (request, response) => {
+
+    let index = request.params.id;
+
+    // const queryString = `SELECT * FROM artists WHERE id=${index}`;
+    const querySongs = `SELECT title, album FROM songs WHERE artist_id=${index}`;
+
+    pool.query(querySongs, (err, result) => {
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result', result.rows);
+
+            response.render('songs', {songs: result.rows});
+        }
+    })
 
 });
 
@@ -81,33 +106,33 @@ app.post('/new', (request, response) => {
         }
 
     })
+})
 
 /*
                         INDEX, SHOW
 */
 
-})
 
-app.get('/artists/:id', (request, response) => {
+// app.get('/artists/:id', (request, response) => {
 
-    let index = request.params.id;
-    const queryString = `SELECT * FROM artists WHERE id=${index}`;
+//     let index = request.params.id;
+//     const queryString = `SELECT * FROM artists WHERE id=${index}`;
 
-    pool.query(queryString, (err, result) => {
+//     pool.query(queryString, (err, result) => {
 
-    if (err) {
-        console.log('query error', err.stack);
-        response.send('query error');
-    } else {
-        console.log('query result', result.rows);
+//     if (err) {
+//         console.log('query error', err.stack);
+//         response.send('query error');
+//     } else {
+//         console.log('query result', result.rows);
 
-        const data = result.rows;
-        response.render('artists', {artists: data});
-    }
+//         const data = result.rows;
+//         response.render('artists', {artists: data});
+//     }
 
-    })
+//     })
 
-});
+// });
 
 app.get('/artists', (request, response) => {
 
