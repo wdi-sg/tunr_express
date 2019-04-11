@@ -55,21 +55,19 @@ app.get('/', (request, response) => {
 //Build the index feature for artists
 app.get('/artists', (request, response) => {
   // query database for all artists
-const queryString = 'SELECT * FROM artists ORDER BY id';
+    const queryString = 'SELECT * FROM artists ORDER BY id';
   // respond with HTML page displaying all artists
-  pool.query(queryString, (err, result) => {
+    pool.query(queryString, (err, result) => {
 
-    if (err) {
-      console.error('query error:', err.stack);
-      response.send( 'query error' );
-    } else {
-      console.log('query result:', result.rows);
-      const data = {  artists : result.rows};
-      response.render('artists', data);
-    }
-  // response.render('home');
-});
-
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result.rows);
+            const data = {  artists : result.rows};
+            response.render('artists', data);
+        }
+    });
 });
 
 app.get('/new', (request, response) => {
@@ -77,6 +75,48 @@ app.get('/new', (request, response) => {
   response.render('new');
 });
 
+// post the value from the form to the database
+app.post('/new' , (request, response)=> {
+    //console log to the terminal that the connection is working
+    console.log(request.body);
+    //query string to post the form data to the database
+    let query = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'; //could use `INSERT ....VALUES (${request.body.name} , ...)`in this case values doesn't need to be defined
+    // pushing the query string into the database
+    const values = [request.body.name, request.body.photo_url, request.body.nationality];
+    pool.query(query,values,(err, result) =>{
+        if (err) {
+            console.log("Something Went Wrong!!!");
+            console.log(err);
+            response.send("Huston we have a problem!")
+        } else {
+            console.log("That worked, well done!");
+            // const data = { artist : result.rows[0].id}
+            // response.render('singleArtist', data);
+            // response.render(`/singleArtist/${result.rows.id}`);
+            response.redirect('/artists');
+        }
+    })
+})
+
+//Build the show feature to view a single artist's page
+app.get('/artists/:id', (request, response) => {
+  //storing the id value to then use in the database query
+    const id = request.params.id;
+  // query database for a single artist based on their id
+    const queryString = `SELECT * FROM artists WHERE id='${id}'`;
+  // respond with HTML page displaying all artists
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result.rows);
+            const data = {  artist : result.rows};
+            response.render('singleArtist', data);
+        }
+    });
+});
 
 /**
  * ===================================

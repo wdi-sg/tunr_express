@@ -2,12 +2,12 @@ var React = require("react");
 
 class Artists extends React.Component {
   render() {
-    const artists = this.props.artists.map((artist)=>{
+    const artists = this.props.artists.map((artist) => {
         return (
             <tr>
                 <th>{artist.id}</th>
                 <th>{artist.name}</th>
-                <th>{artist.photo_url}</th>
+                <th><img width="100px" height="100px" src={artist.photo_url}/></th>
                 <th>{artist.nationality}</th>
             </tr>
         )
