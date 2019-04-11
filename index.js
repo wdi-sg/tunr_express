@@ -56,7 +56,7 @@ app.use(express.static('public'));
 
 app.get('/artists', (request, response) => {
     // query database for all artists
-    const queryString = 'SELECT * FROM artists';
+    const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
     pool.query(queryString, (errorObj, result) => {
         // errorObj is null if there's no error
