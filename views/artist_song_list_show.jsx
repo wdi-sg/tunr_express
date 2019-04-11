@@ -1,6 +1,6 @@
 var React = require("react");
 
-class SongListShow extends React.Component {
+class ArtistSongListShow extends React.Component {
     render() {
 
         const songs_of_artist = this.props.songs.map(song => {
@@ -42,4 +42,4 @@ class SongListShow extends React.Component {
     }
 }
 
-module.exports = SongListShow;
+module.exports = ArtistSongListShow;

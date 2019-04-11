@@ -47,7 +47,7 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes For Artists
+ * Part 1: Routes For Artists
  * ===================================
  */
 
@@ -243,7 +243,7 @@ console.log(request.params.id)
 
 /**
  * ===================================
- * Routes For Songs
+ * Part 1: Routes For Songs
  * ===================================
  */
 
@@ -423,7 +423,15 @@ console.log(request.params.id)
 
 /**
  * ===================================
- * Routes For Songs of Artists
+ * Part 2: Routes For Songs of Artists
+ * ===================================
+ */
+
+
+
+ /**
+ * ===================================
+ * View All Songs Of An Artist
  * ===================================
  */
 
@@ -441,12 +449,48 @@ app.get('/artist/:id/songs', (request, response) => {
     } else {
         const data = { songs: result.rows }
 
-        response.render( "song_list_show", data );
+        response.render( "artist_song_list_show", data );
     }
   })
 
 });
 
+
+/**
+ * ===================================
+ * Create A New Song For An Artist
+ * ===================================
+ */
+
+
+
+app.get('/artist/:id/songs/new', (request, response) => {
+
+    const artist_id = request.params.id;
+    const data = { idKey : artist_id };
+   response.render("artist_song_list_create", data);
+})
+
+//to be continued here, process the form input for song creation for an artist
+app.post('/artist/:id/songs', (request, response) => {
+
+    const artist_id = request.params.id;
+    console.log(request.body);
+
+    const queryString = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *";
+
+    const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, artist_id];
+
+    pool.query(queryString, values, (errorObj, result) => {
+        if(errorObj) {
+            console.log(errorObj.stack);
+            response.send("query error test 3");
+        } else {
+            response.send("A new song has been added for artist with artist_id=" + artist_id + "<br><br><a href=/artists/>Home</a>");
+        }
+    })
+
+})
 
 
 
