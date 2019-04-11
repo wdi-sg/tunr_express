@@ -2,8 +2,10 @@ console.log("starting up!!");
 
 const express = require("express");
 const methodOverride = require("method-override");
+const cookierParser = require("cookie-parser");
 const pg = require("pg");
-
+const sha256 = require("js-sha256");
+const SALT = "pepper";
 // Initialise postgres client
 const configs = {
   user: "moses",
@@ -27,7 +29,7 @@ pool.on("error", function(err) {
 
 // Init express app
 const app = express();
-
+app.use(cookierParser());
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -65,15 +67,144 @@ app.get("/", (request, response) => {
   });
 });
 
+app.get("/register", (request, response) => {
+  let objVariableToSend = {};
+  //check for cookie to see if user has already registered
+  //if registered, add button to continue
+  response.render("register", objVariableToSend);
+});
+
+app.post("/register/add", (request, response) => {
+  let objVariableToSend = { data: request.body };
+  console.log(request.body);
+  let user_hash = sha256(SALT + request.body.username);
+  let password_hash = sha256(SALT + request.body.password);
+  let username = request.body.username;
+  let cookie = sha256(SALT + request.body.username + request.body.password);
+  let cookieOnDatabase = sha256(SALT + cookie);
+
+  let query_username =
+    "INSERT INTO usernames" + "(username)" + "VALUES" + "('" + username + "')";
+  let query_passwords =
+    "INSERT INTO passwords" +
+    "(user_hash, password_hash)" +
+    "VALUES" +
+    "('" +
+    user_hash +
+    "', '" +
+    password_hash +
+    "')";
+  let query_cookie =
+    "INSERT INTO cookies" + "(cookie)" + "VALUES" + "('" + cookieOnDatabase + "')";
+  pool.query(query_username, (errObject, result) => {
+    if (errObject === undefined) {
+      console.log(username + " added to database");
+    } else {
+      console.error("query error:", errObject.stack);
+      result.send("query error");
+    }
+  });
+  pool.query(query_passwords, (errObject, result) => {
+    if (errObject === undefined) {
+      console.log(
+        "password_hash: " +
+          password_hash +
+          "and user_hash: " +
+          user_hash +
+          " added to database"
+      );
+    } else {
+      console.error("query error:", errObject.stack);
+      result.send("query error");
+    }
+  });
+  pool.query(query_cookie, (errObject, result) => {
+    if (errObject === undefined) {
+      console.log("cookie: " + cookieOnDatabase + " added to database");
+    } else {
+      console.error("query error:", errObject.stack);
+      result.send("query error");
+    }
+  });
+  //check for cookie to see if user has already registered
+  //if registered, add button to continue
+
+  response.render("register", objVariableToSend);
+});
+
+app.get("/login", (request, response) => {
+  let objVariableToSend = {};
+
+  response.render("login", objVariableToSend);
+});
+
+app.get("/login/confirm", (request, response) => {
+  console.log(request.query);
+  let username = request.query.username;
+  let password = request.query.password;
+  let user_hash = sha256(SALT + username);
+  let password_hash = sha256(SALT + password);
+  let cookie = sha256(SALT + username + password);
+  let query_verify =
+    "SELECT * FROM passwords WHERE user_hash = '" +
+    user_hash +
+    "' AND password_hash = '" +
+    password_hash +
+    "'";
+  pool.query(query_verify, (errObject, result) => {
+    if (errObject === undefined) {
+      console.log(result.rows);
+      if (result.rows.length === 1) {
+        response.cookie("loggedin", cookie);
+        response.render("login");
+      }
+    } else {
+      console.error("query error:", errObject.stack);
+      result.send("query error");
+    }
+  });
+});
+
+app.get("/favourites", (request, response) => {
+  // let objVariableToSend = {}
+  console.log(request.cookies);
+  let obj = {};
+  let cookieInDatabase = sha256(SALT + request.cookies.loggedin);
+  let queryVerify = "SELECT * FROM cookies WHERE cookie = '" + cookieInDatabase + "'";
+  let queryFavourites =
+    "SELECT songs.title, songs.album, songs.preview_link, songs.artist_id FROM favourites INNER JOIN songs ON (songs.id = favourites.song_id) WHERE favourites.cookie = '" +
+    cookieInDatabase +
+    "'";
+  //change query string to be a string which gets favourites data
+  pool.query(queryFavourites, (errObject, result) => {
+    if (errObject === undefined) {
+      if (result.rows.length > 0) {
+        console.log("match found!");
+        console.log(result.rows);
+        //use cookieInDatabase to get favourites data
+        obj['songs'] = result.rows;
+        //obj will contain favourites data of user based on cookie
+        response.render("favourites", obj);
+      }
+    } else {
+      console.error("query error:", errObject.stack);
+      result.send("query error");
+    }
+  });
+  // let cookie = request.cookies.loggedin;
+  // console.log(cookie);
+  // response.render(jsxFileName, objVariableToSend);
+});
+
 app.get("/artist/create", (request, response) => {
   // respond with HTML page displaying all pokemon
   let obj = {};
   response.render("create-artist", obj);
 });
 app.get("/song/create", (request, response) => {
-objVariableToSend = {}
+  objVariableToSend = {};
 
-response.render('create-song', objVariableToSend);
+  response.render("create-song", objVariableToSend);
 });
 app.post("/artist/create/add", (request, response) => {
   objVariableToSend = {};
@@ -92,9 +223,6 @@ app.post("/artist/create/add", (request, response) => {
     "')";
   pool.query(queryString, (errObject, result) => {
     if (errObject === undefined) {
-      // console.log(result.rows);
-      // obj["artist"] = result.rows;
-      // result.send("Post Success");
     } else {
       console.error("query error:", errObject.stack);
       result.send("query error");
