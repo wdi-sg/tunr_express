@@ -35,6 +35,23 @@ class Navigation extends React.Component{
     }
 }
 
+class Songs extends React.Component {
+  render() {
+
+    // console.log(this.props.data);
+    let songElements = this.props.data.map((o) => {
+        return <li><label><input type="checkbox" name="songs" value={ o.id }/> { o.title }, { o.album }</label></li>
+    });
+
+
+    return (
+        <ul>
+            {songElements}
+        </ul>
+    );
+  }
+}
+
 class NewPlayListForm extends React.Component{
     render(){
 
@@ -45,8 +62,8 @@ class NewPlayListForm extends React.Component{
                 <form method="POST" action={formAction}>
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
-                            <label >Playlist Name: </label>
-                            <input type="text" name="title" class="form-control" placeholder="Name your Playlist" required/>
+                           Playlist Name:  <input type="text" name="title" class="form-control" placeholder="Name your Playlist" required/>
+                            Songs: <Songs data={this.props.data}/><br/>
                         </div>
                     </div>
                     <input type="submit" value="Create New Playlist"  class="btn btn-primary"/>
@@ -58,6 +75,8 @@ class NewPlayListForm extends React.Component{
 
 class NewPlayList extends React.Component {
   render() {
+
+
     return (
       <html>
         <Head/>
@@ -68,7 +87,7 @@ class NewPlayList extends React.Component {
           <br></br>
           <h3>NEW PLAYLIST</h3>
           <div class="content">
-            <NewPlayListForm/>
+            <NewPlayListForm data={this.props.data}/>
           </div>
         </body>
       </html>

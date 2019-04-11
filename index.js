@@ -49,14 +49,19 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+ /**
+ * ===================================
+ * ARTIST PATHS
+ * ===================================
+ */
+
 //VIEW ALL ARTIST (INDEX PAGE)
 app.get('/', (req, res) => {
   // query database for all pokemon
   const queryString = `SELECT * FROM artists`;
     pool.query(queryString,(errObj, result)=>{
         if(errObj === undefined){
-            console.log('This where results come to.', result.rows);
-            // console.log(result.rows);
+
             const data = result.rows;
 
             res.render('home', {data});
@@ -95,11 +100,8 @@ app.post('/new/artistadded', (req,res)=>{
 
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
-            // console.log('This where results come to.', result);
-            // console.log(result.rows);
+
             const data = result.rows;
-            console.log("AT ADD");
-            console.log(data);
 
             res.render('addeditsuccess', {data});
         } else {
@@ -109,6 +111,7 @@ app.post('/new/artistadded', (req,res)=>{
     })
 })
 
+
 //EDIT ARTIST FORM & REQUEST
 app.get('/artist/:id/edit', (req,res)=>{
     artistId = parseInt(req.params.id);
@@ -116,8 +119,6 @@ app.get('/artist/:id/edit', (req,res)=>{
     const queryString = `SELECT * FROM artists WHERE id= ${artistId}`;
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
-            // console.log('This where results come to.', result.rows);
-            // console.log(result.rows);
             const data = result.rows;
             res.render('editartist', {data});
         } else {
@@ -150,6 +151,7 @@ app.put('/artist/:id/', (req,res)=>{
     })
 })
 
+
 //DELETE ARTIST FORM AND REQUEST
 app.get('/artist/:id/delete', (req,res)=>{
     artistId = parseInt(req.params.id);
@@ -157,9 +159,9 @@ app.get('/artist/:id/delete', (req,res)=>{
     const queryString = `SELECT * FROM artists WHERE id= ${artistId}`;
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
-            // console.log('This where results come to.', result.rows);
-            // console.log(result.rows);
+
             const data = result.rows;
+
             res.render('deleteform', {data});
         } else {
             console.error('query error:', errObj.stack);
@@ -188,6 +190,11 @@ app.delete('/artist/:id', (req,res)=>{
     })
 })
 
+/**
+ * ===================================
+ * SONG PATHS
+ * ===================================
+ */
 
 //VIEW SONGS FROM SINGLE ARTIST
 app.get('/artist/:id/songs', (req,res)=>{
@@ -210,6 +217,7 @@ app.get('/artist/:id/songs', (req,res)=>{
     })
 })
 
+
 //ADD SONG FORM & REQUEST FROM SINGLE ARTIST
 app.get('/artist/:id/songs/new', (req,res) =>{
     let data = req.params.id;
@@ -225,8 +233,6 @@ app.post('/artist/:id/songs',(req,res)=>{
     let songArtwork = req.body.artwork;
     let songArtistId = req.body.artist_id;
 
-    console.log('req.body');
-    console.log(data);
 
     const queryString = `INSERT INTO songs
                         (title, album, preview_link, artwork, artist_id)
@@ -247,6 +253,14 @@ app.post('/artist/:id/songs',(req,res)=>{
     })
 })
 
+
+/**
+ * ===================================
+ * PLAYLIST PATHS
+ * ===================================
+ */
+
+
 //LIST ALL PLAYLIST
 app.get('/playlist', (req,res)=>{
     let queryString = `SELECT * FROM playlist;`
@@ -263,32 +277,52 @@ app.get('/playlist', (req,res)=>{
         }
     })
 })
+
 //FORM FOR CREATING PLAYLIST
 app.get('/playlist/new', (req,res)=>{
-    res.render('playlistform');
+
+    const queryString = `SELECT * FROM songs;`
+    pool.query(queryString,(errobj,result)=>{
+
+            let data = result.rows;
+
+          res.render('playlistform', {data} );
+    })
 })
+
 //REQEST FOR CREATING NEW PLAYLIST
 app.post('/playlist', (req,res)=>{
-    let data = req.body;
-    let playlistTitle = req.body.title;
 
-    const queryString = `INSERT INTO playlist
-                        (title)
-                        VALUES
-                        ('${playlistTitle}')
-                        RETURNING *`;
+    const newPlayListTitle = req.body.title;
+    const songIdToAdd = req.body.songs;
 
-    pool.query(queryString,(errObj,result)=>{
-        if(errObj === undefined){
-            // console.log('This where results come to.', result);
-            // console.log(result.rows);
-            const data = result.rows;
-
-            res.send('added playlist!');
-            // res.render('addeditsuccess', {data});
-        } else {
+    const queryInsertPlayList = `INSERT INTO playlist (title) VALUES ('${newPlayListTitle}') RETURNING id;`
+    pool.query(queryInsertPlayList,(errObj,result)=>{
+        if(errObj!=undefined){
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
+        } else {
+            const playlistId = result.rows[0].id;
+
+            let queryInsertSongsToPL = `INSERT INTO playlist_songs (playlist_id , song_id) VALUES `;
+
+            songIdToAdd.forEach((song,index)=>{
+                queryInsertSongsToPL += `(${playlistId}, ${song}),`;
+            })
+
+            queryInsertSongsToPL = queryInsertSongsToPL.slice(0,-1);
+
+            queryInsertSongsToPL = queryInsertSongsToPL + ` RETURNING *`;
+
+            pool.query(queryInsertSongsToPL, (errObj, result)=>{
+                if(errObj!=undefined){
+                    console.error('query error:', errObj.stack);
+                    res.send( 'query error' );
+                } else {
+                    const data = result.rows;
+                    res.send('Playlist Added!');
+                }
+            })
         }
     })
 })
@@ -304,14 +338,12 @@ app.get('/playlist/:id', (req,res)=>{
                        ON (playlist_songs.song_id = songs.id)
                        WHERE playlist_songs.playlist_id = ${playlistId};`
 
-    pool.query(queryString,(errobj,result)=>{
-        if(errobj === undefined){
+    pool.query(queryString,(errObj,result)=>{
+        if(errObj === undefined){
             const data = [result.rows,playlistId];
-            console.log("recall FIUCK");
             console.log(data);
 
             res.render('songsfromplaylist', {data});
-
         } else {
             console.error('query error:', errObj.stack);
             res.send( 'query error' );
@@ -334,11 +366,8 @@ app.post('/playlist/:id', (req,res)=>{
 
     pool.query(queryString,(errObj,result)=>{
         if(errObj === undefined){
-            // console.log('This where results come to.', result);
-            // console.log(result.rows);
-            const data = result.rows;
 
-            // res.send('added Song!');
+            const data = result.rows;
             res.render('addeditsuccess', {data});
         } else {
             console.error('query error:', errObj.stack);
@@ -373,24 +402,3 @@ let onClose = function(){
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
-
-/*
-The Index Feature
-Build the index feature for artists:
-1. Render on DOM to show artist(?)
-
-
-The Show Feature
-Build the show feature for an artist
-1. click
-
-The Create Feature
-Build a feature that creates a new artist in the database.
-
-The Edit Feature
-Build a feature that allows a user to edit an existing artist in the database
-
-The Delete Feature
-Build a feature that allows users to delete an existing artist from the database.
-
-*/

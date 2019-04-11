@@ -37,10 +37,10 @@ class View extends React.Component {
 
     let data = this.props.data
 
-    let outList = data.map(item=>{
+    let outList = data.map((item,index)=>{
         return  <div class="card-item">
                     <a href={`${item.preview_link}`}>
-                    <h4>{item.album}</h4><h4>{item.title}</h4>
+                    <h4>{index}. {item.album}</h4><h4>{item.title}</h4>
                     </a>
                 </div>
     })

@@ -68,18 +68,18 @@ class ViewSongsPlayList extends React.Component {
     console.log(playListId);
     console.log(data[0].length);
     if(data[0].length == 0){
-        outList = data[0].map(item=>{
+        outList = data[0].map((item,index)=>{
         return  <div class="card-item">
                     <a href={`${item.preview_link}`}>
-                    <h4>{item.album}</h4><h4>{item.title}</h4>
+                    <h4>{index}. {item.album}</h4><h4>{item.title}</h4>
                     </a>
                 </div>
         })
         } else {
-        outList = data[0].map(item=>{
+        outList = data[0].map((item,index)=>{
         return  <div class="card-item">
                     <a href={`${item.preview_link}`}>
-                    <h4>{item.album}</h4><h4>{item.title}</h4>
+                    <h4>{index}. {item.album}</h4><h4>{item.title}</h4>
                     </a>
                 </div>
         })
