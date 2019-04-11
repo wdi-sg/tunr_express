@@ -71,7 +71,7 @@ app.get('/artists/', (request, response) => {
   pool.query(queryString, (errorObj, result) => {
     if(errorObj) {
         console.log(errorObj.stack);
-        response.send("query error test 2");
+        response.send("query error test 1");
     } else {
         const data = { artists: result.rows }
 
@@ -102,7 +102,7 @@ app.post('/artists', (request, response) => {
     pool.query(queryString, values, (errorObj, result) => {
         if(errorObj) {
             console.log(errorObj.stack);
-            response.send("query error test 3");
+            response.send("query error test 2");
         } else {
             response.send("A new artist has been added!" + "<br><br><a href=/artists/>Home</a>");
         }
@@ -125,7 +125,7 @@ app.get('/artists/:id/edit', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
         if(errorObj) {
             console.log(errorObj.stack);
-            response.send("query error test 4");
+            response.send("query error test 3");
         } else {
             const data = { artist: result.rows }
             response.render("artist_edit", data );
@@ -144,7 +144,7 @@ app.get('/artists/:id/edit', (request, response) => {
         pool.query(queryString, values, (errorObj, result) => {
             if(errorObj) {
                 console.log(errorObj.stack);
-                response.send("query error test 5");
+                response.send("query error test 4");
             } else {
                 response.send("Artist has been edited!" + "<br><br><a href=/artists/>Home</a>");
             }
@@ -167,7 +167,7 @@ app.get('/artists/:id/delete',(request, response) => {
     pool.query(queryString, (errorObj, result)=> {
         if(errorObj) {
             console.log(errorObj.stack);
-            respons.send("query error test 6");
+            respons.send("query error test 5");
         } else {
 
             const data = { artist: result.rows };
@@ -185,7 +185,7 @@ app.get('/artists/:id/delete',(request, response) => {
         pool.query(queryString, (errorObj, result) => {
             if(errorObj) {
                 console.log(errorObj.stack);
-                response.send("query error test 5");
+                response.send("query error test 6");
             } else {
                 response.send("Artist has been deleted!" +"<br><br><a href=/artists/>Home</a>");
             }
@@ -203,8 +203,7 @@ app.get('/artists/:id/delete',(request, response) => {
 
 
 app.get('/artists/:id', (request, response) => {
-  // query database for all pokemon
-console.log(request.params.id)
+
   const artistId = request.params.id;
 
   const queryString = "SELECT * FROM artists WHERE id=" + artistId;
@@ -212,11 +211,16 @@ console.log(request.params.id)
   pool.query(queryString, (errorObj, result) => {
     if(errorObj) {
         console.log(errorObj.stack);
-        response.send("query error test 6");
+        response.send("query error test 7");
     } else {
-        const data = { artist: result.rows }
+        if(result.rows.length == 0) {
+            response.status(404).send("Page not found");
+        } else {
+            const data = { artist: result.rows,
+                       artistIdKey: artistId };
 
         response.render( "artist_show", data );
+        }
     }
   })
 
@@ -267,7 +271,7 @@ app.get('/songs/', (request, response) => {
   pool.query(queryString, (errorObj, result) => {
     if(errorObj) {
         console.log(errorObj.stack);
-        response.send("query error test 2");
+        response.send("query error test 8");
     } else {
         const data = { songs: result.rows }
 
@@ -298,7 +302,7 @@ app.post('/songs', (request, response) => {
     pool.query(queryString, values, (errorObj, result) => {
         if(errorObj) {
             console.log(errorObj.stack);
-            response.send("query error test 3");
+            response.send("query error test 9");
         } else {
             response.send("A new song has been added!" + "<br><br><a href=/songs/>Home</a>");
         }
@@ -322,7 +326,7 @@ app.get('/songs/:id/edit', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
         if(errorObj) {
             console.log(errorObj.stack);
-            response.send("query error test 4");
+            response.send("query error test 10");
         } else {
             const data = { song: result.rows }
             response.render("song_edit", data );
@@ -341,7 +345,7 @@ app.get('/songs/:id/edit', (request, response) => {
         pool.query(queryString, values, (errorObj, result) => {
             if(errorObj) {
                 console.log(errorObj.stack);
-                response.send("query error test 5");
+                response.send("query error test 11");
             } else {
                 response.send("Song has been edited!" + "<br><br><a href=/songs/>Home</a>");
             }
@@ -364,7 +368,7 @@ app.get('/songs/:id/delete',(request, response) => {
     pool.query(queryString, (errorObj, result)=> {
         if(errorObj) {
             console.log(errorObj.stack);
-            respons.send("query error test 6");
+            respons.send("query error test 12");
         } else {
 
             const data = { song: result.rows };
@@ -382,7 +386,7 @@ app.get('/songs/:id/delete',(request, response) => {
         pool.query(queryString, (errorObj, result) => {
             if(errorObj) {
                 console.log(errorObj.stack);
-                response.send("query error test 5");
+                response.send("query error test 13");
             } else {
                 response.send("Song has been deleted!" +"<br><br><a href=/artists/>Home</a>");
             }
@@ -409,7 +413,7 @@ console.log(request.params.id)
   pool.query(queryString, (errorObj, result) => {
     if(errorObj) {
         console.log(errorObj.stack);
-        response.send("query error test 6");
+        response.send("query error test 14");
     } else {
         const data = { song: result.rows }
 
@@ -445,7 +449,7 @@ app.get('/artist/:id/songs', (request, response) => {
   pool.query(queryString, (errorObj, result) => {
     if(errorObj) {
         console.log(errorObj.stack);
-        response.send("query error test 7");
+        response.send("query error test 15");
     } else {
         const data = { songs: result.rows }
 
@@ -471,7 +475,6 @@ app.get('/artist/:id/songs/new', (request, response) => {
    response.render("artist_song_list_create", data);
 })
 
-//to be continued here, process the form input for song creation for an artist
 app.post('/artist/:id/songs', (request, response) => {
 
     const artist_id = request.params.id;
@@ -484,13 +487,138 @@ app.post('/artist/:id/songs', (request, response) => {
     pool.query(queryString, values, (errorObj, result) => {
         if(errorObj) {
             console.log(errorObj.stack);
-            response.send("query error test 3");
+            response.send("query error test 16");
         } else {
             response.send("A new song has been added for artist with artist_id=" + artist_id + "<br><br><a href=/artists/>Home</a>");
         }
     })
 
 })
+
+
+
+/**
+ * ===================================
+ * List all playlists
+ * ===================================
+ */
+
+app.get('/playlist', (request, response) => {
+
+    const queryString = "SELECT * FROM playlists";
+
+    pool.query(queryString, (errorObj, result) => {
+        if(errorObj) {
+            console.log(errorObj.stack);
+            response.send("query error test 17");
+        } else {
+            console.log(result.rows);
+            const data = { playlists : result.rows }
+            response.render("playlist_index", data)
+        }
+    })
+})
+
+
+
+/**
+ * ===================================
+ * Create a new playlist
+ * ===================================
+ */
+
+app.get('/playlist/new', (request, response) => {
+
+   response.render("playlist_create");
+})
+
+app.post('/playlist', (request, response) => {
+
+
+    console.log(request.body);
+
+    const queryString = "INSERT INTO playlists (playlist_name) VALUES ($1) RETURNING *";
+
+    const values = [request.body.name];
+
+    pool.query(queryString, values, (errorObj, result) => {
+        if(errorObj) {
+            console.log(errorObj.stack);
+            response.send("query error test 18");
+        } else {
+
+            response.send("Added new playlist!" + "<br><br><a href=/playlist>Home</a>");
+        }
+    })
+
+})
+
+
+
+/**
+ * ===================================
+ * Show all songs in a playlist
+ * ===================================
+ */
+
+
+app.get('/playlist/:id', (request, response) => {
+
+    const playlistId = request.params.id;
+
+    const queryString1 = `SELECT playlists_songs.playlist_id, songs.title, songs.album
+        FROM songs INNER JOIN playlists_songs ON (playlists_songs.songs_id = songs.id) WHERE playlists_songs.playlist_id =${playlistId};`
+
+        pool.query(queryString1, (errorObj, result1) => {
+            if(errorObj) {
+                console.log(errorObj.stack);
+                response.send("query error test 19");
+            } else {
+
+                let data1 = result1.rows;
+
+                const queryString2 = `SELECT *
+                 FROM playlists WHERE id =${playlistId};`
+
+                pool.query(queryString2, (errorObj, result2) => {
+                    if(errorObj) {
+                        console.log(errorObj.stack);
+                        response.send("query error test 20");
+                    } else {
+
+                        let data2 = result2.rows;
+                        let data = { key1: data1, key2: data2 };
+                        response.render("playlist_songs", data);
+                    }
+                })
+
+            }
+        })
+})
+
+
+app.post('/playlist/:id', (request, response) => {
+
+    const playlistId = request.params.id;
+
+    const queryString = "INSERT INTO playlists_songs (playlist_id, songs_id) VALUES ($1, $2) RETURNING *";
+
+    const values = [playlistId, request.body.songs_id];
+
+    pool.query(queryString, values, (errorObj, result) => {
+        if(errorObj) {
+            console.log(errorObj.stack);
+            response.send("query error test 20");
+        } else {
+            response.redirect("/playlist/" + playlistId);
+        }
+    })
+
+
+
+  });
+
+
 
 
 
@@ -520,3 +648,27 @@ let onClose = function(){
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+
+
+// try {
+//         const values = [request.body.name];
+//         let playlistSqlQuery = `INSERT INTO playlists (name) VALUES ($1) RETURNING id`;
+//         let songSqlQueryTBC = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES `;
+
+//         const playlistResult = await pool.query(playlistSqlQuery, values);
+
+//         request.body.songs.forEach((song, index) => {
+//             songSqlQueryTBC += `(${ playlistResult.rows[0].id }, ${ song }),`;
+//         });
+
+//         // final step to remove a comma to complete the query string
+//         let songSqlQuery = songSqlQueryTBC.slice(0, -1);
+
+//         await pool.query(songSqlQuery);
+
+//         response.send("Added new Playlist!");
+
+//     } catch(e) {
+//         console.log(e);
+//     }

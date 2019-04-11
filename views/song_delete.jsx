@@ -1,6 +1,6 @@
 var React = require('react');
 
-class Delete extends React.Component {
+class SongDelete extends React.Component {
     render() {
 
         let actionAttribute = `/songs/${this.props.song[0].id}?_method=DELETE`;
@@ -36,4 +36,4 @@ class Delete extends React.Component {
     }
 }
 
-module.exports = Delete;
+module.exports = SongDelete;

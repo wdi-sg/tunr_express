@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Index extends React.Component {
+class SongIndex extends React.Component {
     render() {
         // let data = this.props.artists;
         // console.log("home.jsx", data);
@@ -47,4 +47,4 @@ class Index extends React.Component {
     }
 }
 
-module.exports = Index;
+module.exports = SongIndex;

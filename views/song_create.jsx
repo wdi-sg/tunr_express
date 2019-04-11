@@ -1,6 +1,6 @@
 var React = require('react');
 
-class Create extends React.Component {
+class SongCreate extends React.Component {
     render() {
 
         let actionAttribute = `/songs`;
@@ -36,4 +36,4 @@ class Create extends React.Component {
     }
 }
 
-module.exports = Create;
+module.exports = SongCreate;
