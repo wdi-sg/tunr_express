@@ -63,8 +63,11 @@ app.get('/artists/:id/songs', (request, response) => {
 
     let index = request.params.id;
 
-    // const queryString = `SELECT * FROM artists WHERE id=${index}`;
-    const querySongs = `SELECT title, album FROM songs WHERE artist_id=${index}`;
+    const queryString = `SELECT name FROM artists WHERE id=${index}`;
+    const querySongs = `SELECT title, album FROM songs WHERE artist_id=${index} ORDER BY album`;
+
+     // sql select distinct - to select unique album names
+     // display album names, then their songs right below?
 
     pool.query(querySongs, (err, result) => {
         if (err) {
@@ -72,12 +75,31 @@ app.get('/artists/:id/songs', (request, response) => {
             response.send('query error');
         } else {
             console.log('query result', result.rows);
+            pool.query(queryString, (err, res) => {
+                //response.send(res.rows);
+                response.render('songs', {songs: result.rows, artists: res.rows[0]});
 
-            response.render('songs', {songs: result.rows});
+            })
+
+
         }
     })
 
 });
+
+/*
+                CREATE NEW SONG FOR ARTIST
+*/
+
+
+app.get('/artist/:id/songs/new', (request, response) => {
+
+})
+
+app.post('/artist/:id/songs', (request, response) => {
+
+})
+
 
 /*
                     ADD NEW ARTIST
@@ -155,9 +177,9 @@ app.get('/artists', (request, response) => {
 
 });
 
-/*
-                        EDIT
-*/
+/*************************************************
+***********************EDIT************************
+**************************************************/
 
 app.get('/artists/:id/edit', (request, response) => {
 
@@ -205,7 +227,7 @@ app.put('/artists/:id', (request, response) => {
 app.get('/artists/:id/delete', (request, response) => {
 
     let index = request.params.id;
-   const queryString = `SELECT * FROM artists WHERE id=${index}`;
+    const queryString = `SELECT * FROM artists WHERE id=${index}`;
 
     pool.query(queryString, (err, result) => {
 
@@ -235,6 +257,93 @@ app.delete('/artists/:id', (request, response) => {
             }
     })
 
+})
+
+/*
+                    SHOW PLAYLIST
+*/
+
+app.get('/playlist', (request, response) => {
+
+    queryString = `SELECT name, id FROM playlist`;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        } else {
+           const data = result.rows;
+           response.render('playlist', {playlists: data});
+           // response.send(data);
+        }
+    })
+})
+
+// SELECT title FROM songs INNER JOIN playlist_songs ON (songs.id = playlist_songs.song_id);
+
+/*
+                CREATE NEW PLAYLIST
+*/
+
+app.get('/playlist/new', (request, response) => {
+
+    queryString = `SELECT title, id FROM songs`;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        } else {
+           const data = result.rows;
+           response.render('newplaylist', {songs: data});
+           // response.send(data);
+        }
+    })
+
+})
+
+app.post('/playlist', (request, response) => {
+
+    queryString = `INSERT INTO playlist (name) VALUES ('${request.body.name}') RETURNING id`;
+
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+
+        } else {
+
+            const playlistId = parseInt(result.rows[0].id);
+            const songsArray = request.body.song_id;
+
+            for (var i = 0; i < songsArray.length; i++) {
+                queryAddSongs = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES (${playlistId}, ${songsArray[i]})`;
+
+                pool.query(queryAddSongs, (err, res) => {
+                    if (err) {
+                        console.log('quert error', err.stack);
+                        response.send('query error');
+
+                    } else {
+
+                        queryString = `SELECT name, id FROM playlist`;
+
+                        pool.query(queryString, (err, result) => {
+                            if (err) {
+                                console.log('query error', err.stack);
+                                response.send('query error');
+                            } else {
+                               const data = result.rows;
+                               response.render('playlist', {playlists: data});
+                               // response.send(data);
+                            }
+                        })
+                }
+            })
+        }
+        }
+    })
 })
 
 
