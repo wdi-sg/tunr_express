@@ -49,7 +49,6 @@ app.engine('jsx', reactEngine);
  * Helper Function
  * ===================================
  */
-
 let checkForLogin = function (request) {
     if (request.cookies === undefined) {
         return false;
@@ -70,6 +69,57 @@ let checkForLogin = function (request) {
  * Function
  * ===================================
  */
+let registerRequestHandler = async function (request, response) {
+    response.render('register');
+}
+
+let registerAccountRequestHandler = async function (request, response) {
+    try {
+        const passwordHash = sha256(request.body.password + PWSALT);
+
+        const values = [request.body.name, passwordHash];
+        const sqlQuery = `INSERT INTO users (name, password)
+                          VALUES ($1, $2)`;
+
+        const result = await pool.query(sqlQuery, values);
+        response.send('Account created!</br><a href="/login">click here to login</a>');
+
+    } catch(e) {
+        console.log("addNewArtistRequestHandler:" + e);
+    }
+}
+
+let loginRequestHandler = async function (request, response) {
+    response.render('login');
+}
+
+let authenticateRequestHandler = async function (request, response) {
+    try {
+        const username = request.body.name;
+        const passwordHash = sha256(request.body.password + PWSALT);
+
+        const values = [username, passwordHash];
+        const sqlQuery = `SELECT * FROM users WHERE name= $1 AND password= $2`;
+
+        const result = await pool.query(sqlQuery, values);
+
+        if (result.rows.length === 1) {
+            const loggedInHash = sha256(username + SSALT);
+
+            response.cookie('username', username);
+            response.cookie('loggedIn', loggedInHash);
+
+            response.send('You have now log on to the system!</br><a href="/artists">click here for resources</a>');
+
+        } else {
+            response.send('Login Failure');
+
+        }
+    } catch(e) {
+        console.log(e);
+    }
+}
+
 let getArtistsRequestHandler = async function (request, response) {
     try {
         if (checkForLogin(request) === true){
@@ -79,7 +129,7 @@ let getArtistsRequestHandler = async function (request, response) {
             response.send(artistResult.rows);
 
         } else {
-            response.send('Unauthorized!');
+            response.render('unauthorized');
         }
     } catch(e) {
         console.log(e);
@@ -256,14 +306,14 @@ let addNewPlaylistRequestHandler = async function (request, response) {
         const playlistSqlQuery = `INSERT INTO playlists (name) VALUES ($1) RETURNING id`;
         const playlistResult = await pool.query(playlistSqlQuery, values);
 
-        let songSqlQuery = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES `;
+        let songSqlQueryTBC = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES `;
 
-        request.body.songs.forEach((song, index) => {
-            songSqlQuery += `(${ playlistResult.rows[0].id }, ${ song }),`;
+        request.body.songs.forEach((songId) => {
+            songSqlQueryTBC += `(${ playlistResult.rows[0].id }, ${ songId }),`;
         });
 
         // final step to remove a comma to complete the query string
-        songSqlQuery= songSqlQueryTBC.slice(0, -1);
+        let songSqlQuery= songSqlQueryTBC.slice(0, -1);
 
         await pool.query(songSqlQuery);
 
@@ -289,56 +339,76 @@ let getPlaylistByIdRequestHandler = async function (request, response) {
     }
 }
 
-let registerRequestHandler = async function (request, response) {
-    response.render('register');
-}
+let newFavouriteRequestHandler = async function (request, response) {
+    if (checkForLogin(request) === true) {
+        const sqlQuery = `SELECT * FROM songs`;
+        const songResult = await pool.query(sqlQuery);
 
-let registerAccountRequestHandler = async function (request, response) {
-    try {
-        const passwordHash = sha256(request.body.password + PWSALT);
+        const data = {
+            'songs' : songResult.rows,
+            'username': request.cookies['username']
+        };
 
-        const values = [request.body.name, passwordHash];
-        const sqlQuery = `INSERT INTO users (name, password)
-                          VALUES ($1, $2)`;
+        response.render('addFavorite', data);
 
-        const result = await pool.query(sqlQuery, values);
-        response.send('Account created!</br><a href="/login">click here to login</a>');
-
-    } catch(e) {
-        console.log("addNewArtistRequestHandler:" + e);
+    } else {
+        response.render('unauthorized');
     }
 }
 
-let loginRequestHandler = async function (request, response) {
-    response.render('login');
+let addNewFavouriteRequestHandler = async function (request, response) {
+    try {
+        if (checkForLogin(request) === true) {
+            let sqlQueryTBC = `INSERT INTO favorites (user_name, song_id) VALUES `;
+
+            request.body.songs.forEach((songId) => {
+                sqlQueryTBC += `('${ request.body.username }', ${ songId }),`;
+            });
+
+            // final step to remove a comma to complete the query string
+            let sqlQuery= sqlQueryTBC.slice(0, -1);
+
+            await pool.query(sqlQuery);
+
+            response.send(`Added new Favourite for ${ request.body.username }!`);
+         } else {
+            response.render('unauthorized');
+        }
+
+    } catch(e) {
+        console.log(e);
+    }
 }
 
-let authenticateRequestHandler = async function (request, response) {
+let getFavouritesRequestHandler = async function (request, response) {
     try {
-        const username = request.body.name;
-        const passwordHash = sha256(request.body.password + PWSALT);
+        if (checkForLogin(request) === true) {
+            const values = [request.cookies['username']];
+            const sqlQuery = `SELECT s.id, s.title, s.album FROM favorites f
+                              INNER JOIN songs s ON (s.id = f.song_id)
+                              WHERE f.user_name = $1`;
 
-        const values = [username, passwordHash];
-        const sqlQuery = `SELECT * FROM users WHERE name= $1 AND password= $2`;
-
-        const result = await pool.query(sqlQuery, values);
-
-        if (result.rows.length === 1) {
-            const loggedInHash = sha256(username + SSALT);
-
-            response.cookie('username', username);
-            response.cookie('loggedIn', loggedInHash);
-
-            response.send('You have now log on to the system!</br><a href="/artists">click here for resources</a>');
-
-        } else {
-            response.send('Login Failure');
-
+            const playlistResult = await pool.query(sqlQuery, values);
+            response.send(playlistResult.rows);
+         } else {
+            response.render('unauthorized');
         }
     } catch(e) {
         console.log(e);
     }
 }
+
+/**
+ * ===================================
+ * User Account Routes
+ * ===================================
+ */
+app.get('/register', registerRequestHandler);
+app.post('/register', registerAccountRequestHandler);
+
+app.get('/login', loginRequestHandler);
+app.post('/login', authenticateRequestHandler);
+
 
 /**
  * ===================================
@@ -384,15 +454,13 @@ app.get('/playlist/:id', getPlaylistByIdRequestHandler);
 
 /**
  * ===================================
- * User Account Routes
+ * Favourite Routes
  * ===================================
  */
-app.get('/register', registerRequestHandler);
-app.post('/register', registerAccountRequestHandler);
+app.get('/favorites/new', newFavouriteRequestHandler);
+app.post('/favorites', addNewFavouriteRequestHandler);
 
-app.get('/login', loginRequestHandler);
-app.post('/login', authenticateRequestHandler);
-
+app.get('/favorites', getFavouritesRequestHandler);
 
 /**
  * ===================================
