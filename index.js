@@ -1,8 +1,8 @@
-console.log("starting up!!");
 
+const pg = require('pg');
 const express = require('express');
 const methodOverride = require('method-override');
-const pg = require('pg');
+
 
 // Initialise postgres client
 const configs = {
@@ -34,6 +34,9 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+// use public folder
+app.use(express.static('public'))
+
 
 
 // Set react-views to be the default view engine
@@ -52,70 +55,88 @@ app.get('/', (request, response) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
-  response.render('home');
+//   response.render('home');
+// });
+
+const queryArtist = 'SELECT * FROM artist ORDER BY id';
+
+pool.query(queryArtist, (err, result) => {
+    if (err) {
+        console.log("query error: ", err.message);
+        response.send("Query Error");
+
+    } else {
+        response.render ('home', {artistInfo: result.rows});
+    }
+    });
+
 });
 
-app.get('/new', (request, response) => {
+
+
+
+app.get('/artist/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  response.render('newArtist');
+});
+
+app.post('/artist', (request, response) => {
+
+    const insertQuery = 'INSERT INTO artist (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
+    const values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(insertQuery, values, (err, result) => {
+        if (err) {
+            response.send("Query Error for Insert");
+        } else {
+            response.send("Add artist - successful");
+        }
+    })
 });
 
 
 
-
-app.get('/artist_data/:id', (request, response) => {
-
-  // SELECT * FROM STUDENTS WHERE id =
-
-  const queryString = 'SELECT * from songs WHERE id='+request.params.id;
-  //     response.send( queryString );
-  // return;
-
-  pool.query(queryString, (errorObj, result) => {
-
-    console.log( errorObj, result );
-
-    // errorObj is not null if there's an error
-    if (errorObj === undefined ) {
-
-      console.log('query resulttttttt:', result.rows);
-      // const data = {  students : result.rows};
-      response.send( result.rows );
-    } else {
-
-      console.error('query error:', errorObj.stack);
-      response.send( 'query error' );
-
-    }
-  });
+// 3
 
 
-});
+app.put('/artist/:id', (request, response) => {
+        const artistId = parseInt(request.params.id);
+        const input = request.body;
+
+        const updateQuery = `UPDATE artists SET name = '${input.name}', photo_url = '${input.photo_url}', nationality = '${input.nationality}' WHERE id = '${artistId}'`;
+
+        pool.query(updateQuery, (err, result) => {
+            if (err) {
+                console.log(err.message);
+                response.send("Query Error for update");
+
+            } else {
+                response.send("Update artist - Successful");
+            }
+        })  // end of pool query
+    });  // end of put - when editing
 
 
+//  to delete
+    app.delete('/artist/:id', (request, response) => {
+        const artistId = parseInt(request.params.id);
+
+        const deleteQuery = "DELETE FROM artists WHERE id = '" + artistId + "'";
+
+        pool.query(deleteQuery, (err, result) => {
+            if (err) {
+                console.log(err.message);
+                response.send("Query Error for delete");
+
+            } else {
+                response.send("Delete artist - Successful");
+            }
+
+        })  // end of pool query
+
+    })  // end of delete
 
 
-
-app.get('/home', (request, response) => {
-
-  const queryString = 'SELECT * from artist_data';
-
-  pool.query(queryString, (errorObj, result) => {
-
-    // errorObj is not null if there's an error
-    if (errorObj === null) {
-
-      console.log('query resulttttttt:', result.rows);
-      const data = {  artist_data : result.rows};
-      response.render('home', data);
-    } else {
-
-      console.error('query error:', errorObj.stack);
-      response.send( 'query error' );
-
-    }
-  });
-});
 /**
  * ===================================
  * Listen to requests on port 3000
