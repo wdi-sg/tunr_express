@@ -7,7 +7,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'andrew',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,12 +49,51 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+app.get ('/artists', (request, response)=> {
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    let queryAll = 'SELECT * FROM artists';
+
+    // Query into PostGres to find all artists
+    pool.query(queryAll, (err, result) => {
+        if (err === undefined ) {
+
+            let requestedQueryAll = result.rows;
+            // console.log(result.rows);
+            response.render ('home', {requestedQueryAll});
+            } else {
+            console.error ('query error:', errorObj.stack);
+            response.send('query error');
+        }
+    })
 });
+
+// get a specified artist's details by ID
+app.get('/artist/:id', (request, response) => {
+    let artistId = request.params.id;
+    console.log(artistId);
+
+    let query = 'SELECT * FROM artists WHERE id ='+ artistId;
+
+
+// Quering into PostGres
+    pool.query(query, (err,result)=>{
+    if (err === undefined ) {
+      let requestedQuery = result.rows;
+      // const data = {  students : result.rows};
+      response.render( 'home', {requestedQuery} );
+    } else {
+      console.error('query error:', errorObj.stack);
+      response.send( 'query error' );
+        }
+
+    })
+});
+
+// redirects /artists to default index page
+// app.get('/artists', redirectToHomepage);
+
+// default index page
+// app.get('/', homepage);
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
