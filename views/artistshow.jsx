@@ -7,9 +7,12 @@ class Artistshow extends React.Component {
     const theArtist = this.props.artist.map((artist) => {
         return (
             <React.Fragment>
-                <li>Artist Name: {artist.name}</li>
-                <li>Photo URL: {artist.photo_url}</li>
-                <li>Nationality: {artist.nationality}</li>
+                <p>Artist Name:</p>
+                <p>{artist.name}</p>
+                <p>Photo:</p>
+                <p><img src={artist.photo_url} alt="artist image"/></p>
+                <p>Nationality:</p>
+                <p>{artist.nationality}</p>
             </React.Fragment>
                 );
     });
@@ -17,9 +20,9 @@ class Artistshow extends React.Component {
     return (
     <Layout>
           <h1>Selected Artist:</h1>
-            <ul>
+            <div>
                 {theArtist}
-            </ul>
+            </div>
     </Layout>
     );
   }

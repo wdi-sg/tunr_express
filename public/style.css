@@ -1,3 +1,17 @@
 body {
+	width: 900px;
+	margin: 0 auto;
 	background-color: #f9e9c8;
+	text-align: center;
+	padding: 30px;
+}
+
+img {
+	max-width: 400px;
+	max-height: 400px;
+}
+
+td > img {
+	max-width: 180px;
+	max-height: 180px;
 }

@@ -13,9 +13,9 @@ class Artistcreated extends React.Component {
                     <div>Artist Name:
                         <p>{artist.name}</p>
                     </div>
-                    <div>Photo URL:
+                    <div>Photo:
                         <div>
-                        <img src = {artist.photo_url}/>
+                        <img src={artist.photo_url} alt="artist image"/>
                         </div>
                     </div>
                     <div>Nationality:

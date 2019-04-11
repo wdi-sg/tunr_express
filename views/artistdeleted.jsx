@@ -11,7 +11,6 @@ class Artistdeleted extends React.Component {
         return (
             <React.Fragment>
                 <p>Artist Name: {artist.name}</p>
-                <p>Photo URL: {artist.photo_url}</p>
                 <p>Nationality: {artist.nationality}</p>
             </React.Fragment>
                 );
@@ -19,7 +18,7 @@ class Artistdeleted extends React.Component {
 
     return (
         <Layout>
-          <h1>Successfully Deleted Artist:</h1>
+          <h1>Deleted Artist Successfully!</h1>
             <div>
                 {themArtists}
             </div>
