@@ -5,7 +5,7 @@ class AddSong extends React.Component {
   render() {
     return (
         <DefaultLayout title="Add New Song">
-            <form className="add" method="POST" action= { `/artists/${ this.props.artist.id }/songs` }>
+            <form method="POST" action= { `/artists/${ this.props.artist.id }/songs` }>
                 <h1>Add New Song for { this.props.artist.name } </h1>
                 Title: <input className="form-control" name="title"/><br/>
                 Album: <input className="form-control" name="album"/><br/>

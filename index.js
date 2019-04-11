@@ -1,5 +1,7 @@
 const pg = require('pg');
 const express = require('express');
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser')
 const methodOverride = require('method-override');
 
 // Initialise postgres client
@@ -9,6 +11,9 @@ const configs = {
     database: 'tunr_db',
     port: 5432,
 };
+
+const SSALT =  '&SHD%G#&BCJKDJ(ASUD*&TYAS^V#BTFYDASG%gfs5gsf520yga4evgh2!';
+const PWSALT = '9UY&u3h7%adghf54Radnsuyg62312i8y6312bhdsnbahg67T%2^Q!sas?';
 
 const pool = new pg.Pool(configs);
 
@@ -30,6 +35,7 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+app.use(cookieParser());
 app.use(methodOverride('_method'));
 
 // Set react-views to be the default view engine
@@ -40,16 +46,41 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
+ * Helper Function
+ * ===================================
+ */
+
+let checkForLogin = function (request) {
+    if (request.cookies === undefined) {
+        return false;
+    }
+
+    let loggedInHash = sha256(request.cookies['username'] + SSALT);
+
+    if( request.cookies['loggedIn'] === loggedInHash) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+/**
+ * ===================================
  * Function
  * ===================================
  */
 let getArtistsRequestHandler = async function (request, response) {
     try {
-        const sqlQuery = `SELECT * FROM artists`;
+        if (checkForLogin(request) === true){
+            const sqlQuery = `SELECT * FROM artists`;
 
-        const artistResult = await pool.query(sqlQuery);
-        response.send(artistResult.rows);
+            const artistResult = await pool.query(sqlQuery);
+            response.send(artistResult.rows);
 
+        } else {
+            response.send('Unauthorized!');
+        }
     } catch(e) {
         console.log(e);
     }
@@ -258,6 +289,57 @@ let getPlaylistByIdRequestHandler = async function (request, response) {
     }
 }
 
+let registerRequestHandler = async function (request, response) {
+    response.render('register');
+}
+
+let registerAccountRequestHandler = async function (request, response) {
+    try {
+        const passwordHash = sha256(request.body.password + PWSALT);
+
+        const values = [request.body.name, passwordHash];
+        const sqlQuery = `INSERT INTO users (name, password)
+                          VALUES ($1, $2)`;
+
+        const result = await pool.query(sqlQuery, values);
+        response.send('Account created!</br><a href="/login">click here to login</a>');
+
+    } catch(e) {
+        console.log("addNewArtistRequestHandler:" + e);
+    }
+}
+
+let loginRequestHandler = async function (request, response) {
+    response.render('login');
+}
+
+let authenticateRequestHandler = async function (request, response) {
+    try {
+        const username = request.body.name;
+        const passwordHash = sha256(request.body.password + PWSALT);
+
+        const values = [username, passwordHash];
+        const sqlQuery = `SELECT * FROM users WHERE name= $1 AND password= $2`;
+
+        const result = await pool.query(sqlQuery, values);
+
+        if (result.rows.length === 1) {
+            const loggedInHash = sha256(username + SSALT);
+
+            response.cookie('username', username);
+            response.cookie('loggedIn', loggedInHash);
+
+            response.send('You have now log on to the system!</br><a href="/artists">click here for resources</a>');
+
+        } else {
+            response.send('Login Failure');
+
+        }
+    } catch(e) {
+        console.log(e);
+    }
+}
+
 /**
  * ===================================
  * Artists Routes
@@ -292,13 +374,24 @@ app.post('/artists/:id/songs', addNewArtistSongRequestHandler);
  * Playlist Routes
  * ===================================
  */
-
 app.get('/playlist', getPlaylistRequestHandler);
 
 app.get('/playlist/new', newPlaylistRequestHandler);
 app.post('/playlist', addNewPlaylistRequestHandler);
 
 app.get('/playlist/:id', getPlaylistByIdRequestHandler);
+
+
+/**
+ * ===================================
+ * User Account Routes
+ * ===================================
+ */
+app.get('/register', registerRequestHandler);
+app.post('/register', registerAccountRequestHandler);
+
+app.get('/login', loginRequestHandler);
+app.post('/login', authenticateRequestHandler);
 
 
 /**

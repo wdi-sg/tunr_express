@@ -17,10 +17,16 @@ CREATE TABLE IF NOT EXISTS songs (
 CREATE TABLE IF NOT EXISTS playlists (
     id SERIAL PRIMARY KEY,
     name TEXT
-
+);
 
 CREATE TABLE IF NOT EXISTS playlist_songs (
     id SERIAL PRIMARY KEY,
     playlist_id INTEGER,
     song_id INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    password TEXT
 );

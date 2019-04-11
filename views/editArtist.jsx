@@ -8,7 +8,7 @@ class EditArtist extends React.Component {
     console.log(this.props)
     return (
         <DefaultLayout title="Edit Existing Artist">
-            <form className="edit" method="POST" action={ formAttribute }>
+            <form method="POST" action={ formAttribute }>
                 <h1>Edit Existing Artist</h1>
                 Name: <input className="form-control" name="name" value={ this.props.artist.name }/><br/>
                 Photo URL: <input className="form-control" name="photo_url" value={ this.props.artist.photo_url }/><br/>

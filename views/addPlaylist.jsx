@@ -20,7 +20,7 @@ class AddPlaylist extends React.Component {
   render() {
     return (
         <DefaultLayout title="Add New Playlist">
-            <form className="add" method="POST" action= "/playlist">
+            <form method="POST" action= "/playlist">
                 <h1>Add New Playlist</h1>
                 <audio src="demo.mp3" controls></audio>
                 Name: <input className="form-control" name="name"/><br/>

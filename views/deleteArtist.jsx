@@ -8,7 +8,7 @@ class DeleteArtist extends React.Component {
 
     return (
             <DefaultLayout title="Delete Existing Artist">
-                <form className="delete" method="POST" action={ formAttribute }>
+                <form method="POST" action={ formAttribute }>
                     <h1>Delete Existing Artist</h1>
                     Name: <label> { this.props.artist.name } </label><br/>
                     Photo URL: <label> { this.props.artist.photo_url } </label><br/>
