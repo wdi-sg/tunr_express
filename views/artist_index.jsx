@@ -30,7 +30,7 @@ class Index extends React.Component {
                 <title>Index Page</title>
             </head>
         <body>
-          <div class="artists">
+          <div class="content">
           <h1 style={{ 'text-decoration': 'underline' }}>Artists!</h1>
           <span>
           <a href={"/artists/new"} class="btn btn-success">Create new artist</a>

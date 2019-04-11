@@ -47,7 +47,7 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes
+ * Routes For Artists
  * ===================================
  */
 
@@ -75,7 +75,7 @@ app.get('/artists/', (request, response) => {
     } else {
         const data = { artists: result.rows }
 
-        response.render( "index", data );
+        response.render( "artist_index", data );
     }
   })
 
@@ -88,7 +88,7 @@ app.get('/artists/', (request, response) => {
  */
 
 app.get('/artists/new', (request, response) => {
-   response.render("create");
+   response.render("artist_create");
 })
 
 
@@ -128,7 +128,7 @@ app.get('/artists/:id/edit', (request, response) => {
             response.send("query error test 4");
         } else {
             const data = { artist: result.rows }
-            response.render("edit", data );
+            response.render("artist_edit", data );
         }
     })
 
@@ -171,7 +171,7 @@ app.get('/artists/:id/delete',(request, response) => {
         } else {
 
             const data = { artist: result.rows };
-            response.render("delete", data);
+            response.render("artist_delete", data);
         }
     })
 
@@ -216,7 +216,204 @@ console.log(request.params.id)
     } else {
         const data = { artist: result.rows }
 
-        response.render( "show", data );
+        response.render( "artist_show", data );
+    }
+  })
+
+});
+
+
+/**
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+* ==================================================================
+*/
+
+
+
+
+/**
+ * ===================================
+ * Routes For Songs
+ * ===================================
+ */
+
+app.get('/', (request, response) => {
+  response.render('home');
+});
+
+
+/**
+ * ===================================
+ * Index
+ * ===================================
+ */
+
+
+
+app.get('/songs/', (request, response) => {
+  // query database for all pokemon
+  const queryString = "SELECT * FROM songs ORDER BY id";
+
+  pool.query(queryString, (errorObj, result) => {
+    if(errorObj) {
+        console.log(errorObj.stack);
+        response.send("query error test 2");
+    } else {
+        const data = { songs: result.rows }
+
+        response.render( "song_index", data );
+    }
+  })
+
+});
+
+/**
+ * ===================================
+ * Create
+ * ===================================
+ */
+
+app.get('/songs/new', (request, response) => {
+   response.render("song_create");
+})
+
+
+app.post('/songs', (request, response) => {
+
+    console.log(request.body);
+    const queryString = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)";
+
+    const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id];
+
+    pool.query(queryString, values, (errorObj, result) => {
+        if(errorObj) {
+            console.log(errorObj.stack);
+            response.send("query error test 3");
+        } else {
+            response.send("A new song has been added!" + "<br><br><a href=/songs/>Home</a>");
+        }
+    })
+
+})
+
+
+/**
+ * ===================================
+ * Edit
+ * ===================================
+ */
+
+
+app.get('/songs/:id/edit', (request, response) => {
+
+
+    const queryString = "SELECT * FROM songs WHERE id=" + request.params.id;
+
+    pool.query(queryString, (errorObj, result) => {
+        if(errorObj) {
+            console.log(errorObj.stack);
+            response.send("query error test 4");
+        } else {
+            const data = { song: result.rows }
+            response.render("song_edit", data );
+        }
+    })
+
+
+});
+
+ app.put('/songs/:id', (request, response) => {
+
+        const queryString = "UPDATE songs SET title=$1, album=$2, preview_link=$3, artwork=$4, artist_id=$5 WHERE id=$6";
+
+        const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id, request.params.id];
+
+        pool.query(queryString, values, (errorObj, result) => {
+            if(errorObj) {
+                console.log(errorObj.stack);
+                response.send("query error test 5");
+            } else {
+                response.send("Song has been edited!" + "<br><br><a href=/songs/>Home</a>");
+            }
+        })
+
+  });
+
+
+ /**
+ * ===================================
+ * Delete
+ * ===================================
+ */
+
+
+app.get('/songs/:id/delete',(request, response) => {
+
+    const queryString = "SELECT * FROM songs WHERE id=" + request.params.id;
+
+    pool.query(queryString, (errorObj, result)=> {
+        if(errorObj) {
+            console.log(errorObj.stack);
+            respons.send("query error test 6");
+        } else {
+
+            const data = { song: result.rows };
+            response.render("song_delete", data);
+        }
+    })
+
+});
+
+
+ app.delete('/songs/:id', (request, response) => {
+
+    const queryString = "DELETE from songs WHERE id =" + request.params.id;
+
+        pool.query(queryString, (errorObj, result) => {
+            if(errorObj) {
+                console.log(errorObj.stack);
+                response.send("query error test 5");
+            } else {
+                response.send("Song has been deleted!" +"<br><br><a href=/artists/>Home</a>");
+            }
+        })
+
+});
+
+
+/**
+ * ===================================
+ * View
+ * ===================================
+ */
+
+
+
+app.get('/songs/:id', (request, response) => {
+  // query database for all pokemon
+console.log(request.params.id)
+  const songId = request.params.id;
+
+  const queryString = "SELECT * FROM songs WHERE id=" + songId;
+
+  pool.query(queryString, (errorObj, result) => {
+    if(errorObj) {
+        console.log(errorObj.stack);
+        response.send("query error test 6");
+    } else {
+        const data = { song: result.rows }
+
+        response.render( "song_show", data );
     }
   })
 
