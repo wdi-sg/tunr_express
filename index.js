@@ -53,11 +53,6 @@ app.get('/artists', (request, response) => {
   console.log(queryString)
   // query database for all pokemon
    pool.query(queryString, (errorObj, result) => {
-    // if (errorObj) {
-    //   console.log("query error")
-    // } else {
-    //   response.send(result.rows);
-    // }
 
 
     // errorObj is not null if there's an error
@@ -65,10 +60,6 @@ app.get('/artists', (request, response) => {
       console.log ('query results:', result.rows);
       const data = {artists : result.rows};
       response.render('artists', data);
-
-      //console.log('query resulttttttt:', result.rows);
-      //const data = {  students : result.rows};
-      //response.render('home', );
     } else {
 
       console.error('query error:', errorObj);
@@ -77,8 +68,53 @@ app.get('/artists', (request, response) => {
     }
   });
 
+});
+
+
+app.get('/songs/:id', (req, res)=>{
+  
+  const id = req.params.id;
+  const querystring = 'SELECT * FROM songs';
+  
+  pool.query(querystring, (errorObj, result)=> {
+    if (errorObj===undefined) {
+      const data = {songs : result.rows};
+      res.render('songs', data);
+    } else {
+      console.error('query error', errorObj);
+      response.send('query error');
+    }
+
+  });
+});
+
+
+
+
+app.get('/artists/song/:id', (request, response) => {
+  const id = request.params.id;
+  const queryString = `SELECT * FROM artists WHERE id=${id}`;
+  console.log(queryString)
+  // query database for all pokemon
+   pool.query(queryString, (errorObj, result) => {
+
+
+    // errorObj is not null if there's an error
+    if (errorObj === undefined) {
+      console.log ('query results:', result.rows);
+      const data = {artists : result.rows};
+      response.render('artists', data);
+    } else {
+      console.error('query error:', errorObj);
+      response.send( 'query error' );
+
+    }
+  });
 
 });
+
+
+
 
 
 
