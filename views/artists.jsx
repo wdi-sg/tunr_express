@@ -1,20 +1,32 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Artists extends React.Component {
   render() {
-    let data = this.props.data;
-    let artistHTML = data.map(artist => {
+    let data = this.props.artist;
+    let songs = this.props.songs;
+    let artist = data[0].name;
+    let photoURL = data[0].photo_url;
+    let nationality = data[0].nationality;
+    let numberOfSongs = songs.length;
+    let songIndex = [];
+    for (let i = 1; i < numberOfSongs.length + 1; i++) {
+      songsIndex.push(i);
+    }
+    let songsHTML = songs.map((song, index) => {
+      let songIndex = index + 1;
       return (
-        <tr key={artist.id}>
-          <th scope="row">{artist.id}</th>
-          <td>{artist.name}</td>
-          <td>{artist.photo_url}</td>
-          <td>{artist.nationality}</td>
+        <tr key={songIndex}>
+          <th scope="row">{songIndex}</th>
+          <td>{song.title}</td>
+          <td>{song.album}</td>
           <td>
-          <form action={"/artist/"+artist.id} method="get">
-          <button type="submit">View</button>
-          </form>
+            <audio controls>
+              <source src={song.preview_link} type="audio/mp4" />
+              Preview!
+            </audio>
           </td>
+          <td>
+          <img className="album-art" src={song.artwork}/></td>
         </tr>
       );
     });
@@ -29,20 +41,20 @@ class Home extends React.Component {
           />
         </head>
         <body>
-          <form action="/artist/create" method="get">
-          <button className="btn btn-primary" type="submit">Add an Artist!</button>
-          </form>
+          <h1>{artist}</h1>
+          <img src={photoURL} />
+          <h2>{nationality}</h2>
           <table class="table">
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Photo Link</th>
-                <th scope="col">Nationality</th>
-                <th scope='col'>View Artist</th>
+                <th scope="col">title</th>
+                <th scope="col">album</th>
+                <th scope="col">Preview Link</th>
+                <th scope="col">Artwork</th>
               </tr>
             </thead>
-            <tbody>{artistHTML}</tbody>
+            <tbody>{songsHTML}</tbody>
           </table>
           <script
             src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -65,4 +77,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = Artists;
