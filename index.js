@@ -47,7 +47,7 @@ app.use(express.static('public'));
 
 /**
  * ===================================
- * Routes
+ * Request Handler
  * ===================================
  */
 
@@ -60,7 +60,7 @@ app.get('/artists', (request, response) => {
 
     pool.query(queryString, (errorObj, result) => {
         // errorObj is null if there's no error
-        if (errorObj === undefined) {
+        if (!errorObj) {
 
             // console.log(result.rows);
             const data = { artists : result.rows };
@@ -94,7 +94,7 @@ app.post('/artists', (request, response) => {
 
     pool.query(queryString, values, (errorObj, result) => {
         // errorObj is null if there's no error
-        if (errorObj === undefined) {
+        if (!errorObj) {
 
             // console.log(result.rows);
 
@@ -107,6 +107,7 @@ app.post('/artists', (request, response) => {
     });
 });
 
+
 //===================================
 // SHOW AN ARTIST
 
@@ -117,7 +118,7 @@ app.get('/artists/:id', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
-        if (errorObj === undefined) {
+        if (!errorObj) {
 
             // console.log('Query results: ', result.rows);
             const data = { artist : result.rows };
@@ -130,6 +131,7 @@ app.get('/artists/:id', (request, response) => {
     });
 });
 
+
 //===================================
 // EDIT AN ARTIST
 
@@ -140,7 +142,7 @@ app.get('/artists/:id/edit', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
-        if (errorObj === undefined) {
+        if (!errorObj) {
 
             // console.log('Query results: ', result.rows);
             const data = { artist : result.rows };
@@ -161,7 +163,7 @@ app.put('/artists/:id', (request, response) => {
 
     pool.query(queryString, values, (errorObj) => {
         // errorObj is null if there's no error
-        if (errorObj === undefined) {
+        if (!errorObj) {
 
             const data = { artists : values };
             response.render('artistedited', data);
@@ -171,6 +173,7 @@ app.put('/artists/:id', (request, response) => {
         }
     });
 });
+
 
 //===================================
 // DELETE AN ARTIST
@@ -182,7 +185,7 @@ app.get('/artists/:id/delete', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
-        if (errorObj === undefined) {
+        if (!errorObj) {
 
             // console.log('Query results: ', result.rows);
             const data = { artist : result.rows };
@@ -202,7 +205,7 @@ app.delete('/artists/:id', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
 
         // errorObj is null if there's no error
-        if (errorObj === undefined) {
+        if (!errorObj) {
             const data = { artists : result.rows };
             response.render('artistdeleted', data);
         } else {
@@ -223,7 +226,7 @@ app.get('/artists/:id/songs', (request, response) => {
 
     pool.query(queryString, (errorObj, result) => {
 
-        if (errorObj === undefined) {
+        if (!errorObj) {
             const data = { songs : result.rows };
             response.render('songshow', data);
         } else {
@@ -232,6 +235,7 @@ app.get('/artists/:id/songs', (request, response) => {
         }
     });
 });
+
 
 //===================================
 //CREATE NEW SONG FOR SELECTED ARTIST
@@ -243,7 +247,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
 
     pool.query(queryString, (errorObj, result) => {
 
-        if (errorObj === undefined) {
+        if (!errorObj) {
             const data = { artist : result.rows };
             response.render('songcreateform', data);
         } else {
@@ -269,6 +273,14 @@ app.post('/artists/:id/songs', (request, response) => {
     });
 });
 
+
+//===================================
+// REGISTER USER
+
+app.get('/register', (request, response) => {
+
+    response.render('registerform');
+});
 
 
 /**
