@@ -395,13 +395,11 @@ app.get('/favorites/new', (request, response) => {
   }
   else {
     const username = request.cookies.username;
-    console.log("398");
-    console.log(username);
     let queryString = "SELECT id, title FROM songs ORDER BY title";
     
     pool.query(queryString, (err, result) => {
       if (err) {
-        console.error('404 query error:', err.stack);
+        console.error('402 query error:', err.stack);
         response.send( 'query error' );
       }
       const data={songs: result.rows};
@@ -416,7 +414,7 @@ app.post('/favorites', (request, response) => {
 
   pool.query(userIdQuery, (err, result) => {
     if (err) {
-      console.error('419 query error:', err.stack);
+      console.error('417 query error:', err.stack);
       response.send( 'query error' );
     }
     let userId = result.rows[0].id;
@@ -437,7 +435,7 @@ app.post('/favorites', (request, response) => {
     
     pool.query(queryString, (err, result) => {
       if (err) {
-        console.error('440 query error:', err.stack);
+        console.error('438 query error:', err.stack);
         response.send( 'query error' );
       }
       response.send("ok!");
@@ -445,6 +443,45 @@ app.post('/favorites', (request, response) => {
 
   });
 
+})
+
+app.get('/favorites', (request, response) => {
+  if (request.cookies.username === undefined) {
+    response.send("You must be logged in to view this page. Please log in and try again.");
+  }
+  else {
+
+    let queryString = "SELECT songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id FROM favorites INNER JOIN users ON (favorites.user_id=users.id) INNER JOIN songs ON (favorites.song_id=songs.id) ORDER BY songs.title";
+    
+    pool.query(queryString, (err, result) => {
+      if (err) {
+        console.error('461 query error:', err.stack);
+        response.send( 'query error' );
+      }
+      const data = {songsDetail: result.rows};
+      response.render('showFavorites', data);
+
+      // let artistIdArray = [];
+      // for (i=0; i<result.rows.length; i++) {
+      //   artistIdArray.push(result.rows[i].artist_id);
+      // }
+
+      // let artistNameQuery = `SELECT name FROM artists WHERE artists.id IN ($1, $2, $3)`;
+
+      // pool.query(artistNameQuery, artistIdArray, (err, result) => {
+      //   if (err) {
+      //     console.error('472 query error:', err.stack);
+      //     response.send( 'query error' );
+      //   }
+      //   const artistNameArray = result.rows;
+      //   console.log("482");
+      //   console.log(artistNameArray);
+
+      //   const data = {songsDetails: songsDetailsArray, artistNames: artistNameArray}
+      //   response.render('showFavorites', data);
+      // })
+    })
+  }
 })
 
 
