@@ -400,7 +400,7 @@ app.get('/songs/:id/delete',(request, response) => {
 
 
 app.get('/songs/:id', (request, response) => {
-  // query database for all pokemon
+
 console.log(request.params.id)
   const songId = request.params.id;
 
@@ -418,6 +418,36 @@ console.log(request.params.id)
   })
 
 });
+
+
+
+/**
+ * ===================================
+ * Routes For Songs of Artists
+ * ===================================
+ */
+
+
+app.get('/artist/:id/songs', (request, response) => {
+
+  const artistId = request.params.id;
+
+  const queryString = "SELECT * FROM songs WHERE artist_id=" + artistId;
+
+  pool.query(queryString, (errorObj, result) => {
+    if(errorObj) {
+        console.log(errorObj.stack);
+        response.send("query error test 7");
+    } else {
+        const data = { songs: result.rows }
+
+        response.render( "song_list_show", data );
+    }
+  })
+
+});
+
+
 
 
 
