@@ -3,7 +3,6 @@ var React = require('react');
 class Newsong extends React.Component {
     render() {
         let newSongPath = `/artists/${this.props.artistId}/songs`
-
         return(
             <html>
             <body>
@@ -21,7 +20,7 @@ class Newsong extends React.Component {
                 </form>
             </body>
             </html>
-            )
+            );
     }
 }
 

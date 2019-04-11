@@ -42,11 +42,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-/**
- * ===================================
- * Routes
- * ===================================
- */
+
 
 app.get('/', (request, response) => {
   // query database for all pokemon
@@ -110,10 +106,10 @@ app.post('/artists/:id/songs', (request, response) => {
     });
 
 });
-//======================================================
+//==================================================================================
 //In order to see the new data =>
 //Use psql / RETURNING * + response.send(result) / with app.get(/artists/:id/songs)
-//======================================================
+//====================================================================================
 
 
 
@@ -165,6 +161,72 @@ app.get('/artists/:id', (request, response) => {
           }
      });
 });
+
+
+
+//Send a request to create a new playlist
+app.get('/playlist/new', (request, response) => {
+    response.render('newplaylist');
+});
+
+
+//List all the playlists
+app.get('/playlist', (request, response) => {
+
+    const queryString = 'SELECT * from playlist';
+    console.log("im all playlist" + queryString);
+
+    pool.query(queryString, (err, result) => {
+        if (!err) {
+            const data = {playlists: result.rows};
+            response.render('showPlayList', data);
+          } else {
+            console.error('query error:', err);
+            response.send('LINE 203 query error');
+          }
+    });
+});
+
+
+
+
+//create a new playlist
+app.post('/playlist', (request, response) => {
+    let queryText = 'INSERT INTO playlist(name) VALUES($1) RETURNING *';
+    let values = [request.body.name];
+
+    pool.query(queryText, values, (err, result) => {
+
+        if (!err) {
+            response.send(result);
+
+          } else {
+            console.error('query error:', err);
+            response.send('LINE 187 query error');
+          }
+    });
+});
+
+
+
+//==========================================
+//
+//          DONE
+//
+//==========================================
+
+
+
+//Send a request to create a resister form
+app.get('/register', (request, response) => {
+    response.render('register');
+});
+
+
+
+app.post('/register', (request, response) => {
+    let query = "SELECT * FROM users WHERE name='"+request.body.name+"'";
+})
 
 
 
