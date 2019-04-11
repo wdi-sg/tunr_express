@@ -107,7 +107,7 @@ app.get('/artists/:id/edit', (request, response) => {
             response.send( 'query error' );
         } else {
   //console log the output into the terminal if all is ok
-            console.log('query result:', result.rows);
+            console.log('GET query result:', result.rows);
   //define the data that is to be rendered
             const data = {  artist : result.rows};
   //point to the component which will be used to render the page using the data that is defines in the variable
@@ -125,18 +125,15 @@ app.put ('/artists/:id', (request, response) => {
     const nationality = object.nationality;
     const url = object.url;
   //update the database with the new values that have been updated into the form using the app.get above
-    const queryString = 'UPDATE artists SET (name, photo_url, nationality) VALUES($1,$2,$3) WHERE id=id RETURNING id';
+    const queryString = `UPDATE artists SET name ='${name}', photo_url = '${url}', nationality = '${nationality}' WHERE id = ${id} RETURNING *;`
 
-    const values = [request.body.name, request.body.photo_url, request.body.nationality];
-
-    console.log(queryString);
-    pool.query(queryString, values, (err, result) => {
+    pool.query(queryString, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
         } else {
+            console.log('PUT query result:', result.rows);
             const data = {artist: result.rows};
-            console.log(data);
             response.redirect(`/artists/${result.rows[0].id}`);
         }
     })

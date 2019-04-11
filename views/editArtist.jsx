@@ -8,7 +8,7 @@ class editArtist extends React.Component {
     const name = artist.name;
     const nationality = artist.nationality;
     const url = artist.photo_url;
-    const putPath = `/artists/${id}/put?_method=PUT`;
+    const putPath = `/artists/${id}/?_method=PUT`;
 
 
     return (
