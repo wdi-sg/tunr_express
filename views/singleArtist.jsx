@@ -10,12 +10,11 @@ class SingleArtist extends React.Component {
                 <p><strong>Artist ID :</strong> {card.id}</p>
                 <p><strong>Artist Name:</strong> {card.name}</p>
                 <p><strong>Artist Nationality:</strong> {card.nationality}</p>
-
             </div>
         )
 })
-    // const artistName = this.props.artist.map((card) =>{
-    //     return <p>Thank you for adding {card.name} into TUNR!</p>
+    const artistName = this.props.artist.map((card) =>{
+        return <h3><strong>Welcome to the page of {card.name} @ TUNR TABLE!</strong></h3>
     })
     return (
         <html>
