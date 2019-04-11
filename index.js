@@ -187,8 +187,6 @@ app.get('/artist/:id', (request, response) => {
   // const queryString = `SELECT title FROM songs where artist_id = ${artistId} ORDER BY id LIMIT 5`;
 
   pool.query(queryString, (errorObj, result) => {
-    console.log(result.rows);
-    // errorObj is not null if there's an error
     if (!errorObj) {
       // console.log('query resulttttttt:', result.rows);
       const data = {ccb : result.rows};
@@ -288,6 +286,42 @@ app.post('/register', (request, response) => {
   });
 });
 
+app.get('/login', (request, response) => {
+  response.render('login');
+});
+
+
+app.post('/login', (request, response) => {
+  console.log(request.body.username);
+  const username = request.body.username;
+  const password = request.body.password;
+  const queryString = `SELECT * FROM users WHERE username = '${username}'`;
+  console.log(queryString);
+
+      pool.query(queryString, (errorObj, result) => {
+    // errorObj is not null if there's an error
+    console.log(result.rows[0]);
+
+    if(username === result.rows[0].username && password === result.rows[0].password) {
+        console.log("WNBIJOW");
+        response.cookie('username', username);
+        response.cookie('loggedIn', true);
+        response.redirect('/');
+    };
+    // if (!errorObj) {
+    //       response.cookie('username', username);
+    //       response.cookie('loggedIn', true);
+    //   response.send('USER CREATED!!');
+    // } else {
+    //   console.log(errorObj,"fedv");
+    //   console.error('query error:');
+    // }
+  });
+
+
+
+
+});
 
 // app.get('/new', (request, response) => {
 //   response.render('new');
