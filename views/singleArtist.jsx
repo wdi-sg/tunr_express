@@ -14,8 +14,8 @@ class SingleArtist extends React.Component {
             </div>
         )
 })
-    const artistName = this.props.artist.map((card) =>{
-        return <p>Thank you for adding {card.name} into TUNR!</p>
+    // const artistName = this.props.artist.map((card) =>{
+    //     return <p>Thank you for adding {card.name} into TUNR!</p>
     })
     return (
         <html>
