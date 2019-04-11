@@ -9,11 +9,12 @@ class Layout extends React.Component {
                 <link rel="stylesheet" href="/style.css"></link>
 
                 <title>{this.props.title}</title>
-
             </head>
+
             <body>
             {this.props.children}
             </body>
+
         </html>
         );
     }

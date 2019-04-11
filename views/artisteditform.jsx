@@ -1,4 +1,5 @@
 var React = require('react');
+var Layout = require("./layout");
 
 class Artisteditform extends React.Component {
 
@@ -7,7 +8,7 @@ class Artisteditform extends React.Component {
         let putAction = `/artists/${this.props.artist[0].id}?_method=PUT`;
 
         return (
-            <body>
+            <Layout>
                 <h1>Edit Artist</h1>
                     <form method="POST" action={putAction}>
                         Artist Name: <br/>
@@ -18,7 +19,7 @@ class Artisteditform extends React.Component {
                             <textarea name="nationality" cols="40" rows="10" value={this.props.artist[0].nationality}></textarea><br/>
                         <input type="submit" value="Edit"/>
                     </form>
-            </body>
+            </Layout>
         );
     }
 }

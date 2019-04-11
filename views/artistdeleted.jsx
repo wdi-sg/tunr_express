@@ -1,4 +1,5 @@
 var React = require("react");
+var Layout = require("./layout");
 
 class Artistdeleted extends React.Component {
   render() {
@@ -17,15 +18,12 @@ class Artistdeleted extends React.Component {
     });
 
     return (
-      <html>
-        <head />
-        <body>
+        <Layout>
           <h1>Successfully Deleted Artist:</h1>
             <div>
                 {themArtists}
             </div>
-        </body>
-      </html>
+        </Layout>
     );
   }
 }

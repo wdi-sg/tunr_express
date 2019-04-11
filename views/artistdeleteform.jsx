@@ -1,4 +1,5 @@
 var React = require('react');
+var Layout = require("./layout");
 
 class Artistdeleteform extends React.Component {
 
@@ -7,7 +8,7 @@ class Artistdeleteform extends React.Component {
         let deleteAction = `/artists/${this.props.artist[0].id}?_method=delete`;
 
         return (
-            <body>
+            <Layout>
                 <h1>Delete Artist</h1>
                     <form method="POST" action={deleteAction}>
                         Artist Name: <br/>
@@ -18,7 +19,7 @@ class Artistdeleteform extends React.Component {
                             <p>{this.props.artist[0].nationality}</p>
                         <input type="submit" value="Delete"/>
                     </form>
-            </body>
+            </Layout>
         );
     }
 }

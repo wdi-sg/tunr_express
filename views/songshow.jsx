@@ -17,15 +17,12 @@ class Songshow extends React.Component {
     });
 
     return (
-      <html>
-        <head />
-        <body>
+        <Layout>
           <h1>Artist Songs:</h1>
             <div>
                 {theSongs}
             </div>
-        </body>
-      </html>
+        </Layout>
     );
   }
 }

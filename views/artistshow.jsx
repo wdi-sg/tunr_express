@@ -15,15 +15,12 @@ class Artistshow extends React.Component {
     });
 
     return (
-      <html>
-        <head />
-        <body>
+    <Layout>
           <h1>Selected Artist:</h1>
             <ul>
                 {theArtist}
             </ul>
-        </body>
-      </html>
+    </Layout>
     );
   }
 }

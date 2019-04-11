@@ -1,4 +1,5 @@
 var React = require("react");
+var Layout = require("./layout");
 
 class Artistedited extends React.Component {
   render() {
@@ -8,15 +9,12 @@ class Artistedited extends React.Component {
     });
 
     return (
-      <html>
-        <head />
-        <body>
+        <Layout>
           <h1>Updated Artist:</h1>
             <div>
                 {themArtists}
             </div>
-        </body>
-      </html>
+        </Layout>
     );
   }
 }

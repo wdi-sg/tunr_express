@@ -1,25 +1,27 @@
 var React = require('react');
+var Layout = require("./layout");
 
 class Artistcreated extends React.Component {
 
     render() {
 
-        return (
+        let artist = this.props.artist[0];
 
-        <body>
-            <h1>Artist Created:</h1>
-                <div>
+        return (
+            <Layout>
+                <h1>Artist Created:</h1>
                     <div>Artist Name:
-                        <p>{this.props.artist[0].name}</p>
+                        <p>{artist.name}</p>
                     </div>
                     <div>Photo URL:
-                        <p>{this.props.artist[0].photo_url}</p>
+                        <div>
+                        <img src = {artist.photo_url}/>
+                        </div>
                     </div>
                     <div>Nationality:
-                        <p>{this.props.artist[0].nationality}</p>
+                        <p>{artist.nationality}</p>
                     </div>
-                </div>
-        </body>
+            </Layout>
         );
     }
 }

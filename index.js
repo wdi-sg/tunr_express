@@ -42,6 +42,9 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+// Using public folder for files like css, index.html
+app.use(express.static('public'));
+
 /**
  * ===================================
  * Routes

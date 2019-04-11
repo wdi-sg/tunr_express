@@ -1,4 +1,5 @@
 var React = require("react");
+var Layout = require("./layout");
 
 class Songcreateform extends React.Component {
     render() {
@@ -6,9 +7,7 @@ class Songcreateform extends React.Component {
     let artistIdInput = this.props.artist[0].id
 
     return (
-      <html>
-        <head />
-        <body>
+        <Layout>
             <h3>Add new song for {this.props.artist[0].name}:</h3>
                 <form method="POST" action={`/artists/${artistIdInput}/songs`}>
                     Song Title: <br/>
@@ -21,8 +20,7 @@ class Songcreateform extends React.Component {
                     <textarea name="artwork" cols="40" rows="10" value="e.g. blindpilot.jpg"></textarea><br/>
                 <input type="submit" value="Add New Song"/>
             </form>
-        </body>
-      </html>
+        </Layout>
     );
   }
 }
