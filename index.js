@@ -58,7 +58,7 @@ app.get('/', (request, response) => {
 
 
 //Show a list of all artists name
-app.get('/artist/', (request, response) => {
+app.get('/artists/', (request, response) => {
 
     const queryString = 'SELECT * FROM artists'
 
@@ -78,37 +78,88 @@ app.get('/artist/', (request, response) => {
 
 
 
-//Will show the selected artist info
-app.get('/artist/:id', (request, response) => {
+//Create a new artist in the database
+app.get('/artists/new', (request, response) => {
+    response.render('add');
+});
 
-    const queryString = 'SELECT * from artists WHERE id='+request.params.id;
+app.get('/artists/:id/songs/new', (request, response) => {
+
+    const userInput = parseInt(request.params.id);
+    const data = {artistId: userInput};
 
 
-//!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-    console.log("SQL query: ", queryString);
-//!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
+    response.render('newsong', data);
+});
+
+
+
+app.post('/artists/:id/songs', (request, response) => {
+
+    let queryText = 'INSERT INTO songs(title, album, preview_link, artwork, artist_id) VALUES($1, $2, $3, $4, $5) RETURNING *';
+    let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.params.id];
+
+    pool.query(queryText, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err);
+            response.send('LINE 101 query error');
+          } else {
+            response.send(result);
+          }
+    });
+
+});
+//======================================================
+//In order to see the new data =>
+//Use psql / RETURNING * + response.send(result) / with app.get(/artists/:id/songs)
+//======================================================
+
+
+
+//Displays a list of songs for the selected artist
+app.get('/artists/:id/songs', (request, response) => {
+    const queryString = 'SELECT * from songs WHERE artist_id=' + request.params.id;
 
     pool.query(queryString, (err, result) => {
         if (err) {
-            console.error('query error:', err.stack);
-            response.send( 'query error' );
+            console.error('query error:', err);
+            response.send('LINE 125 query error');
           } else {
             const userInput = parseInt(request.params.id);
 
+            const artistId = result.rows[0].artist_id;
 
+            const data = {songs: result.rows};
+            response.render('displaysongs', data);
+          }
+
+    });
+
+});
+
+
+
+//Will show the selected artist info
+app.get('/artists/:id', (request, response) => {
+    const queryString = 'SELECT * from artists WHERE id=' + request.params.id;
 //!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-            console.log("HEY userInput is here: ", userInput);
-            console.log(result.rows);
+    // console.log("SQL query: ", queryString);
 //!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-
-
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err);
+            response.send( 'LINE 98 query error' );
+          } else {
+            const userInput = parseInt(request.params.id);
+//!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
+            // console.log("HEY userInput is here: ", userInput);
+            // console.log(result.rows);
+//!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
             const artistId = result.rows[0].id;
-
-
 //!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-            console.log("HEY artistID is:", artistId);
+            // console.log("HEY artistID is:", artistId);
 //!!!!!!!!!!!!!DO console.log!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-
             const data = { artist: result.rows };
             response.render('showartist', data );
           }
@@ -121,10 +172,9 @@ app.get('/artist/:id', (request, response) => {
 
 
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+
+
+
 
 
 /**

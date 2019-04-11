@@ -12,7 +12,7 @@ class ShowArtist extends React.Component {
                           {this.props.artist[0].name}
                         </div>
                         <div>
-                          {this.props.artist[0].nationality}
+                          {this.props.artist[0].nationality.artist_id}
                         </div>
                   </div>
                 </body>
