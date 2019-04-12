@@ -1,5 +1,5 @@
-var React = require("react");
-var DefaultLayout = require("./default.jsx");
+const React = require("react");
+const DefaultLayout = require("./default.jsx");
 
 class Edit extends React.Component {
   render() {
@@ -22,6 +22,9 @@ class Edit extends React.Component {
                 <input type="text" name = "nationality" value = {artist.nationality} class="form-control" />
               </div>
               <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+          <form action="/artist" method="GET">
+            <button class="btn btn-secondary">Back</button>
           </form>
         </DefaultLayout>
     );

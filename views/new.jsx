@@ -1,5 +1,5 @@
-var React = require("react");
-var DefaultLayout = require("./default.jsx");
+const React = require("react");
+const DefaultLayout = require("./default.jsx");
 
 class New extends React.Component {
   render() {
