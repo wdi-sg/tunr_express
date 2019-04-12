@@ -4,6 +4,10 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+const cookieParser = require('cookie-parser');
+const SALT = 'hola';
+const sha256 = require('js-sha256');
+
 // Initialise postgres client
 const configs = {
   user: 'yuiterai',
@@ -27,6 +31,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -48,8 +53,15 @@ app.get('/', (request, response) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
+  console.log(request.cookies)
+  if (request.cookies.loggedIn){
   response.render('home');
-});
+
+}else{
+    response.send('you are not logged in')
+}
+  });
+
 
 
 
@@ -225,16 +237,26 @@ app.get('/register', (request, response) => {
 
 
 app.post('/register', (request, response) => {
-    let query = "SELECT * FROM users WHERE name='"+request.body.name+"'";
-})
+    let queryText = 'INSERT INTO users (name, password) VALUES ($1, $2)';
+    let hash = sha256(request.body.password + SALT);
+    const values = [request.body.name, hash];
+    pool.query(queryText, values, (err, result) => {
+        if (!err) {
+            const user = request.body;
+            response.cookie('username', user.name);
+            response.cookie('loggedIn', hash);
+            response.send('worked');
+          } else {
+            console.error('query error:', err);
+            response.send('LINE 241 query error');
+          }
+    });
+});
 
 
-
-
-
-
-
-
+app.get('/login', (request, response) => {
+  response.render('login');
+});
 
 
 

@@ -30,5 +30,5 @@ CREATE TABLE IF NOT EXISTS songs_playlist (
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    password INTEGER
+    password TEXT
 );
