@@ -1,6 +1,6 @@
 var React = require("react");
 
-class New extends React.Component {
+class artistSongNew extends React.Component {
   render() {
 
         return (
@@ -10,10 +10,12 @@ class New extends React.Component {
                 </head>
                 <body>
                     <h1>Create a new artist</h1>
-                    <form method="POST" action="/artist">
-                        Name <input type="text" name="name"/><br/>
-                        Image <input type="text" name="photo_url"/><br/>
-                        Nationality <input type="text" name="nationality"/><br/>
+                    <form method="POST" action="/artist/:id/songs">
+                        Title <input type="text" name="title"/><br/>
+                        Album <input type="text" name="album"/><br/>
+                        Preview Link <input type="text" name="preview_link"/><br/>
+                        Song Artwork <input type="text" name="artwork"/><br/>
+                        Artist_id <input type="text" name="artist_id" value={this.props.data[0]}/>
                         <input type="submit" value="Submit"/><br/>
                     </form>
                 </body>
@@ -22,4 +24,5 @@ class New extends React.Component {
     }
 }
 
-module.exports = New;
+
+module.exports = artistSongNew;
