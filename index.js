@@ -42,6 +42,12 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser')
+app.use(cookieParser());
+
+const SALT = 'ABC123'
+
 /**
  * ===================================
  * Routes
@@ -151,7 +157,7 @@ app.get('/artist/:id/songs/new', (request, response) => {
 
 app.post('/artist/:id/songs', (request,response)=> {
     console.log(request.body)
-    const queryString= 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1,$2,$3,$4,$5) RETURNING *';
+    const queryString= 'INSERT INTO songs (title, album, preview_link, artwork,artist_id) VALUES ($1,$2,$3,$4,$5) RETURNING *';
     const value = [request.body.title, request.body.album,request.body.preview_link,request.body.artwork,request.body.artist_id]
     pool.query(queryString, value, (errorObj)=> {
         if (errorObj === undefined) {
@@ -162,6 +168,48 @@ app.post('/artist/:id/songs', (request,response)=> {
         }
     })
 })
+
+app.get('/register', (request,response)=> {
+    response.render('register',);
+})
+
+app.post('/register',(request,response)=> {
+    let query = 'INSERT INTO users (username, password) VALUES ($1,$2) RETURNING *';
+    let hash = sha256(request.body.password);
+    let value = [request.body.username, hash];
+    pool.query(query, value, (errorObj,result)=> {
+        if (errorObj) {
+            console.log("something went wrong in register-post", errorObj);
+        }
+    let hash1 = sha256( SALT + request.body.username);
+    response.cookie('username', request.body.username);
+    response.cookie('loggedIn', hash1);
+    response.redirect('/artist');
+    })
+})
+
+app.get('/login', (request,response)=> {
+    response.render('login',);
+})
+
+app.post('/login',(request,response)=> {
+    let query = "SELECT password FROM users WHERE username = '" + request.body.username + "'";
+    let hash = sha256(request.body.password);
+    pool.query(query, (errorObj,result)=> {
+    console.log(result.rows[0])
+        if (result.rows.length >=1 ) {
+            if (result.rows[0] === hash) {
+                console.log(result.rows[0]);
+                console.log(hash);
+                let hash1 = sha256( SALT + request.body.username);
+                response.cookie('username', request.body.username);
+                response.cookie('loggedIn', hash1);
+                response.redirect('/artist');
+            }
+        }
+    })
+})
+
 
 /**
  * ===================================
