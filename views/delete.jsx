@@ -11,10 +11,10 @@ class Delete extends React.Component {
      let photo = this.props.artistId[0].photo_url;
      let nationality = this.props.artistId[0].nationality;
      return(
-       <Layout>
+       <Layout title = "Delete Artist">
        <div>
        <a href='/'>Return to view all artists</a>
-         <div className="card" styleName ={"width: 18rem;"}>
+         <div className="card" stylename ={"width: 18rem;"}>
          <img className ="card-img-top" src = {photo} alt= "Artist's image"/>
            <div className = "card-body">
              <a href={`/artist/${id}`}>

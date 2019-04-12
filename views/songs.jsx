@@ -35,25 +35,25 @@ class Songs extends React.Component {
       let artist_id = parseInt(songItem.artist_id);
         return(
           // <li>{id} {num} {name}</li>
-          <div className="card" styleName ={"width: 18rem;"}>
-          <img className ="card-img-top" src = {artwork} alt= "Album's image"/>
-            <div className = "card-body">
-            <a href={preview_link}>
-              <h4 className = "card-title">{title}</h4>
-              </a>
-            <h5>Album: {album}</h5>
-            </div>
-          </div>
-        )
+              <div className="card" stylename ={"width: 10rem;"}>
+              <img className ="card-img-top" src = {artwork} alt= "Album's image"/>
+                <div className = "card-body">
+                  <h4 className = "card-title">{title}</h4>
+                  <audio controls>
+                    <source src ={preview_link}/>
+                  </audio>
+                <h5>Album: {album}</h5>
+                </div>
+              </div>
+              );
     });
 
 
 
     return(
-      <Layout>
+      <Layout title = "All Songs by Artist">
         <div>
           {allArtistSongsArr}
-
         </div>
       </Layout>
     );

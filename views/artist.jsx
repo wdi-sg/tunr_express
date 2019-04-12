@@ -12,10 +12,10 @@ class Artist extends React.Component {
         let photo = this.props.artist[0].photo_url;
         let nationality = this.props.artist[0].nationality;
           // <li>{id} {num} {name}</li>
-          return(<Layout>
+          return(<Layout title = "View Artist">
             <div>
             <a href='/'>Return to view all artists</a>
-              <div className="card" styleName ={"width: 18rem;"}>
+              <div className="card" stylename ={"width: 18rem;"}>
               <img className ="card-img-top" src = {photo} alt= "Artist's image"/>
                 <div className = "card-body">
                   <a href={`/artist/${id}`}>

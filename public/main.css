@@ -4,11 +4,15 @@ body{
   margin: 50px;
 }
 
+input{
+  display: block;
+  margin-bottom: 30px;
+}
+
 .reize-img {
   max-width:50%;
   max-height:50%;
 }
-
 
 h3 {
   color: red;
