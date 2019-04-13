@@ -17,11 +17,11 @@ class editArtist extends React.Component {
         <body>
           <h3>Edit an Artist in TUNR!</h3>
           <form method="POST" action={putPath}>
-                Artist Name: <input name="name" type="text" defaultValue={artist.name}/><br/>
+                Artist Name: <input name="name" type="text" defaultValue={name}/><br/>
                 <br/>
-                Photo: <input name="url" type="text" defaultValue={artist.photo_url}/><br/>
+                Photo: <input name="url" type="text" defaultValue={url}/><br/>
                 <br/>
-                Nationality: <input name="nationality" type="text" defaultValue={artist.nationality}/><br/>
+                Nationality: <input name="nationality" type="text" defaultValue={nationality}/><br/>
                 <br/>
                 <input type="submit" value="Submit"/>
             </form>
