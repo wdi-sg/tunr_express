@@ -58,6 +58,28 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
+ * Helper Function
+ * ===================================
+ */
+
+//check if user has been logged in (has login cookies that match)
+let isLoggedIn = function(request) {
+    if (request.cookies === undefined) {
+        return false;
+    }
+
+    let loggedInHash = sha256(request.cookies['username'] + SALT);
+
+    if (request.cookies['loggedIn'] === loggedInHash) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+/**
+ * ===================================
  * Request Handler
  * ===================================
  */
@@ -66,22 +88,28 @@ app.engine('jsx', reactEngine);
 // INDEX ARTISTS
 
 app.get('/artists', (request, response) => {
-    // query database for all artists
-    const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
-    pool.query(queryString, (errorObj, result) => {
-        // errorObj is null if there's no error
-        if (!errorObj) {
+    if (isLoggedIn(request) === true) {
+        const values = [request.cookies['username']];
+        // query database for all artists
+        const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
-            // console.log(result.rows);
-            const data = { artists: result.rows };
-            // respond with HTML page displaying all artists
-            response.render('artistindex', data);
-        } else {
-            console.error('Query Error: ', errorObj.stack);
-            response.send('Query Error');
-        }
-    });
+        pool.query(queryString, (errorObj, result) => {
+            // errorObj is null if there's no error
+            if (!errorObj) {
+
+                // console.log(result.rows);
+                const data = { artists: result.rows };
+                // respond with HTML page displaying all artists
+                response.render('artistindex', data);
+            } else {
+                console.error('Query Error: ', errorObj.stack);
+                response.send('Query Error');
+            }
+        });
+    } else {
+        response.render('unauthorized');
+    }
 });
 
 
@@ -125,7 +153,7 @@ app.post('/artists', (request, response) => {
 app.get('/artists/:id', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
-    // response.send(queryString);
+
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
@@ -149,7 +177,7 @@ app.get('/artists/:id', (request, response) => {
 app.get('/artists/:id/edit', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
-    // response.send(queryString);
+
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
@@ -192,7 +220,7 @@ app.put('/artists/:id', (request, response) => {
 app.get('/artists/:id/delete', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
-    // response.send(queryString);
+
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
@@ -360,7 +388,7 @@ app.get('/playlist/:id', (request, response) => {
                     response.send('Query Error');
                 } else {
                     let data2 = result2.rows;
-                    let data = {songlist: data1, playlist: data2};
+                    let data = { songlist: data1, playlist: data2 };
                     response.render('playlist_songs_index', data);
                 }
             });
@@ -377,7 +405,7 @@ app.post("/playlist/:id", (request, response) => {
     const values = [playlistId, request.body.songs_id];
 
     pool.query(queryString, values, (errorObj, result) => {
-        if(errorObj) {
+        if (errorObj) {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
         } else {
@@ -432,39 +460,18 @@ app.post('/login', (request, response) => {
         if (errorObj) {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
-        } else if ( result.rowCount === 1 ) {
-            let loggedInCookie = sha256(username + SALT);
+        } else if (result.rowCount === 1) {
+            let loggedInCookieHash = sha256(username + SALT);
 
-            response.cookie('loggedIn', loggedInCookie);
+            response.cookie('username', username);
+            response.cookie('loggedIn', loggedInCookieHash);
 
             response.send('You have now log on to the system!</br><a href="/artists">Click here for resources.</a>');
         } else {
-            response.send('Login Failed');
+            response.send('Login Failed</br><a href="/login">Try Again</a>');
         }
     })
 });
-
-
-/**
- * ===================================
- * Helper Function
- * ===================================
- */
-
-//check if user has been logged in (has login cookies that match)
-let isLoggedIn = function (request) {
-    if (request.cookies === undefined) {
-        return false;
-    }
-
-    let loggedInHash = sha256(request.cookies['username'] + SALT);
-
-    if (request.cookies['loggedIn'] === loggedInHash) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 
 /**
