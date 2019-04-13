@@ -1,19 +1,19 @@
 var React = require('react');
 var Layout = require('./layout');
 
-class Registerform extends React.Component {
+class Loginform extends React.Component {
     render() {
         return (
             <Layout>
-                <h1>Register New User</h1>
-                <form method="POST" action="/register">
+                <h1>User Login</h1>
+                <form method="POST" action="/login">
                     <input name="username" placeholder="username"/>
                     <input name="password" placeholder="password"/>
-                    <input type="submit" value="Register"/>
+                    <input type="submit" value="Login"/>
                 </form>
             </Layout>
             );
     }
 }
 
-module.exports = Registerform;
+module.exports = Loginform;

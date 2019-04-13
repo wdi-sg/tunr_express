@@ -4,6 +4,12 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+//require password hasher
+const sha256 = require('js-sha256');
+
+//cookie parser library
+const cookieParser = require('cookie-parser');
+
 // Initialise postgres client
 const configs = {
     user: 'claucanchin',
@@ -11,6 +17,8 @@ const configs = {
     database: 'tunr_db',
     port: 5432,
 };
+
+const SALT = 'how does your garden grow';
 
 const pool = new pg.Pool(configs);
 
@@ -33,8 +41,13 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-app.use(methodOverride('_method'));
+//tell express to use cookie parser
+app.use(cookieParser());
 
+// Using public folder for files like css, index.html
+app.use(express.static('public'));
+
+app.use(methodOverride('_method'));
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -42,8 +55,6 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-// Using public folder for files like css, index.html
-app.use(express.static('public'));
 
 /**
  * ===================================
@@ -375,13 +386,85 @@ app.post("/playlist/:id", (request, response) => {
     })
 });
 
+
 //===================================
 // REGISTER USER
-
 app.get('/register', (request, response) => {
-
     response.render('registerform');
 });
+
+app.post('/register', (request, response) => {
+
+    const hashPassword = sha256(request.body.password);
+    const queryString = `INSERT INTO users (username, password) VALUES ($1, $2);`
+    const values = [request.body.username, hashPassword];
+
+    pool.query(queryString, values, (errObj, result) => {
+        if (errObj) {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        } else {
+            response.send('Account created!</br><a href="/login">Click here to login</a>');
+        }
+    })
+});
+
+
+//===================================
+// USER LOGIN
+
+app.get('/login', (request, response) => {
+    // console.log(request.cookies);
+    response.render('loginform');
+});
+
+//authenticate login request
+app.post('/login', (request, response) => {
+
+    const username = request.body.username;
+    const hashPassword = sha256(request.body.password);
+
+    const queryString = `SELECT * FROM users WHERE username = $1 AND password = $2`;
+    const values = [username, hashPassword];
+
+    pool.query(queryString, values, (errorObj, result) => {
+
+        if (errorObj) {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        } else if ( result.rowCount === 1 ) {
+            let loggedInCookie = sha256(username + SALT);
+
+            response.cookie('loggedIn', loggedInCookie);
+
+            response.send('You have now log on to the system!</br><a href="/artists">Click here for resources.</a>');
+        } else {
+            response.send('Login Failed');
+        }
+    })
+});
+
+
+/**
+ * ===================================
+ * Helper Function
+ * ===================================
+ */
+
+//check if user has been logged in (has login cookies that match)
+let isLoggedIn = function (request) {
+    if (request.cookies === undefined) {
+        return false;
+    }
+
+    let loggedInHash = sha256(request.cookies['username'] + SALT);
+
+    if (request.cookies['loggedIn'] === loggedInHash) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 
 /**
