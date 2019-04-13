@@ -357,6 +357,23 @@ app.get('/playlist/:id', (request, response) => {
     });
 });
 
+// ADD SONG TO PLAYLIST VIA SONG ID
+app.post("/playlist/:id", (request, response) => {
+
+    const playlistId = request.params.id;
+    const queryString = "INSERT INTO playlist_songs (playlist_id, song_id) VALUES ($1, $2) RETURNING *";
+
+    const values = [playlistId, request.body.songs_id];
+
+    pool.query(queryString, values, (errorObj, result) => {
+        if(errorObj) {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        } else {
+            response.redirect("/playlist/" + playlistId);
+        }
+    })
+});
 
 //===================================
 // REGISTER USER

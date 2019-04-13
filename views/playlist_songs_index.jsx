@@ -5,6 +5,8 @@ class Playlistsongshow extends React.Component {
   render() {
 
     let playlistName = this.props.playlist[0].name;
+    let actionAttribute = `/playlist/${this.props.songlist[0].playlist_id}`;
+
     const thePlaylist = this.props.songlist.map((song) => {
 
         return (
@@ -22,7 +24,13 @@ class Playlistsongshow extends React.Component {
             <div>
             <p>Songs: </p>
                 {thePlaylist}
-            </div>
+            </div><br/>
+
+            <form method="POST" action={actionAttribute}>
+                Add a song to this playlist: <br/>
+                <input type="text" name="songs_id" placeholder="Song ID"/>
+                <input type="submit" value="Add"/>
+            </form>
     </Layout>
     );
   }
