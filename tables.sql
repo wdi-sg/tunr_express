@@ -11,16 +11,16 @@ CREATE TABLE IF NOT EXISTS songs (
     album TEXT,
     preview_link TEXT,
     artwork TEXT,
-    artist_id INT
+    artist_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS playlist (
     id SERIAL PRIMARY KEY,
-    playlist_name TEXT
+    name TEXT
 );
 
 CREATE TABLE IF NOT EXISTS playlist_songs (
     id SERIAL PRIMARY KEY,
-    playlist_name TEXT,
-    song_title TEXT
+    playlist_id INTEGER,
+    song_id INTEGER
 );

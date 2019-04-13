@@ -9,10 +9,10 @@ class Artistdeleted extends React.Component {
     const themArtists = this.props.artists.map((artist) => {
 
         return (
-            <React.Fragment>
+            <div>
                 <p>Artist Name: {artist.name}</p>
                 <p>Nationality: {artist.nationality}</p>
-            </React.Fragment>
+            </div>
                 );
     });
 

@@ -63,7 +63,7 @@ app.get('/artists', (request, response) => {
         if (!errorObj) {
 
             // console.log(result.rows);
-            const data = { artists : result.rows };
+            const data = { artists: result.rows };
             // respond with HTML page displaying all artists
             response.render('artistindex', data);
         } else {
@@ -98,7 +98,7 @@ app.post('/artists', (request, response) => {
 
             // console.log(result.rows);
 
-            const data = { artist : result.rows };
+            const data = { artist: result.rows };
             response.render('artistcreated', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
@@ -114,14 +114,14 @@ app.post('/artists', (request, response) => {
 app.get('/artists/:id', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
-        // response.send(queryString);
+    // response.send(queryString);
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
         if (!errorObj) {
 
             // console.log('Query results: ', result.rows);
-            const data = { artist : result.rows };
+            const data = { artist: result.rows };
             // respond with HTML page displaying all artists
             response.render('artistshow', data);
         } else {
@@ -138,14 +138,14 @@ app.get('/artists/:id', (request, response) => {
 app.get('/artists/:id/edit', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
-        // response.send(queryString);
+    // response.send(queryString);
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
         if (!errorObj) {
 
             // console.log('Query results: ', result.rows);
-            const data = { artist : result.rows };
+            const data = { artist: result.rows };
             // respond with HTML page displaying all artists
             response.render('artisteditform', data);
         } else {
@@ -165,7 +165,7 @@ app.put('/artists/:id', (request, response) => {
         // errorObj is null if there's no error
         if (!errorObj) {
 
-            const data = { artists : values };
+            const data = { artists: values };
             response.render('artistedited', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
@@ -181,14 +181,14 @@ app.put('/artists/:id', (request, response) => {
 app.get('/artists/:id/delete', (request, response) => {
     // query database for all artists
     const queryString = 'SELECT * FROM artists WHERE id=' + request.params.id;
-        // response.send(queryString);
+    // response.send(queryString);
     pool.query(queryString, (errorObj, result) => {
         // console.log(errorObj, result);
         // errorObj is null if there's no error
         if (!errorObj) {
 
             // console.log('Query results: ', result.rows);
-            const data = { artist : result.rows };
+            const data = { artist: result.rows };
             // respond with HTML page displaying all artists
             response.render('artistdeleteform', data);
         } else {
@@ -206,7 +206,7 @@ app.delete('/artists/:id', (request, response) => {
 
         // errorObj is null if there's no error
         if (!errorObj) {
-            const data = { artists : result.rows };
+            const data = { artists: result.rows };
             response.render('artistdeleted', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
@@ -227,7 +227,7 @@ app.get('/artists/:id/songs', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
 
         if (!errorObj) {
-            const data = { songs : result.rows };
+            const data = { songs: result.rows };
             response.render('songshow', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
@@ -248,7 +248,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
     pool.query(queryString, (errorObj, result) => {
 
         if (!errorObj) {
-            const data = { artist : result.rows };
+            const data = { artist: result.rows };
             response.render('songcreateform', data);
         } else {
             console.error('Query Error: ', errorObj.stack);
@@ -269,6 +269,90 @@ app.post('/artists/:id/songs', (request, response) => {
         } else {
             console.error('Query Error: ', errorObj.stack);
             response.send('Query Error');
+        }
+    });
+});
+
+
+//===================================
+// LIST ALL PLAYLISTS
+
+app.get('/playlist', (request, response) => {
+    // query database for all artists
+    const queryString = 'SELECT * FROM playlist ORDER BY id ASC';
+
+    pool.query(queryString, (errorObj, result) => {
+        // errorObj is null if there's no error
+        if (!errorObj) {
+
+            // console.log(result.rows);
+            const data = { playlist: result.rows };
+            // respond with HTML page displaying all artists
+            response.render('playlistindex', data);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
+
+//===================================
+// CREATE PLAYLIST
+
+//displaying the form to add new artist
+app.get('/playlist/new', (request, response) => {
+    // respond with HTML page with form to create new songs
+    response.render('playlistcreateform');
+});
+
+//retrieving the form with user input
+app.post('/playlist', (request, response) => {
+
+    const queryString = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+
+    const values = [request.body.name];
+
+    pool.query(queryString, values, (errorObj, result) => {
+
+        if (!errorObj) {
+            // const data = { playlist : result.rows };
+            response.send(`New Playlist "${result.rows[0].name}" created.`);
+        } else {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        }
+    });
+});
+
+
+//===================================
+// SHOW SONGS IN PLAYLIST
+app.get('/playlist/:id', (request, response) => {
+
+    const playlistId = request.params.id;
+
+    const queryString1 = `SELECT playlist_songs.playlist_id, songs.title FROM songs INNER JOIN playlist_songs ON (playlist_songs.song_id = songs.id) WHERE playlist_songs.playlist_id = ${playlistId}`;
+
+    pool.query(queryString1, (errorObj, result1) => {
+        // errorObj is null if there's no error
+        if (errorObj) {
+            console.error('Query Error: ', errorObj.stack);
+            response.send('Query Error');
+        } else {
+            let data1 = result1.rows;
+
+            const queryString2 = `SELECT * FROM playlist WHERE id = ${playlistId};`
+            pool.query(queryString2, (errorObj, result2) => {
+                if (errorObj) {
+                    console.error('Query Error: ', errorObj.stack);
+                    response.send('Query Error');
+                } else {
+                    let data2 = result2.rows;
+                    let data = {songlist: data1, playlist: data2};
+                    response.render('playlist_songs_index', data);
+                }
+            });
         }
     });
 });
