@@ -42,6 +42,12 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
+/**
+ * ===================================
+ * PART 1
+ * ===================================
+ */
 /**
  * ===================================
  * Routes for Artists
@@ -319,6 +325,29 @@ app.delete('/songs/:id', (request, response) => {
     }
   });
 });
+
+
+/**
+ * ===================================
+ * PART 2
+ * ===================================
+ */
+//Build the show feature to view a song for a specific artist
+app.get('/artists/:id/songs', (request, response) => {
+    const id = request.params.id;
+    const queryString = `SELECT *, songs.id FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE artist_id ='${id}'`;
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result.rows);
+            const data = {  songs : result.rows};
+            response.render('artistSongs', data);
+        }
+    });
+});
+
 
 
 
