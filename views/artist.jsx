@@ -12,7 +12,7 @@ class Artist extends React.Component {
         let photo = this.props.artist[0].photo_url;
         let nationality = this.props.artist[0].nationality;
           // <li>{id} {num} {name}</li>
-          return(<Layout title = "View Artist">
+          return(<Layout title = "Current Artist">
             <div>
             <a href='/'>Return to view all artists</a>
               <div className="card" stylename ={"width: 18rem;"}>

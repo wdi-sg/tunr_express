@@ -176,18 +176,34 @@ app.put(`/artist/:id`,(request, response)=>{
 
 //DELETE EXISTING ARTIST:
 app.get('/artist/:id/delete', (request, response)=>{
-  let artistId = parseInt(request.params.id);
-  let queryString = `SELECT * from artists WHERE id = ${artistId}`;
-  pool.query(queryString, (err, result)=>{
-    if (err){
-      console.error('query error:', err.stack);
-    }else{
-      console.log('query resulttt:', result.rows);
-      const data = {artistId: result.rows};
-      response.render('delete',data);
-      console.log("Done with passing data from artist/:id/delete to the delete render form");
-    };
-  });
+  //deleting artist requires user to be logged in:
+
+  console.log('checking cookies, printing out request.cookies');
+  console.log(request.cookies);
+
+  // check to see if the loggedIn cookie is the hash of the secret word + the user name in the cookie
+
+  let hash = sha256(SALT + request.cookies['username']);
+  console.log("printing out the hash");
+  console.log(hash);
+  if (request.cookies['loggedIn'] === hash) {
+      // user is logged in and can delete artist
+
+    let artistId = parseInt(request.params.id);
+    let queryString = `SELECT * from artists WHERE id = ${artistId}`;
+    pool.query(queryString, (err, result)=>{
+      if (err){
+        console.error('query error:', err.stack);
+      }else{
+        console.log('query resulttt:', result.rows);
+        const data = {artistId: result.rows};
+        response.render('delete',data);
+        console.log("Done with passing data from artist/:id/delete to the delete render form");
+      };
+    });
+  } else {
+    response.send('this is tuner express. you are not logged in and cannot delete this artist');
+  }
 });
 
 app.delete(`/artist/:id`, (request, response)=>{
@@ -285,12 +301,20 @@ app.get('/login', (request, response) => {
 });
 
 app.post('/login', (request, response)=>{
-  console.log("printing out the request.bodyddddd: "+request.body);
+  console.log("printing out the request.bodyddddd: ");
+  console.log(request.body);
 
-  let query = `SELECT * FROM users WHERE name= "${request.body.name}"`;
+
+  // let query = "SELECT * FROM users WHERE name='" + request.body.name + "'";
+  let query = `SELECT * FROM users WHERE name= '${request.body.name}'`;
+  console.log("printing out request.body.name");
+  console.log(request.body.name);
+  console.log(request.body.password);
 
   pool.query(query, (errorObj, result) => {
-      console.log("RESULT OF QUERRYYY: " + result.rows);
+      console.log("printing out result.rows below: ")
+      console.log(result.rows);
+      // console.log(result.rows);
       if (result.rows.length >= 1) {
           // name is correct
           const user = result.rows[0];
@@ -302,7 +326,7 @@ app.post('/login', (request, response)=>{
                 let hash = sha256(SALT + user.name);
                   response.cookie('username', user.name);
                   response.cookie('loggedIn', hash);
-                  response.send('you are who u say u are');
+                  response.redirect('/');
               } else {
                   response.send('password was wrong');
               }
@@ -310,6 +334,31 @@ app.post('/login', (request, response)=>{
               response.send('didnt find one');
           }
       });
+  });
+
+  app.get('/logout', (request, response) => {
+      console.log("begin logging ouuuut");
+      console.log("sending user to the logouttttt jsx page");
+      response.render('logout');
+  })
+
+  app.post('/logout', (request, response) => {
+      console.log("Printing out the request.body belowwwwww");
+      console.log(request.body);
+      if (request.body['cfmLogout'] === 'yes') {
+          //to destroy the cookies: response.clearCookie(cookieName);
+          response.clearCookie('username');
+          response.clearCookie('loggedIn');
+          response.clearCookie('userId');
+          console.log("you have successfuly logged out and cookies have been cleared! YUMMM!");
+          response.redirect('/');
+      } else if (request.body['cfmLogout'] === 'no') {
+          console.log("you are still logged in yo!");
+          response.redirect('/');
+      } else {
+          console.log("do you want to log out or not? Pls choose something. ANYTHING!!!");
+          response.redirect('/logout');
+      }
   });
 
 
