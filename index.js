@@ -348,7 +348,76 @@ app.get('/artists/:id/songs', (request, response) => {
     });
 });
 
+//Build the add new song feature for a specific artist
+app.get('/artists/:id/songs/new', (request, response) => {
+    const id = request.params.id;
+    const queryString = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result.rows);
+            const data = { artist : result.rows};
+            response.render('artistNewSong', data);
+        }
+    });
+});
 
+app.post('/artists/:id/songs' , (request, response)=> {
+    console.log(request.body);
+    const id = request.params.id;
+    let queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)';
+    const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, id];
+    pool.query(queryString,values,(err, result) =>{
+        if (err) {
+            console.log("Something Went Wrong!!!");
+            console.log(err);
+            response.send("Huston we have a problem!")
+        } else {
+            console.log("That worked, well done!");
+            response.redirect(`/artists/${id}/songs`);
+        }
+    })
+})
+
+//Create a new playlist
+app.get('/playlist/new', (request, response) => {
+  response.render('newPlaylist');
+});
+
+app.post('/playlist' , (request, response)=> {
+    console.log(request.body);
+    const id = request.params.id;
+    let queryString = 'INSERT INTO playlist (name) VALUES ($1)';
+    const values = [request.body.name];
+    pool.query(queryString,values,(err, result) =>{
+        if (err) {
+            console.log("Something Went Wrong!!!");
+            console.log(err);
+            response.send("Huston we have a problem!")
+        } else {
+            console.log("That worked, well done!");
+            response.redirect(`/playlist`);
+        }
+    })
+})
+
+//Show all the playlists
+app.get('/playlist', (request, response) => {
+    const id = request.params.id;
+    const queryString = `SELECT * FROM playlist`;
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result.rows);
+            const data = { playlist : result.rows};
+            response.render('playlist', data);
+        }
+    });
+});
 
 
 /**
@@ -357,15 +426,10 @@ app.get('/artists/:id/songs', (request, response) => {
  * ===================================
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
-
 let onClose = function(){
-
   console.log("closing");
-
   server.close(() => {
-
     console.log('Process terminated');
-
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
