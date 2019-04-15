@@ -1,4 +1,3 @@
-//
 console.log("starting up!!");
 
 const express = require('express');
@@ -57,9 +56,9 @@ app.get ('/artists', (request, response)=> {
     pool.query(queryAll, (err, result) => {
         if (err === undefined ) {
 
-            let requestedQueryAll = result.rows;
-            // console.log(result.rows);
-            response.render ('home', {requestedQueryAll});
+            let requestedQueryAll = {stuff: result.rows};
+            console.log(result.rows);
+            response.render ('home', requestedQueryAll);
             } else {
             console.error ('query error:', errorObj.stack);
             response.send('query error');
@@ -67,7 +66,7 @@ app.get ('/artists', (request, response)=> {
     })
 });
 
-// get a specified artist's details by ID
+// Get a specified artist's details by ID
 app.get('/artist/:id', (request, response) => {
     let artistId = request.params.id;
     console.log(artistId);
@@ -78,9 +77,9 @@ app.get('/artist/:id', (request, response) => {
 // Quering into PostGres
     pool.query(query, (err,result)=>{
     if (err === undefined ) {
-      let requestedQuery = result.rows;
+      let requestedQuery = {stuff: result.rows}
       // const data = {  students : result.rows};
-      response.render( 'home', {requestedQuery} );
+      response.render( 'home', requestedQuery );
     } else {
       console.error('query error:', errorObj.stack);
       response.send( 'query error' );
@@ -89,16 +88,48 @@ app.get('/artist/:id', (request, response) => {
     })
 });
 
-// redirects /artists to default index page
-// app.get('/artists', redirectToHomepage);
+app.get('/artist/new', (request, response) => {
+  // Respond with HTML page with form to create new pokemon
+  let createArtist = '<h1>Submit new artist</h1>' +
 
-// default index page
-// app.get('/', homepage);
+                    '<form method = "POST" action = "/newArtist">' + 'ID: <input type = "number" name = "id" min = "6" max = "50">' +
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+                    '<br>'+'<br>'+
+
+                    'Name:<input type="text" name="name">'+
+
+                    '<br>'+'<br>'+
+
+                    'Image:<input type="file" name="img" accept="image/*">'+
+
+                    '<br>'+'<br>'+
+
+                    'Name:<input type="text" name="name">' +
+
+                    '<br>'+'<br>'+
+
+                    '<input type="submit" value="Submit">'
+                    '</form>';
+
   response.render('new');
 });
+
+app.post ('/artists', function (request, response) {
+
+    let queryText = 'INSERT INTO artists (id, name, photo_url, nationality) VALUES ($1, $2, $3, $4) RETURNING i'
+
+    pool.query (query, (err,result) => {
+    if (err === undefined ) {
+      let requestedQuery = {stuff: result.rows}
+      // const data = {  students : result.rows};
+      response.render( 'new', requestedQuery );
+    } else {
+      console.error('query error:', errorObj.stack);
+      response.send( 'query error' );
+        }
+
+    });
+})
 
 
 /**
