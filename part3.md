@@ -2,9 +2,9 @@
 
 ### Register
 
-Create a route and `jsx` file that renders a form for the user to register.
+ ✅ Create a route and `jsx` file that renders a form for the user to register.  
 
-GET `/register`
+ ✅ GET `/register` 
 
 Create a route that accepts the `POST` request from the form.
 

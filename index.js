@@ -56,6 +56,25 @@ app.get('/', (request, response) => {
 });
 
 /*
+                REGISTER
+*/
+
+app.get('/register', (request, response) => {
+
+    response.render('register');
+
+})
+
+app.post('/register', (request, response) => {
+
+    response.render('home');
+
+})
+
+
+
+
+/*
                 SHOW AN ARTIST'S SONGS
 */
 
@@ -260,7 +279,7 @@ app.delete('/artists/:id', (request, response) => {
 })
 
 /*
-                    SHOW PLAYLIST
+                    SHOW PLAYLISTS
 */
 
 app.get('/playlist', (request, response) => {
@@ -279,7 +298,35 @@ app.get('/playlist', (request, response) => {
     })
 })
 
-// SELECT title FROM songs INNER JOIN playlist_songs ON (songs.id = playlist_songs.song_id);
+
+
+/*
+                SHOW SONGS IN PLAYLIST
+*/
+
+app.get('/playlist/:id', (request, response) => {
+
+    let playlistIndex = request.params.id;
+
+    let queryString = `SELECT * FROM songs INNER JOIN playlist_songs ON (songs.id = playlist_songs.song_id) WHERE playlist_id=${playlistIndex}`;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        } else {
+
+
+            //make another query for artist_id to get name,
+            // then send it as a separate object into response.render to display it
+            response.send(result.rows);
+        }
+    })
+
+
+})
+
 
 /*
                 CREATE NEW PLAYLIST

@@ -18,7 +18,7 @@ POST `/artist/1/songs`
 This route creates a new song with the appropriate artist.
 
 ### Further: Playlist
-Add the ability to put songs in a playlist.
+Add the ability to put songs in a playlist. ✅
 
 Add a table for `playlist` ✅
 
