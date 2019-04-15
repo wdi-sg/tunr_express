@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'andrew',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,17 +48,88 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+app.get ('/artists', (request, response)=> {
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    let queryAll = 'SELECT * FROM artists';
+
+    // Query into PostGres to find all artists
+    pool.query(queryAll, (err, result) => {
+        if (err === undefined ) {
+
+            let requestedQueryAll = {stuff: result.rows};
+            console.log(result.rows);
+            response.render ('home', requestedQueryAll);
+            } else {
+            console.error ('query error:', errorObj.stack);
+            response.send('query error');
+        }
+    })
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+// Get a specified artist's details by ID
+app.get('/artist/:id', (request, response) => {
+    let artistId = request.params.id;
+    console.log(artistId);
+
+    let query = 'SELECT * FROM artists WHERE id ='+ artistId;
+
+
+// Quering into PostGres
+    pool.query(query, (err,result)=>{
+    if (err === undefined ) {
+      let requestedQuery = {stuff: result.rows}
+      // const data = {  students : result.rows};
+      response.render( 'home', requestedQuery );
+    } else {
+      console.error('query error:', errorObj.stack);
+      response.send( 'query error' );
+        }
+
+    })
+});
+
+app.get('/artist/new', (request, response) => {
+  // Respond with HTML page with form to create new pokemon
+  let createArtist = '<h1>Submit new artist</h1>' +
+
+                    '<form method = "POST" action = "/newArtist">' + 'ID: <input type = "number" name = "id" min = "6" max = "50">' +
+
+                    '<br>'+'<br>'+
+
+                    'Name:<input type="text" name="name">'+
+
+                    '<br>'+'<br>'+
+
+                    'Image:<input type="file" name="img" accept="image/*">'+
+
+                    '<br>'+'<br>'+
+
+                    'Name:<input type="text" name="name">' +
+
+                    '<br>'+'<br>'+
+
+                    '<input type="submit" value="Submit">'
+                    '</form>';
+
   response.render('new');
 });
+
+app.post ('/artists', function (request, response) {
+
+    let queryText = 'INSERT INTO artists (id, name, photo_url, nationality) VALUES ($1, $2, $3, $4) RETURNING i'
+
+    pool.query (query, (err,result) => {
+    if (err === undefined ) {
+      let requestedQuery = {stuff: result.rows}
+      // const data = {  students : result.rows};
+      response.render( 'new', requestedQuery );
+    } else {
+      console.error('query error:', errorObj.stack);
+      response.send( 'query error' );
+        }
+
+    });
+})
 
 
 /**
@@ -69,13 +140,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
