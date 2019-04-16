@@ -1,4 +1,4 @@
-# Tunr 1.0!
+# Tunr 1.0!!!!!
 
 We're going to be building Tunr, the worlds #1 music catalog / player (those
 Spotify haters can't keep up with us).
@@ -7,7 +7,7 @@ Spotify haters can't keep up with us).
 
 ## Part 1 - Database / Schema / Models
 
-In this repo are two files `artist_data.sql` and `songs.sql`. 
+In this repo are two files `artist_data.sql` and `songs.sql`.
 
 ### Create the database
 
