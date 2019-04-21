@@ -5,10 +5,10 @@ class Login extends React.Component {
     render() {
         return (
                 <Layout title = "Login">
-                    <form method="POST" action="/login">
-                        <input name="name" placeholder="name" />
-                        <input name="password" placeholder="password" />
-                        <input type="submit"/>
+                    <form method = "POST" action = "/login">
+                        <input type = "text" name = "name" placeholder = "name" />
+                        <input type = "password" name = "password" placeholder = "password" />
+                        <input type = "submit"/>
                     </form>
                 </Layout>
                 );
