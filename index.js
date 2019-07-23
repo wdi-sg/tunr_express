@@ -34,7 +34,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
-
+app.use(express.static(__dirname+'/public/'));
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
