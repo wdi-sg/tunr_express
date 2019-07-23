@@ -49,10 +49,31 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
+  console.log("getting request");
 
-  // respond with HTML page displaying all pokemon
   response.render('home');
+});
+
+
+
+
+app.get('/artists', (request, response) => {
+  console.log("getting request")
+  const queryString = 'SELECT * FROM artists ';
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      console.log('query result:', result);
+
+      // redirect to home page
+      response.send( result.rows );
+  // response.render('home');
+};
+});
 });
 
 app.get('/new', (request, response) => {
