@@ -3,16 +3,16 @@ const methodOverride = require('method-override');
 const pg = require('pg');
 
 const configs = {
-  user: 'shirleytan',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+	user: 'shirleytan',
+	host: '127.0.0.1',
+	database: 'tunr_db',
+	port: 5432,
 };
 
 const pool = new pg.Pool(configs);
 
 pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+	console.log('idle client error', err.message, err.stack);
 });
 
 /* Config */
@@ -21,7 +21,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+	extended: true
 }));
 
 app.use(methodOverride('_method'));
@@ -34,26 +34,39 @@ app.engine('jsx', reactEngine);
 
 /* Functions */
 
-/* Routes */
-app.get('/', (request, response) => {
-  response.render('home');
-});
+const showHome = (req, res) => {
+	res.render('home');
+};
+const showArtists = (req, res) => {
+	let query = "SELECT * FROM artists";
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+	pool.query(query, (err, results) => {
+		if (err) {
+			console.log("ERRORS: " + err);
+		}
+		else {
+			let data = {
+				"artists": results.rows
+			};
+			res.render('artists',data);
+		}
+	});
+};
+/* Routes */
+app.get('/', showHome);
+
+app.get('/artists/', showArtists);
 
 
 /* Listen to requests on port 3000 */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
-  console.log("closing");
-  server.close(() => {
-    console.log('Process terminated');
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
+let onClose = function () {
+	console.log("closing");
+	server.close(() => {
+		console.log('Process terminated');
+		pool.end(() => console.log('Shut down db connection pool'));
+	})
 };
 
 process.on('SIGTERM', onClose);
