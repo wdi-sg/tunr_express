@@ -1,0 +1,22 @@
+img {
+  max-width: 100%;
+}
+
+.artist-photo {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 150px;
+}
+
+.artist-song-feature{
+  display:inline-block;
+}
+
+#artist-holding-page{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  /* flex-basis: 100%; */
+}
