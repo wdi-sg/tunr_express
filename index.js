@@ -4,7 +4,6 @@
  * Configurations and set up
  * ===================================
  */
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -33,6 +32,7 @@ app.use(methodOverride('_method'));
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
+app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
@@ -60,12 +60,31 @@ app.get('/artists', (request, response) => {
             console.log('query error:', err.stack);
             response.send('query error');
         } else {
-            console.log('query result:', result);
+            console.log('loading artists page');
             // response.send(result);
             response.render('artists.jsx', result);
         }
     });
 });
+
+/* ==== Request Individual Artist Page ==== */
+app.get('/artists/:id', (request, response) => {
+    artistId = parseInt(request.params.id);
+
+    let values = [artistId];
+    let queryString = "SELECT * FROM artists WHERE id =$1";
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('loading individual artist page');
+            response.render('artist.jsx', result);
+        }
+    });
+})
 
 
 /**
