@@ -1,4 +1,5 @@
 var React = require('react');
+var Layout = require('./components/layout.jsx');
 
 class singleArtist extends React.Component {
   render() {
@@ -7,10 +8,9 @@ class singleArtist extends React.Component {
 
 
     return(
-        <html>
-            <body>
-                <h1>{this.props.name}</h1>
-                <div>
+        <Layout>
+            <h1>{this.props.name}</h1>
+            <div>
                 <img src={this.props.photo_url}/>
                 <p>{this.props.nationality}</p>
                 <form action = {editurl} method ="GET">
@@ -20,9 +20,8 @@ class singleArtist extends React.Component {
                 <form action = {deleteurl} method ="GET">
                 <input type = "submit" value="Delete Artist" />
                 </form>
-                </div>
-            </body>
-        </html>
+            </div>
+        </Layout>
     )
   }
 }

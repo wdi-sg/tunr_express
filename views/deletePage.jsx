@@ -1,13 +1,13 @@
 var React = require('react');
 var Layout = require('./components/layout.jsx');
 
-class Edit extends React.Component {
+class Delete extends React.Component {
   render() {
-    let url = "/artists/"+this.props.id+"?_method=PUT";
+    let url = "/artists/"+this.props.id+"?_method=DELETE";
 
     return(
         <Layout>
-            <h1>Edit info of {this.props.name}</h1>
+            <h1>Are you sure you want to delete all record of {this.props.name}?</h1>
             <form action ={url} method ="POST">
 
                 <h2>Name</h2>
@@ -19,7 +19,7 @@ class Edit extends React.Component {
                 <h2>Nationality</h2>
                 <input type="text" name="nationality" defaultValue={this.props.nationality}/>
                 <br/><br/>
-                <input type="submit" value ="Update"/>
+                <input type="submit" value ="Delete"/>
             </form>
         </Layout>
     )
@@ -27,4 +27,4 @@ class Edit extends React.Component {
 }
 
 
-module.exports = Edit;
+module.exports = Delete;

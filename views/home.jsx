@@ -1,11 +1,12 @@
 var React = require('react');
+var Layout = require('./components/layout.jsx');
 
 class Home extends React.Component {
   render() {
     const artistCards = this.props.artists.map(artists =>{
         let artistPage = "/artists/"+artists.id;
         return (
-            <div>
+            <div className = "artistCards">
                 <a href = {artistPage}>
                     <img src = {artists.photo_url}/>
                     <h1>Name: {artists.name}</h1>
@@ -16,14 +17,13 @@ class Home extends React.Component {
     });
 
     return(
-        <html>
-            <body>
-                <h1> Home </h1>
-                <div>
+        <Layout>
+            <div className = "container">
+                <div class = "artistContainer">
                     {artistCards}
                 </div>
-            </body>
-        </html>
+            </div>
+        </Layout>
     )
   }
 }

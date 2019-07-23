@@ -40,6 +40,7 @@ app.use(methodOverride('_method'));
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
+app.use(express.static(__dirname + '/public'));
 app.engine('jsx', reactEngine);
 
 /**
@@ -103,7 +104,10 @@ app.post('/new', (request, response) => {
             console.log("query error", err.message);
         }
         else{
-        response.send("New artist added!");
+            const data = {
+                added : request.body
+            }
+            response.render("addedPage", data);
         }
     });
 });
@@ -124,17 +128,14 @@ app.get ('/artists/:id/edit', (request, response) => {
             response.render('editPage', artistMatchingId);
         }
     });
-})
+});
 
 //Put to accept edit
 app.put('/artists/:id', (request, response) => {
     let editedArtist = request.body;
-     console.log(editedArtist);
-     console.log(artistId);
 
     let text = `UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = '${artistId}'`;
     let values = [request.body.name, request.photo_url, request.body.nationality];
-
 
 
     pool.query(text, values, (err, result) =>{
@@ -145,10 +146,55 @@ app.put('/artists/:id', (request, response) => {
             let index = result.rows.findIndex(artists => parseInt(artists.id) === artistId);
             result.rows[index] = editedArtist;
 
-            response.send(`${editedArtist.name} has been updated!`);
+            const data = {
+                updated : request.body
+            }
+            response.render("updatedPage", data);
         }
     });
-})
+});
+
+
+//Request to delete artist
+app.get('/artists/:id/delete', (request, response) =>{
+    artistId = parseInt(request.params.id);
+
+    let text = `select * from artists where id = '${artistId}'`;
+
+    pool.query(text, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            artistMatchingId = result.rows.find(artists => parseInt(artists.id) === artistId);
+
+            response.render('deletePage', artistMatchingId);
+        }
+    });
+});
+
+//Delete artist
+app.delete('/artists/:id/', (request, response) =>{
+
+    let text = `DELETE FROM artists WHERE id = '${artistId}'`;
+
+    pool.query(text, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            let index = result.rows.findIndex(artists => parseInt(artists.id) === artistId);
+            result.rows.splice(index, 1);
+
+            const data = {
+                deleted : request.body
+            }
+            response.render("deletedPage", data);
+        }
+    });
+});
+
+
 
 /**
  * ===================================

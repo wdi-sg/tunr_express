@@ -1,0 +1,76 @@
+body{
+	text-align: center;
+	font-family: 'Questrial', sans-serif;
+	color: white;
+	background-color: black;
+}
+
+
+#header-img{
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(62, 62, 62, 0.9)), url(https://www.rollingstone.com/wp-content/uploads/2018/07/head-in-the-clouds.jpg);
+  background-position: top center;
+  background-size: cover;
+  width: 100%;
+  height: 25rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.navbar {
+	background-color: rgba(0, 0, 0, 0.7)!important;
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+
+.nav-link{
+	color: white !important;
+}
+
+a.navbar-brand{
+	margin: auto 15px;
+	font-size: 1.8rem;
+	background: -webkit-linear-gradient(#FF9800, #E91E63);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+	font-family: 'Permanent Marker', cursive;
+}
+
+.submit-nav{
+	justify-content: flex-end;
+}
+
+.submit-nav ul{
+	margin-right: 0 !important;
+}
+
+.artistContainer{
+	margin-top: 3rem;
+	display: flex;
+	flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.artistCards{
+	display:inline-block;
+	text-align: center;
+	margin-bottom: 2.5rem;
+}
+
+.artistCards img{
+	width: auto;
+  height: 180px;
+}
+
+.artistCards h1{
+	font-size: 1.5rem;
+}
+
+.page-footer{
+	bottom: 0;
+	background-color: #515456	;
+  margin-top: 3rem;
+}
