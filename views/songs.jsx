@@ -1,13 +1,14 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Songs extends React.Component {
   render() {
-        let artistData = this.props.artists.map((artist) => {
-            return <tr><td>{artist.id}</td>
-            <td><a href={"/artists/"+artist.id}>{artist.name}</a></td>
-            <td><img src={artist.photo_url} width="150px" height="150px"/></td>
-            <td>{artist.nationality}</td></tr>
-
+        let songsData = this.props.songs.map((song) => {
+            return <tr><td>{song.id}</td>
+            <td>{song.title}</td>
+            <td>{song.album}</td>
+            <td><a href="{song.preview_link}">{song.preview_link}</a></td>
+            <td><img src={song.artwork} width="80px" height="80px"/></td>
+            <td>{song.artist_id}</td></tr>
         });
     return (
       <html>
@@ -19,14 +20,16 @@ class Home extends React.Component {
           <table className="table">
             <thead className="thead-light">
             <tr>
-            <th>ID</th>
-            <th>NAME</th>
-            <th>PHOTO</th>
-            <th>NATIONALITY</th>
+            <th>SONGS ID</th>
+            <th>TITLE</th>
+            <th>ALBUM</th>
+            <th>PREVIEW_LINK</th>
+            <th>ARTWORK</th>
+            <th>ARTIST_ID</th>
             </tr>
             </thead>
             <tbody>
-                {artistData}
+                {songsData}
             </tbody>
           </table>
         </body>
@@ -35,4 +38,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = Songs;
