@@ -74,25 +74,18 @@ app.get('/artists', (req, res) =>{
 });
 
 app.get('/artists/add', (req, res) =>{
-    let form = `
-    <form method="POST" action="/artists">
-        <input name="name" value="Artist Name"></input></br>
-        <input name="photo_url" value="Image URL"></input></br>
-        <input name="nationality" value="Nationality"></input></br>
-        <button type="submit">Submit</button>
-    </form>
-    `
-    res.send(form);
+    res.render('new');
 });
 
 app.post('/artists', (req, res) =>{
-    const queryString = "INSERT into artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+    const queryString = 'INSERT into artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
     let values = [req.body.name, req.body.photo_url, req.body.nationality];
     pool.query(queryString, values, (err, res) =>{
         if(err){
-            console.error('query error', err.stack);
+            console.error('query error :', err.stack);
             res.send('query error');
         }else{
+            // res.redirect('/artists/'); WHY CANT WORK??
             console.log("add done");
         }
     })
@@ -108,12 +101,39 @@ app.get('/artists/:id', (req, res) =>{
             let str = `
             Name: ${result.rows[0].name}</br>
             Photo: ${result.rows[0].photo_url}</br>
-            Nationality: ${result.rows[0].nationality}</br></br>
+            Nationality: ${result.rows[0].nationality}</br>
+            <a href="/artists/${req.params.id}/edit">Edit this artist</a></br>
             `
             res.send(str);
         }
     });
 });
+
+app.get('/artists/:id/edit', (req, res) =>{
+    const queryString = 'SELECT * FROM artists WHERE id =' + req.params.id;
+
+    pool.query(queryString, (err, result) =>{
+        if(err){
+            console.error('query error:', err.stack);
+            res.send('query error');
+        }else{
+            let data = result.rows[0];
+            res.render('edit', data);
+        }
+    });
+});
+
+app.put('/artists/:id', (req,res) => {
+    const queryString = 'UPDATE artists SET name = req.body.name, url_photo = req.body.photo_url, nationality = req.body.nationality) WHERE id=' + req.params.id;
+    pool.query(queryString, (err, res) => {
+        if(err){
+            console.log('query error: ', err.stack);
+            res.send('query error');
+        }else{
+            console.log("edit done");
+        }
+    })
+})
 
 app.get('/new', (req, res) => {
   res.render('new');
