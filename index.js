@@ -55,14 +55,13 @@ app.get('/', (request, response) => {
 
 //Request for all artists page
 app.get('/artists', (request, response) => {
-    let text = `select * from artists`;
+    let text = `select * from artists ORDER BY id ASC`;
 
     pool.query(text, (err, result) =>{
         if (err) {
             console.log("query error", err.message);
         }
         else{
-
             const data = {
                 artists: result.rows
             };
@@ -86,10 +85,10 @@ app.get('/artists/:id', (request, response) =>{
 
             response.render('singleArtist', artistMatchingId);
         }
-    })
-})
+    });
+});
 
-//Requst to create new artist
+//Request to create new artist
 app.get('/new', (request, response) => {
     response.render('new');
 });
@@ -109,6 +108,47 @@ app.post('/new', (request, response) => {
     });
 });
 
+//Request edit page
+app.get ('/artists/:id/edit', (request, response) => {
+    artistId = parseInt(request.params.id);
+
+    let text = `select * from artists where id = '${artistId}'`;
+
+    pool.query(text, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            artistMatchingId = result.rows.find(artists => parseInt(artists.id) === artistId);
+
+            response.render('editPage', artistMatchingId);
+        }
+    });
+})
+
+//Put to accept edit
+app.put('/artists/:id', (request, response) => {
+    let editedArtist = request.body;
+     console.log(editedArtist);
+     console.log(artistId);
+
+    let text = `UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = '${artistId}'`;
+    let values = [request.body.name, request.photo_url, request.body.nationality];
+
+
+
+    pool.query(text, values, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            let index = result.rows.findIndex(artists => parseInt(artists.id) === artistId);
+            result.rows[index] = editedArtist;
+
+            response.send(`${editedArtist.name} has been updated!`);
+        }
+    });
+})
 
 /**
  * ===================================
