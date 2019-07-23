@@ -18,7 +18,7 @@ class Home extends React.Component {
     return(
         <html>
             <body>
-                <h1> Artists </h1>
+                <h1> Home </h1>
                 <div>
                     {artistCards}
                 </div>

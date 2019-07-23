@@ -82,20 +82,31 @@ app.get('/artists/:id', (request, response) =>{
             console.log("query error", err.message);
         }
         else{
-
             artistMatchingId = result.rows.find(artists => parseInt(artists.id) === artistId);
 
             response.render('singleArtist', artistMatchingId);
         }
     })
-
-
 })
 
-
+//Requst to create new artist
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+    response.render('new');
+});
+
+//Post new artist
+app.post('/new', (request, response) => {
+    let text = `INSERT into artists (name, photo_url, nationality) VALUES ($1, $2, $3)`;
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(text, values, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+        response.send("New artist added!");
+        }
+    });
 });
 
 
