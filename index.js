@@ -26,7 +26,7 @@ pool.on('error', function(err) {
 
 // Init express app
 const app = express();
-
+app.use(express.static(__dirname + '/public/'));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -66,6 +66,25 @@ app.get('/artists/:id/edit', (request, response) => {
     });
 });
 
+app.get('/artists/:id/delete', (request, response) => {
+    console.log(request.params.id);
+    //response.render('edit', request.params.id);
+    const queryString = `SELECT * from artists WHERE id=${request.params.id}`;
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result:', result.rows);
+            let data = {
+                artists: result.rows
+            }
+            response.render('delete', data);
+        }
+    });
+});
+
 app.put('/artist/:id', (request, response) => {
     let artistInfo = request.body;
     console.log(artistInfo);
@@ -80,6 +99,22 @@ app.put('/artist/:id', (request, response) => {
         }
     });
 })
+
+app.delete('/artist/:id', (request, response) => {
+    let artistId = request.params.id;
+    console.log(artistId);
+    const queryString = `DELETE FROM artists WHERE id=${artistId}`;
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            response.redirect('/artists');
+        }
+    });
+
+});
 
 app.post('/artist', (request, response) => {
     let newArtist = request.body;
