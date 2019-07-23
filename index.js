@@ -48,6 +48,7 @@ app.engine('jsx', reactEngine);
 // =============================
 const homepage = 'home.jsx';
 const artistpage = 'artist.jsx';
+const newpage = 'new.jsx';
 
 
 
@@ -64,7 +65,7 @@ const artistpage = 'artist.jsx';
 
 app.get('/', (request, response) => {
     // redirect to home page
-    response.redirect('/artists');
+    response.redirect('/artist');
 });
 
 
@@ -73,7 +74,7 @@ app.get('/', (request, response) => {
 // Display index of artists
 // ===================================
 
-app.get('/artists', (request, response) => {
+app.get('/artist', (request, response) => {
     const queryString = `SELECT * FROM Artists`;
 
     pool.query(queryString, (err, result) => {
@@ -86,6 +87,7 @@ app.get('/artists', (request, response) => {
             let data = {
                 artists: result.rows
             };
+
             response.render(homepage, data);
         }
     });
@@ -96,7 +98,7 @@ app.get('/artists', (request, response) => {
 // ===================================
 // Show individual Artist
 // ===================================
-app.get('/artists/:id', (request, response) => {
+app.get('/artist/:id', (request, response) => {
 
     let artistId = request.params.id;
 
@@ -110,7 +112,7 @@ app.get('/artists/:id', (request, response) => {
         } else {
 
             let data = {
-                artists: result.rows
+                artists: result.rows[0]
             };
 
             response.render(artistpage, data);
@@ -120,10 +122,38 @@ app.get('/artists/:id', (request, response) => {
 
 
 
+// ===================================
+// Display a New Artist Form
+// ===================================
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+    response.render(newpage);
 });
+
+
+/* =========================================
+// Add new artist to database
+==========================================*/
+app.post('/artist', (request, response) => {
+
+    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            console.log(err);
+        } else {
+
+            let data = {
+                artist: result.rows[0]
+            };
+
+            console.log("send response");
+            response.render(artistpage, data);
+        }
+    }); ////// end of writing to database //////
+});
+
 
 
 /**
