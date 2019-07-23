@@ -6,7 +6,13 @@ class Home extends React.Component {
       <html>
         <head />
         <body>
-          <h1>Welcome!</h1>
+          <h1>Hello World!</h1>
+          <div>
+            <a href = "/artists">View all artists</a>
+          </div>
+          <div>
+            <a href = "/artists/add">Add new artist</a>
+          </div>
         </body>
       </html>
     );
