@@ -42,6 +42,13 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
+
+// links to pages
+const homepage = 'home.jsx';
+
+
+
 /**
  * ===================================
  * Routes
@@ -50,15 +57,20 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
     const queryString = `SELECT * FROM Artists`;
+
     pool.query(queryString, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send( 'query error' );
         } else {
             console.log('query result:', result);
+
+            let data = {
+                artists: result.rows
+            };
             // redirect to home page
             // response.send( result.rows );
-            response.send('hello world');
+            response.render('home', data);
         }
     });
 });
