@@ -4,7 +4,7 @@ class New extends React.Component {
   render() {
     return (
       <html>
-        <head />
+        <head/>
         <body>
           <h3>Form Goes Here!</h3>
         </body>
