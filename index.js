@@ -6,10 +6,10 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'mohammadasshikin',
   host: '127.0.0.1',
   database: 'tunr_db',
-  port: 5432,
+  port: 5432
 };
 
 const pool = new pg.Pool(configs);
@@ -48,11 +48,30 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+let home = (request,response)=>{
+    let showAll = "SELECT * FROM artists";
+    pool.query(showAll, (err,result)=>{
+        if(err){
+            console.log("query error",err.stack);
+            response.send('query error');
+        }
+        // console.log("query result", result);
+        response.send(result.rows);
+        // for( let i=0; i<result.rows.length; i++ ){
+            // console.log(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
+            // response.send(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
+        // }
+    });
+}
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+app.get('/homepage', home);
+
+app.get('/', (request, response) => {
+    // query database for all pokemon
+    console.log("HELLO WORLD");
+    response.send("HELLO WORLD");
+    // respond with HTML page displaying all pokemon
+    // response.render('home');
 });
 
 app.get('/new', (request, response) => {
@@ -66,16 +85,17 @@ app.get('/new', (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const PORT = 3008;
+const server = app.listen(PORT, () => console.log('~~~ Tuning in to the waves of port '+PORT+' ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
