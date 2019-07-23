@@ -48,6 +48,28 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+app.post('/artist', (request, response) => {
+    let newArtist = request.body;
+    console.log(newArtist);
+    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${newArtist.name}','${newArtist.photo_url}', '${newArtist.nationality}') `;
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            response.redirect('/artists');
+        }
+    });
+
+});
+
+app.get('/artists/new', (request, response) => {
+
+    response.render('new');
+
+});
+
 app.get('/artists', (request, response) => {
 
     const queryString = 'SELECT * from artists';
@@ -59,7 +81,7 @@ app.get('/artists', (request, response) => {
         } else {
             console.log('query result:', result.rows);
             let data = {
-                artists : result.rows
+                artists: result.rows
             }
 
             response.render('home', data);
@@ -70,7 +92,7 @@ app.get('/artists', (request, response) => {
 
 app.get('/artists/:id', (request, response) => {
 
-    const queryString = 'SELECT * from songs WHERE artist_id = '+request.params.id;
+    const queryString = 'SELECT * from songs WHERE artist_id = ' + request.params.id;
     pool.query(queryString, (err, result) => {
 
         if (err) {
@@ -79,7 +101,7 @@ app.get('/artists/:id', (request, response) => {
         } else {
             console.log('query result:', result.rows);
             let data = {
-                songs : result.rows
+                songs: result.rows
             }
 
             response.render('songs', data);
