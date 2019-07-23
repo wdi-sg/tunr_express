@@ -6,9 +6,10 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'postgres',
   host: '127.0.0.1',
   database: 'tunr_db',
+  password: 'passfoot',
   port: 5432,
 };
 
@@ -49,17 +50,127 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
+    // query database for all pokemon
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    // respond with HTML page displaying all pokemon
+    response.redirect('/artist');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+
+app.get('/artist', (req, res) => {
+    const queryString = 'SELECT * from artists'
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            let data = {
+                title: "Home",
+                artists: result.rows
+            };
+            res.render('home', data);
+        }
+    });
 });
 
+app.get('/artist/new', (req, res) => {
+    let data = {
+        title: "Add"
+    }
+    res.render("add", data);
+})
+
+app.post('/artist', (req, res) => {
+
+    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1,$2,$3) RETURNING *';
+    let arr = [req.body.name, req.body.photo_url, req.body.nationality];
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            let data = {
+                title: result.rows[0].name,
+                artists: result.rows[0]
+            };
+            res.render('artist', data);
+        }
+    });
+})
+
+app.get('/artist/:id', (req, res) => {
+
+    const queryString = 'SELECT * from artists WHERE id=' + parseInt(req.params.id);
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+            let data = {
+                title: result.rows[0].name,
+                artists: result.rows[0]
+            };
+            res.render('artist', data);
+        }
+    });
+});
+
+app.get('/artist/:id/edit', (req, res) => {
+
+    const queryString = 'SELECT * from artists WHERE id=' + parseInt(req.params.id);
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+            let data = {
+                title: result.rows[0].name,
+                artists: result.rows[0]
+            };
+            res.render('edit', data);
+        }
+    });
+});
+
+app.put('/artist/:id', (req, res) => {
+    const queryString = 'UPDATE artists SET name=$1,nationality=$2,photo_url=$3 WHERE id =' + parseInt(req.params.id) + "RETURNING *";
+    let arr = [req.body.name, req.body.nationality, req.body.photo_url];
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+            let data = {
+                title: result.rows[0].name,
+                artists: result.rows[0]
+            };
+
+            res.render('artist', data);
+        }
+    });
+})
+
+app.delete('/artist/:id', (req, res) => {
+    const queryString = 'DELETE from artists WHERE id='+parseInt(req.params.id);
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+
+            res.redirect("/artist");
+        }
+    });
+})
 
 /**
  * ===================================
@@ -69,13 +180,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };

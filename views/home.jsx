@@ -2,13 +2,23 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
+
+    let artists = this.props.artists.map(item=>{
+
+        let url = "/artist/"+item.id;
+        return <div className="artist-div">
+
+            <a href={url}><img className="artist-pic" src={item.photo_url}/></a>
+            <p>Name: {item.name}</p>
+            <p>Nationality: {item.nationality}</p>
+        </div>
+    })
+
+
     return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
+      <Default title={this.props.title}>
+        {artists}
+      </Default>
     );
   }
 }
