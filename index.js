@@ -67,6 +67,11 @@ app.get('/artists', (request, response) => {
     });
 });
 
+/* ==== Request CREATE Individual Artist Page ==== */
+app.get('/artists/new', (request, response) => {
+    response.render('new.jsx');
+});
+
 /* ==== Request Individual Artist Page ==== */
 app.get('/artists/:id', (request, response) => {
     artistId = parseInt(request.params.id);
@@ -86,6 +91,12 @@ app.get('/artists/:id', (request, response) => {
     });
 })
 
+/* ==== Request Edit Individual Artist ==== */
+app.get('/artists/:id/edit', (request, response) => {
+    artistId = parseInt(request.params.id);
+
+
+});
 
 /**
  * ===================================

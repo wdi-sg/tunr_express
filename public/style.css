@@ -98,9 +98,9 @@ p.solo-artist {
 	font-size: 20px;
 }
 
-/*form {
+form {
 	margin: 15px;
-}*/
+}
 
 /*drop-down select*/
 /*select {
@@ -114,7 +114,7 @@ p.solo-artist {
 }*/
 
 /*all form submit buttons*/
-/*input[type="submit"] {
+input[type="submit"] {
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 13px;
 	color: #ffffff;
@@ -126,14 +126,14 @@ p.solo-artist {
 	border: 3px solid #d8d4d4;
 	height: 33px;
 	width: 84px;
-}*/
+}
 
-/*.edit-mon h2, .create-mon h2 {
+.edit-artist h2, .create-artist h2 {
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 12pt;
 	margin: 30px 0px 10px 0;
-}*/
+}
 
-/*.edit-mon img, .create-mon img {
+.edit-artist img, .create-artist img {
 	margin-bottom: -20px;
-}*/
+}
