@@ -49,6 +49,7 @@ const homepage = 'home.jsx';
 const artistpage = 'artist.jsx';
 const newpage = 'new.jsx';
 const editpage = 'edit.jsx';
+const deletepage = 'delete.jsx';
 
 
 
@@ -75,7 +76,7 @@ app.get('/', (request, response) => {
 // ===================================
 
 app.get('/artist', (request, response) => {
-    const queryString = `SELECT * FROM Artists`;
+    const queryString = `SELECT * FROM Artists ORDER BY id ASC`;
 
     pool.query(queryString, (err, result) => {
         if (err) {
@@ -130,12 +131,13 @@ app.get('/new', (request, response) => {
 });
 
 
-/* =========================================
+
+// =========================================
 // Add new artist to database
-==========================================*/
+// ==========================================
 app.post('/artist', (request, response) => {
 
-    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
+    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)`;
     let values = [request.body.name, request.body.photo_url, request.body.nationality];
 
     pool.query(queryString, values, (err, result) => {
@@ -156,9 +158,9 @@ app.post('/artist', (request, response) => {
 
 
 
-/* ===========================================
+// ===========================================
 // Display the form for editing a single artist
-===============================================*/
+// ============================================
 app.get('/artist/:id/edit', (req, res) => {
 
     const queryString = 'SELECT * from artists WHERE id=' + parseInt(req.params.id);
@@ -178,9 +180,10 @@ app.get('/artist/:id/edit', (req, res) => {
 });
 
 
+
 // ===========================================
 // Update a single artist
-// ===============================================*/
+// ===============================================
 app.put('/artist/:id', (request, response) => {
 
     let index = parseInt(request.params.id);
@@ -194,7 +197,34 @@ app.put('/artist/:id', (request, response) => {
             console.log(err)
         } else {
             console.log("sending response ... ");
-            response.send("Artist " + request.body.name  +  " updated!");
+            response.redirect('/artist');
+        }
+    });
+});
+
+
+
+// ===========================================
+// Delete a single artist form
+// ===============================================*/
+app.get('/artist/:id/delete', (request, response) => {
+
+    let artistId = parseInt(request.params.id);
+
+    const queryString = `SELECT * FROM Artists WHERE id=$1`;
+    let values = [artistId];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+
+            let data = {
+                artists: result.rows[0]
+            };
+
+            response.render(deletepage, data);
         }
     });
 });
@@ -203,8 +233,26 @@ app.put('/artist/:id', (request, response) => {
 
 
 
+/**
+ * ===================================
+ * Delete artist from database
+ * ===================================
+ */
+app.delete('/artist/:id', (request, response) => {
+    let index = parseInt(request.params.id);
+    const queryString = `DELETE FROM artists WHERE id=$1`;
+    let values = [index];
 
-
+    pool.query(queryString, values, (err, result) => {
+        if( err ){
+            console.log("error query");
+            console.log(err)
+        } else {
+            console.log("sending response ... ");
+            response.redirect('/artist');
+        }
+    });
+});
 
 
 
