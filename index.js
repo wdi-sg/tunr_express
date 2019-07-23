@@ -49,13 +49,13 @@ app.engine('jsx', reactEngine);
  */
 
 var redirectToHome = function(request, response){
-  response.render('home');
+  response.redirect('/artists');
 }
 
 var displayArtists = function(request, response){
 
   // query database for all pokemon
-    const queryString = 'SELECT * FROM artists ORDER BY id ASC';
+    let queryString = 'SELECT * FROM artists ORDER BY id ASC';
     pool.query(queryString, (err, result) => {
 
         if (err) {
@@ -63,9 +63,6 @@ var displayArtists = function(request, response){
             response.send( 'query error' );
         }
         else {
-            //console.log('query result:', result);
-            // redirect to home page
-            // respond with text that lists the names of all the pokemons
 
             var artists = result.rows;
 
@@ -73,12 +70,83 @@ var displayArtists = function(request, response){
               artists : artists
             }
 
-            // response.send(artists);
             response.render( 'artists', data );
         }
     });
+}
+
+var displayArtistPage = function(request, response){
+
+    var artistId = request.params.id;
+    console.log(artistId);
+  // query database for all pokemon
+    let queryString = 'SELECT * FROM artists WHERE id = $1';
+    let values = [artistId];
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        }
+        else {
+
+            var artists = result.rows;
+
+            var data = {
+              artists : artists
+            }
+
+            response.render( 'artistPage', data );
+        }
+    });
+}
 
 
+var displayAddArtistForm = function(request,response){
+  response.render('newArtist');
+}
+
+var addNewArtist = function(request,response){
+  let input = request.body;
+  let values = [input.name, input.photo_url, input.nationality];
+  const queryString = 'INSERT INTO artists (name,photo_url,nationality) VALUES ($1,$2,$3)';
+
+  pool.query(queryString, values, (err, result) => {
+
+      if (err) {
+          console.error('query error:', err.stack);
+          response.send( 'query error' );
+      }
+      else {
+          response.redirect('/artists')
+      }
+  });
+}
+
+var displayEditArtistForm = function(request, response){
+    var artistId = request.params.id;
+
+    let queryString = 'SELECT * FROM artists WHERE id = $1';
+    let values = [artistId];
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        }
+        else {
+            var artistIdRow = artistId-1;
+            var artist = result.rows[artistIdRow];
+
+            var data = {
+              artist : artist
+            }
+
+            response.render( 'editArtist', data );
+        }
+    });
 }
 
 /**
@@ -91,10 +159,14 @@ var displayArtists = function(request, response){
 app.get('/', redirectToHome);
 
 app.get('/artists', displayArtists);
-// app.get('/artists/:id', displayArtistPage);
-//
-// app.get('/songs', displaySongs);
-// app.get('/songs/:id', displaySongPage);
+app.get('/artists/new', displayAddArtistForm);
+app.post('/artists/', addNewArtist);
+
+app.get('/artists/:id', displayArtistPage);
+// app.get('/artists/:id/edit', displayEditArtistForm);
+
+// app.put('/artists/:id', acceptArtistChanges);
+// app.delete('/artists/:id', acceptArtistDelete);
 
 /**
  * ===================================
