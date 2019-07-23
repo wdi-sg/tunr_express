@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'bennychin',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -40,6 +40,7 @@ app.use(methodOverride('_method'));
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
+app.use(express.static(__dirname+'/public/'));
 app.engine('jsx', reactEngine);
 
 /**
@@ -48,17 +49,97 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+ /**
+ * ======================================================
+ *             Route - Index - Homepage - Show
+ * ======================================================
+ */
+
 app.get('/', (request, response) => {
-  // query database for all pokemon
+  // query database for all artists
+    const queryString = 'SELECT * from artists'
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+
+        } else {
+        console.log('query result:', result);
+
+        // redirect to home page
+        response.render('home',result);
+      }
+    });
+  // response.send("hello tunr db");
 });
 
+app.get('/artist', (request, response) => {
+    response.redirect('/');
+});
+
+ /**
+ * ======================================================
+ *                  Route - Add Artist
+ * ======================================================
+ */
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+  // respond with HTML page with form to create new artist
+    response.render('addArtist');
 });
+
+app.post('/artist', (request,response) => {
+    console.log("request body is");
+    console.log(request.body);
+
+    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES('${request.body.name}', '${request.body.photo_url}', '${request.body.nationality}');`
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+
+        } else {
+        console.log('query result:', result);
+
+        // redirect to home page
+        response.redirect('/');
+      }
+    });
+});
+
+
+ /**
+ * ======================================================
+ *                 Route - Artist - Show
+ * ======================================================
+ */
+app.get('/artist/:id', (request, response) => {
+  // query database for selected artist by id
+    const queryString = "SELECT * FROM songs WHERE artist_id = " + request.params.id + ""
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+
+        } else {
+        console.log('query result:', result);
+
+
+        // redirect to home page
+        response.render('artistPage',result);
+        // response.send(result)
+      }
+    });
+  // response.send("hello tunr db");
+});
+
+
+
 
 
 /**
@@ -69,13 +150,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
