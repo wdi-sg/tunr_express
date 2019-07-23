@@ -52,10 +52,27 @@ const showArtists = (req, res) => {
 		}
 	});
 };
+const showArtist = (req, res) => {
+	let query = "SELECT * FROM artists WHERE id = $1";
+	let values = [req.params.id];
+	pool.query(query, values, (err, results) => {
+		if (err) {
+			console.log("ERRORS: " + err);
+		}
+		else {
+			let data = {
+				"artist": results.rows[0]
+			};
+			res.render('artist',data);
+		}
+	});
+};
 /* Routes */
 app.get('/', showHome);
 
 app.get('/artists/', showArtists);
+
+app.get('/artists/:id', showArtist);
 
 
 /* Listen to requests on port 3000 */

@@ -5,7 +5,7 @@ class Artists extends React.Component {
 		let artists = this.props.artists.map( (artist) =>{
 			let link = "/artists/"+artist.id;
 			return <li><a href={link}>{artist.name}</a></li>
-		})
+		});
 		return (
 			<html>
 			<head/>
@@ -14,6 +14,7 @@ class Artists extends React.Component {
 				<ul>
 					{artists}
 				</ul>
+				<hr/>
 			</body>
 			</html>
 		);
