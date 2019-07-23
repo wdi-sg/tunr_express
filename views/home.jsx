@@ -1,14 +1,16 @@
 var React = require("react");
+var Layout = require("./layout");
+var List = require("./list");
 
 class Home extends React.Component {
   render() {
+    let artistsList = this.props.artistsData;
     return (
-      <html>
-        <head />
-        <body>
+        <Layout>
           <h1>Welcome!</h1>
-        </body>
-      </html>
+          <p>{this.props.artistsData[0].name}</p>
+          <List artistsList={artistsList}></List>
+       </Layout>
     );
   }
 }

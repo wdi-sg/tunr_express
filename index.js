@@ -49,17 +49,33 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//index page, link to home
 app.get('/', (request, response) => {
-  // query database for all pokemon
+    let queryString = `SELECT * FROM artists`;
+    pool.query(queryString, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else{
+            let info = result.rows;
+            let data = {
+                artistsData: info
+            }
+            response.render('home', data);
+        }
+    })
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+
 });
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
+
+
+
+
+
 
 
 /**
