@@ -3,7 +3,7 @@ var React = require('react');
 class Home extends React.Component {
   render() {
     const artistCards = this.props.artists.map(artists =>{
-        let artistPage = "/artists"+artists.id;
+        let artistPage = "/artists/"+artists.id;
         return (
             <div>
                 <a href = {artistPage}>
@@ -18,6 +18,7 @@ class Home extends React.Component {
     return(
         <html>
             <body>
+                <h1> Artists </h1>
                 <div>
                     {artistCards}
                 </div>

@@ -1,5 +1,3 @@
-console.log("starting up!!");
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -11,6 +9,8 @@ const configs = {
   database: 'tunr_db',
   port: 5432,
 };
+let artistId = null;
+let artistMatchingId = null;
 
 const pool = new pg.Pool(configs);
 
@@ -48,11 +48,12 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//Request for home page
 app.get('/', (request, response) => {
   response.send('Hello World');
 });
 
-
+//Request for all artists page
 app.get('/artists', (request, response) => {
     let text = `select * from artists`;
 
@@ -70,6 +71,27 @@ app.get('/artists', (request, response) => {
         }
     })
 });
+
+//Request for single artist
+app.get('/artists/:id', (request, response) =>{
+    artistId = parseInt(request.params.id);
+    let text = `select * from artists where id = '${artistId}'`;
+
+    pool.query(text, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+
+            artistMatchingId = result.rows.find(artists => parseInt(artists.id) === artistId);
+
+            response.render('singleArtist', artistMatchingId);
+        }
+    })
+
+
+})
+
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
