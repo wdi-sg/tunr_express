@@ -49,7 +49,26 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
+app.get('/artists/:id', (request, response) => {
+    var inputId = parseInt(request.params.id);
+    console.log(inputId);
+    let queryString = "SELECT * FROM artists WHERE id = ($1)";
+    var idVal = [inputId];
+    console.log(idVal);
+    pool.query(queryString, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            const data = {
+                artist : res.rows
+            }
+            response.render('oneartist', data);
+        }
+    });
+});
+
+//show all artists
+app.get('/artists', (request, response) => {
   // query database for all artists
     const queryString = 'SELECT * FROM artists';
     pool.query(queryString, (err, res) => {
