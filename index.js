@@ -27,7 +27,6 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -49,6 +48,7 @@ app.engine('jsx', reactEngine);
 const homepage = 'home.jsx';
 const artistpage = 'artist.jsx';
 const newpage = 'new.jsx';
+const editpage = 'edit.jsx';
 
 
 
@@ -100,7 +100,7 @@ app.get('/artist', (request, response) => {
 // ===================================
 app.get('/artist/:id', (request, response) => {
 
-    let artistId = request.params.id;
+    let artistId = parseInt(request.params.id);
 
     const queryString = `SELECT * FROM Artists WHERE id=$1`;
     let values = [artistId];
@@ -153,6 +153,67 @@ app.post('/artist', (request, response) => {
         }
     }); ////// end of writing to database //////
 });
+
+
+
+/* ===========================================
+// Display the form for editing a single artist
+===============================================*/
+app.get('/artist/:id/edit', (req, res) => {
+
+    const queryString = 'SELECT * from artists WHERE id=' + parseInt(req.params.id);
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+            let data = {
+                artists: result.rows[0]
+            };
+            res.render(editpage, data);
+        }
+    });
+});
+
+
+// ===========================================
+// Update a single artist
+// ===============================================*/
+app.put('/artist/:id', (request, response) => {
+
+    let index = parseInt(request.params.id);
+
+    const queryString = `UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4`;
+    let values = [request.body.name, request.body.photo_url, request.body.nationality, index];
+
+    pool.query(queryString, values, (err, result) => {
+        if( err ){
+            console.log("error query");
+            console.log(err)
+        } else {
+            console.log("sending response ... ");
+            response.send("Artist " + request.body.name  +  " updated!");
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
