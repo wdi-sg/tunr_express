@@ -4,7 +4,7 @@ class Home extends React.Component {
   render() {
         let artistData = this.props.artists.map((artist) => {
             return <tr><td>{artist.id}</td>
-            <td><a href={"/artists/"+artist.id}>{artist.name}</a></td>
+            <td><a href={"/artists/"+artist.id}>{artist.name}</a><p className="text-right" ><a href={"/artists/"+artist.id+"/edit"}>Edit Info</a></p></td>
             <td><img src={artist.photo_url} width="150px" height="150px"/></td>
             <td>{artist.nationality}</td></tr>
 

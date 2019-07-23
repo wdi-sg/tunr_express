@@ -27,7 +27,6 @@ pool.on('error', function(err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -48,6 +47,40 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+app.get('/artists/:id/edit', (request, response) => {
+    console.log(request.params.id);
+    //response.render('edit', request.params.id);
+    const queryString = `SELECT * from artists WHERE id=${request.params.id}`;
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result:', result.rows);
+            let data = {
+                artists: result.rows
+            }
+            response.render('edit', data);
+        }
+    });
+});
+
+app.put('/artist/:id', (request, response) => {
+    let artistInfo = request.body;
+    console.log(artistInfo);
+    const queryString = `UPDATE artists SET name='${artistInfo.name}', photo_url='${artistInfo.photo_url}', nationality='${artistInfo.nationality}' WHERE id=${request.params.id}`;
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            response.redirect('/artists');
+        }
+    });
+})
+
 app.post('/artist', (request, response) => {
     let newArtist = request.body;
     console.log(newArtist);
@@ -64,6 +97,8 @@ app.post('/artist', (request, response) => {
 
 });
 
+
+
 app.get('/artists/new', (request, response) => {
 
     response.render('new');
@@ -72,7 +107,7 @@ app.get('/artists/new', (request, response) => {
 
 app.get('/artists', (request, response) => {
 
-    const queryString = 'SELECT * from artists';
+    const queryString = 'SELECT * from artists ORDER BY id ASC';
     pool.query(queryString, (err, result) => {
 
         if (err) {
@@ -107,11 +142,6 @@ app.get('/artists/:id', (request, response) => {
             response.render('songs', data);
         }
     });
-});
-
-app.get('/', (request, response) => {
-
-    response.render('home');
 });
 
 app.get('/new', (request, response) => {

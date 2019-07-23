@@ -16,7 +16,7 @@ class Songs extends React.Component {
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
         </head>
         <body>
-          <h1 className="text-center">Artists Index Page</h1>
+          <h1 className="text-center">Artist Songs List</h1>
           <table className="table">
             <thead className="thead-light">
             <tr>
