@@ -55,12 +55,20 @@ let home = (request,response)=>{
             console.log("query error",err.stack);
             response.send('query error');
         }
+        else{
+            let data = {
+                result: result.rows
+            }
+            console.log(data);
+            response.render('home',data);
+        }
         // console.log("query result", result);
-        response.send(result.rows);
+        // response.send(result.rows);
         // for( let i=0; i<result.rows.length; i++ ){
             // console.log(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
             // response.send(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
         // }
+
     });
 }
 
