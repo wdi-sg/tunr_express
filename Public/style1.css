@@ -1,0 +1,189 @@
+body {
+	margin: 0 auto;
+	width: 100%;
+	min-width: 900px;
+	background-color: #2d3135;
+	font-family: 'Work Sans', sans-serif;
+	color: #bed1e4;
+}
+header {
+	background-color:#b3e5fc;
+	background-image: url(https://www.billboard.com/files/styles/768x433/public/media/grammy-preview-big-four-2018-bb23-billboard-1500.jpg);
+	background-size: cover;
+	background-repeat: none;
+	background-position: right;
+	text-align: center;
+	box-shadow: 0px 0px 5px #9e9e9e;
+	padding-top: 20px;
+}
+header h1 {
+	font-family: 'Dosis', sans-serif;
+	text-align: center;
+	font-size: 50px;
+	margin-top: 40px;
+	border-radius: 10px;
+}
+.main {
+	box-shadow: 0px 0px 5px #9e9e9e;
+	padding: 20px;
+}
+nav {
+	width: 100%;
+	display: table;
+	margin: auto;
+	height: 60px;
+	background-color:#fffdf8c4;
+	border-radius: 3px;
+}
+a   {
+	text-decoration: none;
+	color: inherit;
+	font-family: 'Work Sans', sans-serif;
+	}
+
+a:hover {
+	color: darkcyan;
+}
+input:hover {
+	color: darkcyan;
+}
+img {
+	width: 100%;
+	height:250px;
+	border-radius: 10px;
+	margin-bottom: 15px;
+}
+.container {
+	width: 80%;
+	margin: 0 auto;
+}
+
+
+
+.top {
+	display: flex;
+	padding: 20px;
+	justify-content: space-between;
+}
+.bottom {
+	padding: 20px;
+}
+.left, .right{
+	width: 47%;
+}
+.left{
+	float: left;
+}
+.right{
+	float:right;
+	
+}
+.right li {
+	padding-left: 20px;
+	line-height: 1.5;
+	font-family: 'Lato', sans-serif;
+}
+.right h2 {
+	padding-left: 55px;
+	margin-bottom: 40px;
+	margin-top: 40px;
+}
+ol li {
+	padding-left: 20px;
+	line-height: 1.5;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+footer {
+	margin: 0 auto;
+	text-align: center;
+	padding:30px;
+	background-color:#33658A;
+	text-align: center;
+	box-shadow: 0px 0px 0px #9e9e9e;
+
+}
+ul li,  {
+ 
+	
+	font-size: 20px;
+	padding: 5px;
+	color: #616161;
+	font-family: 'Ubuntu', sans-serif;
+	
+}
+
+
+ nav ul li  {
+	display: inline-block;
+	font-size: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+	color: #616161;
+	font-family: 'Ubuntu', sans-serif;
+	
+}
+
+.left form {
+	width: 50%;
+	display: inline-block;
+	margin: 0;
+	
+}
+.left form input {
+	width:90%;
+	height: 30px;
+	font-size: 14px;
+	margin: 0 5px;
+	/*box-shadow: 0px 0px 5px #9e9e9e;*/
+	background-color: #fffdf8c4;
+}
+.left form input.flright {
+	float: right;
+}
+.left form input.flleft {
+	float: left;
+	margin-top: 0;
+}
+input {
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;	
+	margin: 10px ;
+	text-align: center;
+	border-radius: 5px;
+	height: 33px;
+	width: 280px;
+}
+
+
+.submit {
+width: 120px;
+margin-left:  550px;
+}
+
+
+h1 {
+		text-align: center;
+		margin: 20px auto;
+	}
+
+.title,.inputImg,.inputIngre,.inputIntr {
+	display:flex;
+	justify-content: space-around;
+	margin:0 20%;
+}
+
+ .one, .two, .three, .four {
+ 	float:right;
+ 	width: 55%;
+ }
+
+.title p,.inputImg p,.inputIngre p,.inputIntr p{
+	width: 20%;
+	padding: 10px;
+	float: left;
+	
+}
+.delete h2 {
+	margin-left: 250px;
+}

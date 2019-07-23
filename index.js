@@ -27,6 +27,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
+app.use(express.static(__dirname+ '/public/'));
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -48,16 +49,16 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// app.get('/', (request, response) => {
+//   console.log("getting request");
+
+//   response.render('home');
+// });
+
+
+
+
 app.get('/', (request, response) => {
-  console.log("getting request");
-
-  response.render('home');
-});
-
-
-
-
-app.get('/artists', (request, response) => {
   console.log("getting request")
   const queryString = 'SELECT * FROM artists ';
 
@@ -68,12 +69,14 @@ app.get('/artists', (request, response) => {
       response.send( 'query error' );
     } else {
       console.log('query result:', result);
+      const artists = {
+        artists : result.rows
+      }
 
-      // redirect to home page
-      response.send( result.rows );
-  // response.render('home');
-};
-});
+      // response.send( result.rows );
+    response.render('home', artists);
+    };
+  });
 });
 
 app.get('/new', (request, response) => {
