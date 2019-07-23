@@ -46,6 +46,7 @@ app.engine('jsx', reactEngine);
 
 // links to pages
 const homepage = 'home.jsx';
+const artistpage = 'artist.jsx';
 
 
 
@@ -55,7 +56,23 @@ const homepage = 'home.jsx';
  * ===================================
  */
 
+
+// ===================================
+// Display index of artists
+// ===================================
+
 app.get('/', (request, response) => {
+    // redirect to home page
+    response.redirect('/artists');
+});
+
+
+
+// ===================================
+// Display index of artists
+// ===================================
+
+app.get('/artists', (request, response) => {
     const queryString = `SELECT * FROM Artists`;
 
     pool.query(queryString, (err, result) => {
@@ -68,8 +85,33 @@ app.get('/', (request, response) => {
             let data = {
                 artists: result.rows
             };
-            // redirect to home page
-            // response.send( result.rows );
+            response.render('home', data);
+        }
+    });
+});
+
+
+
+// ===================================
+// Show individual Artist
+// ===================================
+app.get('/artists/:id', (request, response) => {
+
+    let artistId = request.params.id;
+
+    const queryString = `SELECT * FROM Artists WHERE id=$1`;
+    let values = [artistId];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+
+            let data = {
+                artists: result.rows
+            };
+
             response.render('home', data);
         }
     });
