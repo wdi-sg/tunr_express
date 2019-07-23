@@ -43,8 +43,9 @@ app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
 
-
+// =============================
 // links to pages
+// =============================
 const homepage = 'home.jsx';
 const artistpage = 'artist.jsx';
 
@@ -85,7 +86,7 @@ app.get('/artists', (request, response) => {
             let data = {
                 artists: result.rows
             };
-            response.render('home', data);
+            response.render(homepage, data);
         }
     });
 });
@@ -112,7 +113,7 @@ app.get('/artists/:id', (request, response) => {
                 artists: result.rows
             };
 
-            response.render('home', data);
+            response.render(artistpage, data);
         }
     });
 });
