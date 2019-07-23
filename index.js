@@ -48,6 +48,30 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+let individual = (request,response)=>{
+    // console.log("inside individual function");
+    // response.send("inside individual function");
+    var id = request.params.id;
+    // response.send("The artist id is: "+id);
+    let showIndividual = `SELECT * FROM artists WHERE id =${id}`
+    pool.query(showIndividual,(err,result)=>{
+        if(err){
+            console.log("query error",err.stack);
+            response.send('query error');
+        }
+        else{
+            // console.log("query result", result);
+            // response.send(result.rows);
+            let data = {
+                result: result.rows[0]
+            };
+            // console.log(data);
+            // response.send(data);
+            response.render('individual',data);
+        }
+    })
+}
+
 let home = (request,response)=>{
     let showAll = "SELECT * FROM artists";
     pool.query(showAll, (err,result)=>{
@@ -68,10 +92,10 @@ let home = (request,response)=>{
             // console.log(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
             // response.send(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
         // }
-
     });
 }
 
+app.get('/homepage/:id', individual);
 app.get('/homepage', home);
 
 app.get('/', (request, response) => {

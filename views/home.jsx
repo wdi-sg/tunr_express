@@ -7,14 +7,14 @@ class Home extends React.Component {
                 width:'300px'
             }
             var mapArtistData = this.props.result.map(artist=>{
-            var url = '/homepage'
+            var url = '/homepage/'+artist.id;
             return(
                 <div>
-                    <a href={url}>
-                        <img style={imageStyle} src ={artist.photo_url}/>
-                    </a>
+                    <img style={imageStyle} src ={artist.photo_url}/>
                     <p>Artist Id: {artist.id}</p>
+                    <a href={url}>
                     <p>Artist Name: {artist.name}</p>
+                    </a>
                     <p>Artist Nationality: {artist.nationality}</p>
                 </div>
             );
