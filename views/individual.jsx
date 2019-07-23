@@ -7,6 +7,8 @@ class Individual extends React.Component {
                 width:'300px'
                 }
             var urlHome ='/homepage';
+            var urlEdit ='/homepage/'+this.props.result.id+'/edit';
+            var urlDelete ='/homepage/'+this.props.result.id+'/delete';
             return (
               <html>
                 <head />
@@ -17,6 +19,8 @@ class Individual extends React.Component {
                   <p>Artist name: {this.props.result.name}</p>
                   <p>Artist nationality: {this.props.result.nationality}</p>
                   <a href={urlHome}>Home</a>
+                  <a href={urlEdit}>Edit</a>
+                  <a href={urlDelete}>Delete</a>
                 </body>
               </html>
             );

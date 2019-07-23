@@ -6,6 +6,7 @@ class Home extends React.Component {
                 height:'200px',
                 width:'300px'
             }
+            var urlNew = '/homepage/new';
             var mapArtistData = this.props.result.map(artist=>{
             var url = '/homepage/'+artist.id;
             return(
@@ -25,6 +26,7 @@ class Home extends React.Component {
         <head />
         <body>
           <h1>Welcome!</h1>
+          <a href={urlNew}>Add New Artist</a>
           <p>{mapArtistData}</p>
         </body>
       </html>
