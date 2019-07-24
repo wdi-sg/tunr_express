@@ -1,22 +1,18 @@
 var React = require("react");
+var DefaultLayout = require('./layouts/default');
 
 class Artists extends React.Component {
 	render() {
 		let artists = this.props.artists.map( (artist) =>{
 			let link = "/artists/"+artist.id;
-			return <li><a href={link}>{artist.name}</a></li>
+			return <div className="col-3"><a href={link}><img className="img-fluid" src={artist.photo_url}/>{artist.name}</a></div>
 		});
 		return (
-			<html>
-			<head/>
-			<body>
-				<h1>List of Artists</h1>
-				<ul>
+			<DefaultLayout>
+				<div className="row">
 					{artists}
-				</ul>
-				<hr/>
-			</body>
-			</html>
+				</div>
+			</DefaultLayout>
 		);
 	}
 }

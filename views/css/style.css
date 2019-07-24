@@ -1,0 +1,41 @@
+.buttons {
+    margin: 2rem 0;
+}
+.buttons > *{
+    margin-right: 0.5rem;
+}
+
+a {
+    color: #333;
+}
+a:hover {
+    text-decoration: none;
+    color: #333;
+}
+.card-img {
+    width:100%;
+    background-size: cover;
+    background-position: center;
+}
+.card-img:after {
+    content: "";
+    display: block;
+    padding-bottom:75%;
+}
+.ingredient-content {
+    min-height: 33.333vh;
+}
+textarea.form-control {
+    height: 8rem;
+}
+
+@media screen and (min-width: 768px) {
+    .container-fluid {
+        margin-top: 2rem;
+        padding: 0 4rem;
+    }
+    .navbar {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+}

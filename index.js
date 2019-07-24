@@ -57,7 +57,7 @@ const showArtist = (req, res) => {
 	let values = [req.params.id];
 	pool.query(query, values, (err, results) => {
 		if (err) {
-			console.log("ERRORS: " + err);
+			console.log("ERROR: " + err);
 		}
 		else {
 			let data = {
@@ -67,13 +67,34 @@ const showArtist = (req, res) => {
 		}
 	});
 };
+
+const addArtistForm = (req, res) => {
+	res.render('new-artist');
+};
+
+const addArtist = (req,res) => {
+	let query = "INSERT INTO artists (name,photo_url,nationality) VALUES ($1,$2,$3) RETURNING id";
+	let values = [req.body.name, req.body.photo_url, req.body.nationality];
+	pool.query(query,values, (err,results)=> {
+		if (err) {
+			console.log("ERROR: "+ err);
+		}
+		else {
+			res.redirect('/artists/'+results.rows[0].id);
+		}
+	})
+}
+
 /* Routes */
 app.get('/', showHome);
 
 app.get('/artists/', showArtists);
 
+app.get('/artists/add', addArtistForm);
+
 app.get('/artists/:id', showArtist);
 
+app.post('/artists/', addArtist);
 
 /* Listen to requests on port 3000 */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));

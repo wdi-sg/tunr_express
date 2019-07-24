@@ -1,16 +1,14 @@
-var React = require("react");
+var React = require('react');
+var DefaultLayout = require('./layouts/default');
 
 class Artists extends React.Component {
 	render() {
 		return (
-			<html>
-			<head/>
-			<body>
-			<h1>Hello World!</h1>
-				<p><a href="/artists/">See all Artists</a></p>
-				<p><a href="/songs/">See all Songs</a></p>
-			</body>
-			</html>
+			<DefaultLayout>
+				<div className="row my-5">
+					{/*{songs}*/}
+				</div>
+			</DefaultLayout>
 		);
 	}
 }
