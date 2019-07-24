@@ -1,6 +1,6 @@
 var React = require("react");
 
-class singlePage extends React.Component {
+class editform extends React.Component {
   render() {
     return (
       <html>
@@ -15,19 +15,34 @@ class singlePage extends React.Component {
 
         <div className="container mx-auto">
                 <h1 className="text-center my-5" style={{fontFamily : "Lora, serif", color:'white'
-}}>{this.props.artist.name}</h1>
+}}>Edit Artist Details</h1>
             <div className = "row mt-3" style={{ justifyContent : "center" }}>
-                <div className="card text-center">
-                  <div className="card-header">
-                    Featured Artist
-                  </div>
+                <div className="card">
                   <div className="card-body">
                     <img className="card-img-top" src={this.props.artist.photo_url} alt="Card image cap" style={{ maxWidth : 600 }}/>
-                    <p className="card-text mt-4">{this.props.artist.info}</p>
-                    <a href={"/artists/"+this.props.artist.id+"/edit"} className="btn btn-info mr-3">Edit Artist</a>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal">Delete Artist</button>
+                    <form method="POST" action={"/artists/" + this.props.artist.id + "?_method=PUT"} >
+                            <div class="form-group formSize mt-2">
+                                <label for="inputTitle">Name</label>
+                                <input type="text" name="name" class="form-control" id="inputName" defaultValue={this.props.artist.name}/>
+                            </div>
 
+                            <div class="form-group formSize">
+                                <label for="inputDescription">Image Url</label>
+                                <input type="text" name="photo_url" class="form-control" id="inputImg" defaultValue={this.props.artist.photo_url}/>
+                            </div>
 
+                            <div class="form-group formSize">
+                                <label for="inputIngredients">Nationality</label>
+                                <textarea class="form-control" name="nationality" id="inputNationality" defaultValue={this.props.artist.nationality}></textarea>
+                            </div>
+
+                            <div class="form-group formSize">
+                                <label for="inputInstructions">Short Description</label>
+                                <textarea class="form-control" name="info" id="inputDescription" rows="3" defaultValue={this.props.artist.info}></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                   </div>
                 </div>
             </div>
@@ -42,4 +57,4 @@ class singlePage extends React.Component {
   }
 }
 
-module.exports = singlePage;
+module.exports = editform;

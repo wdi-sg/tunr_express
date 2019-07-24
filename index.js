@@ -132,6 +132,86 @@ app.post('/artists', (request, response) => {
   });
 });
 
+app.get('/artists/:id/edit',(request, response)=>{
+
+    let queryString = "SELECT * FROM artists WHERE id=$1";
+    let values = [request.params.id]
+
+    pool.query(queryString, values, (err, result) => {
+
+    if (err) {
+      console.log('query error:', err.stack);
+      response.send( 'query error' );
+
+    } else {
+      console.log('query result:', result.rows[0]);
+
+      const data = {
+        artist : result.rows[0]
+      }
+
+      response.render('editform', data);
+    }
+  });
+});
+
+
+app.put('/artists/:id', (request, response) =>{
+
+    let artistID = request.params.id;
+    let updatedName = request.body.name
+    let updatedImg = request.body.photo_url
+    let updatedNationality = request.body.nationality
+    let updatedInfo = request.body.info
+
+    let queryString = `UPDATE artists SET name='${updatedName}', photo_url='${updatedImg}', nationality='${updatedNationality}', info='${updatedInfo}' WHERE id = '${artistID}' `
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+
+        } else {
+          console.log('query result:', result.rows);
+          response.redirect('/artists/' + artistID)
+        }
+    });
+});
+
+
+
+app.delete("/artists/:id", (request, response) => {
+
+   jsonfile.readFile(file, (err,obj) => {
+
+        let recipeIndex = request.params.id;
+        console.log(recipeIndex)
+
+        let updatedObj = obj;
+        console.log(updatedObj.recipes[recipeIndex - 1])
+
+        updatedObj.recipes = updatedObj.recipes.slice(0, (recipeIndex - 1)).concat(updatedObj.recipes.slice(recipeIndex, updatedObj.recipes.length))
+
+        if (err){
+          console.log("error reading file");
+          console.log(err)
+        }
+
+        else {
+            jsonfile.writeFile(file, updatedObj, (err) => {
+                if (err) {
+                    console.log('error reading file')
+                    console.log(err)
+                } else {
+                    response.redirect('/recipes/');
+                }
+            })
+        }
+    });
+});
+
+
 
 
 
