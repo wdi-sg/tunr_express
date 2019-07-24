@@ -49,11 +49,12 @@ li.item:hover {
 }*/
 
 /* container holding all the artist cards */
-#artist-container {
+/*song card probably need to change to diff css */
+#artist-container, #song-container {
 	display: flex;
-	flex-direction: row;
+	/*flex-direction: row;*/
 	flex-wrap: wrap;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: flex-end;
 }
 
@@ -63,28 +64,37 @@ li.item:hover {
 	margin: 10px 20px;
 }
 
-.artist-card a {
+.song-card {
+	display: flex;
+  justify-content: center;
+  width: 300px;
+  height: 200px;
+  align-items: flex-end;
+}
+
+.artist-card a, .song-card a {
 	margin: 0;
 	padding: 0;
 	text-decoration: none;
 	color: inherit;
 }
 
-.artist-card p {
+.artist-card p, .song-card p {
 	font-family: 'Darker Grotesque', sans-serif;
 	font-size: 12pt;
 	font-weight: 300;
 	margin: 5px;
+	word-wrap: break-word;
 }
 
-.artist-card h1 {
+.artist-card h1, .song-card a {
 	font-family: 'Darker Grotesque', sans-serif;
 	font-size: 15pt;
 	font-weight: 400;
 	margin: 5px;
 }
 
-.artist-card img {
+.artist-card img, .song-card a {
 	width: 100%;
 	border-radius: 10px;
 }

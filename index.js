@@ -185,11 +185,8 @@ app.delete('/artists/:id', (request, response) => {
 /* ==== Request Individual Artist Page ==== */
 app.get('/artists/:id/songs', (request, response) => {
     artistId = parseInt(request.params.id);
-
     let values = [artistId];
-    // let queryString = "SELECT * FROM songs WHERE artist_id =$1";
-
-    let queryString = "SELECT artists.name, artists.photo_url, songs.title, songs.album FROM artists INNER JOIN songs ON artists.id = songs.artist_id WHERE songs.artist_id = $1";
+    let queryString = "SELECT artists.name, artists.id, artists.photo_url, songs.title, songs.album, songs.preview_link FROM artists INNER JOIN songs ON artists.id = songs.artist_id WHERE songs.artist_id = $1";
 
     pool.query(queryString, values, (err, result) => {
 
@@ -198,9 +195,8 @@ app.get('/artists/:id/songs', (request, response) => {
             response.send('query error');
         } else {
             console.log('loading individual artist songs page');
-            response.send(result);
-            // response.render('songs.jsx', result);
-            //result will be a whole bloody list of songs but DOES NOT incl artist name and img
+            // response.send(result);
+            response.render('songs.jsx', result);
         }
     });
 })
