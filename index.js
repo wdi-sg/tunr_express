@@ -70,36 +70,21 @@ app.get('/artists', (request, response) => {
 });
 
 app.get('/artist/:id', (request, response) => {
-    console.log('i am here 1')
     let id = request.params.id;
     const queryString = `SELECT * FROM artists WHERE id=${id}`;
-    console.log('i am here 2')
-
     pool.query(queryString, (err, result) => {
-        console.log('i am here 3')
-
-        console.log('RESSSSULLLTTTT IS: ', result)
-        console.log('RESSSSULLLTTTT RRROOWWWWWW IS: ', result.rows)
         let artist = {
             artist : result.rows[0],
             id: id
         }
-        console.log('i am here 4')
-
         if (err) {
           console.log('query error:', err.stack);
           response.send( 'query error' );
 
         } else {
-            console.log('i am here 5')
-
           response.render('indvArtist', artist);
         }
-    console.log('i am here 6')
-
     });
-    console.log('i am here 7')
-
 });
 
 app.get('/artists/new', (request, response) => {
@@ -173,6 +158,57 @@ app.delete('/artists/:id', (request, response) => {
     });
 });
 
+app.get('/artists/:id/songs', (request, response) => {
+    let id = request.params.id;
+    const queryString = `SELECT * FROM songs WHERE artist_id=${id}`;
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let songsData = {
+                songs : result.rows,
+                id: id
+            }
+            response.render('songs', songsData);
+        }
+    });
+});
+
+app.get('/artists/:id/songs/new', (request, response) => {
+    let id = request.params.id;
+    const queryString = `SELECT * FROM songs WHERE artist_id=${id}`;
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let songsData = {
+                songs : result.rows,
+                id: id
+            }
+            response.render('newSong', songsData);
+        }
+    });
+});
+
+app.post('/artists/:id/songs', (request, response) => {
+    let newSong = request.body;
+    let id = request.params.id;
+    const queryString = `INSERT INTO songs (title, album, preview_link, artist_id) VALUES ($1, $2, $3, $4) RETURNING *`;
+    const values =
+    [newSong.title, newSong.album, newSong['preview_link'], id];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('new song added!')
+            response.redirect(`/artist/${id}/songs`);
+        }
+    });
+});
 
 
 app.get('/', (request, response) => {
