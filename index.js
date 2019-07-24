@@ -101,12 +101,10 @@ app.post('/artist/:id/songs', (request, response) => {
             console.log(err);
         } else {
 
-            let data = {
-                songs : result.rows
-            };
+            let url = "/artist/"+ request.body.artist_id + "/songs";
 
             console.log("send response");
-            response.render(songpage, data);
+            response.redirect(url);
         }
     }); ////// end of writing to database //////
 });
