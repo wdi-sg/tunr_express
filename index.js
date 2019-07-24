@@ -53,16 +53,75 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+app.get('/artists', (request, response) => {
 
-  // respond with HTML page displaying all pokemon
+    const queryString = "SELECT * FROM artists";
+    pool.query(queryString, (err, result) => {
+        let artists = {
+            artists : result.rows
+        }
+
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          response.render('artists', artists);
+        }
+    });
+});
+
+app.get('/artist/:id', (request, response) => {
+    let id = request.params.id;
+    const queryString = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query(queryString, (err, result) => {
+        let artist = {
+            artist : result.rows,
+            id: id
+        }
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          response.render('indvArtist', artist);
+        }
+    });
+});
+
+app.get('/artists/new', (request, response) => {
+  response.render('new');
+});
+
+app.post('/artists', (request, response) => {
+    let newArtist = request.body;
+    const queryString = `INSERT INTO artists (name, nationality, photo_url) VALUES ($1, $2, $3)`;
+    const values =
+    [newArtist.name, newArtist.nationality, newArtist['photo_url']];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          console.log('new artist added!')
+          response.redirect('/artists');
+        }
+    });
+});
+
+app.get('/artists/:id/edit', (request, response) => {
+  response.render('editpage');
+});
+
+app.get('/artists/:id/delete', (request, response) => {
+  response.render('deletepage');
+});
+
+app.get('/', (request, response) => {
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('*', (request, response) => {
+  response.redirect('/');
 });
 
 
@@ -88,3 +147,8 @@ let onClose = function(){
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+
+// 1. edit
+// 2. delete
+// 3. add songs under artists

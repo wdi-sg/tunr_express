@@ -2,7 +2,7 @@ const React = require('react');
 const DefaultLayout = require('./layouts/default');
 
 
-class New extends React.Component {
+class Edit extends React.Component {
   render() {
 
     let headerTitle = "New Artist | Tunr";
@@ -11,7 +11,7 @@ class New extends React.Component {
 
       <DefaultLayout title={headerTitle}>
 
-        <h1>Create New Artist</h1>
+        <h1>Edit Artist</h1>
 
         <form method="POST" action="/artists">
             <p>Name:</p>
@@ -30,4 +30,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Edit;
