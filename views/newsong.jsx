@@ -3,7 +3,6 @@ var React = require("react");
 class NewSong extends React.Component {
   render() {
     let url = "/artist/" + this.props.idKey + "/songs";
-    console.log("what the hell: "+ this.props.idKey);
     console.log("url:", url);
     return (
       <html>
