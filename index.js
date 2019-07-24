@@ -49,16 +49,8 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-// app.get('/', (request, response) => {
-//   console.log("getting request");
 
-//   response.render('home');
-// });
-
-
-
-
-app.get('/', (request, response) => {
+app.get('/', (request, response) => {//worked!
   console.log("getting request")
   const queryString = 'SELECT * FROM artists ';
 
@@ -70,7 +62,7 @@ app.get('/', (request, response) => {
     } else {
       console.log('query result:', result);
       const artists = {
-        artists : result.rows
+        artists : result.rows,
       }
 
       // response.send( result.rows );
@@ -79,10 +71,140 @@ app.get('/', (request, response) => {
   });
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+//==============add new artist====================
+
+app.get('/new', (request, response) => { //worked
+ 
+  response.render('newArtist');
 });
+
+app.post('/',(req, res) => {
+  console.log("new artist")
+    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1,$2, $3) ';
+          value = [req.body.name, req.body.photo_url, req.body.nationality];
+    pool.query(queryString,value, (err, result) => {
+
+      if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+      } 
+          
+          res.send("New artist added");
+      });
+    });
+
+
+
+
+// app.get('/artist/:id/songs', (req, res) => {//worked!
+//   console.log("getting request")
+//   console.log(req.params.id);
+//   let reqid = parseInt(req.params.id);
+//   // console.log(id);
+
+//   const queryString = 'SELECT title, album FROM songs  WHERE artist_id = 3';
+//   // console.log(result);
+//   pool.query(queryString, (err, result) => {
+//       console.log(result.rows);
+//     if (err) {
+//       console.error('query error:', err.stack);
+//       res.send( 'query error' );
+//     } else {
+      
+      
+//       res.send( result.rows);
+    
+//     };
+//   });
+// });
+
+//===============single Artist===============
+
+app.get('/artist/:id', (req, res) => {//worked!
+  console.log("getting request")
+
+  let id = parseInt(req.params.id);
+  const queryString = 'SELECT * FROM artists  WHERE id = id';
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      console.log('query result:', result);
+      const data = {
+            data: result.rows[id-1],
+      }
+      
+      res.render( 'singleArtist',data);
+    
+    };
+  });
+});
+
+//=================================================
+
+app.get('/artist/:id/songs/new', (req, res) => {//worked!
+ 
+  let reqid = parseInt(req.params.id);
+  
+  res.render('form');
+    
+    });
+app.post('/artist/:id/songs',(req, res) => {
+    console.log("new artist")
+    const queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1,$2, $3,$4, $5) ';
+          value = [req.body.title,req.body. album, req.body.preview_link, req.body.artwork, req.body.artist_id];
+    pool.query(queryString,value, (err, result) => {
+
+      if (err) {
+        console.error('query error:', err.stack);
+        res.send( 'query error' );
+      } 
+          
+        res.send("New song added");
+    });
+});
+
+ 
+
+
+
+
+
+
+
+// app.get('/artist/:id/songs', (req, res) => {//worked!
+//   console.log("getting request")
+//   console.log(req.params.id);
+//   let reqid = parseInt(req.params.id);
+//   // console.log(id);
+
+//   const queryString = 'SELECT id, album FROM songs  WHERE artist_id = parseInt(req.params.id)';
+//   // console.log(result);
+//   pool.query(queryString, (err, result) => {
+//       console.log(result.rows);
+//     if (err) {
+//       console.error('query error:', err.stack);
+//       res.send( 'query error' );
+//     } else {
+      
+      
+//       res.send( result.rows);
+    
+//     };
+//   });
+// });
+
+
+
+//===========get songs from one artist ===================
+
+
+
+
+
 
 
 /**
