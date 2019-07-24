@@ -167,12 +167,96 @@ app.post('/artist/:id/songs',(req, res) => {
     });
 });
 
- 
+ //================get playlists ===================
 
 
+app.get('/playlists', (req, res) => {
+  console.log("getting request")
+
+  const queryString = 'SELECT * FROM playlists'  ;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      console.log('query result:', result);
+      
+      res.send( result.rows);
+    
+    };
+  });
+});
+
+///================add song to playlist===============
+
+app.get('/playlists/new', (req, res) => {//worked!
+
+  res.render('playlistsForm');
+    
+    });
+app.post('/playlists',(req, res) => {
+    console.log("new playlist")
+    const queryString = 'INSERT INTO playlists (name) VALUES ($1)';
+    value = [req.body.name]
+    pool.query(queryString,value, (err, result) => {
+
+      if (err) {
+        console.error('query error:', err.stack);
+        res.send( 'query error' );
+      } 
+          
+        res.send("New playlist added");
+    });
+});
+//=================show song in a playlist =============
+
+app.get('/playlists/:id', (req, res) => {
+  console.log("getting request")
+  let id = req.params.id;
+  console.log(id);
+
+  const queryString = 'SELECT * FROM playlists WHERE id = id'  ;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      console.log('query result:', result);
+      
+      res.send( result.rows);
+    
+    };
+  });
+});
+
+//==========add dropdown of artists when creating new song========
 
 
+app.get('/songs/new', (req, res) => {//good
+  console.log("dropdown");
+  const queryString = 'SELECT id,name FROM artists';
 
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      console.log('query result:', result.rows);
+      const data = {
+            data: result.rows,
+      }
+      
+      res.render( 'newSong',data);
+    
+    };
+  });
+});
+//============restrict user from adding twice=======================
 
 
 // app.get('/artist/:id/songs', (req, res) => {//worked!

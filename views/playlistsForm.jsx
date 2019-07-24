@@ -22,34 +22,16 @@ class Form extends React.Component {
               </nav>
           </header>
           <div>
-            <h1>Add new song for this artist</h1>
-            <form method="POST" action={'/artist/:id/songs'}>
+            <h1>Add new  playlists</h1>
+            <form method="POST" action={'/playlists'}>
                 
                 <div className= "title">
-                  <p> title</p>
+                  <p> Name</p>
                   
-                  <div className = "one" ><input name="title" autocomplete = "off" /></div>
+                  <div className = "one" ><input name="name" /></div>
                 
                 </div>
-                <div className = "inputImg">
-                  <p> Album</p>
-                  <div className = "two" ><input name="img" /></div>
                 
-                </div>
-                <div className = "inputIngre">
-                  <p>preview_link</p>
-                  <div className = "three" ><input name="ingredient" autocomplete = "off" /></div>
-                
-                </div><div className = "inputIngre">
-                  <p>artwork</p>
-                  <div className = "three" ><input name="ingredient" autocomplete = "off" /></div>
-                
-                </div>
-                <div className = "inputIngre">
-                  <p>artist_id</p>
-                  <div className = "three" ><input name="ingredient" autocomplete = "off" /></div>
-                
-                </div>
                
                 <input type="submit"/>
             </form>

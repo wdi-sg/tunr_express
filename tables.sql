@@ -14,6 +14,19 @@ CREATE TABLE IF NOT EXISTS artists (
 	photo_url TEXT,
 	nationality	TEXT
 );
+CREATE TABLE IF NOT EXISTS playlists (
+    
+	id	SERIAL PRIMARY KEY,
+	name TEXT
+	
+);
+CREATE TABLE IF NOT EXISTS playlist_song(
+    
+	id	SERIAL PRIMARY KEY,
+	playlists_id INTEGER,
+	songs_id INTEGER
+	
+);
 
 
 
