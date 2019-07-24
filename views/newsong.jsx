@@ -2,7 +2,7 @@ var React = require("react");
 
 class Newsong extends React.Component {
   render() {
-    let url = "artists/" + this.props.rows[0].id;
+    let url = "/artists/" + this.props.rows[0].id + "/songs";
     return (
       <html>
         <head>

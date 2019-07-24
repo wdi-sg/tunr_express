@@ -28,7 +28,7 @@ class Artistspage extends React.Component {
         </header>
         <body>
             <div id="artist-container">
-                <p>{artistCards}</p>
+                {artistCards}
             </div>
         </body>
         </html>
