@@ -4,9 +4,9 @@ class Home extends React.Component {
   render() {
         let artistData = this.props.artists.map((artist) => {
             return <tr><td>{artist.id}</td>
-            <td><a href={"/artists/"+artist.id}>{artist.name}</a></td>
+            <td><a href={"/artists/"+artist.id+"/songs"}>{artist.name}</a></td>
             <td><img src={artist.photo_url} width="150px" height="150px"/></td>
-            <td>{artist.nationality}</td><td><div className="icons"><a href={"/artists/"+artist.id+"/edit"}><img src="edit_g.svg" width="50px" height="50px"/></a><a href={"/artists/"+artist.id+"/delete"}><img src="trash_g.svg" width="50px" height="50px"/></a></div></td></tr>
+            <td>{artist.nationality}</td><td><div className="icons"><a href={"/artists/"+artist.id+"/songs/new"}><img src="new_songicon.svg" width="50px" height="50px"/></a><a href={"/artists/"+artist.id+"/edit"}><img src="edit_g.svg" width="50px" height="50px"/></a><a href={"/artists/"+artist.id+"/delete"}><img src="trash_g.svg" width="50px" height="50px"/></a></div></td></tr>
 
         });
     return (

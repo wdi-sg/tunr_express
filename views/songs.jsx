@@ -6,7 +6,7 @@ class Songs extends React.Component {
             return <tr><td>{song.id}</td>
             <td>{song.title}</td>
             <td>{song.album}</td>
-            <td><a href="{song.preview_link}">{song.preview_link}</a></td>
+            <td><a href={song.preview_link}>{song.preview_link}</a></td>
             <td><img src={song.artwork} width="80px" height="80px"/></td>
             <td>{song.artist_id}</td></tr>
         });
