@@ -159,7 +159,7 @@ app.delete('/artist/:id', (req, res) => {
 
 
 app.get('/artist/:id/songs', (req, res) => {
-    const queryString = 'SELECT songs.id,songs.title FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artists.id =' + parseInt(req.params.id);
+    const queryString = 'SELECT DISTINCT songs.id,songs.title FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artists.id =' + parseInt(req.params.id)+"ORDER BY  songs.title ASC";
     pool.query(queryString, (err, result) => {
 
         if (err) {
@@ -227,7 +227,7 @@ app.get('/artist/:id/songs/:idd', (req, res) => {
                 title: result.rows[0].title
             }
 
-            const queryString = 'SELECT * FROM playlists';
+            const queryString = 'SELECT * FROM PLAYLISTS WHERE ID IN (SELECT ID FROM PLAYLISTS EXCEPT SELECT PLAYLIST_ID FROM PLAYLISTS_SONGS WHERE SONG_ID = 2)';
             pool.query(queryString, (err, result2) => {
 
                 if (err) {
