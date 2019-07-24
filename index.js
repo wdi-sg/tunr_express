@@ -50,7 +50,7 @@ const artistpage = 'artist.jsx';
 const newpage = 'new.jsx';
 const editpage = 'edit.jsx';
 const deletepage = 'delete.jsx';
-
+const songpage = 'songs.jsx';
 
 
 /**
@@ -276,10 +276,9 @@ app.delete('/artist/:id', (request, response) => {
         } else {
 
             let data = {
-                artists: result.rows
+                songs: result.rows
             };
-
-            response.send(data);
+            response.render(songpage, data);
         }
     });
 });
