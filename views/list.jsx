@@ -21,3 +21,4 @@ class List extends React.Component {
   }
 }
 module.exports = List;
+// <img src={artist.photo_url}/>

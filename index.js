@@ -59,13 +59,29 @@ app.get('/', (request, response) => {
             let info = result.rows;
             let data = {
                 artistsData: info
-            }
+            };
             response.render('home', data);
         }
     })
 
-
 });
+
+//show page, link to each-artist
+app.get('/artist', (request, response) => {
+    //search artists by id
+    let id = parseInt(request.query.search);
+    console.log(id);
+
+    let queryString = `SELECT * FROM artists WHERE id = ${id}`;
+    pool.query(queryString, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else {
+            response.render('each-artist', result.rows);
+        }
+    })
+
+})
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
