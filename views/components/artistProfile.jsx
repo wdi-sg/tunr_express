@@ -2,7 +2,7 @@ var React = require('react');
 
 class ArtistProfile extends React.Component {
   render() {
-    var url = "/artists/"+this.props.data.id;
+    var url = "/artists/"+ this.props.data.id;
 
     return (
         <div>

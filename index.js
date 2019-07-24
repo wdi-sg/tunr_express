@@ -77,7 +77,7 @@ var displayArtists = function(request, response){
 
 var displayArtistPage = function(request, response){
 
-    var artistId = request.params.id;
+    var artistId = parseInt(request.params.id);
     console.log(artistId);
   // query database for all pokemon
     let queryString = 'SELECT * FROM artists WHERE id = $1';
@@ -90,11 +90,11 @@ var displayArtistPage = function(request, response){
             response.send( 'query error' );
         }
         else {
-
-            var artists = result.rows;
+            console.log(result.rows[0]);
+            var artist = result.rows[0];
 
             var data = {
-              artists : artists
+              artist : artist
             }
 
             response.render( 'artistPage', data );
@@ -125,7 +125,7 @@ var addNewArtist = function(request,response){
 }
 
 var displayEditArtistForm = function(request, response){
-    var artistId = request.params.id;
+    var artistId = parseInt(request.params.id);
 
     let queryString = 'SELECT * FROM artists WHERE id = $1';
     let values = [artistId];
