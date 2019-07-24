@@ -40,8 +40,10 @@ app.get('/artists', (request, response) => {
             console.error('query error:', err.stack);
             response.send( 'query error' );
         } else {
-            console.log('query result:', result);
-            response.send( result.rows );
+            let data = {
+                artistsKey : result.rows
+            };
+            response.render('home', data);
   }
 });
 });
