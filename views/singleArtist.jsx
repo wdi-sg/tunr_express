@@ -1,20 +1,7 @@
 var React = require("react");
 
-class Home extends React.Component {
+class singlePage extends React.Component {
   render() {
-
-    const artist = this.props.artist.map(element=> {
-        return(<div className="card text-center bg-light mb-3 border-dark mb-3" style={{ width: 300, margin: 10 }}>
-                    <img className="card-img-top" src={element.photo_url} alt="Card image cap" />
-                    <div className="card-body">
-                        <h5 className="card-title">{element.name}</h5>
-                        <p className="card-text">{element.nationality}</p>
-                        <a href={"/artists/"+element.id} class="btn btn-info align-bottom">View Artist</a>
-                    </div>
-                </div>
-        )
-    });
-
     return (
       <html>
         <head>
@@ -27,10 +14,19 @@ class Home extends React.Component {
         <body style={{backgroundImage : 'url("https://wallpaperaccess.com/full/646093.png")', backgroundPosition : "center", backgroundRepeat : "no-repeat", backgroundSize : "cover", height : "100vh", backgroundAttachment : "fixed"}}>
 
         <div className="container mx-auto">
-                <h1 className="text-center mt-5" style={{fontFamily : "Lora, serif", color:'white'
-}}>This Season's Hottest Artists</h1>
+                <h1 className="text-center my-5" style={{fontFamily : "Lora, serif", color:'white'
+}}>{this.props.artist.name}</h1>
             <div className = "row mt-3" style={{ justifyContent : "center" }}>
-                {artist}
+                <div className="card text-center">
+                  <div className="card-header">
+                    Featured Artist
+                  </div>
+                  <div className="card-body">
+                    <img className="card-img-top" src={this.props.artist.photo_url} alt="Card image cap" style={{ maxWidth : 600 }}/>
+                    <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <a href="#" className="btn btn-primary">Go somewhere</a>
+                  </div>
+                </div>
             </div>
         </div>
 
@@ -43,4 +39,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = singlePage;

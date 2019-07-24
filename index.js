@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'hilmijohari',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,15 +49,91 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
 
-  // respond with HTML page displaying all pokemon
-  response.send('Hello World');
+  response.redirect('/artists');
+
 });
 
+
+app.get('/artists', (request, response) => {
+  // query database for all artists
+  // respond with text that lists the names of all the pokemons
+
+  let queryString = "SELECT * FROM artists ORDER BY id ASC";
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.log('query error:', err.stack);
+      response.send( 'query error' );
+
+    } else {
+      console.log('query result:', result);
+
+      console.log(result.rows);
+
+      const data = {
+        artist : result.rows
+      }
+
+      response.render('home', data);
+    }
+  });
+
+});
+
+app.get('/artists/:id', (request, response) => {
+
+    let queryString = "SELECT * FROM artists WHERE id=$1";
+    let values = [request.params.id]
+
+    pool.query(queryString, values, (err, result) => {
+
+    if (err) {
+      console.log('query error:', err.stack);
+      response.send( 'query error' );
+
+    } else {
+      console.log('query result:', result.rows[0]);
+
+      const data = {
+        artist : result.rows[0]
+      }
+
+      response.render('singleArtist', data);
+    }
+  });
+});
+
+
+
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+
+
+
   response.render('new');
+});
+
+app.get('/recipes/new', (request, response) => {
+
+    jsonfile.readFile(file, (err,obj) => {
+
+        const data = {
+
+            arrayLength: obj.recipes.length + 1
+
+        }
+
+        if (err){
+          console.log("error reading file");
+          console.log(err);
+        }
+
+        else {
+            response.render('form', data)
+        }
+
+    });
 });
 
 
