@@ -33,7 +33,17 @@ app.get('/', (request, response) => {
 });
 
 app.get('/artists', (request, response) => {
-    response.render('home');
+    const queryString = 'SELECT * from artists';
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result);
+            response.send( result.rows );
+  }
+});
 });
 
 // app.get('/new', (request, response) => {
