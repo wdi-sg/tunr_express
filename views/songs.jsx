@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Songs extends React.Component {
   render() {
             var imageStyle = {
                 height:'200px',
@@ -11,16 +11,16 @@ class Home extends React.Component {
                 display :"inline-block",
                 margin:"10px 50px",
             }
-            var urlNew = '/homepage/new';
-            var mapArtistData = this.props.result.map(artist=>{
-            var url = '/homepage/'+artist.id;
+            var urlNew = '/homepage/'+this.props.artist.id+'/songs/new';
+            var url = '/homepage/';
+            var mapSongsData = this.props.songsDetail.map(songs=>{
             return(
                 <div style={individualStyle}>
-                    <a href={url}>
-                        <img style={imageStyle} src ={artist.photo_url}/>
-                    </a>
-                    <p>Artist Name: {artist.name}</p>
-                    <p>Artist Nationality: {artist.nationality}</p>
+                    <img style={imageStyle} src ={songs.artwork}/>
+                    <p>Song title: {songs.title}</p>
+                    <audio controls>
+                        <source src={songs.preview_link} type="audio/m4a"/>
+                    </audio>
                 </div>
             );
         });
@@ -35,17 +35,17 @@ class Home extends React.Component {
         <body>
         <div className="containertop row">
             <div className="col-4">
-                <h1>!!ARTISTS!!</h1>
+                <a className="button" href={url}>!ARTISTS!!</a>
             </div>
             <div className="col-4">
-                <iframe src="https://giphy.com/embed/QrooGoDTEGK52" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+                <p>{this.props.artist.name}</p>
             </div>
             <div className="col-4">
-                <a className="button"href={urlNew}>Add New Artist</a>
+                <a className="button" href={urlNew}>!!Add New Song!!</a>
             </div>
         </div>
           <div className="container">
-              <p>{mapArtistData}</p>
+              <p>{mapSongsData}</p>
           </div>
         </body>
       </html>
@@ -53,4 +53,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = Songs;

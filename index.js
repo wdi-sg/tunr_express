@@ -48,11 +48,70 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+let newSongUpdate = (request,response)=>{
+    // response.send("Inside newSongUpdate function");
+    var id = request.params.id;
+    var newSongData = request.body;
+    // response.send(newSongData);
+    let addNewSong = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)";
+    let values = [newSongData.title, newSongData.album, newSongData.preview_link, newSongData.artwork, newSongData.artist_id];
+    // response.send(values);
+    pool.query(addNewSong, values, (err,result)=>{
+        if (err){
+            console.log("query error",err.stack);
+            response.send("query error");
+        }
+        else {
+            console.log(result.rows);
+            response.redirect("/homepage/"+id);
+        };
+    });
+
+
+}
+
+let newSong = (request,response)=>{
+    // response.send("Inside new song function");
+    var data = {
+        id : request.params.id
+    }
+    response.render('newSong', data);
+}
+
+let songs = (request,response)=>{
+    var id = parseInt(request.params.id);
+    var songs = "SELECT * FROM songs WHERE artist_id=$1";
+    var values = [id];
+    pool.query(songs,values,(err,result)=>{
+        if(err){
+            console.log("query error",err.stack);
+            response.send("query error");
+        }
+        else
+        {
+            var data = {
+                songsDetail : result.rows
+            };
+
+            var artist = "SELECT * FROM artists WHERE id=$1";
+
+            pool.query(artist, values, (err,result) => {
+
+                let artist = result.rows[0];
+                data.artist = artist;
+                // response.send(data);
+                response.render('songs',data);
+            })
+        }
+    })
+}
+
  let deleteEntryUpdate = (request,response)=>{
     // response.send("Inside delete update function");
     var id = request.params.id;
-    var deleteIndividual = `DELETE from artists WHERE id =${id} `;
-    pool.query(deleteIndividual,(err,result)=>{
+    var deleteIndividual = "DELETE from artists WHERE id =$1";
+    var values = [id];
+    pool.query(deleteIndividual, values,(err,result)=>{
         if(err){
             console.log("query error",err.stack);
             response.send("query error");
@@ -196,24 +255,7 @@ let home = (request,response)=>{
             // response.send(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
         // }
     });
-}
-
-// app.get('/new', (request, response) => {
-//   // respond with HTML page with form to create new pokemon
-//   response.render('new');
-// });
-
-// app.get('/', (request, response) => {
-//     // query database for all pokemon
-//     console.log("HELLO WORLD");
-//     response.send("HELLO WORLD");
-//     // respond with HTML page displaying all pokemon
-//     // response.render('home');
-// });
-
-
-
-
+};
 
 /**
  * ===================================
@@ -221,6 +263,9 @@ let home = (request,response)=>{
  * ===================================
  */
 
+app.post('/homepage/:id/',newSongUpdate)
+app.get('/homepage/:id/songs/new',newSong)
+app.get('/homepage/:id/songs',songs)
 app.delete('/homepage/:id', deleteEntryUpdate);
 app.get('/homepage/:id/delete',deleteEntry);
 app.get('/homepage/new', newEntry);

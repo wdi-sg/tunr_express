@@ -9,6 +9,10 @@ body{
 .containertop{
 	margin:30px auto;
 }
+.title{
+	border-left: 5px solid white;
+	border-right: 5px solid white
+}
 .container{
 	width:1000px;
 	margin:20px 225px;
@@ -17,11 +21,28 @@ body{
 	margin-top: 50px;
 }
 
-a,h1,h3{
+a,p{
 	text-align: center;
 	font-family: 'Permanent Marker', cursive;
 	color:red;
+
 }
+
+.button{
+		font-size: 30px;
+}
+
+.button:hover{
+	color:white;
+	text-decoration: none;
+}
+
+
+
+p{
+	font-size: 40px;
+}
+
 
 img{
 	margin:30px auto;

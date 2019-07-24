@@ -15,13 +15,15 @@ class Edit extends React.Component {
                         <body>
                             <div className="containertop row">
                                 <div className="col-4">
-                                    <a href={urlHome}><h1>!!ARTISTS!!</h1></a>
+                                    <a className = "button" href={urlHome}>!!ARTISTS!!</a>
                                 </div>
                                 <div className="col-4">
-                                    <h3>Edit Entry</h3>
+                                    <div className="title">
+                                        <p>Edit Entry</p>
+                                    </div>
                                 </div>
                                 <div className="col-4">
-                                    <a href={urlProfile}><h1>!!Profile!!</h1></a>
+                                    <a className = "button" href={urlProfile}>!!Profile!!</a>
                                 </div>
                             </div>
                             <img src={this.props.result.photo_url}/>

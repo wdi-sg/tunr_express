@@ -15,13 +15,13 @@ class Delete extends React.Component {
                         <body>
                             <div className="containertop row">
                                 <div className="col-4">
-                                    <a href={urlHome}><h1>!!ARTISTS!!</h1></a>
+                                    <a className="button" href={urlHome}>!!ARTISTS!!</a>
                                 </div>
                                 <div className="col-4">
-                                    <h3>Delete Entry</h3>
+                                    <h1>Delete Entry</h1>
                                 </div>
                                 <div className="col-4">
-                                    <a href={urlProfile}><h1>!!Profile!!</h1></a>
+                                    <a className="button" href={urlProfile}>!!Profile!!</a>
                                 </div>
                             </div>
                             <br />
@@ -32,7 +32,7 @@ class Delete extends React.Component {
                                 <br />
                                 <p>Are you sure you want to delete?</p>
                                 <form method="POST" action={url}>
-                                    <button type="submit">submit</button>
+                                    <button type="submit">DELETE</button>
                                 </form>
                             </div>
                         </body>

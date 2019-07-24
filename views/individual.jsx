@@ -5,6 +5,7 @@ class Individual extends React.Component {
             var urlHome ='/homepage';
             var urlEdit ='/homepage/'+this.props.result.id+'/edit';
             var urlDelete ='/homepage/'+this.props.result.id+'/delete';
+            var urlSongs = '/homepage/'+this.props.result.id+'/songs'
             return (
               <html>
                 <head>
@@ -18,29 +19,30 @@ class Individual extends React.Component {
                             <a href={urlHome}><h1>!!ARTISTS!!</h1></a>
                         </div>
                         <div className="col-4">
-                            <iframe src="https://giphy.com/embed/QrooGoDTEGK52" width="480" height="161" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+                            <iframe src="https://giphy.com/embed/QrooGoDTEGK52" frameBorder="0" className="giphy-embed" allowFullScreen></iframe>
                         </div>
                         <div className="col-4">
                             <h1>!!Profile!!</h1>
                         </div>
                     </div>
                     <div className="container">
-                        <img src={this.props.result.photo_url}/>
-                        <div className="containermid">
-                            <h4>Artist name: {this.props.result.name}</h4>
-                            <br />
-                            <h4>Artist nationality: {this.props.result.nationality}</h4>
-                        </div>
-                        <div className="containerbtm row">
-                            <div class="col-6">
-                                <a href={urlEdit}><h3>Edit</h3></a>
+                            <img src={this.props.result.photo_url}/>
+                            <div className="containermid">
+                                <h4>Artist name: {this.props.result.name}</h4>
+                                <br />
+                                <h4>Artist nationality: {this.props.result.nationality}</h4>
                             </div>
-                            <div className="col-6">
-                                <a href={urlDelete}>
-                                    <h3>Delete</h3>
-                                </a>
+                            <div className="containerbtm row">
+                                <div className="col-4">
+                                    <a className="button"href={urlEdit}>Edit</a>
+                                </div>
+                                <div className="col-4">
+                                    <a className="button"href={urlSongs}>Songs</a>
+                                </div>
+                                <div className="col-4">
+                                    <a className="button" href={urlDelete}>Delete</a>
+                                </div>
                             </div>
-                        </div>
                     </div>
                 </body>
               </html>
