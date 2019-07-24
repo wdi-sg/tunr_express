@@ -49,6 +49,79 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//create a new artist
+app.get('/artists/new', (request, response) => {
+    // respond with HTML page with form to create new artist
+    const queryString = 'SELECT * FROM artists';
+    pool.query(queryString, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            const data = {
+                artistList : res.rows
+            };
+            console.log(data);
+            response.render('new', data);
+        }
+    });
+});
+
+app.post('/artists', (request, response) => {
+    var artistData = request.body;
+    console.log( artistData );
+    const queryString = 'INSERT INTO artists (name, nationality, photo_url) VALUES ($1, $2, $3)';
+    let values = [artistData.name, artistData.nationality, artistData.photo_url];
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            /*const data = {
+                artist : res.rows[0]
+            }
+            console.log(data);*/
+            response.send("Artist has been created!");
+        }
+
+    });
+});
+
+//edit an artist
+app.get('/artists/:id/edit', (request, response) => {
+    var inputId = parseInt(request.params.id);
+    let queryString = "SELECT * FROM artists WHERE id = ($1)";
+    var idVal = [inputId];
+    console.log(idVal);
+    pool.query(queryString, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            const data = {
+                artist : res.rows[0]
+            };
+            console.log(data);
+            response.render('editartist', data);
+        }
+    });
+});
+
+app.put('/artists/:id', (request, response) => {
+    console.log("inside put req");
+    let artistIdInt = parseInt(request.params.id);
+    console.log(request.body);
+    const queryString = "UPDATE artists SET name=($1), nationality=($2), photo_url=($3) WHERE id = ($4)";
+    let values = [request.body.name, request.body.nationality, request.body.photo_url, artistIdInt];
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            const data = {
+                artist : request.body
+            }
+            response.render('oneartist', data);
+        }
+    });
+});
+
 app.get('/artists/:id', (request, response) => {
     var inputId = parseInt(request.params.id);
     console.log(inputId);
@@ -86,10 +159,7 @@ app.get('/artists', (request, response) => {
   //response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+
 
 
 /**
