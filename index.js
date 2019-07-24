@@ -83,7 +83,37 @@ const addArtist = (req,res) => {
 			res.redirect('/artists/'+results.rows[0].id);
 		}
 	})
-}
+};
+
+const editArtistForm = (req, res) => {
+	let query = "SELECT * FROM artists WHERE id=$1";
+	let values = [parseInt(req.params.id)];
+	pool.query(query,values, (err,results) => {
+		if (err) {
+			console.log("ERROR: "+ err);
+		}
+		else {
+			let data = {
+				"artists": results.rows[0]
+			};
+			res.render('edit-artist',data);
+		}
+	});
+};
+
+const editArtist = (req,res) => {
+	let id = parseInt(req.params.id);
+	let query = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4";
+	let values = [req.body.name, req.body.photo_url, req.body.nationality, id];
+	pool.query(query,values, (err,results)=> {
+		if (err) {
+			console.log("ERROR: "+ err);
+		}
+		else {
+			res.redirect('/artists/'+id);
+		}
+	})
+};
 
 /* Routes */
 app.get('/', showHome);
@@ -92,9 +122,13 @@ app.get('/artists/', showArtists);
 
 app.get('/artists/add', addArtistForm);
 
+app.get('/artists/:id/edit', editArtistForm);
+
 app.get('/artists/:id', showArtist);
 
 app.post('/artists/', addArtist);
+
+app.put('/artists/:id', editArtist);
 
 /* Listen to requests on port 3000 */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));

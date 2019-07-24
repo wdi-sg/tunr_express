@@ -4,6 +4,7 @@ var DefaultLayout = require('./layouts/default');
 class Artist extends React.Component {
 	render() {
 		let artist = this.props.artist;
+		let editLink = "/artists/"+artist.id+"/edit/";
 		return (
 			<DefaultLayout>
 				<div className="row">
@@ -13,8 +14,7 @@ class Artist extends React.Component {
 						<p>Nationality: {artist.nationality}</p>
 						<img className="img-fluid" src={artist.photo_url}/>
 						<hr/>
-						<p><a href="/artists/">See all Artists</a></p>
-						<p><a href="/songs/">See all Songs</a></p>
+						<a className="btn btn-dark" href={editLink}>Edit Artist</a>
 					</div>
 				</div>
 			</DefaultLayout>
