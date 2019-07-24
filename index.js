@@ -78,7 +78,7 @@ var displayArtists = function(request, response){
 var displayArtistPage = function(request, response){
 
     var artistId = parseInt(request.params.id);
-    console.log(artistId);
+
   // query database for all pokemon
     let queryString = 'SELECT * FROM artists WHERE id = $1';
     let values = [artistId];
@@ -90,7 +90,7 @@ var displayArtistPage = function(request, response){
             response.send( 'query error' );
         }
         else {
-            console.log(result.rows[0]);
+
             var artist = result.rows[0];
 
             var data = {
@@ -125,26 +125,87 @@ var addNewArtist = function(request,response){
 }
 
 var displayEditArtistForm = function(request, response){
+
     var artistId = parseInt(request.params.id);
+    // console.log('in edit, id ' + artistId);
 
     let queryString = 'SELECT * FROM artists WHERE id = $1';
     let values = [artistId];
 
-    pool.query(queryString, (err, result) => {
+    pool.query(queryString, values, (err, result) => {
 
         if (err) {
             console.error('query error:', err.stack);
             response.send( 'query error' );
         }
         else {
-            var artistIdRow = artistId-1;
-            var artist = result.rows[artistIdRow];
+            // var artistIdRow = artistId-1;
+            // var artist = result.rows[artistIdRow];
+
+
+            // console.log('in edit, result.rows');
+            // console.log(result.rows);
+
+            var artist = result.rows[0];
 
             var data = {
               artist : artist
             }
 
-            response.render( 'editArtist', data );
+            response.render( 'editArtist' , data);
+        }
+    });
+}
+
+var acceptArtistChanges = function(request, response){
+
+    var artistId = parseInt(request.params.id);
+    console.log(request.body);
+    let queryString = 'UPDATE artists SET name=$1, photo_url=$2,nationality=$3 WHERE id =$4 RETURNING *';
+    let values = [request.body.name, request.body.photo_url, request.body.nationality, artistId];
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        }
+        else {
+            // var artistIdRow = artistId-1;
+            // var artist = result.rows[artistIdRow];
+
+
+            // console.log('in edit, result.rows');
+            // console.log(result.rows);
+
+            var artist = result.rows[0];
+
+            var data = {
+              artist : artist
+            }
+            // response.send( 'yay');
+            response.render( 'artistPage' , data);
+        }
+    });
+}
+
+
+var acceptArtistDelete = function(request, response){
+
+    var artistId = parseInt(request.params.id);
+    console.log(request.body);
+    let queryString = 'DELETE from artists WHERE id= $1';
+    let values = [artistId];
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        }
+        else {
+
+            response.redirect('/artists');
         }
     });
 }
@@ -163,17 +224,16 @@ app.get('/artists/new', displayAddArtistForm);
 app.post('/artists/', addNewArtist);
 
 app.get('/artists/:id', displayArtistPage);
-// app.get('/artists/:id/edit', displayEditArtistForm);
-
-// app.put('/artists/:id', acceptArtistChanges);
-// app.delete('/artists/:id', acceptArtistDelete);
+app.get('/artists/:id/edit', displayEditArtistForm);
+app.put('/artists/:id', acceptArtistChanges);
+app.delete('/artists/:id', acceptArtistDelete);
 
 /**
  * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const server = app.listen(4200, () => console.log('~~~ Tuning in to the waves of port 4200 ~~~'));
 
 let onClose = function(){
 
