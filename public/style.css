@@ -1,0 +1,79 @@
+body{
+	background-color: #C14953;
+}
+
+.main-display{
+	background-color: white;
+	min-height: 100vh;
+}
+
+.banner {
+	background-image: url('/banner.png');
+	height:300px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#navbar {
+	font-size: 1.4rem;
+}
+
+
+.showall {
+	display:flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.artistsprofile {
+	width: 31%;
+	height: auto;
+}
+
+.artistsprofile img {
+	width: 85%;
+	height: auto;
+}
+
+.newartists  {
+	text-align: center;
+}
+
+.newartists input {
+	width: 70%;
+	margin: 0 auto;
+
+}
+
+.editartist p {
+	text-align: center;
+	font-size:1.2rem;
+}
+
+.editartist a {
+	text-align: center;
+	font-size:1.2rem;
+	display:block;
+	margin-bottom: 2%;
+}
+
+#editimage {
+	width: 100%;
+	height: auto;
+}
+
+.formbuttons {
+	text-align: center;
+}
+
+.formbuttons p{
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+
+.editbutton, .deletebutton {
+	display: inline-block;
+}
+
+
+
