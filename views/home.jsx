@@ -1,16 +1,19 @@
 var React = require("react");
 
-class Home extends React.Component {
+class DisplaySongs extends React.Component {
   render() {
-    return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
-    );
-  }
-}
 
-module.exports = Home;
+    const artistSongs = this.props.songs;
+
+    let allSongs = artistSongs.map(obj => {
+
+        return <div class = "singleSong-container">
+                <h2> {obj.title} </h2>
+
+
+
+    }); //all Songs CT
+
+
+
+module.exports = DisplaySongs;
