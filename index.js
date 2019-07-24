@@ -200,7 +200,53 @@ app.delete("/artists/:id", (request, response) => {
 
 
 
+app.get('/artists/:id/songs', (request, response) =>{
 
+    let artistID = request.params.id;
+
+    let queryString = `SELECT * FROM artists WHERE id = '${artistID}'`
+    let queryString2 = `SELECT * FROM songs WHERE artist_id = '${artistID}'`
+
+    let data = {
+        artist: '',
+        songs: ''
+    }
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+
+        } else {
+          // console.log('query result:', result.rows[0].title);
+          // response.send(result.rows);
+          data.artist = result.rows[0];
+          console.log(data.artist)
+
+          // 2nd SQL Query Here:
+            pool.query(queryString2, (err, result) => {
+
+                if (err) {
+                  console.log('query error:', err.stack);
+                  response.send( 'query error' );
+
+                } else {
+                  data.songs = result.rows;
+
+                  response.render('songList', data)
+                }
+            });
+        }
+    });
+
+
+});
+
+app.get('/artists/:id/songs/new', (request, response) =>{
+
+    response.send('get the form!')
+});
 
 
 /**
