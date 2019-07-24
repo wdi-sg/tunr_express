@@ -48,13 +48,13 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-// app.get('/', (request, response) => {
-//     response.send('Hello World');
-// });
+app.get('/', (request, response) => {
+    response.redirect("/artist");
+});
 
 //index for artists
 
-app.get('/', (request, response) => {
+app.get('/artist', (request, response) => {
     console.log('showing artists index');
 
     let queryString = "select id, name from artists";
@@ -78,7 +78,34 @@ app.get('/', (request, response) => {
     });
 });
 
-// app.get('/new', (request, response) => {
+app.get('/artist/:id', (request, response) => {
+    console.log('showing each artist by id');
+
+    let Id = parseInt(request.params.id);
+    console.log(Id);
+    let queryString = "select * from artists where id="+Id;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result);
+
+        const data = {
+            artistId : result.rows[0].id,
+            artistName : result.rows[0].name,
+            artistImg : result.rows[0].photo_url,
+            artistNat : result.rows[0].nationality
+        };
+        console.log(data);
+        response.render('artist', data);
+        }
+    });
+});
+
+// app.get('/artist/new', (request, response) => {
 //   // respond with HTML page with form to create new pokemon
 //   response.render('new');
 // });
