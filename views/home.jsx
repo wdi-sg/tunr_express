@@ -4,8 +4,13 @@ class Home extends React.Component {
   render() {
      console.log(this.props.artists);
 
-     let artistList = this.props.artists.map(artist => {
-        return (<li>{artist.name}</li>)
+     let artistList = this.props.artists.map((artist,i) => {
+        return (
+            <div>
+                <a href={`/artist/${i+1}`}>
+                <li>{artist.name}</li>
+                </a>
+            </div>)
      });
      // console.log("artist name: ", artistsList[0].name);
 

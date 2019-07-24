@@ -78,6 +78,34 @@ app.get('/artist', (request, response) => {
     });
 });
 
+//create new artist
+app.get('/artist/new', (request, response) => {
+  console.log('getting form');
+  response.render('new');
+});
+
+app.post('/artist/new', (request, response) => {
+    console.log('sending info');
+
+    console.log(request.body);
+
+    let queryString = "insert into artists (name, photo_url, nationality) values ($1, $2, $3)";
+
+    const values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+            console.log('query result:', result);
+            response.redirect("/artist");
+        }
+    });
+});
+
+//display each artist
 app.get('/artist/:id', (request, response) => {
     console.log('showing each artist by id');
 
@@ -105,10 +133,14 @@ app.get('/artist/:id', (request, response) => {
     });
 });
 
-// app.get('/artist/new', (request, response) => {
-//   // respond with HTML page with form to create new pokemon
-//   response.render('new');
-// });
+
+
+//edit artist
+
+
+//delete artist
+
+
 
 
 /**
