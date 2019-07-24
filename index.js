@@ -112,8 +112,7 @@ app.get('/artists/:id', (request, response) => {
 
 /* ==== Request Edit Individual Artist ==== */
 app.get('/artists/:id/edit', (request, response) => {
-    artistId = parseInt(request.params.id);
-
+    let artistId = parseInt(request.params.id);
     let values = [artistId];
     let queryString = "SELECT * FROM artists WHERE id =$1";
 
@@ -149,8 +148,28 @@ app.put('/artists/:id', (request, response) => {
 
 /* ==== Request Delete Artist ==== */
 app.get('/artists/:id/delete', (request, response) => {
-    let id = parseInt(request.params.id);
-    let queryString = 'DELETE from artists WHERE artist_id = $1';
+    let artistId = parseInt(request.params.id);
+    let values = [artistId];
+    let queryString = "SELECT * FROM artists WHERE id =$1";
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('loading individual artist delete page');
+            response.render('delete.jsx', result);
+        }
+    });
+})
+
+/* ==== Accepting Delete Request ==== */
+app.delete('/artists/:id', (request, response) => {
+    // let byeArtist = request.body;
+    let id = request.params.id;
+    //just finding by id should be fineeeeee
+    let queryString = 'DELETE from artists WHERE id = $1';
     let values = [id];
 
     pool.query(queryString, values, (err, result) => {
@@ -158,12 +177,12 @@ app.get('/artists/:id/delete', (request, response) => {
             console.log(err);
             response.send("query error");
         } else {
-            console.log("artist successfully deleted!")
+            console.log("artist has been deleted!")
             response.redirect('/artists');
         }
     })
-})
 
+});
 
 /**
  * ===================================
