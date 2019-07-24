@@ -6,7 +6,7 @@ class Artist extends React.Component {
     let item = this.props.artists;
     let editUrl = "/artist/"+item.id+"/edit";
     let deleteUrl = "/artist/"+item.id+"?_method=delete";
-    let addSongUrl = "/artist/"+item.id+"/songs/new";
+    let songList = "/artist/"+item.id+"/songs";
     return (
       <Default title={this.props.title}>
         <div className="solo-artist">
@@ -22,11 +22,11 @@ class Artist extends React.Component {
                 </tr>
             </table>
             <div className="choices">
+                <form action={songList}>
+                    <input type="submit" value="Songs"/>
+                </form>
                 <form action={editUrl}>
                     <input type="submit" value="Edit"/>
-                </form>
-                <form  action={addSongUrl}>
-                    <input type="submit" value="Add New Song"/>
                 </form>
                 <form method="POST" action={deleteUrl}>
                     <input type="submit" value="Delete"/>

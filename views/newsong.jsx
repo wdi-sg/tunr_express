@@ -4,6 +4,9 @@ var Default = require("./layout/default");
 class Add extends React.Component {
   render() {
     let url = '/artist/'+this.props.id+'/songs'
+    let artistList = this.props.artists.map(x=>{
+        return <option value={x.id}>{x.name}</option>
+    })
     return (
       <Default title={this.props.title}>
       <div className="solo-artist">
@@ -24,6 +27,12 @@ class Add extends React.Component {
                     <tr>
                         <th scope="row">Artwork</th>
                         <td><input type="text" name="artwork"/></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Artist</th>
+                        <td><select name="artist">
+                            {artistList}
+                        </select></td>
                     </tr>
                     <input type="text" name="artist_id" value={this.props.id}hidden/>
                 </table>

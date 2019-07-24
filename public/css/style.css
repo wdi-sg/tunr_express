@@ -26,10 +26,26 @@
 .choices{
     display:flex;
     justify-content: space-around;
+    flex-direction:column;
+    height:200px;
+    align-items:center;
 }
 
 .table input{
     width:100%;
 }
 
+.add-to-playlist{
+    margin:0 auto;
+}
+
+.add-to-playlist select{
+    display:block;
+    margin:0 auto;
+}
+
+.add-to-playlist input{
+    display:block;
+    margin:0 auto;
+}
 
