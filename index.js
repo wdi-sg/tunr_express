@@ -115,6 +115,19 @@ const editArtist = (req,res) => {
 	})
 };
 
+const deleteArtist = (req,res) => {
+	let query = "DELETE from artists WHERE id=$1";
+	let values = [parseInt(req.params.id)];
+	pool.query(query,values, (err,results)=> {
+		if (err) {
+			console.log("ERROR: "+ err);
+		}
+		else {
+			res.redirect('/artists/');
+		}
+	})
+};
+
 /* Routes */
 app.get('/', showHome);
 
@@ -127,6 +140,8 @@ app.get('/artists/:id/edit', editArtistForm);
 app.get('/artists/:id', showArtist);
 
 app.post('/artists/', addArtist);
+
+app.delete('/artists/:id', deleteArtist);
 
 app.put('/artists/:id', editArtist);
 
