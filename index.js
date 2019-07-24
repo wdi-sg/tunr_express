@@ -44,6 +44,7 @@ app.get('/artists', (request, response) => {
                 artistsKey : result.rows
             };
             response.render('home', data);
+            // response.send(data);
   }
 });
 });
@@ -78,9 +79,9 @@ app.get('/artists/:id', (request, response) => {
 });
 });
 
-// app.get('/new', (request, response) => {
-//   response.render('new');
-// });
+app.get('/artist/new', (request, response) => {
+    response.render('new');
+});
 
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
