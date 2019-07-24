@@ -2,32 +2,43 @@ var React = require("react");
 
 class Edit extends React.Component {
   render() {
-            var imageStyle = {
-                height:'200px',
-                width:'300px'
-                }
             var url = '/homepage/'+this.props.result.id+'?_method=PUT';
             var urlHome ='/homepage';
+            var urlProfile = '/homepage/'+this.props.result.id;
             return (
                 <html>
                     <head>
-                        <body>
-                            <h1>EDIT</h1>
-                            <a href={urlHome}>Home</a>
-                            <br />
-                            <img style={imageStyle} src={this.props.result.photo_url}/>
-                            <form method="POST" action={url}>
-                                <p>name</p>
-                                <input name="name" defaultValue={this.props.result.name}/>
-                                <p>img</p>
-                                <input name="photo_url" defaultValue={this.props.result.photo_url}/>
-                                <p>height</p>
-                                <input name="nationality" defaultValue={this.props.result.nationality}/>
-                                <br />
-                                <button type="submit">submit</button>
-                            </form>
-                        </body>
+                        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+                        <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed|Permanent+Marker&display=swap" rel="stylesheet"/>
+                        <link rel="stylesheet" type="text/css" href="/style3.css"/>
                     </head>
+                        <body>
+                            <div className="containertop row">
+                                <div className="col-4">
+                                    <a href={urlHome}><h1>!!ARTISTS!!</h1></a>
+                                </div>
+                                <div className="col-4">
+                                    <h3>Edit Entry</h3>
+                                </div>
+                                <div className="col-4">
+                                    <a href={urlProfile}><h1>!!Profile!!</h1></a>
+                                </div>
+                            </div>
+                            <img src={this.props.result.photo_url}/>
+                            <div className="containermid">
+                                <form method="POST" action={url}>
+                                    <h4>Artist name</h4>
+                                    <input name="name" defaultValue={this.props.result.name}/>
+                                    <h4>Photo_url</h4>
+                                    <input name="photo_url" defaultValue={this.props.result.photo_url}/>
+                                    <h4>Nationality</h4>
+                                    <input name="nationality" defaultValue={this.props.result.nationality}/>
+                                    <br />
+                                    <br />
+                                    <button type="submit">submit</button>
+                                </form>
+                            </div>
+                        </body>
               </html>
             );
           }
