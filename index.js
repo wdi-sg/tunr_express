@@ -83,11 +83,58 @@ app.get('/artist', (request, response) => {
 
 })
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+//create an artist, link to create-artist
+app.get('/artist/new', (request, response) => {
+
+    response.render('create-artist');
 });
 
+//create an artist, get info from create-artist, redirect to home?
+app.post('/artist/new', (request, response) => {
+    let artist = request.body;
+    let queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
+    let values = [artist.name, artist.photo_url, artist.nationality];
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else{
+            console.log(result.rows[0]);
+            response.redirect('/');
+        }
+    })
+
+})
+
+//edit an artist, get id info from home, link to edit-artist
+app.get('/artist/edit', (request, response) => {
+    let id = request.query.edit;
+    let queryString = `SELECT * FROM artists WHERE id = ${id}`;
+    pool.query(queryString, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else{
+            let data = result.rows[0];
+            response.render('edit-artist', data);
+        }
+    })
+
+})
+
+app.put('/artist/edit', (request, response) => {
+    let data = request.body;
+    let id = parseInt(request.body.id);
+    let queryString = `UPDATE artists SET name = '${data.name}', photo_url = '${data.photo_url}', nationality = '${data.nationality}' WHERE id = ${id} RETURNING *`;
+    pool.query(queryString, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else{
+            // console.log(result.rows[0]);
+            response.redirect('/');
+        }
+    })
+
+
+})
 
 
 

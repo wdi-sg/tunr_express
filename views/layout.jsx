@@ -26,12 +26,12 @@ class Layout extends React.Component {
                   </li>
 
                   <li class="nav-item">
-                    <a class="nav-link" href="/recipes/new">Create a recipe</a>
+                    <a class="nav-link" href="/artist/new">Input an artist</a>
                   </li>
 
-                  <form class="form-inline my-2 my-lg-0" method="GET" action="/recipes/edit">
-                      <input class="form-control mr-sm-2" name="edit" type="search" placeholder="Edit recipe by ID" aria-label="Search"/>
-                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Edit recipe</button>
+                  <form class="form-inline my-2 my-lg-0" method="GET" action="/artist/edit">
+                      <input class="form-control mr-sm-2" name="edit" type="search" placeholder="Edit artist by ID" aria-label="Search"/>
+                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Edit artist</button>
                   </form>
 
 
