@@ -5,6 +5,7 @@ class Homepage extends React.Component {
   render() {
     return (
         <Layout>
+
         {this.props.rows.map(artist =>
 
         <div class="col-md-4">
@@ -15,8 +16,8 @@ class Homepage extends React.Component {
               <p class="card-text">{artist.nationality}</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <a href={"/artist/"+artist.id} class="btn btn-sm btn-outline-secondary">View</a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                  <a href={"/artist/"+artist.id+"/songs"} class="btn btn-sm btn-outline-secondary">View</a>
+                  <a href={"/artist/"+artist.id+"/edit"} class="btn btn-sm btn-outline-secondary">Edit</a>
                 </div>
                 <small class="text-muted">x mins</small>
               </div>
@@ -26,7 +27,9 @@ class Homepage extends React.Component {
             </div>
           </div>
         </div>
+
         )}
+
         </Layout>
     );
   }

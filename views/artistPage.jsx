@@ -10,8 +10,24 @@ const thStyle = {
 
 class ArtistPage extends React.Component {
   render() {
+
+    // let component = (<p>Add songs!</p>);
+
+    // if (this.props.rows.length === 0) {
+    //     component = (<p>No Songs Found!</p>);
+    // } else {
+    //     component = null;
+    // }
+    // {component}
+
     return (
         <Layout>
+
+            <div class="text-center">
+            <h2>{this.props.rows[0].name}</h2>
+            <a href={'/artist/'+this.props.rows[0].id+'/songs/new'} class="btn btn-secondary my-2">Add New Song</a>
+            <img src={this.props.rows[0].photo_url} class="img-thumbnail rounded mx-auto d-block"/>
+            </div>
 
             <table class="table table-sm table-striped table-dark table-hover">
               <thead>
@@ -45,28 +61,3 @@ class ArtistPage extends React.Component {
 }
 
 module.exports = ArtistPage;
-
-// <div class="col-md-4">
-//           <div class="card mb-4 shadow-sm">
-//             <img src={song.artwork} class="img-thumbnail"/>
-//             <div class="card-body">
-//               <h2>{song.title}</h2>
-//               <p class="card-text">{song.album}</p>
-//               <div class="d-flex justify-content-between align-items-center">
-//                   <audio style={audioStyle} controls>
-//                       <source src={song.preview_link} type="audio/mpeg"/>
-//                   </audio>
-//               </div>
-//               <div class="d-flex justify-content-between align-items-center">
-//                 <div class="btn-group">
-//                   <a href={"/artist/"+song.title} class="btn btn-sm btn-outline-secondary">View</a>
-//                   <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-//                 </div>
-//                 <small class="text-muted">{song.artist_id}</small>
-//               </div>
-//             </div>
-//             <div class="card-footer">
-//                 <small class="text-muted">Last updated 3 mins ago</small>
-//             </div>
-//           </div>
-//         </div>

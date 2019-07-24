@@ -55,8 +55,8 @@ class Layout extends React.Component {
               <h1 class="jumbotron-heading">My Collection</h1>
               <p class="lead text-muted">Browse discography and songs by your favourite artists. TUNR bitchesss!</p>
               <p>
-                <a href={'/'} class="btn btn-primary my-2">Artists</a>
-                <a href="#" class="btn btn-secondary my-2">Songs</a>
+                <a href={'/'} class="btn btn-primary my-2">Browse by Artists</a>
+                <a href={'/artist/new'} class="btn btn-secondary my-2">Add New Artist</a>
               </p>
             </div>
           </section>
