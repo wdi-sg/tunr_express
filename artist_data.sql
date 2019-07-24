@@ -1,3 +1,8 @@
+INSERT INTO artists(name, photo_url, nationality) VALUES('Yeah Yeah Yeahs', 'http://www.athousandguitars.com/wp-content/uploads/2013/04/yeah-yeah-yeahs.jpg', 'USA');
+INSERT INTO artists(name, photo_url, nationality) VALUES('Nosaj Thing', 'http://wertn.com/wp-content/uploads/2012/04/Nosaj-Thing_Mondrian_CL_High-3487.jpg', 'USA');
+INSERT INTO artists(name, photo_url, nationality) VALUES('Norah Jones', 'http://entertainmentrealm.files.wordpress.com/2012/05/norahjones1.jpg', 'USA');
+INSERT INTO artists(name, photo_url, nationality) VALUES('Lykke Li', 'http://www.chartattack.com/wp-content/uploads/2012/07/lykke-li-newmain1-photo-by-daniel-jackson.jpg', 'Sweeden');
+INSERT INTO artists(name, photo_url, nationality) VALUES('Kendrick Lamar', 'http://www.xxlmag.com/wp-content/uploads/2013/06/kendricklamar_001-1600.jpg', 'USA');
 INSERT INTO artists(name, photo_url, nationality) VALUES('Joji', 'https://i.ytimg.com/vi/K3Qzzggn--s/maxresdefault.jpg', 'USA');
 INSERT INTO artists(name, photo_url, nationality) VALUES('Rich Brian', 'https://media.pitchfork.com/photos/593ed2dc0a5910182b272314/2:1/w_790/8557c081.jpg', 'USA');
 INSERT INTO artists(name, photo_url, nationality) VALUES('Niki', 'https://images.washingtonpost.com/?op=resize&url=https%3A%2F%2Fs3.amazonaws.com%2Farc-wordpress-client-uploads%2Fsac%2Fwp-content%2Fuploads%2F2018%2F05%2F10150847%2Fnikicropped.jpg&mode=crop&w=1200&q=75&token=bar', 'USA');

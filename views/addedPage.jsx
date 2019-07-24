@@ -13,5 +13,4 @@ class Added extends React.Component {
   }
 }
 
-
 module.exports = Added;

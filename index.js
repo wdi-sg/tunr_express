@@ -55,7 +55,7 @@ app.get('/', (request, response) => {
 });
 
 //Request for all artists page
-app.get('/artists', (request, response) => {
+app.get('/artist', (request, response) => {
     let text = `select * from artists ORDER BY id ASC`;
 
     pool.query(text, (err, result) =>{
@@ -72,8 +72,8 @@ app.get('/artists', (request, response) => {
     })
 });
 
-//Request for single artist
-app.get('/artists/:id', (request, response) =>{
+//Request to display single artist
+app.get('/artist/:id', (request, response) =>{
     artistId = parseInt(request.params.id);
     let text = `select * from artists where id = '${artistId}'`;
 
@@ -113,7 +113,7 @@ app.post('/new', (request, response) => {
 });
 
 //Request edit page
-app.get ('/artists/:id/edit', (request, response) => {
+app.get ('/artist/:id/edit', (request, response) => {
     artistId = parseInt(request.params.id);
 
     let text = `select * from artists where id = '${artistId}'`;
@@ -131,11 +131,11 @@ app.get ('/artists/:id/edit', (request, response) => {
 });
 
 //Put to accept edit
-app.put('/artists/:id', (request, response) => {
+app.put('/artist/:id', (request, response) => {
     let editedArtist = request.body;
 
     let text = `UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = '${artistId}'`;
-    let values = [request.body.name, request.photo_url, request.body.nationality];
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
 
 
     pool.query(text, values, (err, result) =>{
@@ -156,7 +156,7 @@ app.put('/artists/:id', (request, response) => {
 
 
 //Request to delete artist
-app.get('/artists/:id/delete', (request, response) =>{
+app.get('/artist/:id/delete', (request, response) =>{
     artistId = parseInt(request.params.id);
 
     let text = `select * from artists where id = '${artistId}'`;
@@ -174,7 +174,7 @@ app.get('/artists/:id/delete', (request, response) =>{
 });
 
 //Delete artist
-app.delete('/artists/:id/', (request, response) =>{
+app.delete('/artist/:id/', (request, response) =>{
 
     let text = `DELETE FROM artists WHERE id = '${artistId}'`;
 
@@ -193,6 +193,37 @@ app.delete('/artists/:id/', (request, response) =>{
         }
     });
 });
+
+
+//Request to display songs of single artist
+app.get('/artist/:id/songs', (request, response)=>{
+    artistId = parseInt(request.params.id);
+    let text = `select * from songs where artist_id = '${artistId}'`;
+
+    pool.query(text, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            let songList = result.rows;
+
+            //Find artist's name
+            let text = `select * from artists where id = '${artistId}'`;
+            pool.query(text, (err,result)=>{
+                if (err) {
+                    console.log("query error", err.message);
+                }
+                else {
+                    const data = {
+                        songs: songList,
+                        artist: result.rows[0]
+                    };
+                    response.render('singleArtistSongs', data);
+                }
+            })
+        }
+    });
+})
 
 
 

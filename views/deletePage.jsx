@@ -3,7 +3,7 @@ var Layout = require('./components/layout.jsx');
 
 class Delete extends React.Component {
   render() {
-    let url = "/artists/"+this.props.id+"?_method=DELETE";
+    let url = "/artist/"+this.props.id+"?_method=DELETE";
 
     return(
         <Layout>

@@ -25,11 +25,11 @@ class Layout extends React.Component {
               <div class="submit-nav collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link" href="/artists">Home</a>
+                    <a class="nav-link" href="/artist">Home</a>
                   </li>
                   </ul>
                   </div>
-                  <a class="navbar-brand" href="/artists">88↑</a>
+                  <a class="navbar-brand" href="/artist">88↑</a>
                   <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
                   <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                   <li class="nav-item">

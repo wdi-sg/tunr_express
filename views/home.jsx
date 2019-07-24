@@ -4,7 +4,7 @@ var Layout = require('./components/layout.jsx');
 class Home extends React.Component {
   render() {
     const artistCards = this.props.artists.map(artists =>{
-        let artistPage = "/artists/"+artists.id;
+        let artistPage = "/artist/"+artists.id;
         return (
             <div className = "artistCards">
                 <a href = {artistPage}>

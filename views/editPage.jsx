@@ -3,7 +3,7 @@ var Layout = require('./components/layout.jsx');
 
 class Edit extends React.Component {
   render() {
-    let url = "/artists/"+this.props.id+"?_method=PUT";
+    let url = "/artist/"+this.props.id+"?_method=PUT";
 
     return(
         <Layout>

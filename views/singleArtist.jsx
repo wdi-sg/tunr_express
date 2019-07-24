@@ -3,8 +3,8 @@ var Layout = require('./components/layout.jsx');
 
 class singleArtist extends React.Component {
   render() {
-        let editurl = "/artists/" + this.props.id + "/edit";
-        let deleteurl = "/artists/" + this.props.id + "/delete";
+        let editurl = "/artist/" + this.props.id + "/edit";
+        let deleteurl = "/artist/" + this.props.id + "/delete";
 
 
     return(
