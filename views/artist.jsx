@@ -18,7 +18,10 @@ class Artist extends React.Component {
           </div>
 
             <p>{this.props.artistName}<br/></p>
-                <p>{this.props.artistNat}<br/></p>
+            <p>{this.props.artistNat}<br/></p>
+            <form action="/artist/edit">
+            <button type="button">Edit artist info</button>
+          </form>
       </body>
       </html>
       );

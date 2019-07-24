@@ -141,6 +141,31 @@ app.get('/artist/:id', (request, response) => {
 //delete artist
 
 
+//display list of songs by the artist
+app.get('/artist/:id/songs', (request, response) => {
+    console.log('showing all songs by artist');
+
+    let Id = parseInt(request.params.id);
+    console.log(Id);
+    let queryString = "select title from songs where artist_id="+Id;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result);
+
+        const data = {
+            artistSongs : result.rows
+        };
+        console.log('getting data');
+        console.log(data);
+        response.render('songs', data);
+        }
+    });
+});
 
 
 /**

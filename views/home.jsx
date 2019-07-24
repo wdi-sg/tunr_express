@@ -20,6 +20,14 @@ class Home extends React.Component {
           <h1>Welcome!</h1>
           <h2>List of artists</h2>
           <ul>{artistList}</ul>
+          <form action="/artist/new" method="GET">
+            <button type="button">Add a new artist</button>
+          </form>
+
+          <form action="/artist/delete" method="GET">
+            <button type="button">Delete an artist</button>
+          </form>
+
         </body>
       </html>
     );
