@@ -97,6 +97,15 @@ app.get('/artist', (request, response) => {
 
 
 // ===================================
+// Display a New Artist Form
+// ===================================
+app.get('/artist/new', (request, response) => {
+    response.render(newpage);
+});
+
+
+
+// ===================================
 // Show individual Artist
 // ===================================
 app.get('/artist/:id', (request, response) => {
@@ -119,15 +128,6 @@ app.get('/artist/:id', (request, response) => {
             response.render(artistpage, data);
         }
     });
-});
-
-
-
-// ===================================
-// Display a New Artist Form
-// ===================================
-app.get('/new', (request, response) => {
-    response.render(newpage);
 });
 
 
@@ -232,7 +232,6 @@ app.get('/artist/:id/delete', (request, response) => {
 
 
 
-
 /**
  * ===================================
  * Delete artist from database
@@ -257,8 +256,33 @@ app.delete('/artist/:id', (request, response) => {
 
 
 
+/**
+ * ========================================
+ * Displays a list of songs for selected artist
+ * ========================================
+ */
 
+ app.get('/artist/:id/songs', (request, response) => {
 
+    let index = parseInt(request.params. id);
+
+    const queryString = `SELECT * FROM songs WHERE artist_id=$1`;
+    let values = [index];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+
+            let data = {
+                artists: result.rows
+            };
+
+            response.send(data);
+        }
+    });
+});
 
 
 
