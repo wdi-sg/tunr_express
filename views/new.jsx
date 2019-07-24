@@ -14,7 +14,7 @@ class Newartist extends React.Component {
         </header>
         <body>
           <div className = "create-artist">
-                <form action="/artist "method="POST" className = "form-container">
+                <form action="/artists" method="POST" className = "form-container">
                     <h2>Name</h2>
                     <input type="text" name="name"/>
 

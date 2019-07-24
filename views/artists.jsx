@@ -4,12 +4,14 @@ class Artistspage extends React.Component {
   render() {
 
     const artistCards = this.props.rows.map(artist =>{
-        // let pokePage = "/pokemon/" + pokemon.num;
+        let artistPage = "/artists/" + artist.id;
         return (
                 <div className="artist-card">
+                    <a href={artistPage}>
                         <img src={artist.photo_url}/>
                         <p>{artist.nationality}</p>
                         <h2>{artist.name}</h2>
+                    </a>
                 </div>
         )
     });

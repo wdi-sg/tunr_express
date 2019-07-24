@@ -50,9 +50,8 @@ app.get('/', (request, response) => {
 
 /* ==== Request Artist Index Page ==== */
 app.get('/artists', (request, response) => {
-
     console.log("now getting artists");
-    const queryString = "SELECT * FROM artists";
+    let queryString = "SELECT * FROM artists order by id";
 
     pool.query(queryString, (err, result) => {
 
@@ -70,6 +69,26 @@ app.get('/artists', (request, response) => {
 /* ==== Request CREATE Individual Artist Page ==== */
 app.get('/artists/new', (request, response) => {
     response.render('new.jsx');
+});
+
+/* ==== POSTING Individual Artist Page ==== */
+app.post('/artists', (request, response) => {
+    let newArtist = request.body;
+    console.log(newArtist);
+
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+    let queryString = "INSERT INTO artists(name,photo_url,nationality)VALUES($1,$2,$3)";
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.send("query error");
+        } else {
+            console.log("artist successfully added!")
+            // let url = "/artists/" + newArtist.id;
+            response.redirect('/artists');
+        }
+    })
 });
 
 /* ==== Request Individual Artist Page ==== */
@@ -95,8 +114,56 @@ app.get('/artists/:id', (request, response) => {
 app.get('/artists/:id/edit', (request, response) => {
     artistId = parseInt(request.params.id);
 
+    let values = [artistId];
+    let queryString = "SELECT * FROM artists WHERE id =$1";
 
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('loading individual artist edit page');
+            response.render('edit.jsx', result);
+        }
+    });
 });
+
+/* ==== Accepting Edit Individual Request ==== */
+app.put('/artists/:id', (request, response) => {
+    let id = request.params.id;
+    let editedArtist = request.body;
+    let text = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id = $4';
+    let values = [request.body.name, request.body.photo_url, request.body.nationality, id];
+
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.send("query error");
+        } else {
+            console.log("artist successfully edited!")
+            response.redirect('/artists');
+        }
+    })
+});
+
+/* ==== Request Delete Artist ==== */
+app.get('/artists/:id/delete', (request, response) => {
+    let id = parseInt(request.params.id);
+    let queryString = 'DELETE from artists WHERE artist_id = $1';
+    let values = [id];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.send("query error");
+        } else {
+            console.log("artist successfully deleted!")
+            response.redirect('/artists');
+        }
+    })
+})
+
 
 /**
  * ===================================
