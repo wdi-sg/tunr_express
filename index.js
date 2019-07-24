@@ -85,6 +85,27 @@ app.post('/artists', (request, response) => {
     });
 });
 
+//get songs from an artist
+app.get('/artists/:id/songs', (request, response) => {
+    var inputId = parseInt(request.params.id);
+    //let queryString1 = "SELECT name FROM artists WHERE id = ($1)";
+    let queryString2 = "SELECT * FROM songs WHERE artist_id = ($1)";
+    var idVal = [inputId];
+    console.log(idVal);
+    pool.query(queryString2, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            const data = {
+                //artistName : res.rows[0].name,
+                songs : res.rows
+            };
+            console.log(data);
+            response.render('songs', data);
+        }
+    });
+});
+
 //edit an artist
 app.get('/artists/:id/edit', (request, response) => {
     var inputId = parseInt(request.params.id);

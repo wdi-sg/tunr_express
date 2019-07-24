@@ -12,7 +12,7 @@ class Oneartist extends React.Component {
                     <p>Artist Name: {this.props.artist.name}</p>
                     <p>Artist Nationality: {this.props.artist.nationality}</p>
                     <p>Image: <img src={`${this.props.artist.photo_url}`} height="200" width="200" /></p>
-                    <p>--</p>
+                    <p>--</p><a href={`/artists/${this.props.artist.id}/songs`}>Songs by this artist</a><br />
                     <a href={`/artists/${this.props.artist.id}/edit`}>Edit this artist</a><br />
                     <a href={`/artists/${this.props.artist.id}/delete`}>Delete this artist</a>
 
