@@ -2,7 +2,9 @@ var React = require("react");
 
 class NewSong extends React.Component {
   render() {
-    let url = "/artist/:" + this.props.songs.artistId + "/songs";
+    let url = "/artist/" + this.props.idKey + "/songs";
+    console.log("what the hell: "+ this.props.idKey);
+    console.log("url:", url);
     return (
       <html>
         <head />
@@ -10,6 +12,9 @@ class NewSong extends React.Component {
           <h3>Form Goes Here!</h3>
           <h1>Add New Song!</h1>
               <form method="POST" action={url}>
+
+               <p>Artist Id: </p>
+                <input className="artist-id" type="number" name="artist_id" placeholder="choose artist" />
 
                 <p>Song Title: </p>
                 <input className="song-title" type="text" name="title" placeholder="enter song title" />
@@ -22,9 +27,6 @@ class NewSong extends React.Component {
 
                 <p>Artwork </p>
                 <input className="song-artwork" type="text" name="artwork" placeholder="enter song artwork image link" />
-
-                 <p>Artist Id: </p>
-                <input className="artist-id" type="number" name="artist_id" placeholder="enter a number" />
 
                 <input className="submit-btn" type="submit" value="Add" />
               </form>
