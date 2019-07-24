@@ -51,6 +51,7 @@ const newpage = 'new.jsx';
 const editpage = 'edit.jsx';
 const deletepage = 'delete.jsx';
 const songpage = 'songs.jsx';
+const newsongpage = 'newsong.jsx';
 
 
 /**
@@ -58,6 +59,58 @@ const songpage = 'songs.jsx';
  * Routes
  * ===================================
  */
+
+
+ // ===================================
+// Display create new song form
+// ===================================
+app.get('/artist/:id/songs/new', (request, response) => {
+
+    let index = parseInt(request.params.id);
+
+    const queryString = `SELECT * FROM songs WHERE artist_id=$1`;
+    let values = [index];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+
+            let data = {
+                artistId : index,
+                songs : result.rows[0]
+            };
+            response.render(newsongpage, data);
+        }
+    });
+});
+
+
+// =========================================
+// Add new song to database
+// ==========================================
+app.post('/artist/:id/songs', (request, response) => {
+
+    const queryString = `INSERT INTO songs (title, album, preview_link, artwork, artist_id ) VALUES ($1, $2, $3, $4, $5)`;
+    let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            console.log(err);
+        } else {
+
+            // let data = {
+            //     songs: result.rows[0]
+            // };
+
+            console.log("send response");
+            response.send(result.rows[0]);
+        }
+    }); ////// end of writing to database //////
+});
+
 
 
 // ===================================
@@ -104,6 +157,31 @@ app.get('/artist/new', (request, response) => {
 });
 
 
+// =========================================
+// Add new artist to database
+// ==========================================
+app.post('/artist', (request, response) => {
+
+    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)`;
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            console.log(err);
+        } else {
+
+            let data = {
+                artist: result.rows[0]
+            };
+
+            console.log("send response");
+            response.render(artistpage, data);
+        }
+    }); ////// end of writing to database //////
+});
+
+
 
 // ===================================
 // Show individual Artist
@@ -130,31 +208,6 @@ app.get('/artist/:id', (request, response) => {
     });
 });
 
-
-
-// =========================================
-// Add new artist to database
-// ==========================================
-app.post('/artist', (request, response) => {
-
-    const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)`;
-    let values = [request.body.name, request.body.photo_url, request.body.nationality];
-
-    pool.query(queryString, values, (err, result) => {
-        if (err) {
-            console.log('query error:', err.stack);
-            console.log(err);
-        } else {
-
-            let data = {
-                artist: result.rows[0]
-            };
-
-            console.log("send response");
-            response.render(artistpage, data);
-        }
-    }); ////// end of writing to database //////
-});
 
 
 
@@ -256,11 +309,10 @@ app.delete('/artist/:id', (request, response) => {
 
 
 
-/**
- * ========================================
- * Displays a list of songs for selected artist
- * ========================================
- */
+
+// =============================================
+// Displays a list of songs for selected artist
+// ==============================================
 
  app.get('/artist/:id/songs', (request, response) => {
 
@@ -282,6 +334,14 @@ app.delete('/artist/:id', (request, response) => {
         }
     });
 });
+
+
+
+
+
+
+
+
 
 
 
