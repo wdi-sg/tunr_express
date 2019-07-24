@@ -1,7 +1,7 @@
 var React = require("react");
 var Layout = require('./components/layout.jsx');
 
-class New extends React.Component {
+class NewArtist extends React.Component {
   render() {
     return (
       <Layout>
@@ -24,4 +24,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = NewArtist;

@@ -79,6 +79,12 @@ a.navbar-brand{
 	font-size: 1.5rem;
 }
 
+.page-button{
+	display: inline-flex;
+  width: 40%;
+  justify-content: space-between;
+}
+
 .page-footer{
 	bottom: 0;
 	background-color: #515456	;

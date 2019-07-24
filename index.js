@@ -91,10 +91,10 @@ app.get('/artist/:id', (request, response) =>{
 
 //Request to create new artist
 app.get('/new', (request, response) => {
-    response.render('new');
+    response.render('newArtist');
 });
 
-//Post new artist
+//Post to accept new artist
 app.post('/new', (request, response) => {
     let text = `INSERT into artists (name, photo_url, nationality) VALUES ($1, $2, $3)`;
     let values = [request.body.name, request.body.photo_url, request.body.nationality];
@@ -223,7 +223,42 @@ app.get('/artist/:id/songs', (request, response)=>{
             })
         }
     });
-})
+});
+
+//Request to create new song
+app.get('/artist/:id/songs/new', (request, response) => {
+    artistId = parseInt(request.params.id);
+    let text = `select * from artists where id = '${artistId}'`;
+
+    pool.query(text, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+        artistMatchingId = result.rows.find(artists => parseInt(artists.id) === artistId);
+
+            response.render('newSong', artistMatchingId);
+        }
+    });
+});
+
+//Post to accept new song
+app.post('/artist/:id/songs/new', (request, response) => {
+    let text = `INSERT into songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)`;
+    let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.params.id];
+
+    pool.query(text, values, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            const data = {
+                added : request.body
+            }
+            response.redirect('/artist/'+request.params.id+'/songs');
+        }
+    });
+});
 
 
 
