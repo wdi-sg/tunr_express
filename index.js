@@ -109,32 +109,31 @@ app.get('/artists/:id', (request, response) => {
 
 app.get('/new', (request, response) => {
 
+    response.render('form');
 
-
-  response.render('new');
 });
 
-app.get('/recipes/new', (request, response) => {
+app.post('/artists', (request, response) => {
 
-    jsonfile.readFile(file, (err,obj) => {
+    let queryString = "INSERT INTO artists (name, photo_url, nationality, info) VALUES ($1, $2, $3, $4)"
+    let values = [request.body.name, request.body.photo_url, request.body.nationality, request.body.info]
 
-        const data = {
+    pool.query(queryString, values, (err, result) => {
 
-            arrayLength: obj.recipes.length + 1
+    if (err) {
+      console.log('query error:', err.stack);
+      response.send( 'query error' );
 
-        }
+    } else {
+      console.log('query result:', result.rows);
 
-        if (err){
-          console.log("error reading file");
-          console.log(err);
-        }
-
-        else {
-            response.render('form', data)
-        }
-
-    });
+      response.redirect('/artists')
+    }
+  });
 });
+
+
+
 
 
 /**
