@@ -24,6 +24,7 @@ class singlePage extends React.Component {
                   <div className="card-body">
                     <img className="card-img-top" src={this.props.artist.photo_url} alt="Card image cap" style={{ maxWidth : 600 }}/>
                     <p className="card-text mt-4">{this.props.artist.info}</p>
+                    <a href={"/artists/"+this.props.artist.id+"/songs"} className="btn btn-success mr-3">Song List</a>
                     <a href={"/artists/"+this.props.artist.id+"/edit"} className="btn btn-info mr-3">Edit Artist</a>
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal">Delete Artist</button>
 

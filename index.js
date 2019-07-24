@@ -245,7 +245,39 @@ app.get('/artists/:id/songs', (request, response) =>{
 
 app.get('/artists/:id/songs/new', (request, response) =>{
 
-    response.send('get the form!')
+
+    let artistID = request.params.id
+
+    const data = {
+        artist : artistID
+    }
+
+    response.render('newSong', data)
+});
+
+app.post('/artists/:id/songs/new', (request, response) =>{
+
+    console.log(request.params.id)
+    console.log(request.body)
+
+
+    let queryString = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)"
+
+    let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.params.id]
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+
+        } else {
+          console.log('query result:', result.rows);
+
+          response.redirect('/artists/'+ request.params.id +'/songs')
+        }
+    });
+
 });
 
 

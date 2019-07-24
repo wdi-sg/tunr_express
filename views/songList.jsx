@@ -4,8 +4,8 @@ class songList extends React.Component {
   render() {
 
     const song = this.props.songs.map(element => {
-      return(<div class="media">
-                <img src={element.artwork} class="mr-3" alt="..."/>
+      return(<div class="media mb-3">
+                <img src={element.artwork} class="mr-3" alt="..." style={{maxHeight: 100}}/>
                 <div class="media-body">
                 <h5 class="mt-0">{element.title}</h5>
                 <p>Album: {element.album}</p>
