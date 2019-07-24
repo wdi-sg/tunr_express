@@ -183,30 +183,17 @@ app.put('/artists/:id', (request, response) =>{
 
 app.delete("/artists/:id", (request, response) => {
 
-   jsonfile.readFile(file, (err,obj) => {
+    let queryString = `DELETE FROM artists WHERE id = '${request.params.id}'`
 
-        let recipeIndex = request.params.id;
-        console.log(recipeIndex)
+    pool.query(queryString, (err, result) => {
 
-        let updatedObj = obj;
-        console.log(updatedObj.recipes[recipeIndex - 1])
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
 
-        updatedObj.recipes = updatedObj.recipes.slice(0, (recipeIndex - 1)).concat(updatedObj.recipes.slice(recipeIndex, updatedObj.recipes.length))
-
-        if (err){
-          console.log("error reading file");
-          console.log(err)
-        }
-
-        else {
-            jsonfile.writeFile(file, updatedObj, (err) => {
-                if (err) {
-                    console.log('error reading file')
-                    console.log(err)
-                } else {
-                    response.redirect('/recipes/');
-                }
-            })
+        } else {
+          console.log('query result:', result.rows);
+          response.redirect('/artists')
         }
     });
 });
