@@ -6,15 +6,19 @@ class Artist extends React.Component {
 		let artist = this.props.artist;
 		let editLink = "/artists/"+artist.id+"/edit/";
 		let deleteLink = "/artists/"+artist.id+"?_method=DELETE";
+		let viewSongsLink = "/artists/"+artist.id+"/songs";
 		return (
 			<DefaultLayout>
 				<div className="row">
-					<div className="col-6">
+					<div className="col-10">
 						<h1>{artist.name}</h1>
 						<p>Artist ID: {artist.id}</p>
 						<p>Nationality: {artist.nationality}</p>
 						<img className="img-fluid" src={artist.photo_url}/>
 						<hr/>
+					</div>
+					<div className="col-2">
+						<a className="btn btn-dark" href={viewSongsLink}>View Songs</a>
 						<a className="btn btn-dark" href={editLink}>Edit Artist</a>
 						<button className="btn btn-dark" data-toggle="modal" data-target="#deleteAlert">Delete Artist</button>
 					</div>

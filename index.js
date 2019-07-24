@@ -24,6 +24,8 @@ app.use(express.urlencoded({
 	extended: true
 }));
 
+
+app.use(express.static(__dirname+'/public/'));
 app.use(methodOverride('_method'));
 
 /* React Views */
@@ -128,6 +130,44 @@ const deleteArtist = (req,res) => {
 	})
 };
 
+const showArtistSongs = (req,res) => {
+	let query = 'SELECT * FROM songs WHERE artist_id=$1';
+	let values = [parseInt(req.params.id)];
+	pool.query(query,values, (err,results)=> {
+		if (err) {
+			console.log("ERROR: "+ err);
+		}
+		else {
+			let data = {
+				"id":values[0],
+				"songs":results.rows
+			};
+			res.render('artist-song',data);
+		}
+	})
+};
+
+const addArtistSongsForm = (req, res) => {
+	let data = {
+		"id":parseInt(req.params.id)
+	};
+	res.render('new-song', data);
+};
+
+const addArtistSongs = (req, res) => {
+	let id=parseInt(req.params.id);
+	let query = "INSERT INTO songs (title,album,preview_link,artwork,artist_id) VALUES ($1,$2,$3,$4,$5)";
+	let values = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, id];
+	pool.query(query,values, (err,results)=> {
+		if (err) {
+			console.log("ERROR: "+ err);
+		}
+		else {
+			res.redirect('/artists/'+id);
+		}
+	})
+};
+
 /* Routes */
 app.get('/', showHome);
 
@@ -144,6 +184,12 @@ app.post('/artists/', addArtist);
 app.delete('/artists/:id', deleteArtist);
 
 app.put('/artists/:id', editArtist);
+
+app.get('/artists/:id/songs', showArtistSongs);
+
+app.get('/artists/:id/songs/new', addArtistSongsForm);
+
+app.post('/artists/:id', addArtistSongs);
 
 /* Listen to requests on port 3000 */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
