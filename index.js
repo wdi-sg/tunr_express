@@ -78,7 +78,7 @@ app.get('/artist/:id/songs/new', (request, response) => {
         } else {
 
             let data = {
-                artistId : index,
+                idKey : index,
                 songs : result.rows[0]
             };
             response.render(newsongpage, data);
@@ -92,7 +92,7 @@ app.get('/artist/:id/songs/new', (request, response) => {
 // ==========================================
 app.post('/artist/:id/songs', (request, response) => {
 
-    const queryString = `INSERT INTO songs (title, album, preview_link, artwork, artist_id ) VALUES ($1, $2, $3, $4, $5)`;
+    const queryString = `INSERT INTO songs (title, album, preview_link, artwork, artist_id ) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
     let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id];
 
     pool.query(queryString, values, (err, result) => {
@@ -101,12 +101,12 @@ app.post('/artist/:id/songs', (request, response) => {
             console.log(err);
         } else {
 
-            // let data = {
-            //     songs: result.rows[0]
-            // };
+            let data = {
+                songs : result.rows
+            };
 
             console.log("send response");
-            response.send(result.rows[0]);
+            response.render(songpage, data);
         }
     }); ////// end of writing to database //////
 });
