@@ -201,6 +201,28 @@ app.get('/artists/:id/songs', (request, response) => {
     });
 })
 
+/* ==== Request CREATE Individual Artist Page ==== */
+app.get('/artists/:id/songs/new', (request, response) => {
+    let artistId = parseInt(request.params.id);
+    let values = [artistId];
+    let queryString = "SELECT * FROM artists WHERE id =$1";
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('loading individual artist add song page');
+            // response.send(result);
+            response.render('newsong.jsx', result);
+        }
+    });
+});
+
+//GET /artist/1/songs/new This page renders a form to create a new song.
+//The action of the form can be set to send the appropriate artist id needed to create the song.
+
 /**
  * ===================================
  * Listen to requests on port 3000

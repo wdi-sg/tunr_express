@@ -49,10 +49,15 @@ li.item:hover {
 }*/
 
 /* container holding all the artist cards */
-/*song card probably need to change to diff css */
-#artist-container, #song-container {
+#artist-container {
 	display: flex;
-	/*flex-direction: row;*/
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: flex-end;
+}
+
+#song-container {
+	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-around;
 	align-items: flex-end;
@@ -143,12 +148,12 @@ input[type="submit"] {
 	width: 84px;
 }
 
-.edit-artist h2, .create-artist h2 {
+.edit-artist h2, .create-artist h2, .create-song h2 {
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 12pt;
 	margin: 30px 0px 10px 0;
 }
 
-.edit-artist img, .create-artist img {
+.edit-artist img, .create-artist img, .create-artist img {
 	margin-bottom: -20px;
 }
