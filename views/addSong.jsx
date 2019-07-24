@@ -13,6 +13,10 @@ class AddArtist extends React.Component {
               <img src={this.props.rows[0].photo_url} class="img-thumbnail rounded mx-auto d-block"/>
               <h4>Add New Song</h4>
           <div class="form-group">
+            <label>Artist ID</label>
+            <input type="text" class="form-control" value={this.props.rows[0].id} name="artist_id"/>
+          </div>
+          <div class="form-group">
             <label>Song Title</label>
             <input type="text" class="form-control" placeholder="Title" name="title"/>
           </div>
