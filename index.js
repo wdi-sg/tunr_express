@@ -30,7 +30,7 @@ app.use(express.static(__dirname + '/public/'));
  * Routes
  * ===================================
  */
-
+//redirectto artists
 app.get('/', (request, response) => {
     // query database for all pokemon
 
@@ -39,7 +39,7 @@ app.get('/', (request, response) => {
 });
 
 
-
+//artist main page
 app.get('/artist', (req, res) => {
     const queryString = 'SELECT * from artists ORDER BY id ASC'
 
@@ -58,6 +58,7 @@ app.get('/artist', (req, res) => {
     });
 });
 
+//ADD artist
 app.get('/artist/new', (req, res) => {
     let data = {
         title: "Add"
@@ -65,6 +66,7 @@ app.get('/artist/new', (req, res) => {
     res.render("add", data);
 })
 
+//ADD artist POST
 app.post('/artist', (req, res) => {
 
     const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1,$2,$3) RETURNING *';
@@ -84,6 +86,7 @@ app.post('/artist', (req, res) => {
     });
 })
 
+//get artist by id
 app.get('/artist/:id', (req, res) => {
 
     const queryString = 'SELECT * from artists WHERE id=' + parseInt(req.params.id);
@@ -104,7 +107,7 @@ app.get('/artist/:id', (req, res) => {
 });
 
 
-
+//edit artist
 app.get('/artist/:id/edit', (req, res) => {
 
     const queryString = 'SELECT * from artists WHERE id=' + parseInt(req.params.id);
@@ -124,6 +127,7 @@ app.get('/artist/:id/edit', (req, res) => {
     });
 });
 
+//edit artist PUT
 app.put('/artist/:id', (req, res) => {
     const queryString = 'UPDATE artists SET name=$1,nationality=$2,photo_url=$3 WHERE id =' + parseInt(req.params.id) + "RETURNING *";
     let arr = [req.body.name, req.body.nationality, req.body.photo_url];
@@ -143,6 +147,7 @@ app.put('/artist/:id', (req, res) => {
     });
 })
 
+//delete artist DELETE
 app.delete('/artist/:id', (req, res) => {
     const queryString = 'DELETE from artists WHERE id=' + parseInt(req.params.id);
     pool.query(queryString, (err, result) => {
@@ -157,7 +162,7 @@ app.delete('/artist/:id', (req, res) => {
     });
 })
 
-
+//get songs by artist id
 app.get('/artist/:id/songs', (req, res) => {
     const queryString = 'SELECT DISTINCT songs.id,songs.title FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artists.id =' + parseInt(req.params.id)+"ORDER BY  songs.title ASC";
     pool.query(queryString, (err, result) => {
@@ -176,6 +181,7 @@ app.get('/artist/:id/songs', (req, res) => {
     });
 })
 
+//add new song
 app.get('/artist/:id/songs/new', (req, res) => {
     const queryString = 'SELECT * FROM artists';
     pool.query(queryString, (err, result) => {
@@ -196,6 +202,7 @@ app.get('/artist/:id/songs/new', (req, res) => {
 
 })
 
+//add new song POST
 app.post('/artist/:id/songs', (req, res) => {
     let id = parseInt(req.body.artist);
     const queryString = 'INSERT INTO songs (title, album, preview_link, artwork,artist_id) VALUES ($1,$2,$3,$4,$5)';
@@ -214,6 +221,7 @@ app.post('/artist/:id/songs', (req, res) => {
 
 })
 
+//get individual song
 app.get('/artist/:id/songs/:idd', (req, res) => {
     const queryString = 'SELECT * FROM songs WHERE id=' + parseInt(req.params.idd);
     pool.query(queryString, (err, result) => {
@@ -245,6 +253,7 @@ app.get('/artist/:id/songs/:idd', (req, res) => {
     });
 })
 
+//list of playlist
 app.get('/playlist', (req, res) => {
     const queryString = 'SELECT * FROM playlists';
     pool.query(queryString, (err, result) => {
@@ -262,6 +271,7 @@ app.get('/playlist', (req, res) => {
     });
 })
 
+//add new playlist
 app.get('/playlist/new', (req, res) => {
     let data = {
         title: "Add Playlists"
@@ -270,6 +280,7 @@ app.get('/playlist/new', (req, res) => {
     res.render("new_playlist", data);
 })
 
+//add new playlist POST
 app.post('/playlist', (req, res) => {
     const queryString = 'INSERT INTO playlists (name) VALUES ($1)';
     let arr = [req.body.name];
@@ -285,6 +296,7 @@ app.post('/playlist', (req, res) => {
     });
 })
 
+//adding song to playlist
 app.post('/playlist/addSongToPlaylist', (req, res) => {
 
 
@@ -323,7 +335,7 @@ app.post('/playlist/addSongToPlaylist', (req, res) => {
 })
 
 
-
+//single playlist and show available songs
 app.get('/playlist/:id', (req, res) => {
     const queryString = 'SELECT playlists.id AS playlist_id,songs.artist_id, playlists.name,songs.id,songs.title FROM songs INNER JOIN playlists_songs ON (songs.id = playlists_songs.song_id) INNER JOIN playlists ON (playlists.id = playlists_songs.playlist_id) WHERE playlists.id =' + parseInt(req.params.id);
 
@@ -357,6 +369,7 @@ app.get('/playlist/:id', (req, res) => {
     });
 })
 
+//add songs into playlist
 app.get('/playlist/:id/add', (req, res) => {
     const queryString = 'SELECT * FROM songs'
 
@@ -377,6 +390,7 @@ app.get('/playlist/:id/add', (req, res) => {
     });
 })
 
+//add songs into playlist POST
 app.post('/playlist/:id', (req, res) => {
     let playlistId = req.params.id;
     if (Array.isArray(req.body.song)) {
