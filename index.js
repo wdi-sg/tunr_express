@@ -102,6 +102,56 @@ app.put('/artist/:id', (request, response) => {
 
 // ===================================
 
+// The delete feature (Deliverable)
+
+app.get('/artist/:id/delete', (request, response) => {
+
+    const artistId = request.params.id;
+
+    const queryString = 'SELECT * FROM artists WHERE id = $1'
+
+    const values = [artistId];
+
+    pool.query(queryString, values, (err, result)=> {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        }
+        else {
+
+            const data = {
+                artist : result.rows[0]
+            }
+
+            response.render('delete', data);
+        }
+    })
+});
+
+app.delete('/artist/:id', (request, response) => {
+
+    const artistId = request.params.id;
+
+    const queryString = 'DELETE from artists WHERE id = ($1) RETURNING *';
+
+    const values = [artistId];
+
+    pool.query(queryString, values, (err,result) => {
+
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        }
+        else {
+
+            response.redirect('/');
+        }
+    })
+});
+
+// ===================================
+
 // The create feature (Deliverable)
 app.get('/artist/new', (request, response) => {
 
