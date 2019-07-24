@@ -5,14 +5,17 @@ const DefaultLayout = require('./layouts/default');
 class Artist extends React.Component {
   render() {
 
-    let artist = this.props.artist[0];
+
+    let artist = this.props.artist;
     let id = this.props.id;
     let imgStyle = {width: '300px', height: '300px'}
     let buttonStyle = {'fontSize': '25px'}
 
-    let headerTitle = `${artist.name} | Tunr`;
     let editURL = `/artists/${id}/edit`;
-    let deleteURL = `/artists/${id}/delete`;
+    let deleteURL = `/artists/${id}?_method=DELETE`;
+    let songsURL = `/artists/${id}/songs`;
+
+    let headerTitle = `${artist.name} | Tunr`;
 
     return (
 
@@ -31,14 +34,16 @@ class Artist extends React.Component {
         <br/>
         <br/>
 
-        <form action={deleteURL}>
+        <form method="POST" action={deleteURL}>
             <button style={buttonStyle} type={"submit"}>DELETE ARTIST</button>
         </form>
 
         <br/>
         <br/>
 
-        <h4>Songs:</h4>
+        <form action={songsURL}>
+            <button style={buttonStyle} type={"submit"}>VIEW SONGS</button>
+        </form>
 
 
       </DefaultLayout>

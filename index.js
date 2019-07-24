@@ -60,7 +60,6 @@ app.get('/artists', (request, response) => {
         let artists = {
             artists : result.rows
         }
-
         if (err) {
           console.log('query error:', err.stack);
           response.send( 'query error' );
@@ -71,20 +70,36 @@ app.get('/artists', (request, response) => {
 });
 
 app.get('/artist/:id', (request, response) => {
+    console.log('i am here 1')
     let id = request.params.id;
     const queryString = `SELECT * FROM artists WHERE id=${id}`;
+    console.log('i am here 2')
+
     pool.query(queryString, (err, result) => {
+        console.log('i am here 3')
+
+        console.log('RESSSSULLLTTTT IS: ', result)
+        console.log('RESSSSULLLTTTT RRROOWWWWWW IS: ', result.rows)
         let artist = {
-            artist : result.rows,
+            artist : result.rows[0],
             id: id
         }
+        console.log('i am here 4')
+
         if (err) {
           console.log('query error:', err.stack);
           response.send( 'query error' );
+
         } else {
+            console.log('i am here 5')
+
           response.render('indvArtist', artist);
         }
+    console.log('i am here 6')
+
     });
+    console.log('i am here 7')
+
 });
 
 app.get('/artists/new', (request, response) => {
@@ -93,7 +108,7 @@ app.get('/artists/new', (request, response) => {
 
 app.post('/artists', (request, response) => {
     let newArtist = request.body;
-    const queryString = `INSERT INTO artists (name, nationality, photo_url) VALUES ($1, $2, $3)`;
+    const queryString = `INSERT INTO artists (name, nationality, photo_url) VALUES ($1, $2, $3) RETURNING *`;
     const values =
     [newArtist.name, newArtist.nationality, newArtist['photo_url']];
 
@@ -109,12 +124,56 @@ app.post('/artists', (request, response) => {
 });
 
 app.get('/artists/:id/edit', (request, response) => {
-  response.render('editpage');
+    let id = request.params.id;
+    const queryString = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query(queryString, (err, result) => {
+        let artist = {
+            artist : result.rows[0],
+            id: id
+        }
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            response.render('edit', artist);
+        }
+    });
 });
 
-app.get('/artists/:id/delete', (request, response) => {
-  response.render('deletepage');
+app.put('/artists/:id', (request, response) => {
+    let id = request.params.id;
+    let newArtist = request.body;
+    const queryString = `UPDATE artists SET name=$1, nationality=$2, photo_url=$3 WHERE id = ${id}`;
+    const values =
+    [newArtist.name, newArtist.nationality, newArtist['photo_url']];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          console.log(' artist edited!')
+          response.redirect(`/artist/${id}`);
+        }
+    });
 });
+
+app.delete('/artists/:id', (request, response) => {
+    let id = request.params.id;
+    const queryString = `DELETE from artists WHERE id = ${id} RETURNING id`;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          console.log(' artist deleted!')
+          response.redirect(`/artists`);
+        }
+    });
+});
+
+
 
 app.get('/', (request, response) => {
   response.render('home');
