@@ -48,6 +48,36 @@ app.get('/artists', (request, response) => {
 });
 });
 
+app.get('/artists/:id', (request, response) => {
+    const queryString = 'SELECT * from artists';
+    let inputId = parseInt( request.params.id );
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            for( let i=0; i<result.rows.length; i++ ){
+
+                let currentArtist = result.rows[i];
+
+                if( currentArtist.id === inputId ){
+                    artist = currentArtist;
+                }
+            }
+
+            if (inputId > result.rows.length || inputId <= 0) {
+
+                response.status(404);
+                response.send("No such artist exist yet. Please add more artists or navigate to the correct artist page.");
+            } else{
+
+            response.render('artist', artist);
+        }
+  }
+});
+});
+
 // app.get('/new', (request, response) => {
 //   response.render('new');
 // });
