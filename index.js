@@ -213,6 +213,53 @@ var acceptArtistDelete = function(request, response){
     });
 }
 
+var displaySongsByArtist = function(request, response){
+
+  var artistId = parseInt(request.params.id);
+
+  // query database for all pokemon
+  let artistString = 'SELECT * FROM artists WHERE id = $1';
+  let artistValues = [artistId];
+
+  pool.query(artistString, artistValues, (err, artist) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send('query error');
+    } else {
+
+      // console.log(artist.rows);
+
+      // data = {
+      //     artist: artist.rows
+      // }
+
+      let songsString = 'SELECT * FROM songs WHERE artist_id = $1';
+      let songsValues = [artistId];
+
+      pool.query(songsString, songsValues, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+
+          console.log("ARTIST ROWS");
+          console.log(artist.rows);
+
+          data = {
+              artist: artist.rows,
+              songs: result.rows
+          }
+          response.render('ArtistSongsPage', data);
+        }
+      });
+
+    }
+  });
+
+
+
+}
+
 /**
  * ===================================
  * Routes
@@ -230,6 +277,8 @@ app.get('/artists/:id', displayArtistPage);
 app.get('/artists/:id/edit', displayEditArtistForm);
 app.put('/artists/:id', acceptArtistChanges);
 app.delete('/artists/:id', acceptArtistDelete);
+
+app.get('/artists/:id/songs', displaySongsByArtist);
 
 /**
  * ===================================
