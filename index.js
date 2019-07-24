@@ -29,6 +29,10 @@ app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
+    response.redirect('/artists');
+});
+
+app.get('/artists', (request, response) => {
     response.render('home');
 });
 
