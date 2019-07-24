@@ -23,7 +23,7 @@ class singlePage extends React.Component {
                   </div>
                   <div className="card-body">
                     <img className="card-img-top" src={this.props.artist.photo_url} alt="Card image cap" style={{ maxWidth : 600 }}/>
-                    <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <p className="card-text mt-4">{this.props.artist.info}</p>
                     <a href="#" className="btn btn-primary">Go somewhere</a>
                   </div>
                 </div>
