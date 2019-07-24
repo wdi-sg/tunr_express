@@ -168,7 +168,6 @@ app.get('/artists/:id/delete', (request, response) => {
 app.delete('/artists/:id', (request, response) => {
     // let byeArtist = request.body;
     let id = request.params.id;
-    //just finding by id should be fineeeeee
     let queryString = 'DELETE from artists WHERE id = $1';
     let values = [id];
 
@@ -181,8 +180,30 @@ app.delete('/artists/:id', (request, response) => {
             response.redirect('/artists');
         }
     })
-
 });
+
+/* ==== Request Individual Artist Page ==== */
+app.get('/artists/:id/songs', (request, response) => {
+    artistId = parseInt(request.params.id);
+
+    let values = [artistId];
+    // let queryString = "SELECT * FROM songs WHERE artist_id =$1";
+
+    let queryString = "SELECT artists.name, artists.photo_url, songs.title, songs.album FROM artists INNER JOIN songs ON artists.id = songs.artist_id WHERE songs.artist_id = $1";
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('loading individual artist songs page');
+            response.send(result);
+            // response.render('songs.jsx', result);
+            //result will be a whole bloody list of songs but DOES NOT incl artist name and img
+        }
+    });
+})
 
 /**
  * ===================================
