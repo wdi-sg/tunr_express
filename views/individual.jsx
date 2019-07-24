@@ -16,28 +16,31 @@ class Individual extends React.Component {
                 <body>
                     <div className="containertop row">
                         <div className="col-4">
-                            <a href={urlHome}><h1>!!ARTISTS!!</h1></a>
+                            <a className="button" href={urlHome}><h3>!!ARTISTS!!</h3></a>
                         </div>
                         <div className="col-4">
-                            <iframe src="https://giphy.com/embed/QrooGoDTEGK52" frameBorder="0" className="giphy-embed" allowFullScreen></iframe>
+                            <div className="name">
+                                <p>{this.props.result.name}</p>
+                            </div>
                         </div>
                         <div className="col-4">
-                            <h1>!!Profile!!</h1>
+                            <div className="profile">
+                                <h3>!!Profile!!</h3>
+                            </div>
                         </div>
                     </div>
                     <div className="container">
                             <img src={this.props.result.photo_url}/>
                             <div className="containermid">
-                                <h4>Artist name: {this.props.result.name}</h4>
                                 <br />
-                                <h4>Artist nationality: {this.props.result.nationality}</h4>
+                                <h4>Artist Nationality: {this.props.result.nationality}</h4>
+                                <a className="song"href={urlSongs}>Songs</a>
                             </div>
                             <div className="containerbtm row">
                                 <div className="col-4">
                                     <a className="button"href={urlEdit}>Edit</a>
                                 </div>
                                 <div className="col-4">
-                                    <a className="button"href={urlSongs}>Songs</a>
                                 </div>
                                 <div className="col-4">
                                     <a className="button" href={urlDelete}>Delete</a>

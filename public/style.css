@@ -4,11 +4,12 @@ body{
 	background-attachment: fixed;
 	background-position: center;
 	text-align: center;
-	color:yellow;
+	color:white;
 }
 .containertop{
-	margin:30px 0;
+	margin:30px auto;
 }
+
 .giphy-embed{
 	width:100%;
 }

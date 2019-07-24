@@ -34,14 +34,14 @@ class Home extends React.Component {
         </head>
         <body>
         <div className="containertop row">
-            <div className="col-4">
+            <div className="artist col-4">
                 <h1>!!ARTISTS!!</h1>
             </div>
             <div className="col-4">
                 <iframe src="https://giphy.com/embed/QrooGoDTEGK52" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
             </div>
-            <div className="col-4">
-                <a className="button"href={urlNew}>Add New Artist</a>
+            <div className="newArtist col-4">
+                <a className="button"href={urlNew}>!!Add New Artist!!</a>
             </div>
         </div>
           <div className="container">

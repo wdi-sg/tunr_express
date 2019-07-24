@@ -17,7 +17,7 @@ class Delete extends React.Component {
                                 <div className="col-4">
                                     <a className="button" href={urlHome}>!!ARTISTS!!</a>
                                 </div>
-                                <div className="col-4">
+                                <div className="title col-4">
                                     <h1>Delete Entry</h1>
                                 </div>
                                 <div className="col-4">

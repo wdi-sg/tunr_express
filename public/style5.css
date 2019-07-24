@@ -1,0 +1,25 @@
+body{
+	background-image: url(https://ak6.picdn.net/shutterstock/videos/17003866/thumb/1.jpg);
+	background-size: contain;
+	background-attachment: fixed;
+	background-position: center;
+	text-align: center;
+	color:white;
+}
+
+.individualStyle{
+    display :inline-block;
+    margin:10px 40px;
+}
+
+audio{
+	display:none;
+}
+
+div:hover audio{
+	display:block;
+}
+
+.containertop{
+	margin:30px auto;
+}

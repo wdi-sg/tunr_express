@@ -17,30 +17,52 @@ body{
 	margin:20px auto;
 }
 .containerbtm{
-	margin-top: 50px;
+	margin-top: 30px;
 }
 
-a,h1{
+.name{
+	border-right: 5px solid white;
+	border-left: 5px solid white;
+}
+
+.name,.profile{
 	text-align: center;
 	font-family: 'Permanent Marker', cursive;
 	color:red;
+	font-weight: bold;
+	font-size: 40px;
+}
+
+.button:hover{
+	color:white;
+	text-decoration: none;
+}
+
+.song{
+	color:white;
+	font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
+
+a{
+	font-size: 40;
+	text-align: center;
+	font-family: 'Permanent Marker', cursive;
+	color:red;
+	font-weight: bold;
+	font-size: 30px;
 }
 
 img{
+	margin:40px auto 30px auto;
 	width:500px;
 	height:300px;
 	border-radius: 10%;
 }
 .containermid{
-	margin:20px 0;
+	margin:20px auto;
 	font-family: 'Fira Sans Extra Condensed', sans-serif;
 }
 
-.button{
-	font-weight: bold;
-	font-size: 30px;
-}
-.button:hover{
-	color:white;
-	text-decoration: none;
+p{
+	font-size: 40px;
 }

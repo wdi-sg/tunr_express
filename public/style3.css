@@ -4,7 +4,7 @@ body{
 	background-attachment: fixed;
 	background-position: center;
 	text-align: center;
-	color:orange;
+	color:white;
 }
 .containertop{
 	margin:30px auto;
@@ -15,7 +15,7 @@ body{
 }
 .container{
 	width:1000px;
-	margin:20px 225px;
+	margin:20px auto;
 }
 .containerbtm{
 	margin-top: 50px;
