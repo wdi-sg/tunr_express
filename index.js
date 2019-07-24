@@ -42,6 +42,9 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+// To add the CSS File
+app.use(express.static(__dirname + '/public'));
+
 /**
  * ===================================
  * Routes

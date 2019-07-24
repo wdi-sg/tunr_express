@@ -1,4 +1,5 @@
 var React = require("react");
+const Template = require('./template.jsx');
 
 class EditArtist extends React.Component {
   render() {
@@ -9,6 +10,7 @@ class EditArtist extends React.Component {
     console.log(this.props.artist.name);
 
     return (
+      <Template>
       <div>
       <h1>Edit this artist</h1>
       <form action={url} method="POST">
@@ -22,6 +24,7 @@ class EditArtist extends React.Component {
           <br/>
       </form>
       </div>
+      </Template>
     );
   }
 }

@@ -1,4 +1,5 @@
 var React = require("react");
+const Template = require('./template.jsx');
 var ArtistProfile  = require('./components/artistProfile.jsx');
 
 class Artists extends React.Component {
@@ -9,16 +10,13 @@ class Artists extends React.Component {
     });
 
     return (
-      <html>
-        <head />
-        <body>
+      <Template>
           <div>
           <a href="/artists/new">Add New Artist</a>
           </div>
           <h1>This is Artists Page</h1>
           <div>{artistsList}</div>
-        </body>
-      </html>
+      </Template>
     );
   }
 }
