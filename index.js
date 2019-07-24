@@ -27,14 +27,12 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
 
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -48,6 +46,121 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// ===================================
+
+// The edit feature (Deliverable)
+
+app.get('/artist/:id/edit', (request, response) => {
+
+    const artistId = request.params.id;
+
+    const queryString = 'SELECT * FROM artists WHERE id = $1'
+
+    const values = [artistId];
+
+    pool.query(queryString, values, (err, result)=> {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        }
+        else {
+
+            const data = {
+                artist : result.rows[0]
+            }
+
+            response.render('edit', data);
+        }
+    })
+});
+
+app.put('/artist/:id', (request, response) => {
+
+    const artistId = request.params.id;
+
+    const queryString = 'UPDATE artists SET name = ($1), photo_url = ($2), nationality = ($3) WHERE id = ($4) RETURNING *';
+
+    const values = [request.body.name, request.body.photo_url, request.body.nationality, artistId];
+
+    pool.query(queryString, values, (err,result) => {
+
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        }
+        else {
+
+            const data = {
+                artist : result.rows[0]
+            }
+
+            response.render('artist', data);
+        }
+    })
+});
+
+// ===================================
+
+// The create feature (Deliverable)
+app.get('/artist/new', (request, response) => {
+
+    response.render('new');
+});
+
+app.post('/artist', (request, response) => {
+
+    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+    const values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(queryString, values, (err,result) => {
+
+        if (err) {
+            console.log('query error', err.stack);
+            response.send('query error');
+        }
+        else {
+
+            const data = {
+                artist : result.rows[0]
+            }
+
+            response.render('artist', data);
+        }
+    })
+});
+
+// ===================================
+
+// The show feature (Deliverable)
+app.get('/artist/:id', (request, response) => {
+
+    const artistId = request.params.id;
+
+    const queryString = 'SELECT * FROM artists WHERE id = $1'
+
+    const values = [artistId];
+
+    pool.query(queryString, values, (err, result)=> {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        }
+        else {
+
+            const data = {
+                artist : result.rows[0]
+            }
+
+            response.render('artist', data);
+        }
+    })
+});
+
+// ===================================
+
 // The index feature (Deliverable)
 app.get('/', (request, response) => {
 
@@ -56,11 +169,10 @@ app.get('/', (request, response) => {
   pool.query(queryString, (err, result) => {
 
     if (err) {
-        console.log('query error:', err.stack );
-        response.send('query error:');
+        console.log('query error:', err.stack);
+        response.send('query error');
     }
     else {
-
         // console.log('query result:', result.rows);
         response.render('home', result);
     }
@@ -68,13 +180,6 @@ app.get('/', (request, response) => {
 });
 
 // ===================================
-
-
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
-
 
 /**
  * ===================================
