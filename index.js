@@ -69,7 +69,7 @@ app.get('/artists', (request, response) => {
     });
 });
 
-app.get('/artist/:id', (request, response) => {
+app.get('/artists/:id', (request, response) => {
     let id = request.params.id;
     const queryString = `SELECT * FROM artists WHERE id=${id}`;
     pool.query(queryString, (err, result) => {
@@ -138,7 +138,7 @@ app.put('/artists/:id', (request, response) => {
           response.send( 'query error' );
         } else {
           console.log(' artist edited!')
-          response.redirect(`/artist/${id}`);
+          response.redirect(`/artists/${id}`);
         }
     });
 });
@@ -179,21 +179,31 @@ app.get('/artists/:id/songs/new', (request, response) => {
     let id = request.params.id;
     const queryString = `SELECT * FROM songs WHERE artist_id=${id}`;
     pool.query(queryString, (err, result) => {
-        if (err) {
-            console.log('query error:', err.stack);
-            response.send( 'query error' );
-        } else {
-            let songsData = {
-                songs : result.rows,
-                id: id
+
+        let songs = result.rows;
+        const queryString2 = `SELECT * FROM artists`;
+
+        pool.query(queryString2, (err, result) => {
+
+            let artists = result.rows;
+            if (err) {
+                console.log('query error:', err.stack);
+                response.send( 'query error' );
+            } else {
+                let allData = {
+                    songs : songs,
+                    id: id,
+                    artists : artists
+                }
+                response.render('newSong', allData);
             }
-            response.render('newSong', songsData);
-        }
+        })
     });
 });
 
 app.post('/artists/:id/songs', (request, response) => {
     let newSong = request.body;
+    console.log(newSong);
     let id = request.params.id;
     const queryString = `INSERT INTO songs (title, album, preview_link, artist_id) VALUES ($1, $2, $3, $4) RETURNING *`;
     const values =
@@ -205,7 +215,49 @@ app.post('/artists/:id/songs', (request, response) => {
             response.send( 'query error' );
         } else {
             console.log('new song added!')
-            response.redirect(`/artist/${id}/songs`);
+            response.redirect(`/artists/${id}/songs`);
+        }
+    });
+});
+
+app.get('/songs', (request, response) => {
+  response.render('allSongs');
+});
+
+app.get('/songs/new', (request, response) => {
+    const queryString = `SELECT * FROM artists`;
+
+    pool.query(queryString, (err, result) => {
+
+        let artists = result.rows;
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let allData = {
+                artists : artists
+            }
+            response.render('newSong2', allData);
+
+            // response.render('newSong', allData);
+        }
+    })
+});
+
+app.post('/songs', (request, response) => {
+    let newSong = request.body;
+    console.log(newSong);
+    const queryString = `INSERT INTO songs (title, album, preview_link, artist_id) VALUES ($1, $2, $3, $4) RETURNING *`;
+    const values =
+    [newSong.title, newSong.album, newSong['preview_link'], newSong['artist_id']];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('new song added!')
+            response.redirect(`/songs`);
         }
     });
 });

@@ -14,7 +14,7 @@ class Block extends React.Component {
             <div style={indDiv}>
                 <p>{artist.name}</p>
                 <p>{artist.nationality}</p>
-                <a href={'/artist/'+artist.id}>
+                <a href={'/artists/'+artist.id}>
                     <img style={imgStyle} src={artist.photo_url}/>
                 </a>
             </div>

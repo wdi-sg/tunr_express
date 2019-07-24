@@ -6,13 +6,11 @@ const SelectBlock = require('./components/selectBlock');
 class New extends React.Component {
   render() {
 
-    let headerTitle = "New Artist | Tunr";
+    let headerTitle = "New Song | Tunr";
 
-    let songs = this.props.songs;
     let artists = this.props.artists;
-    let id = this.props.id;
 
-    let songURL = `/artists/${id}/songs`;
+    let songURL = `/songs`;
 
     return (
 
@@ -27,6 +25,10 @@ class New extends React.Component {
             <input type={"text"} name={"album"} required/>
             <p>Preview Link:</p>
             <input type={"text"} name={"preview_link"} required/>
+            <br/>
+            <br/>
+            <p>Artist:</p>
+            <SelectBlock artists={artists}/>
             <br/>
             <br/>
             <input type="submit" value="CREATE SONG"/>
