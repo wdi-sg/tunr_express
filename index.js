@@ -41,7 +41,7 @@ app.get('/', (request, response) => {
 
 
 app.get('/artist', (req, res) => {
-    const queryString = 'SELECT * from artists'
+    const queryString = 'SELECT * from artists ORDER BY id ASC'
 
     pool.query(queryString, (err, result) => {
 
@@ -103,6 +103,8 @@ app.get('/artist/:id', (req, res) => {
     });
 });
 
+
+
 app.get('/artist/:id/edit', (req, res) => {
 
     const queryString = 'SELECT * from artists WHERE id=' + parseInt(req.params.id);
@@ -142,7 +144,7 @@ app.put('/artist/:id', (req, res) => {
 })
 
 app.delete('/artist/:id', (req, res) => {
-    const queryString = 'DELETE from artists WHERE id='+parseInt(req.params.id);
+    const queryString = 'DELETE from artists WHERE id=' + parseInt(req.params.id);
     pool.query(queryString, (err, result) => {
 
         if (err) {
@@ -151,6 +153,74 @@ app.delete('/artist/:id', (req, res) => {
         } else {
 
             res.redirect("/artist");
+        }
+    });
+})
+
+
+app.get('/artist/:id/songs', (req, res) => {
+    const queryString = 'SELECT id FROM artists WHERE id=' + parseInt(req.params.id);
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+            const songString = 'SELECT * from songs WHERE artist_id=' + result.rows[0].id;
+
+            pool.query(songString, (err, result2) => {
+
+                if (err) {
+                    console.error('query error:', err.stack);
+                    res.send('query error');
+                } else {
+                    data = {
+                        title: "Song List",
+                        songs: result2.rows
+                    }
+                    res.render("songlist", data);
+                }
+            });
+        }
+    });
+})
+
+app.get('/artist/:id/songs/new', (req, res) => {
+    let id = parseInt(req.params.id);
+    let data = {
+        title: "New Song",
+        id: id
+    }
+    res.render("newsong", data);
+})
+
+app.post('/artist/:id/songs', (req, res) => {
+    let id = parseInt(req.params.id);
+    const queryString = 'INSERT INTO songs (title, album, preview_link, artwork,artist_id) VALUES ($1,$2,$3,$4,$5)';
+    let arr = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+
+            let url = "/artist/" + id + "/songs";
+            res.redirect(url);
+        }
+    });
+
+})
+
+app.get('/artist/:id/songs/:id2', (req, res) => {
+    const queryString = 'SELECT * FROM songs WHERE id=' + parseInt(req.params.id2);
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+
         }
     });
 })

@@ -18,7 +18,9 @@ class Home extends React.Component {
 
     return (
       <Default title={this.props.title}>
+      <div className="main-container">
         {artists}
+        </div>
       </Default>
     );
   }

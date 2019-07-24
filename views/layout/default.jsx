@@ -11,9 +11,9 @@ class Default extends React.Component {
               <link rel="stylesheet" type="text/css" href="/css/style.css"></link>
           </head>
         <body>
-            <div className="main-container">
+
                 {this.props.children}
-            </div>
+
         </body>
       </html>
     );
