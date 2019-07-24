@@ -60,7 +60,7 @@ app.get('/artists/:id', (request, response) => {
             console.log("query error", err.message);
         } else {
             const data = {
-                artist : res.rows
+                artist : res.rows[0]
             }
             response.render('oneartist', data);
         }
