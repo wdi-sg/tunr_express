@@ -1,4 +1,4 @@
-console.log("starting up!!");
+console.log("Let there be light");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -104,15 +104,35 @@ app.post('/artists/', (request, response) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
-        } else{ let data = {
+        } else{
+            let data = {
                 artistsKey : result.rows
             };
             response.render('home', data);
         }
     });
-})
+});
 
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+app.get('/artists/:id/edit', (request, response) => {
+
+    const queryString = 'SELECT * from artists WHERE id=' + parseInt(request.params.id);
+    let inputId = parseInt( request.params.id );
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else{
+            let data = {
+                artistsKey : result.rows[0]
+            };
+            response.render('edit', data);
+    }
+    });
+});
+
+const server = app.listen(3000, () => console.log('local host love you 3000'));
 
 // let onClose = function(){
 
