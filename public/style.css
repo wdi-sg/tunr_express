@@ -5,6 +5,23 @@ body {
 	text-align: center;
 }
 
+body.logging-in {
+	font-family: 'Darker Grotesque', sans-serif;
+	/*background: linear-gradient(90deg, rgba(251, 90, 133, 1) 0%, rgba(201, 116, 162, 1) 35%, rgba(53, 191, 248, 1) 100%);*/
+	text-align: center;
+}
+
+body.logging-in h1 {
+	color: rgb(251, 90, 133);
+	font-size: 40px;
+	font-weight: 600;
+}
+
+body.logging-in p {
+	color: rgb(53, 191, 248);
+	font-size: 20px;
+}
+
 #logo {
 	max-height: 100px;
 	margin: 50px 0;
