@@ -259,27 +259,27 @@ app.get('/songs/new', (req, res) => {//good
 //============restrict user from adding twice=======================
 
 
-// app.get('/artist/:id/songs', (req, res) => {//worked!
-//   console.log("getting request")
-//   console.log(req.params.id);
-//   let reqid = parseInt(req.params.id);
-//   // console.log(id);
+app.get('/s', (req, res) => {//worked!
+  console.log("getting request")
+  console.log(req.params.id);
+  let reqid = parseInt(req.params.id);
+  // console.log(id);
 
-//   const queryString = 'SELECT id, album FROM songs  WHERE artist_id = parseInt(req.params.id)';
-//   // console.log(result);
-//   pool.query(queryString, (err, result) => {
-//       console.log(result.rows);
-//     if (err) {
-//       console.error('query error:', err.stack);
-//       res.send( 'query error' );
-//     } else {
+  const queryString = 'SELECT id, album FROM songs  WHERE artist_id = parseInt(req.params.id)';
+  // console.log(result);
+  pool.query(queryString, (err, result) => {
+      console.log(result.rows);
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
       
       
-//       res.send( result.rows);
+      res.send( result.rows);
     
-//     };
-//   });
-// });
+    };
+  });
+});
 
 
 
