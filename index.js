@@ -57,7 +57,7 @@ app.get('/', (request, response) => {
 app.get('/artist', (request, response) => {
     console.log('showing artists index');
 
-    let queryString = "select id, name from artists";
+    let queryString = "SELECT id, name FROM artists ORDER BY id ASC";
 
     pool.query(queryString, (err, result) => {
 
@@ -100,6 +100,7 @@ app.post('/artist/new', (request, response) => {
         response.send( 'query error' );
         } else {
             console.log('query result:', result);
+
             response.redirect("/artist");
         }
     });
@@ -133,12 +134,84 @@ app.get('/artist/:id', (request, response) => {
     });
 });
 
-
-
 //edit artist
+app.get('/artist/:id/edit', (request, response) => {
+  console.log('getting form');
 
+  let Id = parseInt(request.params.id);
+    console.log(Id);
+
+    let queryString = "SELECT * from artists WHERE id="+Id;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result);
+
+        const data = {
+            artistId : result.rows[0].id,
+            artistName : result.rows[0].name,
+            artistImg : result.rows[0].photo_url,
+            artistNat : result.rows[0].nationality
+        };
+        response.render('edit', data);
+        }
+    });
+});
+
+
+app.put('/artist/:id/edit', (request, response) => {
+    console.log('editing artist info');
+
+    let Id = parseInt(request.params.id);
+    console.log(Id);
+
+    console.log('rb', request.body);
+
+    let edits = request.body;
+    console.log(edits);
+
+    let queryString = "UPDATE artists SET photo_url = edits.photo_url, nationality = edits.nationality FROM edits WHERE id="+Id;
+
+    console.log('don uds why cannot');
+
+    pool.query(queryString, (err, result) => {
+        console.log('don')
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result.rows);
+
+        response.redirect("/artist/:id");
+        }
+    });
+});
 
 //delete artist
+app.delete('/artist/:id', (request, response) => {
+    console.log('deleting artist');
+
+    let Id = parseInt(request.params.id);
+    console.log(Id);
+
+    let queryString = "DELETE from artists WHERE id="+Id;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result);
+
+        response.redirect("/artist");
+        }
+    });
+});
 
 
 //display list of songs by the artist
@@ -147,7 +220,7 @@ app.get('/artist/:id/songs', (request, response) => {
 
     let Id = parseInt(request.params.id);
     console.log(Id);
-    let queryString = "select title from songs where artist_id="+Id;
+    let queryString = "SELECT songs.title, artists.name FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id="+Id;
 
     pool.query(queryString, (err, result) => {
 
@@ -166,6 +239,7 @@ app.get('/artist/:id/songs', (request, response) => {
         }
     });
 });
+
 
 
 /**

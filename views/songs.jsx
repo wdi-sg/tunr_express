@@ -15,7 +15,10 @@ class Songs extends React.Component {
     return (
       <html>
         <body>
-          <h2>Songs by</h2>
+          <h2>Songs by {this.props.artistSongs[0].name}</h2>
+            <form action="/artist" method="GET">
+            <input type="submit" value="Back to artists index"/>
+          </form>
           <ul>{songs}</ul>
 
         </body>

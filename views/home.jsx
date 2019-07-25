@@ -7,7 +7,7 @@ class Home extends React.Component {
      let artistList = this.props.artists.map((artist,i) => {
         return (
             <div>
-                <a href={`/artist/${i+1}`}>
+                <a href={`/artist/${artist.id}`}>
                 <li>{artist.name}</li>
                 </a>
             </div>)
@@ -21,11 +21,7 @@ class Home extends React.Component {
           <h2>List of artists</h2>
           <ul>{artistList}</ul>
           <form action="/artist/new" method="GET">
-            <button type="button">Add a new artist</button>
-          </form>
-
-          <form action="/artist/delete" method="GET">
-            <button type="button">Delete an artist</button>
+            <input type="submit" value="Add a new artist"/>
           </form>
 
         </body>
