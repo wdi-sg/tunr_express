@@ -21,13 +21,14 @@ const pool = new pg.Pool(configs);
 pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
-
+const cookieParser = require('cookie-parser')
 // Init express app
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+app.use(cookieParser());
 app.use(methodOverride('_method'));
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -36,7 +37,6 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 var htmlElementAttributes = require('react-html-attributes');
-const cookieParser = require('cookie-parser')
 var sha256 = require('js-sha256');
 
 /**
@@ -80,7 +80,7 @@ app.post('/login', (request, response) => {
             console.log( "Something went wrong!", err );
         } else {
 
-        // they entered the correct password if the password of the entered name matches the one  attached to the name in the db
+        // they entered the correct password if the password of the entered name matches the one attached to the name in the db
 
         let hashedPassword = sha256(request.body.user_password);
         if(result.rows[0].user_password === hashedPassword) {
@@ -103,6 +103,8 @@ app.get('/', (request, response) => {
 
 /* ==== Logged In Main Page ==== */
 app.get('/youcool', (request, response) => {
+    console.log(request.cookies);
+
     let queryString = "SELECT * FROM artists order by id";
 
     pool.query(queryString, (err, result) => {
