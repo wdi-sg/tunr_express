@@ -211,6 +211,7 @@ app.post('/artist/:id/songs/new/', (request, response) => {
     })
 })
 //-----------------ACCOUNT
+
 var loggedIn = sha256('true');
 
 //sends you to register-form
@@ -224,7 +225,6 @@ app.post('/register', (request, response) => {
     console.log(request.body);
     let user = request.body.user;
     let hash = sha256(request.body.password);
-    let logHash = sha256('true');
 
     let queryString = `INSERT INTO users (name, password) VALUES ($1, $2) RETURNING id`;
 
@@ -236,7 +236,7 @@ app.post('/register', (request, response) => {
             let newId = result.rows[0].id;
             console.log("newid ="+newId);
             response.cookie('user', user);
-            response.cookie('loggedin', logHash);
+            response.cookie('loggedin', loggedIn);
             response.cookie('userid', newId)
             response.redirect('/');
         }
@@ -261,20 +261,32 @@ app.post('/login', (request, response) => {
                 console.log(err.stack);
             } else {
                 let savedPass = result.rows[0].password;
+                let savedId = result.rows[0].id;
                 if (hash === savedPass){
                     console.log('match!')
+                    console.log(user)
+                    console.log(loggedIn)
+                    console.log(savedId)
+                    response.cookie('user', user);
+                    response.cookie('loggedin', loggedIn);
+                    response.cookie('userid', savedId);
+                    response.redirect('/')
                 } else {
                     console.log('no match found')
                 }
             }
         })
     }
-    response.redirect('/')
+
 })
 
 //logout
-app.put('logout', (request, response) => {
-    response.send('logging out...')
+app.get('/logout', (request, response) => {
+    response.clearCookie('user');
+    response.clearCookie('userid');
+    response.clearCookie('loggedin');
+
+    response.redirect('/');
 })
 
 

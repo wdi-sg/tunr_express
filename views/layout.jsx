@@ -68,7 +68,7 @@ class Layout extends React.Component {
                     <a className="nav-link" href="/login">Log in</a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="/logout?_method=PUT">Log out</a>
+                    <a className="nav-link" method="GET" href="/logout">Log out</a>
                   </li>
 
 
