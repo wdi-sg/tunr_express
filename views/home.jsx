@@ -13,7 +13,7 @@ class Home extends React.Component {
             }
             var urlNew = '/homepage/new';
             var mapArtistData = this.props.result.map(artist=>{
-            var url = '/homepage/'+artist.id;
+            var url = '/login';
             return(
                 <div style={individualStyle}>
                     <a href={url}>

@@ -2,21 +2,18 @@ var React = require("react");
 
 class Songs extends React.Component {
   render() {
-            var individualStyle={
-                display :"inline-block",
-                margin:"10px 50px",
-            }
             var urlNew = '/homepage/'+this.props.artist.id+'/songs/new';
             var url = '/homepage/';
             var mapSongsData = this.props.songsDetail.map(songs=>{
             return(
                 <div className="individualStyle">
-                    <div>
-                        <p>{songs.title}</p>
+                    <p className="player">{songs.title}
+                        <br />
                         <audio controls>
                             <source src={songs.preview_link} type="audio/mp3"/>
                         </audio>
-                    </div>
+                    </p>
+                    <br />
                 </div>
             );
         });
@@ -35,15 +32,26 @@ class Songs extends React.Component {
             </div>
             <div className="col-4">
                 <div className="artist">
-                    <h1>{this.props.artist.name}</h1>
+                    <iframe src="https://giphy.com/embed/QrooGoDTEGK52" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
                 </div>
             </div>
             <div className="col-4">
                 <a className="button" href={urlNew}>!!Add New Song!!</a>
             </div>
         </div>
-          <div className="container">
-              <p>{mapSongsData}</p>
+        <div className="container">
+            <div className="row">
+                <div className="col-6">
+                    <div className="position-fixed justify-content-center">
+                        <h1>{this.props.artist.name}</h1>
+                        <img className="artistImage" src={this.props.artist.photo_url}/>
+                    </div>
+                </div>
+                <div className="col-6">
+                    <h1>Song Track Prev</h1>
+                    <p>{mapSongsData}</p>
+                </div>
+            </div>
           </div>
         </body>
       </html>

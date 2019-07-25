@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -257,12 +258,71 @@ let home = (request,response)=>{
     });
 };
 
+var currentLogin = (request,response)=>{
+    var userData = request.body
+    response.send(userData);
+};
+
+var login = (request,response)=>{
+    // response.send("inside login function");
+    response.render('login')
+};
+
+var newAccount = (request,response)=>{
+
+    // process user's inputs into object
+    let newData = {};
+    newData.password = sha256(request.body.password);
+    newData.name = request.body.name;
+
+    // look into database to see if username exists
+    let existacc = "SELECT name FROM users WHERE name=$1";
+    let values = [newData.name];
+    pool.query(existacc, values,(err,result)=>{
+        if (err){
+            // if error, table cannot be accesssed
+            console.log("query error",err.stack);
+            response.send("error checking database");
+        }
+        else{
+            // if results.rows ARRAY contain an object => username already exists in table
+            if (result.rows.length > 0) {
+                response.send("username already exists");
+            } else {
+                // since username doesn't exist in table, create new row
+                let addNewAccount = `INSERT INTO users (name, password) VALUES ($1, $2)`;
+                values = [newData.name, newData.password];
+                pool.query(addNewAccount, values, (err,result)=>{
+                    if (err){
+                        // error creating user
+                        console.log("query error",err.stack);
+                        response.send("error saving new user");
+                    }
+                    else{
+                        // account has been created, prepare to redirect user
+                        response.render("acccreated");
+                    };
+                });
+            }
+        };
+    })
+};
+
+var createAcc = (request,response)=>{
+    // response.send("inside create account function");
+    response.render('createacc');
+};
+
 /**
  * ===================================
  * Routes
  * ===================================
  */
 
+app.get('/login', login);
+app.post('/login',currentLogin);
+app.post('/create',newAccount);
+app.get('/create',createAcc);
 app.post('/homepage/:id/',newSongUpdate)
 app.get('/homepage/:id/songs/new',newSong)
 app.get('/homepage/:id/songs',songs)
@@ -273,10 +333,9 @@ app.post('/homepage', newEntryUpdate);
 app.get('/homepage/:id/edit',edit);
 app.put('/homepage/:id',editUpdate);
 app.get('/homepage/:id', individual);
-
-
-
 app.get('/homepage', home);
+
+
 
 
 /**
