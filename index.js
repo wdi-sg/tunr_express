@@ -83,6 +83,13 @@ app.post('/users', (request, response)=>{
     });
 });
 
+app.get('/login',(request, response)=>{
+
+  response.render('login');
+});
+
+
+
 app.get('/', (request, response) => {
 
   response.redirect('/artists');
@@ -103,9 +110,8 @@ app.get('/artists', (request, response) => {
       response.send( 'query error' );
 
     } else {
-      console.log('query result:', result);
-
-      console.log(result.rows);
+      // console.log('query result:', result);
+      // console.log(result.rows);
 
       const data = {
         artist : result.rows
@@ -129,7 +135,7 @@ app.get('/artists/:id', (request, response) => {
       response.send( 'query error' );
 
     } else {
-      console.log('query result:', result.rows[0]);
+      // console.log('query result:', result.rows[0]);
 
       const data = {
         artist : result.rows[0]
@@ -160,7 +166,7 @@ app.post('/artists', (request, response) => {
       response.send( 'query error' );
 
     } else {
-      console.log('query result:', result.rows);
+      // console.log('query result:', result.rows);
 
       response.redirect('/artists')
     }
@@ -179,7 +185,7 @@ app.get('/artists/:id/edit',(request, response)=>{
       response.send( 'query error' );
 
     } else {
-      console.log('query result:', result.rows[0]);
+      // console.log('query result:', result.rows[0]);
 
       const data = {
         artist : result.rows[0]
@@ -208,7 +214,7 @@ app.put('/artists/:id', (request, response) =>{
           response.send( 'query error' );
 
         } else {
-          console.log('query result:', result.rows);
+          // console.log('query result:', result.rows);
           response.redirect('/artists/' + artistID)
         }
     });
@@ -227,7 +233,7 @@ app.delete("/artists/:id", (request, response) => {
           response.send( 'query error' );
 
         } else {
-          console.log('query result:', result.rows);
+          // console.log('query result:', result.rows);
           response.redirect('/artists')
         }
     });
@@ -305,7 +311,7 @@ app.post('/artists/:id/songs/new', (request, response) =>{
           response.send( 'query error' );
 
         } else {
-          console.log('query result:', result.rows);
+          // console.log('query result:', result.rows);
 
           response.redirect('/artists/'+ request.params.id +'/songs')
         }
