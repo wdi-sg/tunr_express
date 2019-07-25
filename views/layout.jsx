@@ -57,6 +57,10 @@ class Layout extends React.Component {
                   <input className="form-control mr-sm-2" name="search" type="search" placeholder="Search songs by artist" aria-label="Search"/>
                   <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
+                <form className="form-inline my-2 my-lg-0" method="GET" action="/artist/songs/new">
+                      <input className="form-control mr-sm-2" name="create" type="search" placeholder="Create song for an artist" aria-label="Search"/>
+                      <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Create song</button>
+                  </form>
 
 
 

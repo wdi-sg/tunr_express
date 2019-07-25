@@ -150,7 +150,7 @@ app.delete('/artist/delete', (request, response) => {
 })
 
 //---------------SONGS-------------
-//get songs by artist
+//get songs by artist, push to songs-index
 app.get('/artist/songs', (request, response) => {
     let artist = request.query.search;
     let values = [artist];
@@ -178,6 +178,32 @@ app.get('/artist/songs', (request, response) => {
     })
 })
 
+//create song, get artist id, push to create-song
+app.get('/artist/songs/new', (request, response) => {
+    let id = parseInt(request.query.create);
+    let data = {
+        artistId: id
+    }
+    response.render('create-song', data);
+})
+
+//get info from create-song, create song, redirect to songs-index
+app.post('/artist/:id/songs/new/', (request, response) => {
+    let songData = request.body;
+    console.log(request.body)
+    let artistId = parseInt(request.params.id);
+
+    console.log(artistId)
+    let values = [songData.title, songData.album, "", songData.artwork, artistId]
+    let queryString = `INSERT INTO songs (title, album, preview_link, artwork, artist_Id) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else {
+            response.redirect('/artist/songs');
+        }
+    })
+})
 
 
 
