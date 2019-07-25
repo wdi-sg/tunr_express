@@ -16,6 +16,7 @@ const configs = {
   port: 5432,
 };
 
+const SALT = "meow meow poop";
 const pool = new pg.Pool(configs);
 pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
@@ -35,6 +36,8 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 var htmlElementAttributes = require('react-html-attributes');
+const cookieParser = require('cookie-parser')
+var sha256 = require('js-sha256');
 
 /**
  * ===================================
@@ -45,11 +48,10 @@ var htmlElementAttributes = require('react-html-attributes');
  /* ==== Post Individual Artist Song ==== */
 app.post('/register', (request, response) => {
     let newUser = request.body;
-    console.log(newUser);
-
-    let values = [newUser.user_email, newUser.user_password];
+    let hashedPassword = sha256(newUser.password;
 
     let queryString = "INSERT INTO users(user_email, user_password)VALUES($1,$2)";
+    let values = [newUser.user_email, hashedPassword];
 
     pool.query(queryString, values, (err, result) => {
         if (err) {
@@ -57,7 +59,12 @@ app.post('/register', (request, response) => {
             response.send("query error");
         } else {
             console.log("new user successfully added!")
-            // response.redirect('/artists');
+            //user successfully registered
+            //send them a hashed logged in cookie and a userid cookie
+            let hashedLogin = sha256 (newUser.id + 'logged_id' + SALT );
+            response.cookie('loggedin', hashedLogin);
+            response.cookie('userid', newUser.id);
+            response.render('loggingin.jsx');
         }
     })
 });
