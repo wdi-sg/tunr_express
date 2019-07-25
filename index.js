@@ -33,7 +33,7 @@ app.get('/', (request, response) => {
 });
 
 app.get('/artists', (request, response) => {
-    const queryString = 'SELECT * from artists';
+    const queryString = 'SELECT * from artists ORDER BY id ASC';
 
     pool.query(queryString, (err, result) => {
         if (err) {
@@ -129,6 +129,26 @@ app.get('/artists/:id/edit', (request, response) => {
             };
             response.render('edit', data);
     }
+    });
+});
+
+app.put('/artists/:id', (request, response) => {
+    const queryString = 'UPDATE artists SET name=$1,nationality=$2,photo_url=$3 WHERE id =' + parseInt(request.params.id) + "RETURNING *";
+    console.log(queryString);
+    let arr = [request.body.name, request.body.nationality, request.body.photo_url];
+    console.log(arr);
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            let data = {
+                artistsKey: result.rows[0],
+            };
+
+            response.render('newedit', data);
+        }
     });
 });
 
