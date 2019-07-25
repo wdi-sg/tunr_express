@@ -1,5 +1,9 @@
 console.log("starting up!!");
 
+var sha256 = require('js-sha256');
+
+const SALT = "i love mickey";
+
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -51,6 +55,70 @@ app.engine('jsx', reactEngine);
 app.get('/', (request, response) => {
     response.redirect("/artist");
 });
+
+app.get('/register',(request, response)=>{
+  response.render('register');
+});
+
+app.get('/login',(request, response)=>{
+  response.render('login');
+})
+
+app.post('/register', (request, response)=>{
+
+  // hash the password
+  let hashedPassword = sha256( request.body.password + SALT );
+
+  const queryString = "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *";
+
+  const values = [request.body.name, hashedPassword];
+
+  pool.query(queryString, values, (err, result) => {
+
+    console.log("adding user");
+    console.log(result.rows[0] );
+
+    response.cookie('loggedin', true);
+
+    response.redirect('/artist');
+  });
+})
+
+
+app.post('/login', (request, response)=>{
+  const queryString = "SELECT * FROM users WHERE name=$1";
+
+  const values = [request.body.name];
+
+  pool.query(queryString, values, (err, result) => {
+
+    if( err ){
+      console.log( "error", err );
+    }else{
+      let hashedPassword = sha256( request.body.password + SALT );
+      if(result.rows[0].password === hashedPassword){
+
+        var user_id = result.rows[0].id;
+
+        console.log("matched")
+
+        let currentSessionCookie = sha256( user_id + 'logged_id' + SALT );
+
+
+        response.cookie('loggedin', currentSessionCookie);
+        response.cookie('user_id', user_id);
+      }else{
+        console.log("something is not right")
+
+      }
+
+    response.redirect('/artist');
+
+    }
+
+  });
+})
+
 
 //index for artists
 
