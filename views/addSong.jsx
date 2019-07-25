@@ -14,7 +14,7 @@ class AddArtist extends React.Component {
               <h4>Add New Song</h4>
           <div class="form-group">
             <label>Artist ID</label>
-            <input type="text" class="form-control" value={this.props.rows[0].id} name="artist_id" readonly/>
+            <input type="text" class="form-control" value={this.props.rows[0].artist_id} name="artist_id" readonly/>
           </div>
           <div class="form-group">
             <label>Song Title</label>

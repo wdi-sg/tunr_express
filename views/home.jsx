@@ -9,7 +9,7 @@ class Homepage extends React.Component {
         {this.props.rows.map(artist =>
 
         <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
+          <div class="card mb-4 shadow-sm my-card">
             <img src={artist.photo_url} class="img-thumbnail"/>
             <div class="card-body">
               <h3>{artist.name}</h3>

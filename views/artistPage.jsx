@@ -26,7 +26,7 @@ class ArtistPage extends React.Component {
             <div class="text-center text-light">
             <h2>{this.props.rows[0].name}</h2>
             <a href={'/artist/'+this.props.rows[0].id+'/songs/new'} class="btn btn-primary my-2">Add New Song</a>
-            <img src={this.props.rows[0].photo_url} class="img-thumbnail rounded mx-auto d-block"/>
+            <img src={this.props.rows[0].photo_url} class="img-thumbnail my-card rounded mx-auto d-block"/>
             </div>
 
             <table class="table table-sm table-striped table-dark table-hover">

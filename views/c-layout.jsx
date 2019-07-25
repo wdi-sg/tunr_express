@@ -11,7 +11,7 @@ class Layout extends React.Component {
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"/>
 
 
-        <link href="./style.css" rel="stylesheet"/>
+        <link href="/style.css" rel="stylesheet"/>
         </head>
 
 
@@ -38,7 +38,7 @@ class Layout extends React.Component {
           <div class="navbar navbar-dark bg-dark shadow-sm">
             <div class="container d-flex justify-content-between">
               <a href="#" class="navbar-brand d-flex align-items-center">
-                <img src="./disc.png" width="20" height="20" fill="none"/>
+                <img src="/disc.png" width="20" height="20" fill="none"/>
                 <strong>TUNR</strong>
               </a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">

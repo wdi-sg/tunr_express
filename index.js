@@ -7,6 +7,9 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+var sha256 = require('js-sha256');
+
 
 // Initialise postgres client
 const configs = {
@@ -31,13 +34,17 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
-app.use(express.static(__dirname+'/public/'));
+// app.use(express.static(__dirname+'/public/'));
+app.use(express.static(__dirname+'/public'));
 app.engine('jsx', reactEngine);
+
+
 
 
  /**
@@ -126,7 +133,6 @@ app.get('/artist/:id/edit', (request, response) => {
   // response.send("hello tunr db");
 });
 
-
 app.put('/artist/:id', (request,response) => {
     console.log("EDITING");
     // console.log(request.body);
@@ -175,31 +181,28 @@ app.delete('/artist/:id', (request,response) => {
  */
 app.get('/artist/:id/songs', (request, response) => {
   // query database for selected artist by id to show songs
-    let queryString = `SELECT * FROM artists INNER JOIN songs ON artists.id=songs.artist_id WHERE artists.id=$1`;
+    let queryString = `SELECT * FROM songs INNER JOIN artists ON artists.id=songs.artist_id WHERE artists.id=$1`;
 
     let values = [request.params.id];
 
     pool.query(queryString, values, (err, result) => {
 
             if (err) {
-            console.error('query error:', err.stack);
-            response.send( 'query error' );
+                console.error('query error:', err.stack);
+                response.send( 'query error' );
 
+            } else if (result.rows.length === 0) {
+                const newQuery = `SELECT * FROM artists WHERE id=$1`;
+                let values = [request.params.id];
+                pool.query(newQuery, values, (err, newResult) => {
+
+                console.log(newResult);
+                response.render('artistPage',newResult);
+
+                })
             } else {
-                if (result.rows.length === 0) {
-                    const newQuery = `SELECT * FROM artists WHERE id=$1`;
 
-                    pool.query(newQuery, values, (err, newResult) => {
-                        console.log(newResult);
-
-                    response.render('artistPage',newResult);
-
-                    })
-                } else {
-                // console.log('query result:', result);
-                // render artist page
                 response.render('artistPage',result);
-                }
             }
     });
 });
@@ -212,33 +215,30 @@ app.get('/artist/:id/songs', (request, response) => {
 app.get('/artist/:id/songs/new', (request, response) => {
   // query database for selected artist by id
   // and display add song form
-    const queryString = `SELECT * FROM artists INNER JOIN songs ON artists.id=songs.artist_id WHERE artists.id=$1`;
+    const queryString = `SELECT * FROM songs INNER JOIN artists ON artists.id=songs.artist_id WHERE artists.id=$1`;
 
     let values = [request.params.id];
 
     pool.query(queryString, values, (err, result) => {
 
         if (err) {
-        console.error('query error:', err.stack);
-        response.send( 'query error' );
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
 
+        } else if (result.rows.length === 0) {
+            const newQuery = `SELECT * FROM artists WHERE id=$1`;
+            let values = [request.params.id];
+            pool.query(newQuery, values, (err, newResult) => {
+
+            console.log(newResult);
+            response.render('addSong',newResult);
+
+            })
         } else {
-            if (result.rows.length === 0) {
-                const newQuery = `SELECT * FROM artists WHERE id=$1`;
+            // response.send(result)
+            response.render('addSong',result);
+        }
 
-                pool.query(newQuery, values, (err, newResult) => {
-
-                    response.render('addSong',newResult);
-
-                });
-
-            } else {
-                console.log('query result:', result);
-
-                // response.render('addSong',result);
-                response.send(result)
-            }
-      }
     });
 });
 
@@ -264,6 +264,158 @@ app.post('/artist/:id/songs', (request,response) => {
       }
     });
 });
+
+
+ /**
+ * ======================================================
+ *                Route - Create Account
+ * ======================================================
+ */
+app.get('/register', (request, response) => {
+  response.render('register')
+});
+
+app.post('/register', (request, response) => {
+
+  let TUNR = "This is the secret tune"
+  // hash the password
+  let hashedPassword = sha256( request.body.password + TUNR );
+
+  const queryString = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *";
+
+  const values = [request.body.username, hashedPassword];
+
+  pool.query(queryString, values, (err, result) => {
+
+    console.log("YAY");
+    console.log(result.rows[0] );
+    // [{name:"hh", password: "hhg"}]
+    let username = request.cookies.username;
+
+    let requestSessionCookie = sha256( username + TUNR );
+    console.log("requestSessionCookie is: ")
+    console.log(requestSessionCookie);
+    // if( requestSessionCookie === request.cookies.loggedin ){
+
+    //   console.log("ISSSSSS LOged in");
+    //   message = "LOCATION IS DOWNSTAIRS"
+
+    // }
+    // check to see if err is null
+
+    // they have succesfully registered, log them in
+    response.cookie('loggedin', true);
+    // response.cookie('username', request.body.username);
+
+    response.redirect('/');
+  });
+});
+
+app.get('/login', (request, response) => {
+
+    const queryString = 'SELECT * FROM users';
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            // console.log(result);
+            response.render('loginPage',result);
+        }
+    })
+  // response.render('loginPage')
+});
+
+
+app.post('/login/check', (request, response) => {
+
+    let TUNR = "This is the secret tune";
+    const queryString = 'SELECT * FROM users WHERE username=$1 AND password=$2';
+    let hashedPassword = sha256( request.body.password + TUNR );
+    let values = [request.body.username, hashedPassword];
+    // console.log("USER NAME IS")
+    // console.log(request.body.username);
+    // console.log("PASSWORD IS :")
+    // console.log(hashedPassword);
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+
+            if (result.rows[0] === undefined) {
+
+                response.render('loginPage',result);
+                console.log(result.rows)
+            } else {
+                response.cookie("username", result.rows[0].username);
+
+                let currentSessionCookie = sha256(result.rows[0].username + 'logged_in' + TUNR);
+
+                response.cookie('logged_in', currentSessionCookie);
+
+                response.redirect("/");
+            }
+        }
+    });
+})
+
+
+
+
+
+
+
+app.get('/test', (request, response) => {
+// response.send(request.cookies.loggedin)
+// if (request.cookies.loggedin === true) {
+            if (request.cookies["loggedin"] === "false") {
+                response.render('loginPage');
+            } else if (request.cookies["loggedin"] === "true") {
+                response.send("LOGGED IN")
+            } else if (request.cookies.loggedin === undefined) {
+                response.render('register')
+            }
+// response.send("YAY")
+
+});
+
+
+
+
+// app.get('/test',(request, response)=>{
+
+//   console.log( request.cookies );
+
+//   var message = "SORRY NO SECRET FOR U";
+
+//   if( request.cookies.loggedin === undefined ){
+//     console.log("NOT LOGGD IN");
+//     response.status(403);
+
+//   }else{
+
+//     let username = request.cookies.username;
+
+//     let requestSessionCookie = sha256( username + "TUNR" );
+
+//     if( requestSessionCookie === request.cookies.loggedin ){
+
+//       console.log("ISSSSSS LOged in");
+//       message = "LOCATION IS DOWNSTAIRS"
+//       // response.send(message);
+
+//     }
+//   }
+//   response.send(message)
+
+
+// });
+
+
 
 
 

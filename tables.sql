@@ -13,3 +13,9 @@ CREATE TABLE IF NOT EXISTS songs (
     artwork TEXT,
     artist_id INT
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    userId SERIAL PRIMARY KEY,
+    username TEXT,
+    password TEXT
+);
