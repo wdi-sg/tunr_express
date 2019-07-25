@@ -20,6 +20,9 @@ class NavBar extends React.Component {
               <li className="nav-item">
                 <a className="nav-link" href="/songs">Songs</a>
               </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/playlists">Playlists</a>
+              </li>
             </ul>
           </div>
         </nav>

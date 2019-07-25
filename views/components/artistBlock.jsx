@@ -7,8 +7,7 @@ class Block extends React.Component {
 
     let wholeDiv = {display: 'flex', 'flexFlow': 'wrap'}
     let indDiv = {margin: '20px'}
-    let imgStyle = {width: '300px', height: '300px'
-}
+    let imgStyle = {width: '300px', height: '300px', 'border-radius': '25px'}
     let artistArr = artists.map((artist)=>{
         return (
             <div style={indDiv}>

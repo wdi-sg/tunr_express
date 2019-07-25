@@ -55,7 +55,7 @@ app.engine('jsx', reactEngine);
 
 app.get('/artists', (request, response) => {
 
-    const queryString = "SELECT * FROM artists";
+    const queryString = "SELECT * FROM artists ORDER BY id";
     pool.query(queryString, (err, result) => {
         let artists = {
             artists : result.rows
@@ -238,8 +238,6 @@ app.get('/songs/new', (request, response) => {
                 artists : artists
             }
             response.render('newSong2', allData);
-
-            // response.render('newSong', allData);
         }
     })
 });
@@ -261,6 +259,122 @@ app.post('/songs', (request, response) => {
         }
     });
 });
+
+app.get('/playlists', (request, response) => {
+    const queryString = `SELECT * FROM playlists`;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            if (result.rows[0] === undefined){
+                response.send('no playlist!');
+
+            } else {
+                let playlistData = {
+                    playlists: result.rows
+                }
+                response.render('playlists', playlistData);
+            }
+        }
+    })
+});
+
+app.get('/playlists/new', (request, response) => {
+    const queryString = `SELECT * FROM songs`;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let songData = {
+                songs: result.rows
+            }
+            response.render('newPlay', songData);
+        }
+    })
+});
+
+app.post('/playlists', (request, response) => {
+    let newPlay = request.body;
+
+    // response.send (newPlay);
+    const queryString = `INSERT INTO playlists (name) VALUES ($1) returning id`;
+    let values = [newPlay.name];
+
+    pool.query(queryString, values, (err, result) => {
+
+        let playlistId = result.rows[0].id;
+
+        const queryString2 = `
+        INSERT INTO playlists_songs (playlist_id, songs_id)
+        VALUES ($1, $2), ($1,$3), ($1,$4)`;
+
+        let values2 = [playlistId, newPlay.song_id[0],
+        newPlay.song_id[1], newPlay.song_id[2]];
+
+        pool.query(queryString2, values2, (err, result) => {
+            if (err) {
+                console.log('query error:', err.stack);
+                response.send( 'query error' );
+            } else {
+                response.redirect('/playlists');
+            }
+        });
+    })
+});
+
+app.get('/playlists/:id', (request, response) => {
+    let id = request.params.id;
+    const queryString = `SELECT * FROM playlists WHERE id = ${id}`;
+
+    pool.query(queryString, (err, result) => {
+
+        let playlist = result.rows;
+
+        const queryString2 = `
+        SELECT songs.title, playlists_songs.playlist_id FROM songs INNER JOIN playlists_songs
+        ON (playlists_songs.songs_id = songs.id)
+        WHERE playlists_songs.playlist_id = ${id} `;
+
+        pool.query(queryString2, (err, result) => {
+
+            let songs = result.rows;
+
+            if (err) {
+                console.log('query error:', err.stack);
+                response.send( 'query error' );
+            } else {
+                let allData = {
+                    playlist: playlist,
+                    songs: songs,
+                    id: id
+                }
+                response.render('indvPlay', allData);
+            }
+        })
+    })
+});
+
+app.delete('/playlists/:id', (request, response) => {
+    let id = request.params.id;
+    const queryString = `DELETE from playlists WHERE id = ${id} RETURNING id`;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          console.log(' playlist deleted!')
+          response.redirect(`/playlists`);
+        }
+    });
+});
+
+
 
 
 app.get('/', (request, response) => {

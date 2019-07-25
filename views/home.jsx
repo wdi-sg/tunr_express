@@ -19,6 +19,9 @@ class Home extends React.Component {
             <div className="home-songs">
                     <a href="./songs"className="home-p">Songs</a>
             </div>
+            <div className="home-playlists">
+                    <a href="./playlists"className="home-p">Playlists</a>
+            </div>
         </div>
 
       </DefaultLayout>
