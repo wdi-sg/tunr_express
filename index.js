@@ -80,8 +80,37 @@ app.get('/artists/:id', (request, response) => {
 });
 
 app.get('/artist/new', (request, response) => {
-    response.render('new');
+    const queryString = 'SELECT * from artists';
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let data = {
+                artistsKey : result.rows
+            };
+            response.render('new', data);
+  }
 });
+});
+
+app.post('/artists/', (request, response) => {
+
+    const queryString = 'INSERT INTO artists (id, name, photo_url, nationality) VALUES ($1,$2,$3,$4) RETURNING *';
+    let arr = [request.body.id, request.body.name, request.body.photo_url, request.body.nationality];
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else{ let data = {
+                artistsKey : result.rows
+            };
+            response.render('home', data);
+        }
+    });
+})
 
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 

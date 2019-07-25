@@ -7,7 +7,7 @@ class Home extends React.Component {
     let array = this.props.artistsKey.map(artist => {
         return(
         <div style={{display: 'inline-block', color:'black', padding: '35px'}} key={uniqid()}>
-            <img src={artist.photo_url} key={uniqid()} style={{display: 'block', height: '100px', width: '150px' }}/>
+            <img src={artist.photo_url} key={uniqid()} style={{display: 'block', height: '200px', width: '200px' }}/>
             <p key={uniqid()}>{artist.name}</p>
             <p key={uniqid()}>{artist.id}</p>
             <p key={uniqid()}>{artist.nationality}</p>

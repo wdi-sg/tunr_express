@@ -8,8 +8,9 @@ class New extends React.Component {
         <body>
         <form method="POST" action={"/artists/"}>
         <h1>Add a new artist here!</h1>
+        <input type="hidden" name="id" value={(this.props.artistsKey.length)+1}/>
         Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" name="title"/>
+        <input type="text" name="name"/>
         <br/>
         <br/>
         Picture:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
