@@ -87,10 +87,10 @@ app.post('/login', (request, response) => {
             let hashedLogin = sha256('logged_id: ' + result.rows[0].id + SALT);
             response.cookie('loggedin', hashedLogin);
             response.cookie('userid', result.rows[0].id);
+            response.render('loggingin.jsx');
       } else {
         response.send("You didn't say the magic word..")
       }
-      response.send(result.rows);
     }
   });
 });
@@ -135,7 +135,7 @@ app.get('/artists', (request, response) => {
     });
 });
 
-/* ==== Request CREATE Individual Artist Page ==== */
+/* ==== Request Create Individual Artist Page ==== */
 app.get('/artists/new', (request, response) => {
     response.render('new.jsx');
 });
