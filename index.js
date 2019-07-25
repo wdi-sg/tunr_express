@@ -99,63 +99,6 @@ app.post('/artist', (request,response) => {
     });
 });
 
-//  /**
-//  * ======================================================
-//  *         Route - Selected Artist - Show/Add Songs
-//  * ======================================================
-//  */
-// app.get('/artist/:id/songs', (request, response) => {
-//   // query database for selected artist by id to show songs
-//     let queryString = `SELECT * FROM artists INNER JOIN songs ON artists.id=songs.artist_id WHERE artists.id=$1`;
-
-//     let values = [request.params.id];
-
-//     pool.query(queryString, values, (err, result) => {
-
-//             if (err) {
-//             console.error('query error:', err.stack);
-//             response.send( 'query error' );
-
-//             } else {
-//                 if (result.rows.length === 0) {
-//                     const newQuery = `SELECT * FROM artists WHERE id=$1`;
-
-//                     pool.query(newQuery, values, (err, newResult) => {
-//                         console.log(newResult);
-
-//                     response.render('artistPage',newResult);
-
-//                     })
-//                 } else {
-//                 // console.log('query result:', result);
-//                 // render artist page
-//                 response.render('artistPage',result);
-//                 }
-//             }
-//     });
-// });
-// app.post('/artist', (request,response) => {
-//     console.log("request body is");
-//     console.log(request.body);
-
-//     const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES($1, $2, $3);`
-
-//     const values = [request.body.name, request.body.photo_url, request.body.nationality];
-
-//     pool.query(queryString, values, (err, result) => {
-
-//         if (err) {
-//         console.error('query error:', err.stack);
-//         response.send( 'query error' );
-
-//         } else {
-//         // console.log('query result:', result);
-//         // redirect to home page
-//         response.redirect('/');
-//       }
-//     });
-// });
-
  /**
  * ======================================================
  *                Route - Artist - Edit/Delete
@@ -225,31 +168,6 @@ app.delete('/artist/:id', (request,response) => {
 });
 
 
-app.post('/artist/:id/songs', (request,response) => {
-    console.log("request body is");
-    console.log(request.body);
-
-    const queryString = `INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES($1, $2, $3, $4, $5);`
-
-    const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id];
-
-    pool.query(queryString, values, (err, result) => {
-
-        if (err) {
-        console.error('query error:', err.stack);
-        response.send( 'query error' );
-
-        } else {
-        // console.log('query result:', result);
-        // redirect to artist page
-        response.redirect('/artist/'+request.params.id+'/songs');
-        console.log("ADDED NEW SONG!!")
-      }
-    });
-});
-
-
-
  /**
  * ======================================================
  *         Route - Selected Artist - Show Songs
@@ -317,35 +235,36 @@ app.get('/artist/:id/songs/new', (request, response) => {
             } else {
                 console.log('query result:', result);
 
-                response.render('addSong',result);
-                // response.send(result)
+                // response.render('addSong',result);
+                response.send(result)
             }
       }
     });
 });
 
-// app.post('/artist/:id/songs', (request,response) => {
-//     console.log("request body is");
-//     console.log(request.body);
+app.post('/artist/:id/songs', (request,response) => {
+    console.log("request body is");
+    console.log(request.body);
 
-//     const queryString = `INSERT INTO songs (title, album, preview_link, artwork) VALUES($1, $2, $3, $4);`
+    const queryString = `INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES($1, $2, $3, $4, $5);`
 
-//     const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork];
+    const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id];
 
-//     pool.query(queryString, values, (err, result) => {
+    pool.query(queryString, values, (err, result) => {
 
-//         if (err) {
-//         console.error('query error:', err.stack);
-//         response.send( 'query error' );
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
 
-//         } else {
-//         // console.log('query result:', result);
-//         // redirect to artist page
-//         response.redirect('/artist/'+request.params.id+'/songs');
-//         console.log("ADDED NEW SONG!!")
-//       }
-//     });
-// });
+        } else {
+        // console.log('query result:', result);
+        // redirect to artist page
+        response.redirect('/artist/'+request.params.id+'/songs');
+        console.log("ADDED NEW SONG!!")
+      }
+    });
+});
+
 
 
 

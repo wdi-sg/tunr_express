@@ -23,9 +23,9 @@ class ArtistPage extends React.Component {
     return (
         <Layout>
 
-            <div class="text-center">
+            <div class="text-center text-light">
             <h2>{this.props.rows[0].name}</h2>
-            <a href={'/artist/'+this.props.rows[0].id+'/songs/new'} class="btn btn-secondary my-2">Add New Song</a>
+            <a href={'/artist/'+this.props.rows[0].id+'/songs/new'} class="btn btn-primary my-2">Add New Song</a>
             <img src={this.props.rows[0].photo_url} class="img-thumbnail rounded mx-auto d-block"/>
             </div>
 
