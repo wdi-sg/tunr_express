@@ -89,6 +89,40 @@ app.get('/login',(request, response)=>{
 });
 
 
+app.post('/login', (request, response)=>{
+
+  const queryString = "SELECT * FROM users WHERE username=$1";
+
+  const values = [request.body.username];
+
+  pool.query(queryString, values, (err, result) => {
+
+    if( err ){
+      console.log( "ERRR!", err );
+
+    } else{
+
+      // they entered the correct password if
+      // the one in the request is the same as the one in the db query
+
+      // let hashedPassword = sha256( request.body.password);
+      if(result.rows[0].password === request.body.password){
+
+        let userID = result.rows[0].id;
+
+        response.cookie('username', request.body.username);
+        response.cookie('loggedin', true);
+        response.cookie('userID', userID);
+        response.redirect('/');
+
+      }else{
+        console.log("Wrong password!")
+        response.status(403);      }
+    }
+  });
+});
+
+
 
 app.get('/', (request, response) => {
 
