@@ -10,6 +10,7 @@ class AddForm extends React.Component {
                 <div className="row">
                     <div className="col-8 offset-2">
                         <form method="POST" action={formLink}>
+                            <h2 className="form-title">Edit Artist</h2>
                             <div className="form-group row">
                                 <label htmlFor="name" className="col-sm-2 col-form-label">Artist Name</label>
                                 <div className="col-sm-10">

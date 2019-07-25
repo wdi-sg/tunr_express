@@ -9,16 +9,22 @@ class Artist extends React.Component {
 			let imgStyle = {
 				backgroundImage: "url(" + song.artwork  + ")"
 			};
+			let formLink = "/favourites/"+song.id;
 			return (<div className="col-4">
 				<div className="img-thumbnail" style={imgStyle}>
 					<p className="caption">{song.title}</p>
+					<form method="POST" action={formLink}>
+						<button type="submit" className="btn-fav btn btn-link">
+							<i className="fas fa-star"></i>
+						</button>
+					</form>
 				</div>
 			</div>);
 		});
 		return (
 			<DefaultLayout>
 				<div className="row">
-					<div className="col-4 ">
+					<div className="col-4">
 						<div className="position-fixed">
 							<a className="btn btn-dark" href={newSongLink}>Add Song</a>
 						</div>

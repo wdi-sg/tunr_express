@@ -1,18 +1,17 @@
 var React = require("react");
 var DefaultLayout = require('./layouts/default');
 
-class Artists extends React.Component {
+class Favourites extends React.Component {
 	render() {
-		let artists = this.props.artists.map( (artist) =>{
-			let link = "/artists/"+artist.id;
+		let songs = this.props.faves.map( (song) =>{
 			let imgStyle = {
-				backgroundImage: "url(" + artist.photo_url  + ")"
+				backgroundImage: "url(" + song.artwork  + ")"
 			};
 			return (
 				<div className="col-3">
-					<a href={link}>
+					<a href="#">
 						<div className="img-thumbnail" style={imgStyle}>
-							<p className="caption">{artist.name}</p>
+							<p className="caption">{song.title}</p>
 						</div>
 					</a>
 				</div>
@@ -21,11 +20,16 @@ class Artists extends React.Component {
 		return (
 			<DefaultLayout>
 				<div className="row">
-					{artists}
+					<div class="col">
+						<h2>Favourites</h2>
+					</div>
+				</div>
+				<div className="row">
+					{songs}
 				</div>
 			</DefaultLayout>
 		);
 	}
 }
 
-module.exports = Artists;
+module.exports = Favourites;
