@@ -235,7 +235,7 @@ app.get('/artist/:id/songs/:idd', (req, res) => {
                 title: result.rows[0].title
             }
 
-            const queryString = 'SELECT * FROM PLAYLISTS WHERE ID IN (SELECT ID FROM PLAYLISTS EXCEPT SELECT PLAYLIST_ID FROM PLAYLISTS_SONGS WHERE SONG_ID = 2)';
+            const queryString = 'SELECT * FROM PLAYLISTS WHERE ID IN (SELECT ID FROM PLAYLISTS EXCEPT SELECT PLAYLIST_ID FROM PLAYLISTS_SONGS WHERE SONG_ID = '+parseInt(req.params.idd)+')';
             pool.query(queryString, (err, result2) => {
 
                 if (err) {
