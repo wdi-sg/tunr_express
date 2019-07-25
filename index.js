@@ -63,6 +63,39 @@ app.post('/users', (request, response)=>{
     // hash the password
     // let hashedPassword = sha256( request.body.password );
 
+    // let queryString = "SELECT username FROM users";
+
+    // pool.query(queryString, (err, result) => {
+
+    //     if (err) {
+    //         console.log('query error:', err.stack);
+    //         response.send( 'query error' );
+
+    //     } else {
+
+    //         // let matchFound = false;
+
+    //         // for(let i=0; i<result.rows.length; i++) {
+
+    //         //     if (result.rows[i].username === request.body.username) {
+    //         //         matchFound = true;
+    //         //     }
+    //         // }
+
+    //         // if (matchFound === true) {
+    //         //     response.send()
+    //         //     alert('Sorry but that username is already taken!')
+    //         // } else {
+    //         //     console.log('please proceed')
+    //         // }
+
+    //         response.cookie('username', request.body.username);
+    //         response.cookie('loggedin', true);
+    //         response.cookie('userID', result.rows[0].id);
+    //         response.redirect('/');
+    //     }
+    // });
+
     let queryString = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *";
 
     const values = [request.body.username, request.body.password];
@@ -352,7 +385,64 @@ app.post('/artists/:id/songs/new', (request, response) =>{
     });
 });
 
+app.get('/songs', (request, response) => {
+  // query database for all songs
+  // respond with text that lists the names of all the songs
 
+  let queryString = "SELECT * FROM songs ORDER BY id ASC";
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.log('query error:', err.stack);
+      response.send( 'query error' );
+
+    } else {;
+
+      const data = {
+        songs : result.rows
+      }
+
+      response.render('songs', data);
+    }
+  });
+
+});
+
+app.post('/playlist', (request, response) => {
+    console.log(request.body)
+    response.send('it works')
+});
+
+
+app.get('/favorites/new', (request, response) => {
+  // query database for all songs
+  // respond with text that lists the names of all the songs
+
+  let queryString = "SELECT * FROM songs ORDER BY id ASC";
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.log('query error:', err.stack);
+      response.send( 'query error' );
+
+    } else {;
+
+      const data = {
+        songs : result.rows
+      }
+
+      response.render('favorites', data);
+    }
+  });
+
+});
+
+app.post('/favorites', (request, response) => {
+    console.log(request.body)
+    response.send('it works')
+});
 
 
 /**
