@@ -5,12 +5,9 @@ class ArtistSongs extends React.Component {
   render() {
 
     const songs = this.props.songs.map(songs =>{
-        let songPage = "/artist/"+songs.artist_id+"/songs/"+songs.id;
         return (
             <div className = "songsList">
-                <a href = {songPage}>
-                    <h3>{songs.title}</h3>
-                </a>
+                <h3>{songs.title}</h3>
                 <p>{songs.album}</p>
                 <audio controls>
                     <source src={songs.preview_link} type="audio/m4a"/>
@@ -19,9 +16,9 @@ class ArtistSongs extends React.Component {
         )
     });
 
-    let addSong = "/artist/"+this.props.artist.id+"/songs/new";
-    let deleteSong = "/artist/"+this.props.artist.id+"/songs/"+songs.id+"/delete";
     let artistPage = "/artist/"+this.props.artist.id;
+    let addSong = "/artist/"+this.props.artist.id+"/songs/new";
+
 
     return(
         <Layout>
@@ -32,9 +29,6 @@ class ArtistSongs extends React.Component {
                 </form>
                 <form action = {addSong} method ="GET">
                     <input type = "submit" value="Add Song" />
-                </form>
-                <form action = {deleteSong} method ="GET">
-                    <input type = "submit" value="Delete Song" />
                 </form>
             </div>
             <div className = "container">

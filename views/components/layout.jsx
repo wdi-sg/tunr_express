@@ -25,7 +25,7 @@ class Layout extends React.Component {
               <div class="submit-nav collapse navbar-collapse" id="navbarTogglerDemo03">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link" href="/artist">Home</a>
+                    <a class="nav-link" href="/songs/new">Add Song</a>
                   </li>
                   </ul>
                   </div>

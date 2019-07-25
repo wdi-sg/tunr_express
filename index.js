@@ -225,7 +225,8 @@ app.get('/artist/:id/songs', (request, response)=>{
     });
 });
 
-//Request to create new song
+
+//Request to create new song via artist page
 app.get('/artist/:id/songs/new', (request, response) => {
     artistId = parseInt(request.params.id);
     let text = `select * from artists where id = '${artistId}'`;
@@ -242,7 +243,26 @@ app.get('/artist/:id/songs/new', (request, response) => {
     });
 });
 
-//Post to accept new song
+//Request to create new song globally
+app.get('/songs/new', (request, response) => {
+let text = `select * from artists ORDER BY name ASC`;
+
+    pool.query(text, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            const data = {
+                artists: result.rows
+            };
+
+            response.render('newSongGlobally', data);
+        }
+    });
+});
+
+
+//Post to accept new song via artist page
 app.post('/artist/:id/songs/new', (request, response) => {
     let text = `INSERT into songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)`;
     let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.params.id];
@@ -259,6 +279,27 @@ app.post('/artist/:id/songs/new', (request, response) => {
         }
     });
 });
+
+
+//Post to accept new song globally
+app.post('/songs/new', (request, response) => {
+    let text = `INSERT into songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)`;
+    let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id];
+
+    pool.query(text, values, (err, result) =>{
+        if (err) {
+            console.log("query error", err.message);
+        }
+        else{
+            const data = {
+                added : request.body
+            }
+            response.redirect('/artist/'+request.body.artist_id+'/songs');
+        }
+    });
+});
+
+
 
 
 
