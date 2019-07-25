@@ -15,8 +15,8 @@ class Register extends React.Component {
 
             <form action="/users" method="POST" className = "text-white">
               <div class="form-group">
-                <label for="inputName">Name</label>
-                <input type="name" name="name" class="form-control" id="inputName" aria-describedby="emailHelp" placeholder="Enter name" />
+                <label for="inputUsername">Username</label>
+                <input type="username" name="username" class="form-control" id="inputUsername" aria-describedby="emailHelp" placeholder="Enter username" />
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
               </div>
               <div class="form-group">

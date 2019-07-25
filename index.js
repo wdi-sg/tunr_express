@@ -57,6 +57,32 @@ app.get('/register',(request, response)=>{
 
 });
 
+
+app.post('/users', (request, response)=>{
+
+    // hash the password
+    // let hashedPassword = sha256( request.body.password );
+
+    let queryString = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *";
+
+    const values = [request.body.username, request.body.password];
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+
+        } else {
+
+            response.cookie('username', request.body.username);
+            response.cookie('loggedin', true);
+            response.cookie('userID', result.rows[0].id);
+            response.redirect('/');
+        }
+    });
+});
+
 app.get('/', (request, response) => {
 
   response.redirect('/artists');
@@ -94,7 +120,7 @@ app.get('/artists', (request, response) => {
 app.get('/artists/:id', (request, response) => {
 
     let queryString = "SELECT * FROM artists WHERE id=$1";
-    let values = [request.params.id]
+    let values = [request.params.id];
 
     pool.query(queryString, values, (err, result) => {
 
@@ -124,8 +150,8 @@ app.get('/new', (request, response) => {
 
 app.post('/artists', (request, response) => {
 
-    let queryString = "INSERT INTO artists (name, photo_url, nationality, info) VALUES ($1, $2, $3, $4)"
-    let values = [request.body.name, request.body.photo_url, request.body.nationality, request.body.info]
+    let queryString = "INSERT INTO artists (name, photo_url, nationality, info) VALUES ($1, $2, $3, $4)";
+    let values = [request.body.name, request.body.photo_url, request.body.nationality, request.body.info];
 
     pool.query(queryString, values, (err, result) => {
 
