@@ -1,19 +1,36 @@
 var React = require("react");
 
-class DisplaySongs extends React.Component {
-  render() {
+class Homepage extends React.Component {
+    render() {
+        console.log(this.props.artists);
 
-    const artistSongs = this.props.songs;
+        let artistsList = this.props.artists.map(artists => {
+            var url = "/home";
 
-    let allSongs = artistSongs.map(obj => {
+            return(
 
-        return <div class = "singleSong-container">
-                <h2> {obj.title} </h2>
+                <div>
+                    <a href = {url}>
+                        <img src= {artists.photo_url}/>
+                    </a>
+                    <p>Artist Name: {artists.name}</p>
+                    <p>Artist Nationality: {artists.nationality}</p>
+                </div>
+            )//return
+         }); //.map CT
 
+        return(
+            <html>
+            <head />
+                <body>
 
+                    <h1>Welcome!</h1>
+                    <h2>FEATURED ARTISTS</h2>
+                    <p>{artistsList}</p>
+                </body>
+            </html>
+        );//return
+    }//render CT
+}//Hompage CT
 
-    }); //all Songs CT
-
-
-
-module.exports = DisplaySongs;
+module.exports = Homepage;

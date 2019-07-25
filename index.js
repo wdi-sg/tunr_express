@@ -1,3 +1,9 @@
+/**
+ * ===================================
+ * Configurations and set up
+ * ===================================
+ */
+
 console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
@@ -17,12 +23,6 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
-/**
- * ===================================
- * Configurations and set up
- * ===================================
- */
-
 // Init express app
 const app = express();
 app.use(express.json());
@@ -30,7 +30,6 @@ app.use(express.urlencoded({
   extended: true
 }));
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -47,36 +46,82 @@ app.engine('jsx', reactEngine);
 
 var React = require("react");
 
-app.get('/', (request, response) => {
-    const queryArtists = 'SELECT * FROM artists ORDER BY id';
-    pool.query(queryArtists, (error, result) => {
+//RENDER REGISTRATION FORM
+app.get('/register', (req, res) => {
+    res.render('register');
+}); //.get CT
+
+//RENDER NEW REGISTRATION FORM
+app.post('/register', (request, response) => {
+
+    // Set variable for comparison
+    let existingUser = "SELECT * FROM userInfo WHERE name = $1";
+    let inputValue = [request.body];
+    let inputPassword = sha256(inputValue.password);
+    let inputName = inputValue.name.lowercase();
+
+    //compare if username exist
+    let values = [inputName];
+    pool.query(existingUser, values, (error, results) => {
         if (error) {
-            response.send("Unable to load index");
-        }//if CT
+            console.log(error);
+            response.send("Unable to check database");
+        }// if CT
         else {
-            response.render('home', {singleArtist: results.rows});
-        }// else CT
-    }) //pool query CT
-});
+            if(result.rows.length > 0) {
+                response.send("Username already exist");
+            } else {
+                let addNewAccount = 'INSERT INTO userInfo (name,password) VALUES ($1,$2)';
+                values = [inputName, inputPassword];
+                pool.query(query, values, (error, results) => {
+                    if (error) {
+                        console.log(error);
+                    }//if CT
+                    else {
+                        let user_id = results.rows[0].id;
+                        let currentSessionCookie = sha256( user_id + "logged_id" + SALT );
+                        res.redirect('/artists');
+                    } //else CT
+                })//query CT
+            }//else CT
+        }//else CT
+    })//pool.query CT
+})//.post CT
 
 
+//TEST IF APP.GET WORKS
 app.get('/artist/test', (req, res) => {
     res.send("HEY APP.GET WORKS");
 })//.get test CT
 
-//BUILD INDEX FEATURE
-app.get('/artist', (req, res) => {
 
+//SETUP INDEX PAGE
+app.get('/home', (request, response) => {
+    let queryString = "SELECT * FROM artists";
+    pool.query(queryString, (err,result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } //if CT
+        else {
+            const data = {
+            artists : result.rows
+            } //data CT
+            response.render('home', data);
+       }//else CT
+     })//pool.query CT
 });
 
 
 
+//RENDER NEW ARTIST FORM
 app.get('/artist/new', (req, res) => {
     res.render('new');
 }); //.get CT
-//     response.render('new');
-// })//.get CT
 
+
+//RENDER NEW SONG FORM
 app.post('/artist', (request, response) => {
 
     const insertQuery = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
@@ -91,29 +136,6 @@ app.post('/artist', (request, response) => {
         } //else CT
     })//pool.query CT
 })//.post CT
-
-
-//BUILD SHOE FEATURE FOR ONE ARTISTS
-//BUILD EDIT FEATURE FOR AN EXSITING ARTIST
-// BUILD A FEATURE TO ALLOW USERS TO DELETE AND EXISTING ARTISTS DATABASE
-// GET /artist/1/songs This page displays a list of songs for this artist
-
-// GET /artist/1/songs/new This page renders a form to create a new song.
-
-// The action of the form can be set to send the appropriate artist id needed to create the song.
-
-// POST /artist/1/songs This route creates a new song with the appropriate artist.
-
-
-
-
-
-
-
-
-
-
-
 
 
 

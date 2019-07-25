@@ -1,4 +1,10 @@
 
+CREATE TABLE IF NOT EXISTS userinfo (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    password TEXT
+);
+
 CREATE TABLE IF NOT EXISTS artists (
     id SERIAL PRIMARY KEY,
     name TEXT,
