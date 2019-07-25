@@ -1,12 +1,12 @@
 var React = require("react");
+const Layout = require('./layout.jsx');
 
 class Editartist extends React.Component {
   render() {
 
     return (
       <html>
-        <head />
-        <body>
+<Layout>
             <h1>Edit this artist!</h1>
             <form method="POST" action={"/artists/"+ this.props.artist.id + "?_method=PUT"}>
                 <p>Artist Id: <input type="text" name="id" value={this.props.artist.id} readonly/></p>
@@ -18,8 +18,7 @@ class Editartist extends React.Component {
                 <p>--</p>
                 <input type="submit" value="Submit" />
             </form>
-        </body>
-      </html>
+</Layout>
     );
   }
 }

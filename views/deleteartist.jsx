@@ -1,12 +1,11 @@
 var React = require("react");
+const Layout = require('./layout.jsx');
 
 class Deleteartist extends React.Component {
   render() {
 
     return (
-      <html>
-        <head />
-        <body>
+<Layout>
             <h1>Confirm <strong>deletion</strong> of this artist!</h1>
             <form method="POST" action={"/artists/"+ this.props.artist.id + "?_method=DELETE"}>
                 <p>Artist Id: <input type="text" name="id" value={this.props.artist.id} readonly/></p>
@@ -16,8 +15,7 @@ class Deleteartist extends React.Component {
                 <p>--</p>
                 <input type="submit" value="Submit" />
             </form>
-        </body>
-      </html>
+</Layout>
     );
   }
 }

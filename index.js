@@ -3,14 +3,19 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser')
+
+
+let sha256 = require('js-sha256');
+const SALT = "I love GA";
 
 // Initialise postgres client
 const configs = {
-  user: 'donc',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
-  password: 'password'
+    user: 'donc',
+    host: '127.0.0.1',
+    database: 'tunr_db',
+    port: 5432,
+    password: 'password'
 };
 
 const pool = new pg.Pool(configs);
@@ -34,6 +39,7 @@ app.use(express.urlencoded({
   extended: true
 }));
 
+app.use(cookieParser());
 app.use(methodOverride('_method'));
 
 
@@ -48,6 +54,85 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
+
+//Render a register page
+app.get('/register', (request, response) => {
+
+            response.render('register');
+
+});
+
+//insert new user to database
+app.post('/users', (request, response) => {
+    // hash the password
+    let hashedPassword = sha256( request.body.password + SALT );
+
+    const queryString = "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *";
+
+    const values = [request.body.name, hashedPassword];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            console.log("YAY");
+            console.log(res.rows[0] );
+
+            let hashedLogin = sha256("you are in" + res.rows[0].id + SALT);
+
+
+            // check to see if err is null
+
+            // they have successfully registered, log them in
+            response.cookie('loggedin', hashedLogin);
+            response.cookie('User', res.rows[0].name);
+            response.send('worked');
+        }
+    });
+});
+
+//login page
+app.get('/login', (request, response) => {
+
+            response.render('login');
+
+});
+
+//checking login
+app.post('/users/logincheck', (request, response) => {
+    // hash the password
+    let hashedPassword = sha256( request.body.password + SALT );
+    console.log(response.body);
+
+    const queryString = "SELECT FROM users WHERE name=$1 AND password=$2";
+
+    const values = [request.body.name, hashedPassword];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+
+        } else {
+            if (res.rows[0] === undefined){
+                response.send("Sorry, the user name/password was incorrect.");
+            } else {
+                console.log("YAY");
+                console.log(res.rows[0] );
+
+                let hashedLogin = sha256("you are in" + res.rows[0].id + SALT);
+
+
+                // check to see if err is null
+
+                // they have successfully registered, log them in
+                response.cookie('loggedin', hashedLogin);
+                response.cookie('User', res.rows[0].name);
+                response.redirect('/artists');
+            }
+
+        }
+    });
+});
 
 //create a new artist
 app.get('/artists/new', (request, response) => {
@@ -85,6 +170,40 @@ app.post('/artists', (request, response) => {
     });
 });
 
+app.get('/artists/:id/songs/new', (request, response) => {
+
+    let queryString = 'SELECT * FROM artists';
+
+    pool.query(queryString, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            let id = parseInt(request.params.id);
+            const data = {
+                artistId : id,
+                artists: res.rows
+            };
+            console.log(data);
+            response.render('newsong', data);
+        }
+    });
+});
+
+app.post('/artists/:id/songs', (request, response) => {
+    let id = parseInt(request.body.artist);
+    let queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)';
+    let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, id];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            let url = "/artists/" + id + "/songs";
+            response.redirect(url);
+        }
+    });
+});
+
 //get songs from an artist
 app.get('/artists/:id/songs', (request, response) => {
     var inputId = parseInt(request.params.id);
@@ -105,6 +224,8 @@ app.get('/artists/:id/songs', (request, response) => {
         }
     });
 });
+
+
 
 //edit an artist
 app.get('/artists/:id/edit', (request, response) => {

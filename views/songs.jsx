@@ -1,4 +1,5 @@
 var React = require("react");
+const Layout = require('./layout.jsx');
 
 class Onesong extends React.Component {
   render() {
@@ -23,17 +24,14 @@ class Songs extends React.Component {
             });
 
     return (
-      <html>
-        <head />
-        <body>
+<Layout>
           <h1>Welcome!</h1>
           <p>Hello world!</p>
           <ul>
             {itemElements}
           </ul>
 
-        </body>
-      </html>
+</Layout>
     );
   }
 }

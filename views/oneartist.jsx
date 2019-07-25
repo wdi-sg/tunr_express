@@ -1,5 +1,5 @@
 var React = require('react');
-
+const Layout = require('./layout.jsx');
 
 class Oneartist extends React.Component {
   render() {

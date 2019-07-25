@@ -1,4 +1,5 @@
 var React = require("react");
+const Layout = require('./layout.jsx');
 
 class Oneartist extends React.Component {
   render() {
@@ -8,7 +9,7 @@ class Oneartist extends React.Component {
             Artist Id: {this.props.artistsData.id}<br />
             Name: {this.props.artistsData.name}<br />
             Nationality: {this.props.artistsData.nationality}<br />
-            Photo: <img src={`${this.props.artistsData.photo_url}`} height="200" width="200" />
+            Photo: <a href={`/artists/${this.props.artistsData.id}`}><img src={`${this.props.artistsData.photo_url}`} height="200" width="200" /></a>
         </li>
     );
   }
@@ -23,17 +24,13 @@ class Home extends React.Component {
             });
 
     return (
-      <html>
-        <head />
-        <body>
+<Layout>
           <h1>Welcome!</h1>
           <p>Hello world!</p>
           <ul>
             {itemElements}
           </ul>
-
-        </body>
-      </html>
+</Layout>
     );
   }
 }
