@@ -29,26 +29,19 @@ class Home extends React.Component {
       <html>
         <head>
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
-            <link href="https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap" rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap" rel="stylesheet"/>
             <link rel="stylesheet" type="text/css" href="/style.css"/>
         </head>
         <body>
         <div className="containertop row">
             <div className="artist col-4">
-                <h1>!!ARTISTS!!</h1>
+                <h3>!!ARTISTS!!</h3>
             </div>
             <div className="col-4">
-                <form method='post' action='/login'>
-                  <input type='text' name='name' placeholder='username'/>
-                  <br />
-                  <input type='password' name='password' placeholder='password'/>
-                  <br />
-                  <input type='submit' value='Login'/>
-                </form>
-                <a href='/create'>Create Account</a>
+                <h1>WELCOME TO TUNR_DB</h1>
             </div>
             <div className="newArtist col-4">
-                <a className="button"href={urlNew}>!!Add New Artist!!</a>
+                <a className="button"href={urlNew}><h3>!!Add New Artist!!</h3></a>
             </div>
         </div>
           <div className="container">
