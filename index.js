@@ -28,7 +28,6 @@ app.use(express.urlencoded({
   extended: true
 }));
 app.use(methodOverride('_method'));
-
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
@@ -71,7 +70,7 @@ app.get('/artists/new', (request, response) => {
     response.render('new.jsx');
 });
 
-/* ==== POSTING Individual Artist Page ==== */
+/* ==== Post Individual Artist Page ==== */
 app.post('/artists', (request, response) => {
     let newArtist = request.body;
     console.log(newArtist);
@@ -201,7 +200,7 @@ app.get('/artists/:id/songs', (request, response) => {
     });
 })
 
-/* ==== Request CREATE Individual Artist Song Page ==== */
+/* ==== Request Create Individual Artist Song Page ==== */
 app.get('/artists/:id/songs/new', (request, response) => {
     let artistId = parseInt(request.params.id);
     let values = [artistId];
@@ -220,7 +219,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
     });
 });
 
-/* ==== POSTING Individual Artist Song ==== */
+/* ==== Post Individual Artist Song ==== */
 app.post('/artists/:id/songs', (request, response) => {
     let newSong = request.body;
     console.log(newSong);

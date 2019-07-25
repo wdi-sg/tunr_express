@@ -11,6 +11,7 @@ class Artistspage extends React.Component {
                         <img src={artist.photo_url}/>
                         <p>{artist.nationality}</p>
                         <h2>{artist.name}</h2>
+                        //gradient underline applied to h2
                     </a>
                 </div>
         )
@@ -24,7 +25,13 @@ class Artistspage extends React.Component {
             <link rel="stylesheet" type="text/css" href="/style.css"/>
         </head>
         <header>
-        <h1>Artists Page</h1>
+        <ul>
+            <li><a href="default.asp">Home</a></li>
+            <li><a href="news.asp">News</a></li>
+            <li><a href="contact.asp">Contact</a></li>
+            <li><a href="about.asp">About</a></li>
+        </ul>
+            <img id="logo" src="logo.png"/>
         </header>
         <body>
             <div id="artist-container">

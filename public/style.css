@@ -1,58 +1,45 @@
 body {
 	font-family: 'Darker Grotesque', sans-serif;	/* weight 400 and 600 */
-	width: 80%;
 	margin: 0 auto;
 	padding: 0;
 	text-align: center;
 }
 
-/*nav {
-	display: table;
-	margin: auto;
-	height: 60px;
-	box-shadow: 0px 0px 15px #9e9e9e;
-	border-radius: 3px;
-}*/
-
-/*ul#nav-container {
-	margin: auto;
-	padding: 0;
-	list-style: none;
-	display: table;
+#logo {
+	max-height: 100px;
+	margin: 50px 0;
 }
 
-li.item {
-	display: inline-block;
-	line-height: 58px;
-	font-size: 20px;
-	font-family: sans-serif;
-	cursor: pointer;
-	padding-left: 40px;
-	padding-right: 40px;
-	color: #616161;
-	font-family: 'Ubuntu', sans-serif;
-	font-size: 18px;
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(251,90,133,1) 0%, rgba(201,116,162,1) 35%, rgba(53,191,248,1) 100%);
+}
+
+li {
+  float: left;
 }
 
 li a {
-	text-decoration: none;
-	color: inherit;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
 
-li.item:hover {
-	color: darkcyan;
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
 }
-
-#header-img {
-	width: 350px;
-	margin: 20px 0 -10px 0;
-}*/
 
 /* container holding all the artist cards */
 #artist-container {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-around;
+	/*justify-content: space-around;*/
 	align-items: flex-end;
 }
 
@@ -67,6 +54,7 @@ li.item:hover {
 .artist-card {
 	width: 150px;
 	margin: 10px 20px;
+	padding: 10px 30px;
 }
 
 .song-card {
@@ -92,14 +80,19 @@ li.item:hover {
 	word-wrap: break-word;
 }
 
-.artist-card h1, .song-card a {
+.artist-card h2, .song-card h2 {
 	font-family: 'Darker Grotesque', sans-serif;
 	font-size: 15pt;
 	font-weight: 400;
 	margin: 5px;
 }
 
-.artist-card img, .song-card a {
+.artist-card img {
+	width: 100%;
+	border-radius: 10px;
+}
+
+.song-card img {
 	width: 100%;
 	border-radius: 10px;
 }
