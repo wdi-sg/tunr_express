@@ -11,35 +11,34 @@ body {
 }
 
 ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: linear-gradient(90deg, rgba(251,90,133,1) 0%, rgba(201,116,162,1) 35%, rgba(53,191,248,1) 100%);
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background: linear-gradient(90deg, rgba(251, 90, 133, 1) 0%, rgba(201, 116, 162, 1) 35%, rgba(53, 191, 248, 1) 100%);
 }
 
 li {
-  float: left;
+	float: left;
 }
 
 li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
 }
 
 /* Change the link color to #111 (black) on hover */
 li a:hover {
-  background-color: #111;
+	background-color: #111;
 }
 
 /* container holding all the artist cards */
 #artist-container {
 	display: flex;
-	flex-wrap: wrap;
-	/*justify-content: space-around;*/
+	flex-wrap: wrap;	/*justify-content: space-around;*/
 	align-items: flex-end;
 	padding: 0 30px;
 }
@@ -60,10 +59,10 @@ li a:hover {
 
 .song-card {
 	display: flex;
-  justify-content: center;
-  width: 300px;
-  height: 200px;
-  align-items: flex-end;
+	justify-content: center;
+	width: 300px;
+	height: 200px;
+	align-items: flex-end;
 }
 
 .artist-card a, .song-card a {
@@ -89,8 +88,7 @@ li a:hover {
 }
 
 .artist-card h2 {
-	font-family: 'Darker Grotesque', sans-serif;
-/*	background-image: linear-gradient(transparent 15px, #F243B3 50%, #FFCA47 100%);*/
+	font-family: 'Darker Grotesque', sans-serif;/*	background-image: linear-gradient(transparent 15px, #F243B3 50%, #FFCA47 100%);*/
 	font-size: 15pt;
 	font-weight: 400;
 	margin: 5px;
@@ -101,9 +99,7 @@ li a:hover {
 	position: absolute;
 	content: '';
 	height: 2px;
-	bottom: -10px;
-
-	/* center - (optional) use with adjusting width   */
+	bottom: -10px;	/* center - (optional) use with adjusting width   */
 	margin: 0 auto;
 	left: 0;
 	right: 0;
@@ -122,9 +118,26 @@ li a:hover {
 	background: #F243B3;
 }
 
-.artist-card img {
+/*.artist-card img {
 	width: 100%;
 	border-radius: 10px;
+}*/
+
+.img-thumbnail {
+	width: 100%;
+	background-size: cover;
+	background-position: center;
+	position: relative;
+	padding: 0;
+	transition: 0.5s;
+	margin-bottom: 2rem;
+	border-radius: 20%
+}
+
+.img-thumbnail:after {
+	content: "";
+	display: block;
+	padding-bottom: 100%;
 }
 
 .song-card img {
@@ -151,6 +164,7 @@ form {
 }
 
 /*drop-down select*/
+
 /*select {
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 18px;

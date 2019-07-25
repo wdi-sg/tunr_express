@@ -5,10 +5,14 @@ class Artistspage extends React.Component {
 
     const artistCards = this.props.rows.map(artist =>{
         let artistPage = "/artists/" + artist.id;
+        let imgStyle = {
+                backgroundImage: "url(" + artist.photo_url  + ")"
+            };
+
         return (
                 <div className="artist-card">
                     <a href={artistPage}>
-                        <img src={artist.photo_url}/>
+                        <div className="img-thumbnail" style={imgStyle}></div>
                         <p>{artist.nationality}</p>
                         <h2>{artist.name}</h2>
                     </a>
@@ -25,8 +29,8 @@ class Artistspage extends React.Component {
         </head>
         <header>
         <ul>
-            <li><a href="default.asp">Home</a></li>
-            <li><a href="news.asp">News</a></li>
+            <li><a href="/artists">Home</a></li>
+            <li><a href="/artists/new">Add Artist</a></li>
             <li><a href="contact.asp">Contact</a></li>
             <li><a href="about.asp">About</a></li>
         </ul>
