@@ -69,6 +69,32 @@ app.post('/register', (request, response) => {
     })
 });
 
+ /* ==== Post Login Request ==== */
+app.post('/login', (request, response) => {
+    const queryString = "SELECT * FROM users WHERE user_email=$1";
+    const values = [request.body.user_email];
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.log( "Something went wrong!", err );
+        } else {
+
+        // they entered the correct password if the password of the entered name matches the one  attached to the name in the db
+
+        let hashedPassword = sha256(request.body.user_password);
+        if(result.rows[0].user_password === hashedPassword) {
+            let hashedLogin = sha256('logged_id: ' + result.rows[0].id + SALT);
+            response.cookie('loggedin', hashedLogin);
+            response.cookie('userid', result.rows[0].id);
+      } else {
+        response.send("You didn't say the magic word..")
+      }
+      response.send(result.rows);
+    }
+  });
+});
+
 /* ==== Fake Main Page ==== */
 app.get('/', (request, response) => {
   // for now just say hello world

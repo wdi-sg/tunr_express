@@ -7,7 +7,6 @@ body {
 
 body.logging-in {
 	font-family: 'Darker Grotesque', sans-serif;
-	/*background: linear-gradient(90deg, rgba(251, 90, 133, 1) 0%, rgba(201, 116, 162, 1) 35%, rgba(53, 191, 248, 1) 100%);*/
 	text-align: center;
 }
 
@@ -56,7 +55,7 @@ li a:hover {
 /* container holding all the artist cards */
 #artist-container {
 	display: flex;
-	flex-wrap: wrap;	/*justify-content: space-around;*/
+	flex-wrap: wrap;
 	align-items: flex-end;
 	padding: 0 30px;
 }
@@ -106,7 +105,7 @@ li a:hover {
 }
 
 .artist-card h2 {
-	font-family: 'Darker Grotesque', sans-serif;/*	background-image: linear-gradient(transparent 15px, #F243B3 50%, #FFCA47 100%);*/
+	font-family: 'Darker Grotesque', sans-serif;
 	font-size: 15pt;
 	font-weight: 400;
 	margin: 5px;
@@ -187,7 +186,6 @@ form {
 }
 
 /*drop-down select*/
-
 /*select {
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 18px;
