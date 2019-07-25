@@ -172,6 +172,28 @@ app.delete('/artist/:id', (req, res) => {
     });
 })
 
+app.get('/artist/:id/songs', (req, res) => {
+    const queryString = 'SELECT * from songs'
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            let data = {
+                title: "Songs",
+                artists: result.rows
+            };
+            res.render('songs', data);
+        }
+    });
+});
+
+
+
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
