@@ -1,7 +1,15 @@
-* {
-	background-color: red;
+.artist-item{
+	display: inline-block;
 }
 
 .artist-img {
-	max-width: 400px;
+	max-width: 100%;
+	width: 100%;
+	height: 300px;
+	object-fit: cover;
+}
+
+.info-wrapper {
+	line-height: 5px;
+	margin-top: 6px;
 }

@@ -1,18 +1,19 @@
 var React = require('react');
 
-class List extends React.Component {
+class SongsList extends React.Component {
   render() {
 
-    let artistsList = this.props.artistsList.map(artist => {
+    let songsList = this.props.songsList.map(song => {
 
         return(
             <div className="artist-item col col-lg-3 col-sm-6">
                 <div className="row artist-img-wrapper">
-                    <img className="artist-img" src={artist.photo_url}/>
+                    <img className="artist-img" src={song.artwork}/>
                 </div>
                 <div className="info-wrapper text-center">
-                    <p>{artist.name}</p><br />
-                    <p>{artist.nationality}</p>
+
+                    <p>{song.title}</p><br />
+                    <p>{song.album}</p><br />
                 </div>
             </div>
         )
@@ -21,10 +22,10 @@ class List extends React.Component {
 
     return (
       <div>
-        {artistsList}
+        {songsList}
       </div>
     );
   }
 }
-module.exports = List;
-// <img src={artist.photo_url}/>
+module.exports = SongsList;
+// <p>{song.preview_link}</p><br />

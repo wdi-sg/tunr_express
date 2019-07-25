@@ -20,7 +20,14 @@ class Layout extends React.Component {
               </button>
 
               <div className="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+
+
                 <ul className="navbar-nav mr-auto">
+
+
+
                   <li className="nav-item active">
                     <a className="nav-link" href="/">Artist Index<span className="sr-only">(current)</span></a>
                   </li>
@@ -41,22 +48,27 @@ class Layout extends React.Component {
                       <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Delete artist by ID</button>
                   </form>
 
+                  <form className="form-inline my-2 my-lg-0" method="GET" action="/artist">
+                  <input className="form-control mr-sm-2" name="search" type="search" placeholder="Search artists by ID" aria-label="Search"/>
+                  <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
 
+                <form className="form-inline my-2 my-lg-0" method="GET" action="/artist/songs">
+                  <input className="form-control mr-sm-2" name="search" type="search" placeholder="Search songs by artist" aria-label="Search"/>
+                  <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
 
 
 
                 </ul>
 
-                <form className="form-inline my-2 my-lg-0" method="GET" action="/artist">
-                  <input className="form-control mr-sm-2" name="search" type="search" placeholder="Search artists by ID" aria-label="Search"/>
-                  <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+
               </div>
             </nav>
 
 
             <div className="row mainwrapper my-sm-2 my-lg-4 mx-auto">
-                <div className="col col-lg-6 offset-lg-3 col-sm-12 main">
+                <div className="col col-lg-9 offset-lg-2 col-sm-12 main">
                 {this.props.children}
                 </div>
             </div>

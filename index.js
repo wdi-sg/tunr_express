@@ -42,6 +42,8 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(express.static(__dirname+'/public/'));
+//require CSS!
 
 /**
  * ===================================
@@ -147,7 +149,34 @@ app.delete('/artist/delete', (request, response) => {
     })
 })
 
-
+//---------------SONGS-------------
+//get songs by artist
+app.get('/artist/songs', (request, response) => {
+    let artist = request.query.search;
+    let values = [artist];
+    let queryString = `SELECT * FROM artists WHERE name = $1`;
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else {
+            let artistId = result.rows[0].id;
+            console.log(artistId);
+            values  = [artistId];
+            queryString = `SELECT * FROM songs WHERE artist_id = $1`;
+            pool.query(queryString, values, (err, result) => {
+                if (err){
+                    console.log(err.stack);
+                } else {
+                    console.log(result.rows)
+                    let data = {
+                        songsData: result.rows
+                    };
+                    response.render('songs-index', data);
+                }
+            })
+        }
+    })
+})
 
 
 
