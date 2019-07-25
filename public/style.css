@@ -13,13 +13,13 @@ body.logging-in {
 
 body.logging-in h1 {
 	color: rgb(251, 90, 133);
-	font-size: 40px;
+	font-size: 60px;
 	font-weight: 600;
 }
 
 body.logging-in p {
 	color: rgb(53, 191, 248);
-	font-size: 20px;
+	font-size: 40px;
 }
 
 #logo {
