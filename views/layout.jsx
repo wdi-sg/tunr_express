@@ -10,35 +10,35 @@ class Layout extends React.Component {
             <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossOrigin="anonymous"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossOrigin="anonymous"></script>
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossOrigin="anonymous"></script>
-            <link rel="stylesheet" href="/styles.css"></link>
+            <link rel="stylesheet" href="/style.css"></link>
         </head>
         <body>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-              <a class="navbar-brand" href="#">Navbar</a>
-              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+              <a className="navbar-brand" href="#">Navbar</a>
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon"></span>
               </button>
 
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                  <li class="nav-item active">
-                    <a class="nav-link" href="/">Artist Index<span class="sr-only">(current)</span></a>
+              <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item active">
+                    <a className="nav-link" href="/">Artist Index<span className="sr-only">(current)</span></a>
                   </li>
 
-                  <li class="nav-item">
-                    <a class="nav-link" href="/artist/new">Input an artist</a>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/artist/new">Input an artist</a>
                   </li>
 
-                  <form class="form-inline my-2 my-lg-0" method="GET" action="/artist/edit">
-                      <input class="form-control mr-sm-2" name="edit" type="search" placeholder="Edit artist by ID" aria-label="Search"/>
-                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Edit artist</button>
+                  <form className="form-inline my-2 my-lg-0" method="GET" action="/artist/edit">
+                      <input className="form-control mr-sm-2" name="edit" type="search" placeholder="Edit artist by ID" aria-label="Search"/>
+                      <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Edit artist</button>
                   </form>
 
 
 
-                  <form class="form-inline my-2 my-lg-0" method="GET" action="/recipes/delete">
-                      <input class="form-control mr-sm-2" name="delete" type="search" placeholder="Delete recipe by ID" aria-label="Search"/>
-                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Delete recipe by ID</button>
+                  <form className="form-inline my-2 my-lg-0" method="POST" action="/artist/delete?_method=DELETE">
+                      <input className="form-control mr-sm-2" name="delete" type="search" placeholder="Delete artist by ID" aria-label="Search"/>
+                      <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Delete artist by ID</button>
                   </form>
 
 
@@ -47,15 +47,15 @@ class Layout extends React.Component {
 
                 </ul>
 
-                <form class="form-inline my-2 my-lg-0" method="GET" action="/artist">
-                  <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search artists by ID" aria-label="Search"/>
-                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <form className="form-inline my-2 my-lg-0" method="GET" action="/artist">
+                  <input className="form-control mr-sm-2" name="search" type="search" placeholder="Search artists by ID" aria-label="Search"/>
+                  <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
               </div>
             </nav>
 
 
-            <div className="row mainwrapper my-sm-2 my-lg-4">
+            <div className="row mainwrapper my-sm-2 my-lg-4 mx-auto">
                 <div className="col col-lg-6 offset-lg-3 col-sm-12 main">
                 {this.props.children}
                 </div>

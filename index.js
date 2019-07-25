@@ -51,7 +51,7 @@ app.engine('jsx', reactEngine);
 
 //index page, link to home
 app.get('/', (request, response) => {
-    let queryString = `SELECT * FROM artists`;
+    let queryString = `SELECT * FROM artists ORDER BY id ASC`;
     pool.query(queryString, (err, result) => {
         if (err){
             console.log(err.stack);
@@ -107,7 +107,7 @@ app.post('/artist/new', (request, response) => {
 
 //edit an artist, get id info from home, link to edit-artist
 app.get('/artist/edit', (request, response) => {
-    let id = request.query.edit;
+    let id = parseInt(request.query.edit);
     let queryString = `SELECT * FROM artists WHERE id = ${id}`;
     pool.query(queryString, (err, result) => {
         if (err){
@@ -133,7 +133,18 @@ app.put('/artist/edit', (request, response) => {
         }
     })
 
+})
 
+app.delete('/artist/delete', (request, response) => {
+    let id = parseInt(request.body.delete);
+    let queryString = `DELETE FROM artists WHERE id = ${id}`;
+    pool.query(queryString, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else{
+            response.redirect('/');
+        }
+    })
 })
 
 

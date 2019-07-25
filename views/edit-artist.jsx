@@ -6,8 +6,8 @@ class EditArtist extends React.Component {
     return (
       <Layout>
           <h3>Form Goes Here!</h3>
-          <form method="POST" action="/artist/edit?_method=PUT">
-            <input type="text" name="id" value={this.props.id} readOnly/>
+          <form className="input-form" method="POST" action="/artist/edit?_method=PUT">
+            <input type="text" name="id" value={this.props.id} readonly="readonly"/>
             <input type="text" name="name" value={this.props.name}/>
             <input type="text" name="photo_url" value={this.props.photo_url}/>
             <input type="text" name="nationality" value={this.props.nationality}/>

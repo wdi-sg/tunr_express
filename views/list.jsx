@@ -6,9 +6,11 @@ class List extends React.Component {
     let artistsList = this.props.artistsList.map(artist => {
 
         return(
-            <ul>
-                <li>{artist.name}</li>
-            </ul>
+            <div className="artist-item">
+                <p>{artist.name}</p>
+                <img className="artist-img" src={artist.photo_url}/>
+                <p>{artist.nationality}</p>
+            </div>
         )
     })
 

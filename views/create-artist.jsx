@@ -6,7 +6,7 @@ class CreateArtist extends React.Component {
     return (
       <Layout>
           <h3>Form Goes Here!</h3>
-          <form method="POST" action="/artist/new">
+          <form className="input-form" method="POST" action="/artist/new">
             <input type="text" name="name" placeholder="Input name"/>
             <input type="text" name="photo_url" placeholder="URL link to photo"/>
             <input type="text" name="nationality" placeholder="Nationality"/>
