@@ -31,12 +31,6 @@ class Artistspage extends React.Component {
         <ul>
             <li><a href="/artists">Home</a></li>
             <li><a href="/artists/new">Add Artist</a></li>
-            <form className="login-form" action="/register" method="POST">
-                <li>Email: <input type="text" name="user_email"/></li>
-                <li>Password: <input type="password" name="user_password"/></li>
-                <input className="login-submit" type ="submit" value="Register"/>
-                <input className="login-submit" type ="submit" formAction="/login" formMethod="POST" value="Login"/>
-            </form>
         </ul>
             <img id="logo" src="logo.png"/>
         </header>

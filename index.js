@@ -45,12 +45,12 @@ var sha256 = require('js-sha256');
  * ===================================
  */
 
- /* ==== Post Individual Artist Song ==== */
+ /* ==== Post Register Request ==== */
 app.post('/register', (request, response) => {
     let newUser = request.body;
-    let hashedPassword = sha256(newUser.password;
+    let hashedPassword = sha256(newUser.user_password);
 
-    let queryString = "INSERT INTO users(user_email, user_password)VALUES($1,$2)";
+    let queryString = "INSERT INTO users(user_email, user_password)VALUES($1,$2) RETURNING *";
     let values = [newUser.user_email, hashedPassword];
 
     pool.query(queryString, values, (err, result) => {
@@ -61,18 +61,34 @@ app.post('/register', (request, response) => {
             console.log("new user successfully added!")
             //user successfully registered
             //send them a hashed logged in cookie and a userid cookie
-            let hashedLogin = sha256 (newUser.id + 'logged_id' + SALT );
+            let hashedLogin = sha256('logged_id: ' + newUser.id + SALT);
             response.cookie('loggedin', hashedLogin);
-            response.cookie('userid', newUser.id);
+            response.cookie('userid', result.rows[0].id);
             response.render('loggingin.jsx');
         }
     })
 });
 
-/* ==== Front Page ==== */
+/* ==== Fake Main Page ==== */
 app.get('/', (request, response) => {
   // for now just say hello world
   response.send('Hello World!');
+});
+
+/* ==== Logged In Main Page ==== */
+app.get('/youcool', (request, response) => {
+    let queryString = "SELECT * FROM artists order by id";
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('loading artists page');
+            response.render('youcool.jsx', result);
+        }
+    });
 });
 
 /* ==== Request Artist Index Page ==== */
