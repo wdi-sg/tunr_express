@@ -19,7 +19,7 @@ ul {
 }
 
 li {
-	float: left;
+	display: inline-block;
 }
 
 li a {
@@ -30,9 +30,9 @@ li a {
 	text-decoration: none;
 }
 
-/* Change the link color to #111 (black) on hover */
 li a:hover {
-	background-color: #111;
+	color: black;
+	background-color: rgba(255, 255, 255, 0.8);
 }
 
 /* container holding all the artist cards */
@@ -99,12 +99,12 @@ li a:hover {
 	position: absolute;
 	content: '';
 	height: 2px;
-	bottom: -10px;	/* center - (optional) use with adjusting width   */
+	bottom: -10px;
 	margin: 0 auto;
 	left: 0;
 	right: 0;
 	width: 50%;
-	background: #42B0D6;		  /* optional animation */
+	background: #42B0D6;
 	-o-transition: .5s;
 	-ms-transition: .5s;
 	-moz-transition: .5s;
@@ -112,7 +112,7 @@ li a:hover {
 	transition: .5s;
 }
 
-/* optional hover classes used with animation */
+/* hover animation */
 .artist-card h2:hover:after {
 	width: 80%;
 	background: #F243B3;
@@ -177,25 +177,34 @@ form {
 
 /*all form submit buttons*/
 input[type="submit"] {
-	font-family: 'Ubuntu', sans-serif;
 	font-size: 13px;
 	color: #ffffff;
 	display: block;
 	margin: 18px auto;
 	text-align: center;
 	border-radius: 30px;
-	background-color: #524f4f;
-	border: 3px solid #d8d4d4;
+	background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);
+	/*border: 3px solid #d8d4d4;*/
 	height: 33px;
 	width: 84px;
 }
 
 .edit-artist h2, .create-artist h2, .create-song h2 {
-	font-family: 'Ubuntu', sans-serif;
 	font-size: 12pt;
 	margin: 30px 0px 10px 0;
 }
 
 .edit-artist img, .create-artist img, .create-artist img {
 	margin-bottom: -20px;
+}
+
+footer {
+	height: 30px;
+  display: block;
+  background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);
+}
+
+footer p {
+	color: white;
+
 }

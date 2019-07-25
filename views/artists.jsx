@@ -31,8 +31,6 @@ class Artistspage extends React.Component {
         <ul>
             <li><a href="/artists">Home</a></li>
             <li><a href="/artists/new">Add Artist</a></li>
-            <li><a href="contact.asp">Contact</a></li>
-            <li><a href="about.asp">About</a></li>
         </ul>
             <img id="logo" src="logo.png"/>
         </header>
@@ -40,6 +38,9 @@ class Artistspage extends React.Component {
             <div id="artist-container">
                 {artistCards}
             </div>
+        <footer>
+            <p>Made with Love by Elise</p>
+        </footer>
         </body>
         </html>
     );
