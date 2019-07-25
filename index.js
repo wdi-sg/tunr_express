@@ -522,20 +522,31 @@ app.post('/playlist/:id', (req, res) => {
 
 app.get('/login', (req, res) => {
     let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
-    let data = {
-        title: "Log In",
-        cookieLogin: cookieLogin
-    };
-    res.render("login", data);
+    if (cookieLogin) {
+        res.send("YOU ARE ALREADY LOGGED IN");
+    } else {
+        let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
+        let data = {
+            title: "Log In",
+            cookieLogin: cookieLogin
+        };
+        res.render("login", data);
+    }
 })
+
 
 app.get('/login/register', (req, res) => {
     let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
-    let data = {
-        title: "Register",
-        cookieLogin: cookieLogin
-    };
-    res.render("register", data);
+    if (cookieLogin) {
+        res.send("LOG OUT FIRST BEFORE YOU CAN REGISTERE");
+    } else {
+        let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
+        let data = {
+            title: "Register",
+            cookieLogin: cookieLogin
+        };
+        res.render("register", data);
+    }
 })
 
 app.get('/login/logout', (req, res) => {
@@ -601,14 +612,14 @@ app.get('/favorites', (req, res) => {
                     title: "Favorites",
                     cookieLogin: cookieLogin
                 }
-                const queryString = 'SELECT * FROM users WHERE id ='+req.cookies["user_id"];
+                const queryString = 'SELECT * FROM users WHERE id =' + req.cookies["user_id"];
                 pool.query(queryString, (err, result) => {
 
                     if (err) {
                         console.error('query error:', err.stack);
                         res.send('query error');
                     } else {
-                        data['user_name']=result.rows[0].name;
+                        data['user_name'] = result.rows[0].name;
                         res.render('favorites', data);
                     }
                 });
