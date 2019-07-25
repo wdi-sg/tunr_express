@@ -3,19 +3,45 @@ var React = require("react");
 class Home extends React.Component {
   render() {
 
-    const artistsList = this.props.rows.map(artistName =>{
+    let artists = this.props.artists;
 
-        return <li>{artistName.name}</li>
-    })
+    let artistsList = artists.map(artistsData =>{
+
+        let url = '/artist/'+ artistsData.id
+
+        return(
+
+            <a href = {url}>
+                <div key={artistsData.id} className = "artistCards">
+                    <img src = {artistsData.photo_url} className = 'artistImg'/>
+                    <p>Artist's Id: {artistsData.id}</p>
+                    <p>Artist's Name: {artistsData.name}</p>
+                    <p>Artist's Nationality: {artistsData.nationality}</p>
+                </div>
+            </a>
+
+        )
+    });
 
     return (
       <html>
-        <head />
+
+        <head>
+            <link rel = "stylesheet" type = "text/css" href = "/css/style.css"/>
+        </head>
+
         <body>
-          <h1>All Artists Names</h1>
-          <ul>
-            {artistsList}
-          </ul>
+
+            <div className = "container">
+
+                <h1>All Artists</h1>
+
+                <div className = "artists">
+                    {artistsList}
+                </div>
+
+            </div>
+
         </body>
       </html>
     );

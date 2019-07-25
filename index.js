@@ -4,6 +4,8 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+
+
 // Initialise postgres client
 const configs = {
   user: 'malcolmlow',
@@ -27,6 +29,8 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
+
+
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -39,6 +43,8 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+
+app.use(express.static(__dirname + '/public'));
 
 /**
  * ===================================
@@ -214,7 +220,7 @@ app.get('/artist/:id', (request, response) => {
 // The index feature (Deliverable)
 app.get('/', (request, response) => {
 
-  const queryString = 'SELECT * from artists'
+  const queryString = 'SELECT * from artists order by id';
 
   pool.query(queryString, (err, result) => {
 
@@ -223,8 +229,12 @@ app.get('/', (request, response) => {
         response.send('query error');
     }
     else {
-        // console.log('query result:', result.rows);
-        response.render('home', result);
+
+        const data = {
+            artists : result.rows
+        }
+
+        response.render('home', data);
     }
   })
 });
