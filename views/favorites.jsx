@@ -11,7 +11,7 @@ class Playlists extends React.Component {
 
     return (
       <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
-      <h2>Favorites</h2>
+      <h2>{this.props.user_name}'s Favorites</h2>
         <ul>
             {songs}
         </ul>

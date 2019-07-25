@@ -10,6 +10,9 @@ class Singlesong extends React.Component {
     let playList = this.props.playlists.map(x=>{
         return <option value={x.id}>{x.name}</option>
     })
+    console.log("ANOTHER HERE");
+    console.log(this.props.addIntoFavorites);
+    let addToFavoritesButton = this.props.addIntoFavorites? <div><form className="add-to-playlist" method="POST" action="/favorites/fromSingleSong"><input name="artist_id" value= {this.props.song.artist_id} hidden/><input name="song_id" value={this.props.song.id} hidden/><input type="submit" value="Add into Favorites"/></form></div> : <div></div>
 
 
     return (
@@ -52,14 +55,7 @@ class Singlesong extends React.Component {
                     <input type="submit" value="Add into Playlist"/>
                 </form>
             </div>
-            <div>
-                <form className="add-to-favorites" method="POST" action="/favorites/fromSingleSong">
-                    <input name="artist_id" value= {this.props.song.artist_id} hidden/>
-                    <input name="song_id" value={this.props.song.id} hidden/>
-                    <input type="submit" value="Add into Favorites"/>
-
-                </form>
-            </div>
+            {addToFavoritesButton}
 
 
         </div>

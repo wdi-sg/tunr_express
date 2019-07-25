@@ -256,7 +256,7 @@ app.get('/artist/:id/songs/:idd', (req, res) => {
                 song: result.rows[0],
                 title: result.rows[0].title,
                 cookieLogin: cookieLogin,
-                addIntoFavorites:false
+                addIntoFavorites: false
             }
             let song_id = parseInt(req.params.idd);
             const queryString = 'SELECT * FROM PLAYLISTS WHERE ID IN (SELECT ID FROM PLAYLISTS EXCEPT SELECT PLAYLIST_ID FROM PLAYLISTS_SONGS WHERE SONG_ID = ' + song_id + ')';
@@ -269,14 +269,17 @@ app.get('/artist/:id/songs/:idd', (req, res) => {
                     data['playlists'] = result2.rows;
 
                     let user_id = parseInt(req.cookies["user_id"]);
-                    const queryString = 'SELECT EXISTS (SELECT * FROM favorites WHERE song_id = '+song_id+'AND user_id = '+user_id+')' ;
+                    const queryString = 'SELECT EXISTS (SELECT * FROM favorites WHERE song_id = ' + song_id + 'AND user_id = ' + user_id + ')';
                     pool.query(queryString, (err, result3) => {
 
                         if (err) {
                             console.error('query error:', err.stack);
                             res.send('query error');
                         } else {
-                            if(result3.rows[0].exists === true && cookieLogin === true){
+                            console.log("HERE");
+                            console.log(result3.rows[0].exists);
+                            console.log(cookieLogin);
+                            if (result3.rows[0].exists === false && cookieLogin === true) {
                                 data['addIntoFavorites'] = true;
                             }
                             res.render('singlesong', data);
@@ -598,7 +601,18 @@ app.get('/favorites', (req, res) => {
                     title: "Favorites",
                     cookieLogin: cookieLogin
                 }
-                res.render('favorites', data);
+                const queryString = 'SELECT * FROM users WHERE id ='+req.cookies["user_id"];
+                pool.query(queryString, (err, result) => {
+
+                    if (err) {
+                        console.error('query error:', err.stack);
+                        res.send('query error');
+                    } else {
+                        data['user_name']=result.rows[0].name;
+                        res.render('favorites', data);
+                    }
+                });
+
             }
         });
     } else {
@@ -670,6 +684,25 @@ app.post('/favorites', (req, res) => {
     } else {
         res.redirect("/favorites");
     }
+})
+
+app.post('/favorites/fromSingleSong', (req, res) => {
+    let song_id = parseInt(req.body.song_id);
+    let artist_id = parseInt(req.body.artist_id);
+    let user_id = parseInt(req.cookies["user_id"]);
+    const queryString = 'INSERT INTO favorites (song_id,user_id) VALUES ($1,$2)'
+    let arr = [song_id, user_id];
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+            console.log("added song");
+            let url = "/artist/" + artist_id + "/songs/" + song_id;
+            res.redirect(url);
+        }
+    });
 })
 
 
