@@ -30,7 +30,7 @@ class Home extends React.Component {
 
     //user will put content in here. content will differ from page to page
     return (
-      <Layout>
+      <Layout cookies={this.props.cookies}>
         <div id="artist-holding-page">
           New song for {this.props.artist.name}
           {newSong}

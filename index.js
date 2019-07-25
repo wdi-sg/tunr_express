@@ -3,11 +3,13 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
   user: 'marcus',
-  password: 'happytreefriends',
+  password: 'KhaiIsAGoodMan',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -31,6 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+app.use(cookieParser());
 //public folder for CSS
 app.use(express.static('public'))
 // Set react-views to be the default view engine
@@ -58,7 +61,8 @@ app.get('/artists', (request, response) => {
       return console.error('Error executing query', err.stack)
     }else{
       var dataSet = {
-        artists: result.rows
+        artists: result.rows,
+        cookies: request.cookies
       }
       response.render('artist-index', dataSet);
     }
@@ -89,8 +93,10 @@ app.get('/artist/:id/songs', (request, response) => {
                 artistid: request.params.id,
                 artistinfo: result.rows[0].name,
                 artists: res.rows,
-                playlist: res1.rows
+                playlist: res1.rows,
+                cookies: request.cookies
               }
+              console.log(request.cookies)
               response.render('artist-show-feature', dataSet);
             }
           }
@@ -108,7 +114,8 @@ app.get('/artist/:id&:name/songs/new', (request,response)=>{
     }else{
       var dataSet = {
         artist: request.params,
-        artists: result.rows
+        artists: result.rows,
+        cookies: request.cookies
       }
       response.render('newsongpage', dataSet)
     }
@@ -150,7 +157,10 @@ app.post('/artist/:id/songs', (request,response)=>{
 })
 //create new artist in database
 app.get('/artist/create', (request, response) => {
-  response.render('create-artist');
+  var dataSet={
+    cookies: request.cookies
+  }
+  response.render('create-artist', dataSet);
 });
 
 app.post('/artist/', (request,response)=>{
@@ -173,7 +183,8 @@ app.get('/artist/:id/edit',(request,response)=>{
       return console.error('Error executing query', error.stack)
     }else {
       var dataSet = {
-        artist: result.rows
+        artist: result.rows,
+        cookies: request.cookies
       }
       response.render("edit-artist",dataSet)
     }
@@ -223,9 +234,9 @@ app.get('/playlist',(request,response)=>{
     }else {
       console.log(result.rows)
       var dataSet = {
-        playlist: result.rows
+        playlist: result.rows,
+        cookies: request.cookies
       }
-      // response.send("it works!")
       response.render('playlistpage',dataSet)
     }
   })
@@ -233,7 +244,10 @@ app.get('/playlist',(request,response)=>{
 
 //create new playlist
 app.get('/playlist/new',(request,response)=>{
-  response.render('newplaylist')
+  var dataSet= {
+    cookies: request.cookies
+  }
+  response.render('newplaylist', dataSet)
 })
 
 //insert new playlist into playlit table
@@ -265,7 +279,8 @@ app.get('/playlist/:id/songs',(request,response)=>{
         }else{
           var dataSet ={
             playname: res.rows[0].playlist_name,
-            data : result.rows
+            data : result.rows,
+            cookies: request.cookies
           }
           response.render('playlistsongpage',dataSet)
         }
@@ -285,7 +300,7 @@ app.post('/playlist/add',(request,response)=>{
         return obj.song_title === request.body.title && obj.album === request.body.album
       })
       if (found){
-        response.send('duplicate')
+        response.redirect('/playlist')
       }else{
         var secondInput = 'INSERT INTO playlist_song (playlist_id,album,song_title,preview_link) VALUES ($1,$2,$3,$4)';
         var secondValues = [request.body.playlist,request.body.album,request.body.title,request.body.preview_link,];
@@ -293,7 +308,7 @@ app.post('/playlist/add',(request,response)=>{
           if (error){
             return console.error('Error executing query', error.stack)
           }else{
-            response.send("working")
+            response.redirect('/playlist')
           }
         })
       }
@@ -344,10 +359,6 @@ app.post('/playlist/massadd',(request,response)=>{
           }
         })
       }
-      // console.log("~~~~~~~~~~~result rows~~~~~~~~~~~")
-      // console.log(foundStatus)
-      // console.log("~~~~~~~~~~~result rows~~~~~~~~~~~")
-      console.log(duplicateArray)
     })
   }
   if (duplicateArray){
@@ -369,11 +380,139 @@ app.post('/playlist/massadd',(request,response)=>{
         }
       })
     }
-    response.send(duplicateArray)
+    response.redirect('/playlist')
   }else{
-    response.send("ok")
+    response.redirect('/playlist')
   }
 })
+
+//register new user via form
+//SALT is sweet, hehe
+var sweet = "sweet and sour"
+app.get('/register',(req,res)=>{
+  var dataSet={
+    cookies: req.cookies
+  }
+  res.render('register', dataSet)
+})
+//insert user details into database
+app.post('/register',(req,res)=>{
+  //hash the password
+  var hashPW = sha256(req.body.user_password)
+  var query = 'INSERT INTO users (user_name,user_password) VALUES ($1,$2) RETURNING *'
+  var values = [req.body.user_name, hashPW]
+  pool.query(query,values,(err,result)=>{
+    if (err){
+      return console.error('Error executing query', err.stack)
+    }else{
+      var newHash = sha256(sweet + "loginid" + result.rows[0].id)
+      res.cookie('username',req.body.user_name)
+      res.cookie('loggedin', hashPW)
+      res.cookie('loginstatus', true)
+      res.redirect('/artists')
+    }
+  })
+})
+//going to secret page as registered user vs guest
+app.get('/secretpage',(req,res)=>{
+  if (req.cookies.username){
+    var query = 'select * from users where user_name=$1'
+    var value = [req.cookies.username]
+    pool.query(query, value,(err,result)=>{
+      if (err){
+        return console.error('Error executing query', err.stack)
+      }else{
+        if (req.cookies.loggedin === result.rows[0].user_password){
+          var dataSet={
+            name: req.cookies.username,
+            cookies: req.cookies
+          }
+          res.render('secretpage',dataSet)
+        }
+      }
+    })
+  }else {
+    res.redirect('/artists')
+  }
+})
+
+//get the login page for user
+app.get('/login',(req,res)=>{
+  var dataSet = {
+    cookies: req.cookies
+  }
+  res.render('loginpage',dataSet)
+})
+//log user in
+app.post('/login',(req,res)=>{
+  var query = 'SELECT * FROM users WHERE user_name=$1'
+  var value = [req.body.username]
+  var hashPW = sha256(req.body.password)
+  pool.query(query,value,(err,result)=>{
+    if (hashPW === result.rows[0].user_password){
+      console.log("welcome user")
+      res.cookie('username',req.body.username)
+      res.cookie('loggedin', hashPW)
+      res.cookie('loginstatus', true)
+      res.redirect('/artists')
+    }else{
+      console.log("incorrect username or password")
+      res.redirect('/artists')
+    }
+  })
+})
+
+app.get('/favorites',(req,res)=>{
+  let input = 'SELECT * FROM users WHERE user_name=$1 AND user_password=$2';
+  let value = [req.cookies.username, req.cookies.loggedin]
+  pool.query(input,value,(err,result)=>{
+    // console.log(result.rows)
+    if (err){
+      return console.error('Error executing query', err.stack)
+    }else{
+      if (result.rows.length === 0){
+        res.redirect('/artists')
+      }else{
+        if (result.rows[0].user_name === req.cookies.username && result.rows[0].user_password === req.cookies.loggedin){
+          var query = 'SELECT * FROM songs INNER JOIN favorites on (songs.id=favorites.song_id) WHERE favorites.user_id=$1'
+          var value1 = [result.rows[0].id]
+          pool.query(query,value1,(err1,result1)=>{
+            console.log(result1.rows)
+            var dataSet = {
+              data: result1.rows,
+              cookies: req.cookies
+            }
+            res.render('favorites',dataSet)
+          })
+        }else{
+          res.redirect('/artists')
+        }
+      }
+    }
+  })
+})
+
+app.post('/favorites/new',(req,res)=>{
+  var query = 'SELECT * FROM users where user_name=$1 AND user_password=$2'
+  var value = [req.cookies.username,req.cookies.loggedin]
+  pool.query(query,value,(err,result)=>{
+    if (err){
+      return console.error('Error executing query', err.stack)
+    }else{
+      var insert = 'INSERT INTO favorites(user_id,song_id) VALUES($1,$2)';
+      var value1 = [result.rows[0].id, req.body.id]
+      pool.query(insert,value1,(error1,result1)=>{
+        if(error1){
+          return console.error('Error executing query', error1.stack)
+        }else{
+          res.redirect('/favorites')
+        }
+      })
+    }
+  })
+})
+
+
 
 //code to select the song information based on playlist_songs
 // SELECT * FROM songs INNER JOIN playlist_song ON (songs.title = playlist_song.song_title AND songs.album = playlist_song.album) where playlist_song.playlist_id = 1;

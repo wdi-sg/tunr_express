@@ -1,23 +1,23 @@
 var React = require("react");
 var Layout = require("./component/layout-allpage.jsx");
 
-
-class Home extends React.Component {
+class Login extends React.Component {
   render() {
     //code goes here
-    var display = this.props.data.map((obj)=>{
-      return <div>{obj.song_title}<br/><audio src={obj.preview_link} controls></audio></div>
+    var displayData = this.props.data.map((obj)=>{
+      return <div><p>{obj.title}</p><p>{obj.album}</p><audio src={obj.preview_link} controls></audio></div>
     })
+
     //user will put content in here. content will differ from page to page
     return (
       <Layout cookies={this.props.cookies}>
         <div id="artist-holding-page">
-          {this.props.playname} playlist
-          {display}
+        <p>Here are your favorite songs</p>
+          {displayData}
         </div>
       </Layout>
     );
   }
 }
 
-module.exports = Home;
+module.exports = Login;

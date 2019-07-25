@@ -19,10 +19,23 @@ CREATE TABLE IF NOT EXISTS playlist_song (
   playlist_id INTEGER,
   album TEXT,
   song_title TEXT,
-  preview_link TEXT
+  preview_link TEXT,
+  user_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS playlist (
   id SERIAL PRIMARY KEY,
   playlist_name TEXT
 );
+
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  user_name TEXT,
+  user_password TEXT
+);
+
+CREATE TABLE IF NOT EXISTS favorites (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER,
+  song_id INTEGER
+)

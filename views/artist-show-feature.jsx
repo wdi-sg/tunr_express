@@ -12,6 +12,13 @@ class Home extends React.Component {
       return <div><input type="checkbox" value={obj.id} name="playlistarray"/><label>{obj.playlist_name}</label></div>
     })
 
+    var userSelection = <input type="submit" value="add to your playlist"/>
+
+    if (this.props.cookies.username === undefined){
+      userSelection = null;
+    }
+
+
     var playlistLink = "/playlist/add"
     var artistSongs = this.props.artists.map((obj)=>{
       return <div>
@@ -39,6 +46,13 @@ class Home extends React.Component {
       <input type="hidden" name="preview_link" value={obj.preview_link}/>
       <input type="submit" value="mass add to playlist"/>
       </form>
+      <form action="/favorites/new" method="POST">
+      <input type="hidden" name="id" value={obj.id}/>
+      <input type="hidden" name="title" value={obj.title}/>
+      <input type="hidden" name="album" value={obj.album}/>
+      <input type="hidden" name="preview_link" value={obj.preview_link}/>
+      {userSelection}
+      </form>
       </div>
     });
     var artistLink = "/artist/"+this.props.artistid+"/edit"
@@ -56,9 +70,10 @@ class Home extends React.Component {
     <form action={artistNewSongLink} method="get">
     <input type="submit" value="New Song"/>
     </form>
+
     //user will put content in here. content will differ from page to page
     return (
-      <Layout>
+      <Layout cookies={this.props.cookies}>
         <div id="artist-holding-page">
           {this.props.artistinfo}
           {editForm}

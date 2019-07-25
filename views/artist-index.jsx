@@ -8,13 +8,13 @@ class Home extends React.Component {
     var artists = this.props.artists.map((obj)=>{
       return <Artist id={obj.id} name={obj.name} photo_url={obj.photo_url}></Artist>
     });
-
     //user will put content in here. content will differ from page to page
     return (
-      <Layout>
+      <Layout cookies={this.props.cookies}>
         <div id="artist-holding-page">
           {artists}
         </div>
+
       </Layout>
     );
   }
