@@ -1,7 +1,15 @@
+/**
+ * ===================================
+ * Configurations and set up
+ * ===================================
+ */
+
+
 console.log("starting up!!");
 
 const express = require('express');
-const methodOverride = require('method-override');
+const app = express();
+
 const pg = require('pg');
 
 // Initialise postgres client
@@ -18,21 +26,8 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
-/**
- * ===================================
- * Configurations and set up
- * ===================================
- */
 
-// Init express app
-const app = express();
-
-
-app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
-
+const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 
 
@@ -42,11 +37,25 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}));
+
+const cookieParser = require('cookie-parser')
+
+app.use(cookieParser());
 /**
  * ===================================
  * Routes
  * ===================================
  */
+
+app.get('/register',(request, response)=>{
+
+  response.render('register');
+
+});
 
 app.get('/', (request, response) => {
 
@@ -239,8 +248,6 @@ app.get('/artists/:id/songs', (request, response) =>{
             });
         }
     });
-
-
 });
 
 app.get('/artists/:id/songs/new', (request, response) =>{
@@ -277,8 +284,9 @@ app.post('/artists/:id/songs/new', (request, response) =>{
           response.redirect('/artists/'+ request.params.id +'/songs')
         }
     });
-
 });
+
+
 
 
 /**
