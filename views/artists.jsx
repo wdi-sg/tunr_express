@@ -11,7 +11,6 @@ class Artistspage extends React.Component {
                         <img src={artist.photo_url}/>
                         <p>{artist.nationality}</p>
                         <h2>{artist.name}</h2>
-                        //gradient underline applied to h2
                     </a>
                 </div>
         )

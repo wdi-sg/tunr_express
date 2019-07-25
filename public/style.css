@@ -41,6 +41,7 @@ li a:hover {
 	flex-wrap: wrap;
 	/*justify-content: space-around;*/
 	align-items: flex-end;
+	padding: 0 30px;
 }
 
 #song-container {
@@ -53,7 +54,7 @@ li a:hover {
 /* individual artist cards */
 .artist-card {
 	width: 150px;
-	margin: 10px 20px;
+	margin: 10px 20px 40px 20px;
 	padding: 10px 30px;
 }
 
@@ -80,11 +81,45 @@ li a:hover {
 	word-wrap: break-word;
 }
 
-.artist-card h2, .song-card h2 {
+.song-card h2 {
 	font-family: 'Darker Grotesque', sans-serif;
 	font-size: 15pt;
 	font-weight: 400;
 	margin: 5px;
+}
+
+.artist-card h2 {
+	font-family: 'Darker Grotesque', sans-serif;
+/*	background-image: linear-gradient(transparent 15px, #F243B3 50%, #FFCA47 100%);*/
+	font-size: 15pt;
+	font-weight: 400;
+	margin: 5px;
+	position: relative;
+}
+
+.artist-card h2:after {
+	position: absolute;
+	content: '';
+	height: 2px;
+	bottom: -10px;
+
+	/* center - (optional) use with adjusting width   */
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	width: 50%;
+	background: #42B0D6;		  /* optional animation */
+	-o-transition: .5s;
+	-ms-transition: .5s;
+	-moz-transition: .5s;
+	-webkit-transition: .5s;
+	transition: .5s;
+}
+
+/* optional hover classes used with animation */
+.artist-card h2:hover:after {
+	width: 80%;
+	background: #F243B3;
 }
 
 .artist-card img {
