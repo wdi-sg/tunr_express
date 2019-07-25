@@ -61,6 +61,15 @@ class Layout extends React.Component {
                       <input className="form-control mr-sm-2" name="create" type="search" placeholder="Create song for an artist" aria-label="Search"/>
                       <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Create song</button>
                   </form>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/register">Register</a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/login">Log in</a>
+                  </li>
+                  <li className="nav-item">
+                    <a className="nav-link" href="/logout?_method=PUT">Log out</a>
+                  </li>
 
 
 

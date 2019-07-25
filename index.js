@@ -19,6 +19,10 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
+
+
+
+
 /**
  * ===================================
  * Configurations and set up
@@ -28,7 +32,6 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -36,6 +39,9 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+var sha256 = require('js-sha256');
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -204,7 +210,72 @@ app.post('/artist/:id/songs/new/', (request, response) => {
         }
     })
 })
+//-----------------ACCOUNT
+var loggedIn = sha256('true');
 
+//sends you to register-form
+app.get('/register', (request, response) => {
+    response.render('register-form');
+})
+
+//gets user, password and creates account.
+//stores in database, hashes password and loggedIn. Sends loggedIn hash, user and user id
+app.post('/register', (request, response) => {
+    console.log(request.body);
+    let user = request.body.user;
+    let hash = sha256(request.body.password);
+    let logHash = sha256('true');
+
+    let queryString = `INSERT INTO users (name, password) VALUES ($1, $2) RETURNING id`;
+
+    let values = [user, hash];
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.log(err.stack);
+        } else {
+            let newId = result.rows[0].id;
+            console.log("newid ="+newId);
+            response.cookie('user', user);
+            response.cookie('loggedin', logHash);
+            response.cookie('userid', newId)
+            response.redirect('/');
+        }
+    })
+
+})
+
+app.get('/login', (request, response) => {
+    response.render('login');
+})
+
+app.post('/login', (request, response) => {
+    let user = request.body.user;
+    let hash = sha256(request.body.password);
+    if (request.cookies.loggedin === loggedIn){
+        console.log("Already logged in!");
+    } else {
+        let queryString = `SELECT * FROM users WHERE name = $1`;
+        let values = [user];
+        pool.query(queryString, values, (err, result) => {
+            if (err){
+                console.log(err.stack);
+            } else {
+                let savedPass = result.rows[0].password;
+                if (hash === savedPass){
+                    console.log('match!')
+                } else {
+                    console.log('no match found')
+                }
+            }
+        })
+    }
+    response.redirect('/')
+})
+
+//logout
+app.put('logout', (request, response) => {
+    response.send('logging out...')
+})
 
 
 /**
