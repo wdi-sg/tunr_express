@@ -31,6 +31,7 @@ class Artistspage extends React.Component {
         <ul>
             <li><a href="/artists">Home</a></li>
             <li><a href="/artists/new">Add Artist</a></li>
+            <li><p className="login-span">You are now logged in!</p></li>
         </ul>
             <img id="logo" src="logo.png"/>
         </header>

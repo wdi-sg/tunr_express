@@ -103,12 +103,11 @@ app.get('/', (request, response) => {
 
 /* ==== Logged In Main Page ==== */
 app.get('/youcool', (request, response) => {
-    console.log(request.cookies);
 
+    console.log(request.cookies);
     let queryString = "SELECT * FROM artists order by id";
 
     pool.query(queryString, (err, result) => {
-
         if (err) {
             console.log('query error:', err.stack);
             response.send('query error');

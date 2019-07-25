@@ -36,6 +36,9 @@ ul {
 
 li {
 	display: inline-block;
+	color: white;
+	font-size: 18px;
+	margin: 0px 5px;
 }
 
 li a {
@@ -50,6 +53,18 @@ li a {
 li a:hover {
 	color: black;
 	background-color: rgba(255, 255, 255, 0.8);
+}
+
+span#divider {
+    color: white;
+}
+
+p.login-span {
+	color: white;
+	font-weight: 600;
+  position: absolute;
+  top: 5px;
+  right: 40px
 }
 
 /* container holding all the artist cards */
@@ -180,8 +195,9 @@ form {
 	margin: 15px;
 }
 
-.login-form {
-	/*margin: 15px;*/
+form.login-form {
+	position: absolute;
+  top: 5px;
 	display: inline-block;
 }
 
@@ -214,7 +230,7 @@ input[type="submit"].login-submit {
 	font-size: 13px;
 	color: #ffffff;
 	display: inline-block;
-	margin: 0px;
+	margin: 0px 5px;
 	text-align: center;
 	border-radius: 30px;
 	background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);

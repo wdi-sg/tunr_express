@@ -31,6 +31,7 @@ class Artistspage extends React.Component {
         <ul>
             <li><a href="/artists">Home</a></li>
             <li><a href="/artists/new">Add Artist</a></li>
+            <span id="divider">|</span>
             <form className="login-form" action="/register" method="POST">
                 <li>Email: <input type="text" name="user_email"/></li>
                 <li>Password: <input type="password" name="user_password"/></li>
