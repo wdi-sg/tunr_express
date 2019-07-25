@@ -2,6 +2,8 @@ var React = require('react');
 
 class DefaultLayout extends React.Component {
     render() {
+        let songsURL = '/artist/'+ parseInt(request.params.id)+'/songs/new';
+
         return(
             <html>
             <head>
@@ -20,8 +22,10 @@ class DefaultLayout extends React.Component {
             More
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Home</a>
-            <a class="dropdown-item" href="#">Add more artists</a>
+            <a class="dropdown-item" href="/artist">Home</a>
+            <a class="dropdown-item" href="/artist/new">Add more artists</a>
+            <a class="dropdown-item" href={songsURL}>Add more songs</a>
+
             </div>
             </li>
 
