@@ -34,12 +34,33 @@ app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+var htmlElementAttributes = require('react-html-attributes');
 
 /**
  * ===================================
  * Routes
  * ===================================
  */
+
+ /* ==== Post Individual Artist Song ==== */
+app.post('/register', (request, response) => {
+    let newUser = request.body;
+    console.log(newUser);
+
+    let values = [newUser.user_email, newUser.user_password];
+
+    let queryString = "INSERT INTO users(user_email, user_password)VALUES($1,$2)";
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.send("query error");
+        } else {
+            console.log("new user successfully added!")
+            // response.redirect('/artists');
+        }
+    })
+});
 
 /* ==== Front Page ==== */
 app.get('/', (request, response) => {

@@ -24,9 +24,10 @@ li {
 
 li a {
 	display: block;
+	font-size: 18px;
 	color: white;
 	text-align: center;
-	padding: 14px 16px;
+	padding: 20px 16px;
 	text-decoration: none;
 }
 
@@ -163,6 +164,11 @@ form {
 	margin: 15px;
 }
 
+.login-form {
+	/*margin: 15px;*/
+	display: inline-block;
+}
+
 /*drop-down select*/
 
 /*select {
@@ -185,8 +191,18 @@ input[type="submit"] {
 	border-radius: 30px;
 	background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);
 	/*border: 3px solid #d8d4d4;*/
-	height: 33px;
-	width: 84px;
+/*	height: 33px;
+	width: 84px;*/
+}
+
+input[type="submit"].login-submit {
+	font-size: 13px;
+	color: #ffffff;
+	display: inline-block;
+	margin: 0px;
+	text-align: center;
+	border-radius: 30px;
+	background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);
 }
 
 .edit-artist h2, .create-artist h2, .create-song h2 {
