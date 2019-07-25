@@ -2,7 +2,6 @@ var React = require('react');
 
 class DefaultLayout extends React.Component {
     render() {
-        let songsURL = '/artist/'+ parseInt(request.params.id)+'/songs/new';
 
         return(
             <html>
@@ -12,22 +11,44 @@ class DefaultLayout extends React.Component {
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
             </head>
             <body>
+
+
             <nav className="navbar navbar-light bg-light">
-            <a className="navbar-brand" href="#">
+            <a className="navbar-brand" href="/artist">
             <img src="https://png.pngtree.com/element_our/png/20181022/music-and-live-music-logo-with-neon-light-effect-vector-png_199406.jpg" width="30" height="30" alt=""/> Tunr Music
             </a>
 
-            <li class="nav-item dropdown">
+
+            <div class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/artist">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            </div>
+
+            <div class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/register">Register</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            </div>
+
+            <div class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/login">Login</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            </div>
+
+            <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             More
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="/artist">Home</a>
             <a class="dropdown-item" href="/artist/new">Add more artists</a>
-            <a class="dropdown-item" href={songsURL}>Add more songs</a>
-
             </div>
-            </li>
+            </div>
 
             </nav>
 

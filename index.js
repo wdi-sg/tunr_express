@@ -4,6 +4,9 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser');
+
 // Initialise postgres client
 const configs = {
   user: 'sowyuen',
@@ -24,6 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+app.use(cookieParser());
 
 app.use(methodOverride('_method'));
 
@@ -48,7 +52,8 @@ app.get('/artist', (request, response) => {
         }else {
             console.log("Showing artists!")
             var data = {
-                artists : result.rows
+                artists : result.rows,
+                cookies: request.cookies
             };
             response.render('home',data);
         }
@@ -72,7 +77,8 @@ app.post('/artist',(request,response)=>{
             response.send("query error");
         }else {
             let data = {
-                artists : result.rows[0]
+                artists : result.rows[0],
+                cookies: request.cookies
             };
             response.render('artist', data);
         }
@@ -90,7 +96,8 @@ app.get('/artist/:id', (request, response) => {
         response.send('query error');
     } else {
         let data = {
-            artists: result.rows[0]
+            artists: result.rows[0],
+            cookies: request.cookies
         };
         response.render('artist', data);
     }
@@ -108,7 +115,8 @@ app.get('/artist/:id/edit', (request, response) => {
         response.send('query error');
     } else {
         let data = {
-            artists: result.rows[0]
+            artists: result.rows[0],
+            cookies: request.cookies
         };
         response.render('edit', data);
     }
@@ -125,7 +133,8 @@ app.put('/artist/:id', (request, response) => {
         res.send('query error');
     } else {
         let data = {
-            artists: result.rows[0]
+            artists: result.rows[0],
+            cookies: request.cookies
         };
 
         response.render('artist', data);
@@ -165,7 +174,8 @@ app.get('/artist/:id/songs',(request,response)=>{
             else{
                 let data = {
                     list : result2.rows[0],
-                    artists : result.rows[0]
+                    artists : result.rows[0],
+                    cookies: request.cookies
                 };
                 response.render('songlist',data);
             }
@@ -177,10 +187,11 @@ app.get('/artist/:id/songs',(request,response)=>{
 app.get('/artist/:id/songs/new',(request,response)=>{
     let text = 'SELECT * FROM artists WHERE id=' + parseInt(request.params.id);
     pool.query(text,(err,result)=>{
-            let data = {
-                artists : result.rows[0]
-            }
-            response.render('songnew',data);
+        let data = {
+            artists : result.rows[0],
+            cookies: request.cookies
+        }
+        response.render('songnew',data);
 
     })
 });
@@ -197,10 +208,90 @@ app.post('/artist/:id/songs',(request,response)=>{
             response.send("query error");
         }else {
             response.redirect('/artist/'+ id + '/songs');
-            }
+        }
 
     });
 });
+
+var SALT = "Coconut is really salty";
+
+app.get("/register",(request,response)=>{
+
+ let data ={
+    cookies : request.cookies
+}
+response.render('register',data);
+});
+
+
+app.post("/register",(request,response)=>{
+    var hash = sha256(request.body.password);
+    var text = 'INSERT INTO users (username,password) VALUES ($1,$2) RETURNING *';
+    var values = [request.body.name,request.body.password];
+    pool.query(text,values,(err,result)=>{
+        if(err){
+            console.log("query error",err.stack);
+            response.send("query error");
+        }else{
+            var newHash = sha256("loginid"+result.rows[0].id + SALT);
+            response.cookie('username',request.body.username);
+            response.cookie('loggedin', hash);
+            response.cookie('loginstatus', true);
+            response.redirect('/artist');
+        }
+    });
+});
+
+
+app.get("/secretpage",(request,response)=>{
+    if(request.cookies.username){
+        let text = 'SELECT * FROM users WHERE username= $1';
+        let value = [request.body.username];
+        pool.query(text,value,(err,result)=>{
+            if(err){
+                console.log("query error",err.stack);
+                response.send("query error");
+            }else{
+                if(request.cookies.loggedin=== result.rows[0].password){
+                    let data = {
+                        name : request.cookies.username,
+                        cookies: request.cookies
+                    };
+                    response.render('secretpage',data);
+                }
+            }
+        });
+        }else{
+            response.redirect("/artist");
+        }
+
+});
+
+app.get("/login",(request,response)=>{
+    let data ={
+        cookies :request.cookies
+    };
+    response.render("login",data);
+});
+
+app.post("/login",(request,response)=>{
+    var text = 'SELECT * FROM users WHERE username=$1';
+    var value = [request.body.username];
+    var hash = sha256(request.body.password)
+    pool.query(text,value,(err,result)=>{
+        if (hash === result.rows[0].password){
+          console.log("YAY CORRECT");
+          response.cookie('username',request.body.username);
+          response.cookie('loggedin', hash);
+          response.cookie('loginstatus', true);
+          response.redirect('/artist');
+      }else{
+          console.log("incorrect username or password")
+          res.redirect('/artist')
+      }
+  })
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
