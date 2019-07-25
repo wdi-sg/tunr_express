@@ -6,23 +6,27 @@ class Artist extends React.Component {
 		let newSongLink = "/artists/"+this.props.id+"/songs/new";
 		let songs = this.props.songs;
 		let songsDisplay = songs.map(song => {
-			return (<div className="col-3">
-				<img className="img-fluid" src={song.artwork}/>
-				<h1>{song.name}</h1>
-				<p>Album: {song.album}</p>
-				<p><a href={song.preview_link} target="_blank">Preview it here</a></p>
+			let imgStyle = {
+				backgroundImage: "url(" + song.artwork  + ")"
+			};
+			return (<div className="col-4">
+				<div className="img-thumbnail" style={imgStyle}>
+					<p className="caption">{song.title}</p>
+				</div>
 			</div>);
 		});
 		return (
 			<DefaultLayout>
 				<div className="row">
-					<div className="col-10">
+					<div className="col-4 ">
+						<div className="position-fixed">
+							<a className="btn btn-dark" href={newSongLink}>Add Song</a>
+						</div>
+					</div>
+					<div className="col-8">
 						<div className="row">
 							{songsDisplay}
 						</div>
-					</div>
-					<div className="col-2">
-						<a className="btn btn-dark" href={newSongLink}>Add Song</a>
 					</div>
 				</div>
 			</DefaultLayout>

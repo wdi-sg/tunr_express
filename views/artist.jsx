@@ -7,20 +7,31 @@ class Artist extends React.Component {
 		let editLink = "/artists/"+artist.id+"/edit/";
 		let deleteLink = "/artists/"+artist.id+"?_method=DELETE";
 		let viewSongsLink = "/artists/"+artist.id+"/songs";
+		let addSongsLink = "/artists/"+artist.id+"/songs/new";
+		let imgStyle = {
+			backgroundImage: "url(" + artist.photo_url  + ")"
+		};
 		return (
 			<DefaultLayout>
 				<div className="row">
-					<div className="col-10">
+					<div className="col-4">
+						<div className="img-thumbnail" style={imgStyle}></div>
+						<div className="buttons">
+							<a className="btn btn-dark" href={editLink}>Edit Artist</a>
+							<button className="btn btn-danger" data-toggle="modal" data-target="#deleteAlert">Delete
+								Artist
+							</button>
+						</div>
+					</div>
+					<div className="col-8">
 						<h1>{artist.name}</h1>
 						<p>Artist ID: {artist.id}</p>
 						<p>Nationality: {artist.nationality}</p>
-						<img className="img-fluid" src={artist.photo_url}/>
 						<hr/>
-					</div>
-					<div className="col-2">
-						<a className="btn btn-dark" href={viewSongsLink}>View Songs</a>
-						<a className="btn btn-dark" href={editLink}>Edit Artist</a>
-						<button className="btn btn-dark" data-toggle="modal" data-target="#deleteAlert">Delete Artist</button>
+						<div class="buttons">
+							<a className="btn btn-dark" href={viewSongsLink}>View Songs</a>
+							<a className="btn btn-dark" href={addSongsLink}>Add Songs</a>
+						</div>
 					</div>
 				</div>
 				<div className="modal fade" id="deleteAlert" tabIndex="-1" role="dialog" aria-labelledby="deleteAlertTitle" aria-hidden="true">
@@ -42,7 +53,7 @@ class Artist extends React.Component {
 								<form method="POST" action={deleteLink}>
 									<button type="submit" className="btn btn-danger">Confirm Delete</button>
 								</form>
-								<button type="button" className="btn btn-dark" data-dismiss="modal">Return</button>
+								<button type="button" className="btn btn-dark" data-dismiss="modal">Back</button>
 							</div>
 						</div>
 					</div>
