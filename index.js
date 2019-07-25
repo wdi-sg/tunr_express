@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser')
 
 // Initialise postgres client
 const configs = {
@@ -36,6 +37,7 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 app.use(express.static(__dirname+'/public/'));
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -235,8 +237,37 @@ let individual = (request,response)=>{
     })
 }
 
+let realHome = (request,response)=>{
+    // response.send("inside realHome function");
+    // let userLog = request.cookies.logged_in
+    console.log(request.cookies);
+    if( request.cookies.logged_in === undefined ){
+    console.log("NOT LOGGD IN");
+    response.status(403);
+    }
+    else{
+        // response.send("HAHAHAAHAHA IM IN THE ZONE");
+        let showAll = "SELECT * FROM artists order by id";
+        pool.query(showAll, (err,result)=>{
+        if(err){
+            console.log("query error",err.stack);
+            response.send('query error');
+        }
+        else{
+            let data = {
+                result: result.rows
+            }
+            console.log(data);
+            response.render('realHome',data);
+        }
+    });
+    }
+}
+
 let home = (request,response)=>{
     let showAll = "SELECT * FROM artists order by id";
+    let x = request.cookies
+    console.log(x);
     pool.query(showAll, (err,result)=>{
         if(err){
             console.log("query error",err.stack);
@@ -249,18 +280,55 @@ let home = (request,response)=>{
             console.log(data);
             response.render('home',data);
         }
-        // console.log("query result", result);
-        // response.send(result.rows);
-        // for( let i=0; i<result.rows.length; i++ ){
-            // console.log(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
-            // response.send(`Id: ${result.rows[i].id}. Name: ${result.rows[i].name}. PhotoUrl: ${result.rows[i].photo_url}. Nationality: ${result.rows[i].nationality}.`);
-        // }
     });
-};
+}
+
 
 var currentLogin = (request,response)=>{
-    var userData = request.body
-    response.send(userData);
+    // response.send("Inside current login function");
+    let userData = {}
+    userData.name = request.body.name
+    userData.password = sha256(request.body.password)
+    // console.log(userData);
+    // response.send(userData);
+    let loginAcc = "SELECT id, name, password FROM users WHERE name=$1";
+    let values = [userData.name];
+    pool.query(loginAcc, values,(err,result)=>{
+        if (err){
+            // if error, table cannot be accesssed
+            console.log("query error",err.stack);
+            response.send("error checking database");
+        }
+        else{
+            // if results.rows ARRAY contain an object => username already exists in table
+            console.log("table result: "+result.rows[0].password)
+            console.log("user input: "+userData.password)
+            if (result.rows.length > 0) {
+                if(result.rows[0].password == userData.password){
+
+                    var user_id = result.rows[0].id;
+                    console.log(user_id);
+                    let currentSessionCookie = sha256(user_id + 'logged_id');
+                    // console.log(currentSessionCookie);
+
+                    response.cookie('logged_in', currentSessionCookie);
+                    // console.log("logged_in: "+ currentSessionCookie);
+
+                    response.cookie('loggedin', true);
+                    // console.log("loggedin boolean");
+
+                    response.cookie('user_id', user_id);
+                    // console.log("user_id: "+user_id);
+                    // response.send("OKOKOK");
+                    // console.log(response.cookies)
+                    response.redirect("/homepage");
+                }
+            }
+            else{
+                response.render('noacc')
+            }
+        };
+    })
 };
 
 var login = (request,response)=>{
@@ -287,7 +355,7 @@ var newAccount = (request,response)=>{
         else{
             // if results.rows ARRAY contain an object => username already exists in table
             if (result.rows.length > 0) {
-                response.send("username already exists");
+                response.render("accexist");
             } else {
                 // since username doesn't exist in table, create new row
                 let addNewAccount = `INSERT INTO users (name, password) VALUES ($1, $2)`;
@@ -319,8 +387,9 @@ var createAcc = (request,response)=>{
  * ===================================
  */
 
-app.get('/login', login);
-app.post('/login',currentLogin);
+
+
+
 app.post('/create',newAccount);
 app.get('/create',createAcc);
 app.post('/homepage/:id/',newSongUpdate)
@@ -333,7 +402,10 @@ app.post('/homepage', newEntryUpdate);
 app.get('/homepage/:id/edit',edit);
 app.put('/homepage/:id',editUpdate);
 app.get('/homepage/:id', individual);
-app.get('/homepage', home);
+app.post('/login',currentLogin);
+app.get('/homepage',realHome);
+app.get('/login',login);
+app.get('/home', home);
 
 
 

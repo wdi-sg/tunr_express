@@ -14,10 +14,9 @@ class Home extends React.Component {
             var urlNew = '/homepage/new';
             var mapArtistData = this.props.result.map(artist=>{
             var url = '/homepage/'+artist.id;
-            var urllogin = '/login'
             return(
                 <div style={individualStyle}>
-                    <a href={urllogin}>
+                    <a href={url}>
                         <img style={imageStyle} src ={artist.photo_url}/>
                     </a>
                     <p>Artist Name: {artist.name}</p>
