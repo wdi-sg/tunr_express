@@ -12,7 +12,7 @@ class Playlists extends React.Component {
     let url = "/playlist/"+this.props.playlistId+"/add";
 
     return (
-      <Default title={this.props.title}>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
       <h2>Songs in playlist: {this.props.playlist}</h2>
         <ul>
             {songs}

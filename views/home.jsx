@@ -17,7 +17,10 @@ class Home extends React.Component {
 
 
     return (
-      <Default title={this.props.title}>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
+          <form  action="/artist/new">
+                <input type="submit" value="Add New Artist"/>
+          </form>
       <div className="main-container">
         {artists}
         </div>

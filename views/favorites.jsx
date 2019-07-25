@@ -4,19 +4,19 @@ var Default = require("./layout/default");
 class Playlists extends React.Component {
   render() {
 
-    let playlists = this.props.playlists.map(x=>{
-        let url = '/playlist/'+x.id;
-        return <li><a href={url}>{x.name}</a></li>
+    let songs = this.props.songs.map(x=>{
+        let url="/artist/"+x.artist_id+"/songs/"+x.id;
+        return <li><a href={url}>{x.title}</a></li>
     })
 
     return (
       <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
-      <h2>Playlists</h2>
+      <h2>Favorites</h2>
         <ul>
-            {playlists}
+            {songs}
         </ul>
-        <form action="/playlist/new">
-            <input type="submit" value="Add"/>
+        <form action="/favorites/new">
+            <input type="submit" value="Add Songs"/>
         </form>
       </Default>
     );

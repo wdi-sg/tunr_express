@@ -8,7 +8,7 @@ class Add extends React.Component {
         return <option value={x.id}>{x.name}</option>
     })
     return (
-      <Default title={this.props.title}>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
       <div className="solo-artist">
           <form method="POST" action={url}>
                 <table className="table table-bordered">

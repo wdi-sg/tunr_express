@@ -49,3 +49,14 @@
     margin:0 auto;
 }
 
+.login{
+    text-align:center;
+}
+
+.register-button input{
+
+    display:block;
+    margin:0 auto;
+    margin-top:10px;
+
+}

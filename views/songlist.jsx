@@ -12,13 +12,13 @@ class Songlist extends React.Component {
         let addSongUrl = "/artist/"+this.props.id+"/songs/new";
 
     return (
-      <Default title={this.props.title}>
-      <form  action={addSongUrl}>
-                    <input type="submit" value="Add New Song"/>
-                </form>
-        <ul>
-            {songs}
-        </ul>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
+          <form  action={addSongUrl}>
+                <input type="submit" value="Add New Song"/>
+          </form>
+          <ul>
+              {songs}
+          </ul>
       </Default>
     );
   }

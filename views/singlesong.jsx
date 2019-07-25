@@ -13,7 +13,7 @@ class Singlesong extends React.Component {
 
 
     return (
-      <Default title={this.props.title}>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
         <div className="solo-artist">
             <img className="artist-pic" src={item.photo_url}/>
             <table className="table table-bordered">
@@ -50,6 +50,14 @@ class Singlesong extends React.Component {
                     </select>
                     <input name="song" value={item.id}hidden/>
                     <input type="submit" value="Add into Playlist"/>
+                </form>
+            </div>
+            <div>
+                <form className="add-to-favorites" method="POST" action="/favorites/fromSingleSong">
+                    <input name="artist_id" value= {this.props.song.artist_id} hidden/>
+                    <input name="song_id" value={this.props.song.id} hidden/>
+                    <input type="submit" value="Add into Favorites"/>
+
                 </form>
             </div>
 

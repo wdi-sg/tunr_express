@@ -8,7 +8,7 @@ class Artist extends React.Component {
     let deleteUrl = "/artist/"+item.id+"?_method=delete";
     let songList = "/artist/"+item.id+"/songs";
     return (
-      <Default title={this.props.title}>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
         <div className="solo-artist">
             <img className="artist-pic" src={item.photo_url}/>
             <table className="table table-bordered">

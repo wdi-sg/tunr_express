@@ -1,13 +1,13 @@
 var React = require("react");
 var Default = require("./layout/default");
 
-class Choose_Songs extends React.Component {
+class Favorites_Addsongs extends React.Component {
   render() {
 
     let songs = this.props.songs.map(x=>{
         return <span><input type="checkbox" name="song"value={x.id}/>{x.title}<br/></span>
     })
-    let url="/playlist/"+this.props.playlistId;
+    let url="/favorites";
     return (
       <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
       <h2>Add songs</h2>
@@ -22,4 +22,4 @@ class Choose_Songs extends React.Component {
   }
 }
 
-module.exports = Choose_Songs;
+module.exports = Favorites_Addsongs;

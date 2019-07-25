@@ -24,6 +24,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 app.use(express.static(__dirname + '/public/'));
+var sha256 = require('js-sha256');
+const SALT = "POTANG INA MO";
+const cookieParser = require('cookie-parser')
+app.use(cookieParser());
 
 /**
  * ===================================
@@ -49,9 +53,12 @@ app.get('/artist', (req, res) => {
             console.error('query error:', err.stack);
             response.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
+
             let data = {
                 title: "Home",
-                artists: result.rows
+                artists: result.rows,
+                cookieLogin: cookieLogin
             };
             res.render('home', data);
         }
@@ -60,8 +67,10 @@ app.get('/artist', (req, res) => {
 
 //ADD artist
 app.get('/artist/new', (req, res) => {
+    let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
     let data = {
-        title: "Add"
+        title: "Add",
+        cookieLogin: cookieLogin
     }
     res.render("add", data);
 })
@@ -77,9 +86,11 @@ app.post('/artist', (req, res) => {
             console.error('query error:', err.stack);
             response.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let data = {
                 title: result.rows[0].name,
-                artists: result.rows[0]
+                artists: result.rows[0],
+                cookieLogin: cookieLogin
             };
             res.render('artist', data);
         }
@@ -97,9 +108,11 @@ app.get('/artist/:id', (req, res) => {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let data = {
                 title: result.rows[0].name,
-                artists: result.rows[0]
+                artists: result.rows[0],
+                cookieLogin: cookieLogin
             };
             res.render('artist', data);
         }
@@ -118,9 +131,11 @@ app.get('/artist/:id/edit', (req, res) => {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let data = {
                 title: result.rows[0].name,
-                artists: result.rows[0]
+                artists: result.rows[0],
+                cookieLogin: cookieLogin
             };
             res.render('edit', data);
         }
@@ -137,9 +152,11 @@ app.put('/artist/:id', (req, res) => {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let data = {
                 title: result.rows[0].name,
-                artists: result.rows[0]
+                artists: result.rows[0],
+                cookieLogin: cookieLogin
             };
 
             res.render('artist', data);
@@ -164,17 +181,19 @@ app.delete('/artist/:id', (req, res) => {
 
 //get songs by artist id
 app.get('/artist/:id/songs', (req, res) => {
-    const queryString = 'SELECT DISTINCT songs.id,songs.title FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artists.id =' + parseInt(req.params.id)+"ORDER BY  songs.title ASC";
+    const queryString = 'SELECT DISTINCT songs.id,songs.title FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artists.id =' + parseInt(req.params.id) + "ORDER BY  songs.title ASC";
     pool.query(queryString, (err, result) => {
 
         if (err) {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             data = {
                 title: "Song List",
                 songs: result.rows,
-                id: parseInt(req.params.id)
+                id: parseInt(req.params.id),
+                cookieLogin: cookieLogin
             }
             res.render("songlist", data);
         }
@@ -190,11 +209,13 @@ app.get('/artist/:id/songs/new', (req, res) => {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let id = parseInt(req.params.id);
             let data = {
                 title: "New Song",
                 id: id,
-                artists: result.rows
+                artists: result.rows,
+                cookieLogin: cookieLogin
             }
             res.render("newsong", data);
         }
@@ -230,12 +251,15 @@ app.get('/artist/:id/songs/:idd', (req, res) => {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let data = {
                 song: result.rows[0],
-                title: result.rows[0].title
+                title: result.rows[0].title,
+                cookieLogin: cookieLogin,
+                addIntoFavorites:false
             }
-
-            const queryString = 'SELECT * FROM PLAYLISTS WHERE ID IN (SELECT ID FROM PLAYLISTS EXCEPT SELECT PLAYLIST_ID FROM PLAYLISTS_SONGS WHERE SONG_ID = '+parseInt(req.params.idd)+')';
+            let song_id = parseInt(req.params.idd);
+            const queryString = 'SELECT * FROM PLAYLISTS WHERE ID IN (SELECT ID FROM PLAYLISTS EXCEPT SELECT PLAYLIST_ID FROM PLAYLISTS_SONGS WHERE SONG_ID = ' + song_id + ')';
             pool.query(queryString, (err, result2) => {
 
                 if (err) {
@@ -243,7 +267,23 @@ app.get('/artist/:id/songs/:idd', (req, res) => {
                     res.send('query error');
                 } else {
                     data['playlists'] = result2.rows;
-                    res.render('singlesong', data);
+
+                    let user_id = parseInt(req.cookies["user_id"]);
+                    const queryString = 'SELECT EXISTS (SELECT * FROM favorites WHERE song_id = '+song_id+'AND user_id = '+user_id+')' ;
+                    pool.query(queryString, (err, result3) => {
+
+                        if (err) {
+                            console.error('query error:', err.stack);
+                            res.send('query error');
+                        } else {
+                            if(result3.rows[0].exists === true && cookieLogin === true){
+                                data['addIntoFavorites'] = true;
+                            }
+                            res.render('singlesong', data);
+
+                        }
+                    });
+
                 }
             });
 
@@ -262,9 +302,11 @@ app.get('/playlist', (req, res) => {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let data = {
                 playlists: result.rows,
-                title: "Playlists"
+                title: "Playlists",
+                cookieLogin: cookieLogin
             }
             res.render('playlists', data);
         }
@@ -273,8 +315,10 @@ app.get('/playlist', (req, res) => {
 
 //add new playlist
 app.get('/playlist/new', (req, res) => {
+    let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
     let data = {
-        title: "Add Playlists"
+        title: "Add Playlists",
+        cookieLogin: cookieLogin
     }
 
     res.render("new_playlist", data);
@@ -322,7 +366,7 @@ app.post('/playlist/addSongToPlaylist', (req, res) => {
                         res.send('query error');
                     } else {
                         console.log("added song");
-                        res.redirect("/playlist/"+playlistId);
+                        res.redirect("/playlist/" + playlistId);
                     }
                 });
             }
@@ -346,19 +390,23 @@ app.get('/playlist/:id', (req, res) => {
             res.send('query error');
         } else {
             if (result.rows.length === 0) {
+                let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
                 let data = {
                     playlist: "Empty Playlist",
                     playlistId: parseInt(req.params.id),
-                    songs: []
+                    songs: [],
+                    cookieLogin: cookieLogin
                 }
                 res.render("playlist_songs", data);
             } else {
                 console.log("gg");
+                let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
                 let data = {
 
                     playlist: result.rows[0].name,
                     playlistId: result.rows[0].playlist_id,
-                    songs: result.rows
+                    songs: result.rows,
+                    cookieLogin: cookieLogin
                 }
 
                 res.render("playlist_songs", data);
@@ -379,9 +427,11 @@ app.get('/playlist/:id/add', (req, res) => {
             console.error('query error:', err.stack);
             res.send('query error');
         } else {
+            let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
             let data = {
                 songs: result.rows,
-                playlistId: parseInt(req.params.id)
+                playlistId: parseInt(req.params.id),
+                cookieLogin: cookieLogin
             }
 
             res.render("choose_songs", data);
@@ -428,7 +478,7 @@ app.post('/playlist/:id', (req, res) => {
 
         })
         res.redirect("/playlist");
-    } else {
+    } else if (typeof req.body.song === "string") {
         let id = parseInt(req.body.song);
         console.log(id);
         const queryString = 'SELECT EXISTS (SELECT * FROM playlists_songs WHERE playlist_id = $1 AND song_id = $2);'
@@ -458,11 +508,170 @@ app.post('/playlist/:id', (req, res) => {
 
             }
         });
+    } else {
+        res.redirect("/playlist");
     }
 
 
 
 })
+
+
+app.get('/login', (req, res) => {
+    let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
+    let data = {
+        title: "Log In",
+        cookieLogin: cookieLogin
+    };
+    res.render("login", data);
+})
+
+app.get('/login/register', (req, res) => {
+    let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
+    let data = {
+        title: "Register",
+        cookieLogin: cookieLogin
+    };
+    res.render("register", data);
+})
+
+app.get('/login/logout', (req, res) => {
+    res.cookie('logged_in', sha256(SALT));
+    res.redirect("/login");
+})
+
+app.post('/login/check_user', (req, res) => {
+    const queryString = 'SELECT * FROM users WHERE name=$1 AND password=$2';
+    let hashedPW = sha256(req.body.password);
+    let arr = [req.body.name, hashedPW];
+
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+
+            if (result.rows[0] === undefined) {
+                res.redirect("/login");
+            } else {
+                res.cookie("user_id", parseInt(result.rows[0].id));
+                let currentSessionCookie = sha256(parseInt(result.rows[0].id) + 'logged_in' + SALT);
+                res.cookie('logged_in', currentSessionCookie);
+
+                res.redirect("/");
+            }
+        }
+    });
+})
+
+app.post('/login/create_new_user', (req, res) => {
+    const queryString = 'INSERT INTO users (name,password) VALUES ($1,$2)';
+    let hashedPW = sha256(req.body.password);
+    let arr = [req.body.name, hashedPW];
+
+    pool.query(queryString, arr, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            res.send('query error');
+        } else {
+
+            res.redirect('/login');
+        }
+    });
+})
+
+app.get('/favorites', (req, res) => {
+    let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
+    if (cookieLogin) {
+        let user_id = parseInt(req.cookies["user_id"]);
+        const queryString = 'SELECT * FROM songs WHERE id IN (SELECT song_id FROM favorites WHERE user_id=' + user_id + ")";
+        pool.query(queryString, (err, result) => {
+
+            if (err) {
+                console.error('query error:', err.stack);
+                res.send('query error');
+            } else {
+                let data = {
+                    songs: result.rows,
+                    title: "Favorites",
+                    cookieLogin: cookieLogin
+                }
+                res.render('favorites', data);
+            }
+        });
+    } else {
+        res.send("NO ENTRY HERE BRO!");
+    }
+
+})
+
+app.get('/favorites/new', (req, res) => {
+    let cookieLogin = (sha256(req.cookies["user_id"] + 'logged_in' + SALT) === req.cookies["logged_in"]) ? true : false;
+    if (cookieLogin) {
+        let user_id = parseInt(req.cookies["user_id"]);
+        const queryString = 'SELECT * FROM songs WHERE id IN (SELECT id FROM songs EXCEPT (SELECT song_id FROM favorites WHERE user_id = ' + user_id + "))"
+
+        pool.query(queryString, (err, result) => {
+
+            if (err) {
+                console.error('query error:', err.stack);
+                res.send('query error');
+            } else {
+                let data = {
+                    songs: result.rows,
+                    cookieLogin: cookieLogin
+                }
+
+                res.render("favorites_addsongs", data);
+
+            }
+        });
+    } else {
+        res.send("NO ENTRY HERE BRO!");
+    }
+})
+
+app.post('/favorites', (req, res) => {
+    let user_id = parseInt(req.cookies["user_id"]);
+    if (Array.isArray(req.body.song)) {
+        req.body.song.map(song_id => {
+            const queryString = 'INSERT INTO favorites (song_id,user_id) VALUES ($1,$2)'
+            let arr = [song_id, user_id];
+            pool.query(queryString, arr, (err, result) => {
+
+                if (err) {
+                    console.error('query error:', err.stack);
+                    res.send('query error');
+                } else {
+                    console.log("added song");
+
+                }
+            });
+
+        })
+        setTimeout(res.redirect("/favorites"), 1000);
+    } else if (typeof req.body.song === "string") {
+        let song_id = parseInt(req.body.song);
+        const queryString = 'INSERT INTO favorites (song_id,user_id) VALUES ($1,$2)'
+        let arr = [song_id, user_id];
+        pool.query(queryString, arr, (err, result) => {
+
+            if (err) {
+                console.error('query error:', err.stack);
+                res.send('query error');
+            } else {
+                console.log("added song");
+                res.redirect("/favorites");
+            }
+        });
+
+    } else {
+        res.redirect("/favorites");
+    }
+})
+
 
 
 /**

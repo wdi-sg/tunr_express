@@ -5,7 +5,7 @@ class New_Playlist extends React.Component {
   render() {
 
     return (
-      <Default title={this.props.title}>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
       <div className="solo-artist">
           <form method="POST" action="/playlist">
                 <table className="table table-bordered">

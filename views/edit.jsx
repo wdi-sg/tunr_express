@@ -6,7 +6,7 @@ class Add extends React.Component {
     let item = this.props.artists;
     let actionUrl = "/artist/"+item.id+"?_method=PUT"
     return (
-      <Default title={this.props.title}>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
       <div className="solo-artist">
       <img className="artist-pic" src={item.photo_url}/>
         <form method="POST" action={actionUrl}>
