@@ -426,6 +426,7 @@ app.get('/favorites/new',(request, response)=>{
 app.post('/favorites/new', (request, response) => {
 
     var choosenSongs = request.body.favorite_song;
+    console.log(choosenSongs);
 
     if (typeof(choosenSongs) === "string"){
         let text = `INSERT into favorites (user_id, song_id) VALUES ($1, $2)`;
@@ -451,10 +452,10 @@ app.post('/favorites/new', (request, response) => {
                     console.log("query error", err.message);
                 }
                 else{
-                    response.redirect('/favorites');
+                    console.log(`Added ${result.rows[i]} to favorites`)
                 }
             });
-        }
+        } response.redirect('/favorites');
     }
 });
 
