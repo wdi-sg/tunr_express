@@ -1,3 +1,78 @@
-.home-p{
-	font-size: 50px;
+body {
+	background-color: lightgrey;
+	font-family: 'Montserrat', sans-serif;
 }
+
+.container {
+	text-align: center;
+}
+.home {
+/*	display: flex;
+	flex-flow: wrap;*/
+}
+
+.header-text {
+	transform: translate(2%, 0%);
+}
+
+.home-artists {
+	width: 700px;
+	height: 300px;
+	background: url(https://www.billboard.com/files/video/v1/static/1125911414/7cca8fc0-9f18-4c39-87a2-f6ef781b97a6/0d78370f-9831-47af-a65f-5336aa92dcfa/1280x720/match/image.jpg);
+	border-radius: 20px;
+	margin: 25px auto;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 4px 4px 4px 10px;
+}
+
+.home-songs {
+	width: 700px;
+	height: 300px;
+	background: url(https://previews.123rf.com/images/lembit/lembit1802/lembit180200050/94906988-abstract-brown-grunge-vintage-sound-background-with-retro-radio-vector-illustration.jpg);
+	border-radius: 20px;
+	background-size: 800px;
+	margin: 25px auto;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.home-playlists {
+	width: 700px;
+	height: 300px;
+	background: url(https://i.ytimg.com/vi/twqXfF6hMAQ/maxresdefault.jpg);
+	border-radius: 20px;
+	background-size: 800px;
+	margin: 25px auto;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.home-p {
+	color: white;
+	font-size: 40px;
+	z-index: 2;
+	transform: translate(10%, 0%);
+	background-color: black;
+	border-radius: 10px;
+	padding: 10px;
+	opacity: 0.8;
+	text-transform: uppercase;
+}
+
+.home-p: hover {
+   color:#00A0C6;
+   text-decoration:none;
+   cursor:pointer;
+}
+
+/*.ing-listhead {
+	list-style: none;
+}
+
+.ing-list {
+	transform: translate(-2%, 0%);
+}*/

@@ -23,6 +23,16 @@ class NavBar extends React.Component {
               <li className="nav-item">
                 <a className="nav-link" href="/playlists">Playlists</a>
               </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/register">Create Account</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/login">Login</a>
+              </li>
+
+              <li className="nav-item">
+                <a className="nav-link" href="/favorites">Favorites</a>
+              </li>
             </ul>
           </div>
         </nav>

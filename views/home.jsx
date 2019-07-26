@@ -12,7 +12,7 @@ class Home extends React.Component {
       <DefaultLayout title={headerTitle}>
 
         <div className="home">
-            <h1 className="header-text">Artists</h1>
+            <h1 className="header-text"></h1>
             <div className="home-artists">
                 <a href="./artists"className="home-p">Artists</a>
             </div>

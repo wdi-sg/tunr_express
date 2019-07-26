@@ -46,6 +46,35 @@ class Artist extends React.Component {
         </form>
 
 
+        <button type="button" className="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">DELETE ARTIST</button>
+
+        <div id="myModal" className="modal fade" role="dialog">
+          <div className="modal-dialog">
+
+            <div className="modal-content">
+              <div className="modal-header justify-content-center">
+                <h4 className="text-center modal-title">DELETE ARTIST?</h4>
+
+              </div>
+              <div className="modal-body">
+                <p>Delete {artist.name}?</p>
+              </div>
+              <div className="modal-footer justify-content-center">
+                <form method="POST" action={deleteURL}>
+                    <button type="submit" className="btn btn-default">Confirm</button>
+                </form>
+                <button type="button" className="btn btn-default" data-dismiss="modal">Back</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
+
+
       </DefaultLayout>
     );
 

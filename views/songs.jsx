@@ -16,13 +16,13 @@ class Songs extends React.Component {
 
       <DefaultLayout title={headerTitle}>
 
-        <h1>Songs</h1>
+        <h1>SONGS</h1>
 
         <form action={createURL}>
             <button style={buttonStyle} type={"submit"}>NEW SONG</button>
         </form>
 
-        <SongsBlock songs={songs}/>
+        <SongsBlock songs={songs} id={id}/>
 
 
 

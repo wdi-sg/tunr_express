@@ -2,12 +2,26 @@
 // psql -d tunr_db -U wilfredloh -f tables.sql
 // psql -d tunr_db -U wilfredloh -f artist_data.sql
 // psql -d tunr_db -U wilfredloh -f songs.sql
+// psql -d tunr_db -U wilfredloh -f users.sql
+
+// button to add multiple dropdown?
+// add main page
+// returning ---> ?
+// top level render --> each child should have a unique 'key' prop
+// favicon
+// shortcut to delete one word
 
 console.log("starting up!!");
+
+const special = 'hello this is a secret message';
 
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
+
+
 
 // Initialise postgres client
 const configs = {
@@ -39,6 +53,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+app.use(express.static(__dirname+'/public/'));
 
 
 // Set react-views to be the default view engine
@@ -46,6 +61,9 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+
+app.use(cookieParser());
+
 
 /**
  * ===================================
@@ -69,27 +87,10 @@ app.get('/artists', (request, response) => {
     });
 });
 
-app.get('/artists/:id', (request, response) => {
-    let id = request.params.id;
-    const queryString = `SELECT * FROM artists WHERE id=${id}`;
-    pool.query(queryString, (err, result) => {
-        let artist = {
-            artist : result.rows[0],
-            id: id
-        }
-        if (err) {
-          console.log('query error:', err.stack);
-          response.send( 'query error' );
-
-        } else {
-          response.render('indvArtist', artist);
-        }
-    });
-});
-
 app.get('/artists/new', (request, response) => {
   response.render('new');
 });
+
 
 app.post('/artists', (request, response) => {
     let newArtist = request.body;
@@ -107,6 +108,28 @@ app.post('/artists', (request, response) => {
         }
     });
 });
+
+
+app.get('/artists/:id', (request, response) => {
+    let id = request.params.id;
+
+    const queryString = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+          console.log('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+            let artist = {
+                artist : result.rows[0],
+                id: id
+            }
+          response.render('indvArtist', artist);
+        }
+    });
+});
+
+
 
 app.get('/artists/:id/edit', (request, response) => {
     let id = request.params.id;
@@ -144,6 +167,7 @@ app.put('/artists/:id', (request, response) => {
 });
 
 app.delete('/artists/:id', (request, response) => {
+    console.log('entered delete artist route')
     let id = request.params.id;
     const queryString = `DELETE from artists WHERE id = ${id} RETURNING id`;
 
@@ -244,7 +268,6 @@ app.get('/songs/new', (request, response) => {
 
 app.post('/songs', (request, response) => {
     let newSong = request.body;
-    console.log(newSong);
     const queryString = `INSERT INTO songs (title, album, preview_link, artist_id) VALUES ($1, $2, $3, $4) RETURNING *`;
     const values =
     [newSong.title, newSong.album, newSong['preview_link'], newSong['artist_id']];
@@ -374,7 +397,154 @@ app.delete('/playlists/:id', (request, response) => {
     });
 });
 
+app.get('/register', (request, response) => {
+    response.render('register');
+});
 
+app.post('/register', (request, response) => {
+    let newUser = request.body;
+    let hashedPass = sha256(newUser.password);
+
+    const queryString = `INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *`;
+    const values = [newUser.name, hashedPass];
+
+    pool.query(queryString, values, (err, result) => {
+        let userID = result.rows[0].id;
+        let hashedCookie = sha256(userID + 'loggedin' + special);
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('new user created!!')
+            response.cookie('loggedin', hashedCookie)
+            response.cookie('user_id', userID)
+            response.redirect(`/`);
+        }
+    });
+});
+
+app.get('/login', (request, response) => {
+    response.render('login');
+});
+
+app.post('/login', (request, response) => {
+    let newUser = request.body;
+
+    const queryString = `SELECT * FROM users WHERE name = $1`;
+    const values = [newUser.name];
+
+    pool.query(queryString, values, (err, result) => {
+        let hashedPass = sha256(newUser.password);
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let user = result.rows[0];
+            console.log(user);
+
+            if (user === undefined){
+                response.send('PLEASE KEY IN CORRECT NAME / PASSWORD!!!!!!!!!!!');
+
+            } else if (hashedPass === user.password){
+                let hashedCookie = sha256(user.id + 'loggedin' + special);
+                console.log('login successful!!')
+                response.cookie('loggedin', hashedCookie)
+                response.cookie('user_id', user.id)
+                response.redirect(`/`);
+            } else {
+                response.send('WRONGGGG PASSSSWWORRRDDD!!!');
+            }
+        }
+    });
+});
+
+app.get('/favorites', (request, response) => {
+
+    let cookie = request.cookies;
+    const queryString = `SELECT * FROM favorites INNER JOIN songs ON (favorites.song_id = songs.id) WHERE user_id = ${cookie.user_id}`;
+
+    pool.query(queryString, (err, result) => {
+
+        let requestSessionCookie = sha256(cookie.user_id + 'loggedin' + special);
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            if (cookie.loggedin === requestSessionCookie){
+                let songsData = {
+                    songs: result.rows
+                }
+                response.render('favorites', songsData);
+            } else {
+                response.send('WRONGGGGG USERRRR!!!')
+            }
+        }
+    })
+});
+
+app.get('/favorites/new', (request, response) => {
+    const queryString = `SELECT * FROM songs`;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let songData = {
+                songs: result.rows
+            }
+            response.render('favoritesNew', songData);
+        }
+    });
+});
+
+app.post('/favorites', (request, response) => {
+    let newPlay = request.body;
+    let cookie = request.cookies;
+
+    const queryString = `INSERT INTO favorites (song_id, user_id) VALUES ($1, $4), ($2, $4), ($3, $4) returning *`;
+
+    let values = [newPlay.song_id[0], newPlay.song_id[1], newPlay.song_id[2], cookie.user_id];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            response.redirect('/favorites');
+        }
+    })
+});
+
+app.get('/artists/:id/songs/favorite', (request, response) => {
+    let id = request.params.id;
+    let data = {
+        id : id
+    }
+  response.render('favorites_song', data);
+});
+
+app.post('/artists/:id/songs', (request, response) => {
+    let id = request.params.id;
+
+
+    const queryString = `INSERT INTO favorites (song_id, user_id) VALUES ($1, $4), ($2, $4), ($3, $4) returning *`;
+
+    let values = [newPlay.song_id[0], newPlay.song_id[1], newPlay.song_id[2], cookie.user_id];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            response.redirect('/favorites');
+        }
+    })
+  response.redirect(`/artists/${id}/songs`);
+});
 
 
 app.get('/', (request, response) => {
