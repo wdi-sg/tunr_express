@@ -10,7 +10,7 @@ class ArtistSongs extends React.Component {
                 <h3>{songs.title}</h3>
                 <p>{songs.album}</p>
                 <audio controls>
-                    <source src={songs.preview_link} type="audio/m4a"/>
+                    <source src={songs.preview_link} type="audio/mp3"/>
                 </audio>
             </div>
         )

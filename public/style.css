@@ -5,7 +5,6 @@ body{
 	background-color: black;
 }
 
-
 #header-img{
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(62, 62, 62, 0.9)), url(https://www.rollingstone.com/wp-content/uploads/2018/07/head-in-the-clouds.jpg);
   background-position: top center;
@@ -90,6 +89,10 @@ a.navbar-brand{
 	margin-top: 3rem;
 	width: 50%;
 	height: auto;
+}
+
+.form-control{
+	margin: auto;
 }
 
 .page-footer{
