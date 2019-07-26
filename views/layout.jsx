@@ -75,7 +75,7 @@ class Layout extends React.Component {
                       <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Favourite song</button>
                   </form>
                   <li className="nav-item">
-                    <a className="nav-link" method="GET" href="/favourites">Log out</a>
+                    <a className="nav-link" method="GET" href="/favourites">Favourites</a>
                   </li>
 
 

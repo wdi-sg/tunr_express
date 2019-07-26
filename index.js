@@ -288,6 +288,29 @@ app.get('/logout', (request, response) => {
     response.redirect('/');
 })
 
+//show favourites index, push to favourites
+app.get('/favourites', (request, response) => {
+    if (request.cookies.loggedin !== loggedIn){
+        console.log("Please log in!");
+    } else {
+        let userId = parseInt(request.cookies.userid);
+        let values = [userId];
+        let queryString = `SELECT user_id, * FROM favourites INNER JOIN songs ON (favourites.song_id = songs.id) WHERE user_id = $1`;
+        pool.query(queryString, values, (err, result) => {
+            if (err){
+                console.log(err.stack);
+            } else {
+                let data = {
+                    favData: result.rows
+                }
+                response.render('favourites', data);
+            }
+        })
+
+
+    }
+})
+
 //favourite a song: checks if logged in, then inputs into table
 app.post('/favourites/new', (request, response) => {
     if (request.cookies.loggedin !== loggedIn){
