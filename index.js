@@ -120,8 +120,6 @@ app.post('/users/logincheck', (request, response) => {
                 console.log(res.rows[0] );
 
                 let hashedLogin = sha256("you are in" + res.rows[0].id + SALT);
-
-
                 // check to see if err is null
 
                 // they have successfully registered, log them in
