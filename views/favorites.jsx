@@ -36,7 +36,7 @@ class favorites extends React.Component {
             <div className = "row mt-3" style={{ justifyContent : "center" }}>
                 <div className="card text-center">
                   <div className="card-body">
-                    <form method="POST" action="/playlist">
+                    <form method="POST" action="/favorites">
                         <button type="submit" class="btn btn-primary" style={{ position: 'fixed',
     right: '150px'}}>Submit</button>
                         {songs}

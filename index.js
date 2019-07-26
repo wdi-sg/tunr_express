@@ -165,8 +165,8 @@ app.get('/', (request, response) => {
 
 
 app.get('/artists', (request, response) => {
-  // query database for all artists
-  // respond with text that lists the names of all the pokemons
+  // // query database for all artists
+  // // respond with text that lists the names of all the pokemons
 
   let queryString = "SELECT * FROM artists ORDER BY id ASC";
 
@@ -410,6 +410,7 @@ app.get('/songs', (request, response) => {
 });
 
 app.post('/playlist', (request, response) => {
+    console.log(request.cookies.playlist)
     console.log(request.body)
     response.send('it works')
 });
@@ -440,7 +441,12 @@ app.get('/favorites/new', (request, response) => {
 });
 
 app.post('/favorites', (request, response) => {
-    console.log(request.body)
+    console.log(request.body.favorites) // returns an array
+    console.log(request.cookies) // returns an object
+
+    console.log('userID is:', request.cookies.userID)
+    console.log('user favorites are:', )
+
     response.send('it works')
 });
 
