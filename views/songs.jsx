@@ -1,8 +1,9 @@
 var React = require("react");
+var Template = require("./layout/template");
 
 class Songs extends React.Component {
   render() {
-
+    let item = this.props.songs;
     let artistsSongs = this.props.songs.map(item=>{
 
         let url = item.id+"/songs/";
@@ -17,9 +18,9 @@ class Songs extends React.Component {
 
 
     return (
-      <Default title={this.props.title}>
+      <Template title={this.props.title}>
         {artistsSongs}
-      </Default>
+      </Template>
     );
   }
 }

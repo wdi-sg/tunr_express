@@ -1,4 +1,5 @@
 var React = require("react");
+var Template = require("./layout/template");
 
 class Home extends React.Component {
   render() {
@@ -16,9 +17,9 @@ class Home extends React.Component {
 
 
     return (
-      <Default title={this.props.title}>
+      <Template title={this.props.title}>
         {artists}
-      </Default>
+      </Template>
     );
   }
 }

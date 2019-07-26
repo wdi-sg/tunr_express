@@ -1,4 +1,5 @@
 var React = require("react");
+var Template = require("./layout/template");
 
 class Artist extends React.Component {
   render() {
@@ -6,7 +7,7 @@ class Artist extends React.Component {
     let editUrl = "/artist/"+item.id+"/edit";
     let deleteUrl = "/artist/"+item.id+"?_method=delete";
     return (
-      <Default title={this.props.title}>
+      <Template title={this.props.title}>
         <div className="solo-artist">
             <img className="artist-pic" src={item.photo_url}/>
             <table className="table table-bordered">
@@ -30,7 +31,7 @@ class Artist extends React.Component {
 
 
         </div>
-      </Default>
+      </Template>
     );
   }
 }

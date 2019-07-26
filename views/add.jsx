@@ -1,10 +1,11 @@
 var React = require("react");
+var Template = require("./layout/template");
 
 class Add extends React.Component {
   render() {
 
     return (
-      <Default title={this.props.title}>
+      <Template title={this.props.title}>
       <div className="solo-artist">
           <form method="POST" action="/artist">
                 <table className="table table-bordered">
@@ -25,7 +26,7 @@ class Add extends React.Component {
             </form>
       </div>
 
-      </Default>
+      </Template>
     );
   }
 }

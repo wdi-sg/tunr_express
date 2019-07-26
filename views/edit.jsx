@@ -1,11 +1,12 @@
 var React = require("react");
+var Template = require("./layout/template");
 
 class Add extends React.Component {
   render() {
     let item = this.props.artists;
     let actionUrl = "/artist/"+item.id+"?_method=PUT"
     return (
-      <Default title={this.props.title}>
+      <Template title={this.props.title}>
       <div className="solo-artist">
       <img className="artist-pic" src={item.photo_url}/>
         <form method="POST" action={actionUrl}>
@@ -27,7 +28,7 @@ class Add extends React.Component {
         </form>
       </div>
 
-      </Default>
+      </Template>
     );
   }
 }
