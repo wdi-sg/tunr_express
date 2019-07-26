@@ -319,7 +319,7 @@ app.post('/register', (request, response)=>{
         else{
 
             if (result.rows.length>0){
-                response.send("username taken, try a new one")
+                response.render('usernameTaken')
 
             } else {
                 let hashedPassword = sha256( request.body.password + SALT );
@@ -386,7 +386,7 @@ app.post('/login', (request, response)=>{
 
 
             } else {
-                response.send(`You've entered the wrong password. Pls try again!`)
+                response.render('wrongPwd')
             }
         };
     });
