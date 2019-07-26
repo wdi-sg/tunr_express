@@ -395,7 +395,7 @@ app.post('/login', (request, response)=>{
 //Request to add songs to favorites
 app.get('/favorites/new',(request, response)=>{
 
-    if( request.cookies.loggedIn === undefined ){
+    if( request.cookies.loggedIn === undefined || request.cookies.loggedIn === "nahh"){
         response.render('plsLogin');
 
     }else{
@@ -462,7 +462,7 @@ app.post('/favorites/new', (request, response) => {
 //Request to display user's favorites
 app.get('/favorites', (request, response) => {
 
-    if( request.cookies.loggedIn === undefined ){
+    if( request.cookies.loggedIn === undefined || request.cookies.loggedIn === "nahh" ){
         response.render('plsLogin');
 
       }else{
