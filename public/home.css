@@ -45,3 +45,22 @@ body{
     /*border:1px red solid;*/
 
 }
+
+.header{
+    /*display: block;*/
+    display: flex;
+    /*align-items: center;*/
+    justify-content: center;
+    width: 100%;
+    /*border: 1px red solid;*/
+}
+
+.login{
+    /*float: right;*/
+    display: flex;
+    position: absolute;
+    right: 30px;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*border: 1px red solid;*/
+}

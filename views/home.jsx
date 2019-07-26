@@ -7,13 +7,14 @@ class Home extends React.Component {
 
     const artistBox = this.props.artists.map(artist =>{
 
-
+        let bkgrd = {backgroundImage:`url(${artist.photo_url})`};
 
         return (
                 <div className="artist-box">
-                        <a href={`/artists/${artist.id}`}><img src={artist.photo_url}/></a>
+                    <a href={`/artists/${artist.id}`}><div style={bkgrd} className="img_wrapper"></div></a>
                         <p>{artist.nationality}</p>
                         <h2>{artist.name}</h2>
+
                 </div>
         )
     })
@@ -26,7 +27,10 @@ class Home extends React.Component {
             <link rel="stylesheet" type="text/css" href="/home.css"/>
         </head>
         <body>
-            <h1>Artists' List</h1>
+            <div className="header">
+                <h1>Artists' List</h1>
+                <p className="login"><a href="/login">Login</a>&nbsp;|&nbsp;<a href="/register">Register</a></p>
+            </div>
             <div className="wrapper">
                 {artistBox}
             </div>
