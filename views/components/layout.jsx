@@ -55,6 +55,7 @@ class Layout extends React.Component {
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                       <a class="dropdown-item" href="/register">New User</a>
                       <a class="dropdown-item" href="/login">Login</a>
+                      <a class="dropdown-item" href="/logout">Logout</a>
                         </div>
                       </li>
                     </ul>

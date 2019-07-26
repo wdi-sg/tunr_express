@@ -300,7 +300,6 @@ app.post('/songs/new', (request, response) => {
     });
 });
 
-
 //Request to register new user
 app.get('/register',(request, response)=>{
   response.render('register');
@@ -493,6 +492,12 @@ app.get('/favorites', (request, response) => {
     }
 });
 
+
+//Request to logout
+app.get('/logout',(request, response)=>{
+  response.cookie('loggedIn', "nahh");
+  response.redirect('/artist')
+})
 
 
 /**
