@@ -1,0 +1,1 @@
+ INSERT INTO users(username, userpassword) VALUES('testname', 'testpassword123');
