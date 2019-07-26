@@ -3,15 +3,15 @@ var React = require('react');
 class Form extends React.Component {
   render() {
     console.log("new song");
-    
     let listOfArtists = this.props.data.map(item => {
-      return (item.name);
+      let url = "/artist/"+item.id;
+      return <a href={url}><option>{item.name}</option></a>
     });
     
-    let artistChoice = listOfArtists.map(name => {
-      return <option value="">{name}</option>
+    // let artistChoice = listOfArtists.map(name => {
+    //   return <option value="">{name}</option>
 
-    })
+    // })
     return (
       <html>
         <head>
@@ -32,15 +32,12 @@ class Form extends React.Component {
           </header>
           <div>
             <h1>Add new song</h1>
-            <form method="POST" action={'/playlists'}>
-                <select>
-                {artistChoice}
+            
+                <select name="artist_id">
+                {listOfArtists}
                 </select>
                 
                 
-               
-                <input type="submit"/>
-            </form>
           </div>
           <footer> © 2019 Song-collection GA All rights reserved.</footer>
         </body>

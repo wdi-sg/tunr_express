@@ -26,6 +26,8 @@ pool.on('error', function (err) {
 
 // Init express app
 const app = express();
+const cookieParser = require('cookie-parser')
+
 
 app.use(express.static(__dirname+ '/public/'));
 
@@ -43,6 +45,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+app.use(cookieParser());
 /**
  * ===================================
  * Routes
@@ -121,7 +124,7 @@ app.get('/artist/:id', (req, res) => {//worked!
   console.log("getting request")
 
   let id = parseInt(req.params.id);
-  const queryString = 'SELECT * FROM artists  WHERE id = id';
+  const queryString = 'SELECT * FROM artists ';
 
   pool.query(queryString, (err, result) => {
 
@@ -131,7 +134,7 @@ app.get('/artist/:id', (req, res) => {//worked!
     } else {
       console.log('query result:', result);
       const data = {
-            data: result.rows[id-1],
+            data: result.rows[0]
       }
       
       res.render( 'singleArtist',data);
@@ -277,7 +280,87 @@ app.get('/songs/new', (req, res) => {//good
 //     };
 //   });
 // });
+//===========add log-in page====================
 
+app.get('/login',(req, res) => {
+  res.render('loginForm');
+});
+
+app.get('/register',(req, res)=> {
+  res.render('regiterForm')
+});
+
+
+
+//======================
+
+var sha256 = require('js-sha256');
+const SALT = "bananas are delicious";
+
+app.post('/users', (request, response)=>{
+
+  // hash the password
+  let hashedPassword = sha256( request.body.password + SALT );
+
+  const queryString = "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *";
+
+  const values = [request.body.name, hashedPassword];
+
+  pool.query(queryString, values, (err, result) => {
+
+    console.log("YAY");
+    console.log(result.rows[0] );
+
+    // check to see if err is null
+
+    // they have succesfully registered, log them in
+    response.cookie('loggedin', true);
+    response.send(`You're registered!`);
+  });
+
+
+
+});
+
+app.post('/login', (request, response)=>{
+  const queryString = "SELECT * FROM users WHERE name=$1";
+
+  const values = [request.body.name];
+
+  pool.query(queryString, values, (err, result) => {
+
+    if( err ){
+      console.log( "ERRR!", err );
+    }else{
+
+      // they entered the correct passweord if
+      // the one in the request is the same as the one in the db query
+      //
+      let hashedPassword = sha256( request.body.password + SALT );
+      if(result.rows[0].password === hashedPassword){
+
+        var user_id = result.rows[0].id;
+
+        console.log("CORRECT")
+
+        let currentSessionCookie = sha256( user_id + 'logged_id' + SALT );
+
+
+        response.cookie('loggedin', currentSessionCookie);
+        response.cookie('user_id', user_id);
+      }else{
+        console.log("WRONG")
+
+      }
+
+      response.redirect('/');
+
+
+
+    }
+
+  });
+})
 
 
 //===========get songs from one artist ===================
