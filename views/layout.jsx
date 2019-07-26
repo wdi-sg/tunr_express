@@ -70,6 +70,13 @@ class Layout extends React.Component {
                   <li className="nav-item">
                     <a className="nav-link" method="GET" href="/logout">Log out</a>
                   </li>
+                  <form className="form-inline my-2 my-lg-0" method="POST" action="/favourites/new">
+                      <input className="form-control mr-sm-2" name="fav" type="search" placeholder="Favourite a song by ID" aria-label="Search"/>
+                      <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Favourite song</button>
+                  </form>
+                  <li className="nav-item">
+                    <a className="nav-link" method="GET" href="/favourites">Log out</a>
+                  </li>
 
 
 

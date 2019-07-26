@@ -220,7 +220,7 @@ app.get('/register', (request, response) => {
 })
 
 //gets user, password and creates account.
-//stores in database, hashes password and loggedIn. Sends loggedIn hash, user and user id
+//stores in database, hashes password. Sends loggedIn hash, user and user id
 app.post('/register', (request, response) => {
     console.log(request.body);
     let user = request.body.user;
@@ -244,10 +244,12 @@ app.post('/register', (request, response) => {
 
 })
 
+//push to login form
 app.get('/login', (request, response) => {
     response.render('login');
 })
 
+//checks input against database, sends cookies for user, loggedin, userid. push to '/'
 app.post('/login', (request, response) => {
     let user = request.body.user;
     let hash = sha256(request.body.password);
@@ -263,10 +265,7 @@ app.post('/login', (request, response) => {
                 let savedPass = result.rows[0].password;
                 let savedId = result.rows[0].id;
                 if (hash === savedPass){
-                    console.log('match!')
-                    console.log(user)
-                    console.log(loggedIn)
-                    console.log(savedId)
+                    console.log('login!');
                     response.cookie('user', user);
                     response.cookie('loggedin', loggedIn);
                     response.cookie('userid', savedId);
@@ -280,7 +279,7 @@ app.post('/login', (request, response) => {
 
 })
 
-//logout
+//logout, clearCookies, push to '/'
 app.get('/logout', (request, response) => {
     response.clearCookie('user');
     response.clearCookie('userid');
@@ -288,6 +287,30 @@ app.get('/logout', (request, response) => {
 
     response.redirect('/');
 })
+
+//favourite a song: checks if logged in, then inputs into table
+app.post('/favourites/new', (request, response) => {
+    if (request.cookies.loggedin !== loggedIn){
+        console.log("Please log in!");
+    } else {
+        let songId = parseInt(request.body.fav);
+        let userId = parseInt(request.cookies.userid);
+
+        let values = [songId, userId];
+        let queryString = `INSERT INTO favourites (song_id, user_id) VALUES ($1, $2) RETURNING *`;
+        pool.query(queryString, values, (err, result) => {
+            if (err){
+                console.log(err.stack);
+            } else {
+                console.log(result.rows[0]);
+            }
+        })
+
+        response.redirect('/');
+    }
+})
+
+
 
 
 /**
