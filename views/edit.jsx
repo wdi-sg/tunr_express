@@ -9,9 +9,10 @@ class Edit extends React.Component {
       <html>
         <body>
           <div>
-            <h1>Edit info for {this.props.artistName}</h1>
+            <h1>Edit info</h1>
             <form action={url} method="POST">
                  <input type="hidden" name="id" value={this.props.artistId}/>
+                Artist's name: <input type="text" name="name" value={this.props.artistName}/><br/>
                 Url of photo: <input type="text" name="photo_url" value={this.props.artistImg}/><br/>
                 Nationality: <input type="text" name="nationality" value={this.props.artistNat}/><br/>
                 <input type="submit" value="Submit"/>

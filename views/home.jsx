@@ -17,7 +17,13 @@ class Home extends React.Component {
     return (
       <html>
         <body>
-          <h1>Welcome!</h1>
+          <h1>Tunr</h1>
+           <form action="/register" method="GET">
+            <input type="submit" value="Register"/>
+          </form>
+           <form action="/login" method="GET">
+            <input type="submit" value="Log in"/>
+          </form>
           <h2>List of artists</h2>
           <ul>{artistList}</ul>
           <form action="/artist/new" method="GET">

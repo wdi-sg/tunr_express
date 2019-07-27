@@ -138,7 +138,7 @@ app.get('/artist', (request, response) => {
         const data = {
             artists : result.rows
         };
-        console.log("what this");
+        console.log("const data.artists");
         console.log(data.artists);
 
         response.render('home', data);
@@ -167,11 +167,11 @@ app.post('/artist/new', (request, response) => {
             console.error('query error:', err.stack);
         response.send( 'query error' );
         } else {
-            console.log('query result:', result);
-
+            console.log('query result:', result.rows);
             response.redirect("/artist");
         }
     });
+
 });
 
 //display each artist
@@ -188,7 +188,7 @@ app.get('/artist/:id', (request, response) => {
         console.error('query error:', err.stack);
         response.send( 'query error' );
         } else {
-        console.log('query result:', result);
+        console.log('query result:', result.rows);
 
         const data = {
             artistId : result.rows[0].id,
@@ -242,19 +242,21 @@ app.put('/artist/:id/edit', (request, response) => {
     let edits = request.body;
     console.log(edits);
 
-    let queryString = "UPDATE artists SET photo_url = edits.photo_url, nationality = edits.nationality FROM edits WHERE id="+Id;
+    let queryString = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id="+Id;
 
-    console.log('don uds why cannot');
+    const values = [edits.name, edits['photo_url'], edits.nationality];
 
-    pool.query(queryString, (err, result) => {
-        console.log('don')
+    console.log('values are ', values);
+
+    pool.query(queryString, values, (err, result) => {
+        console.log('starting update query')
         if (err) {
         console.error('query error:', err.stack);
         response.send( 'query error' );
         } else {
         console.log('query result:', result.rows);
 
-        response.redirect("/artist/:id");
+        response.redirect("/artist/"+Id);
         }
     });
 });
@@ -276,7 +278,7 @@ app.delete('/artist/:id', (request, response) => {
         } else {
         console.log('query result:', result);
 
-        response.redirect("/artist");
+        response.redirect("/artist/");
         }
     });
 });
@@ -288,7 +290,7 @@ app.get('/artist/:id/songs', (request, response) => {
 
     let Id = parseInt(request.params.id);
     console.log(Id);
-    let queryString = "SELECT songs.title, artists.name FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id="+Id;
+    let queryString = "SELECT songs.title, artists.name, artists.id FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id="+Id;
 
     pool.query(queryString, (err, result) => {
 
@@ -308,6 +310,32 @@ app.get('/artist/:id/songs', (request, response) => {
     });
 });
 
+//display info for each song
+app.get('/artist/:id/songs/:id2', (request, response) => {
+    console.log('showing each song by artist');
+
+    let Id = parseInt(request.params.id);
+    let Id2 = parseInt(request.params.id2);
+    console.log(Id);
+    let queryString = "SELECT songs.title, songs.album, songs.preview_link, songs.artwork, artists.name, artists.id FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id="+Id;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result);
+
+        const data = {
+            artistSong : result.rows[Id2]
+        };
+        console.log('getting data');
+        console.log(data);
+        response.render('single', data);
+        }
+    });
+});
 
 
 /**

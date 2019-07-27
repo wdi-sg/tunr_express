@@ -5,9 +5,13 @@ class Songs extends React.Component {
      console.log('in form');
      console.log(this.props.artistSongs);
 
-     let songs = this.props.artistSongs.map(song => {
+     let songs = this.props.artistSongs.map((song,i) => {
         return (
+            <div>
+            <a href={`/artist/${song.id}/songs/${i}`}>
                 <li>{song.title}</li>
+            </a>
+            </div>
         )
      });
      // console.log("artist name: ", artistsList[0].name);
