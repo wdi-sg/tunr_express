@@ -5,10 +5,10 @@ class Songs extends React.Component {
      console.log('in form');
      console.log(this.props.artistSongs);
 
-     let songs = this.props.artistSongs.map((song,i) => {
+     let songs = this.props.artistSongs.map(song => {
         return (
             <div>
-            <a href={`/artist/${song.id}/songs/${i}`}>
+            <a href={`/artist/${song.artist_id}/songs/${song.id}`}>
                 <li>{song.title}</li>
             </a>
             </div>

@@ -119,6 +119,12 @@ app.post('/login', (request, response)=>{
   });
 })
 
+/**
+ * ===================================
+ * Artists
+ * ===================================
+ */
+
 
 //index for artists
 
@@ -283,6 +289,11 @@ app.delete('/artist/:id', (request, response) => {
     });
 });
 
+/**
+ * ===================================
+ * Songs
+ * ===================================
+ */
 
 //display list of songs by the artist
 app.get('/artist/:id/songs', (request, response) => {
@@ -290,7 +301,7 @@ app.get('/artist/:id/songs', (request, response) => {
 
     let Id = parseInt(request.params.id);
     console.log(Id);
-    let queryString = "SELECT songs.title, artists.name, artists.id FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id="+Id;
+    let queryString = "SELECT songs.id, songs.title, songs.artist_id, artists.name FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id="+Id+"ORDER BY songs.id ASC";
 
     pool.query(queryString, (err, result) => {
 
@@ -317,7 +328,7 @@ app.get('/artist/:id/songs/:id2', (request, response) => {
     let Id = parseInt(request.params.id);
     let Id2 = parseInt(request.params.id2);
     console.log(Id);
-    let queryString = "SELECT songs.title, songs.album, songs.preview_link, songs.artwork, artists.name, artists.id FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id="+Id;
+    let queryString = "SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, artists.name, songs.artist_id FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE songs.id="+Id2;
 
     pool.query(queryString, (err, result) => {
 
@@ -328,7 +339,7 @@ app.get('/artist/:id/songs/:id2', (request, response) => {
         console.log('query result:', result);
 
         const data = {
-            artistSong : result.rows[Id2]
+            artistSong : result.rows
         };
         console.log('getting data');
         console.log(data);
@@ -336,6 +347,105 @@ app.get('/artist/:id/songs/:id2', (request, response) => {
         }
     });
 });
+
+//edit song
+app.get('/artist/:id/songs/:id2/edit', (request, response) => {
+  console.log('getting form');
+
+  let Id = parseInt(request.params.id);
+  let Id2 = parseInt(request.params.id2);
+    console.log(Id);
+
+    let queryString = "SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, artists.name, songs.artist_id FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE songs.id="+Id2;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result.rows);
+
+        const data = {
+            artistId : result.rows[0].artist_id,
+            songId : result.rows[0].id,
+            songArtist : result.rows[0].name,
+            songTitle : result.rows[0].title,
+            songAlbum : result.rows[0].album,
+            songPreview : result.rows[0].preview_link,
+            songArtwork : result.rows[0].artwork
+
+        };
+
+        console.log(data);
+
+        response.render('editsong', data);
+        }
+    });
+});
+
+app.put('/artist/:id/songs/:id2/edit', (request, response) => {
+  console.log('getting form');
+
+  let Id = parseInt(request.params.id);
+  let Id2 = parseInt(request.params.id2);
+    console.log(Id);
+
+    console.log('rb', request.body);
+
+    let edits = request.body;
+    console.log(edits);
+
+    let queryString = "UPDATE songs SET title=$1, album=$2, preview_link=$3, artwork=$4 WHERE id="+edits.id;
+
+    const values = [edits.title, edits.album, edits['preview_link'], edits.artwork];
+
+    console.log('values are ', values);
+
+    pool.query(queryString, values, (err, result) => {
+        console.log('starting update query')
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result.rows);
+
+        response.redirect(`/artist/${edits['artist_id']}/songs/${edits.id}`);
+        }
+    });
+});
+
+//delete song
+app.delete('/artist/:id/songs/:id2/delete', (request, response) => {
+    console.log('deleting artist');
+
+    let Id = parseInt(request.params.id);
+    let Id2 = parseInt(request.params.id2);
+    console.log(Id);
+
+    let queryString = "DELETE from songs WHERE id="+Id2;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+        } else {
+        console.log('query result:', result);
+
+        response.redirect(`/artist`);
+        }
+    });
+});
+
+
+/**
+ * ===================================
+ * Playlists
+ * ===================================
+ */
+
+app.get
 
 
 /**
