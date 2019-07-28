@@ -48,10 +48,39 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
+function homePage(request,response){
 
-  response.render('home.jsx');
-});
+    const artistsQueryString = 'SELECT * FROM artists';
+
+    pool.query(artistsQueryString, (err, result) => {
+
+      if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+      } else
+        var data = {
+            artist: result.rows
+        };
+        console.log (data);
+      // let data = {
+      //     songs: result.rows
+      //   }
+      response.render('home.jsx',data);
+    });
+
+ };
+
+
+ // trying new variation of writing codes
+
+app.get('/', homePage)
+
+
+
+// app.get('/', (request, response) => {
+
+//   response.render('home.jsx');
+// });
 
 app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
