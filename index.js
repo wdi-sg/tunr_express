@@ -1,3 +1,4 @@
+
 /**
  * ===================================
  * Configurations and set up
@@ -51,6 +52,7 @@ app.get('/register', (req, res) => {
     res.render('register');
 }); //.get CT
 
+
 //RENDER NEW REGISTRATION FORM
 app.post('/register', (request, response) => {
 
@@ -89,11 +91,26 @@ app.post('/register', (request, response) => {
 })//.post CT
 
 
-//TEST IF APP.GET WORKS
-app.get('/artist/test', (req, res) => {
-    res.send("HEY APP.GET WORKS");
-})//.get test CT
+//RENDER LOGIN FORM
+app.get('/login', (request, response) => {
+    response.render('login');
+}); //.get CT
 
+//POST FORM
+app.post('/login', (request, response) => {
+
+    let passwordHash = sha256(request.cookies['username'] + SALT);
+
+     if (request.cookies === undefined) {
+        return false;
+    } //if CT
+    else (request.cookies['loggedIn'] === passwordHash) {
+        return true;
+    } //else CT
+    else {
+        return false;
+    } //else CT
+});
 
 //SETUP INDEX PAGE
 app.get('/home', (request, response) => {
@@ -138,6 +155,25 @@ app.post('/artist', (request, response) => {
 })//.post CT
 
 
+//DELETE ARTISTS
+app.delete('/artist/:id', (request, response) => {
+    const artistId = parseInt(request.params.id);
+
+    const deleteQuery = "DELETE FROM artists WHERE id = '" + artistId + "'";
+
+    pool.query(deleteQuery, (err, result) => {
+        if (err) {
+            console.log(err.message);
+            response.send("Unable to delete");
+
+        } //if CT
+        else {
+            response.send("Artists Delete");
+        }//else CT
+    }) //pool query CT
+}) //app.delete CT
+
+
 
 
 /**
@@ -155,6 +191,10 @@ app.post('/artist', (request, response) => {
 
 
 
+//TEST IF APP.GET WORKS
+app.get('/artist/test', (req, res) => {
+    res.send("HEY APP.GET WORKS");
+})//.get test CT
 
 /**
  * ===================================

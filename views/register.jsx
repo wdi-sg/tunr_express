@@ -8,8 +8,10 @@ class RegistrationForm extends React.Component {
               <form method="POST" action="/artist">
               <span>Name:</span><input type="text" name="name" value = " "/>
               <span>Password:</span><input type="text" name="password" value = " "/>
-              <input type="submit" value="Submit Artist"/>
+              <input type="submit" value="Submit"/>
               </form>
         </div>
     }//render CT
 }//RegistrationForm CT
+
+module.exports = RegistrationForm;
