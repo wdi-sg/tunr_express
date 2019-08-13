@@ -16,10 +16,3 @@ CREATE TABLE IF NOT EXISTS Songs (
     artwork text,
     FOREIGN KEY (artist_id) REFERENCES Artists (id)
 );
-
-
-CREATE TABLE IF NOT EXISTS Users (
-    id SERIAL PRIMARY KEY,
-    name text,
-    password text
-);

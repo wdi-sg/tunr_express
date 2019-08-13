@@ -7,8 +7,8 @@
 
     // Initialise postgres client
     const configs = {
-      user: 'ghostshiphost',
-      password: 'Laser123',
+      user: 'xxx',
+      password: 'xxx',
       host: '127.0.0.1',
       database: 'tunr_db',
       port: 5432,
