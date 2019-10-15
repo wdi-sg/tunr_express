@@ -56,7 +56,7 @@ app.get('/', (request, response) => {
   //response.render('home');
 });
 
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new artists
   response.render('new');
 });
