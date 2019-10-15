@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'datguyrhy',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -42,23 +42,69 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-/**
- * ===================================
- * Routes
- * ===================================
- */
-
+//front page
 app.get('/', (request, response) => {
-  // query database for all pokemon
+   response.render("home");
+});
+// see all artists index///
+app.get('/artists/all', (req, res) => {
+  console.log("Showing artist list");
+   let queryString = "SELECT * FROM artists;";
+   pool.query(queryString, (err, result) => {
+       if (err) {
+           console.error('query error:', err.message);
+           res.send('query error');
+       } else {
+           res.send(result.rows);
+       }
+   });
+});
+//display form for a new single artist//
+app.get('/artists/new', (req, res) => {
+  console.log("rendering new artist form!");
+      response.render('form');
+});
+//Create new artist//
+app.post('/artists', (req, res) => {
+  console.log("adding new artist!");
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    const addArtist = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING*;';
+    let newArtistArr = [req.body.name, req.body.photo_url, req.body.nationality];
+
+    pool.query(queryString, newArtistArr, (err, result) => {
+        if (err) {
+            console.error('query error:', err.message)
+            res.send('query error')
+        } else {
+            console.log('query result:', result)
+            // redirect to home page
+            res.send(result.rows)
+        }
+    })
+});
+//See single artist//
+app.get('/artists/:id', (req, res) => {
+  console.log("searching for matches~~");
+  console.log("baking a pie");
+     let id = req.params.id;
+     const queryString = `SELECT * FROM artists WHERE id = ${id}`
+
+     pool.query(queryString, (err, result) => {
+         if (err) {
+             console.error('query error:', err.message);
+             res.send('query error');
+         } else {
+             console.log("Found artist & baked a cake");
+             console.log(result.rows);
+             res.send(result.rows);
+         }
+     })
+});
+//display form for editing artist//
+app.get('/artists/:id/edit', (req, res) => {
+
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
 
 
 /**
@@ -69,13 +115,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
