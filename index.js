@@ -74,18 +74,12 @@ app.get('/artists/:id', (request, response) => {
           } else {
             console.log('query result:', result);
 
-            console.log(result.rows[0])
-
             const data = {
                 artist: result.rows[0]
             }
-
             response.render('artist',data)
           }
     });
-
-
-
 });
 
 app.post('/artists', (request, response) => {
@@ -108,6 +102,34 @@ const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES (
 
             // redirect to home page
             response.send( result.rows );
+          }
+    });
+});
+
+app.get('/artists/:id/songs', (request, response) => {
+    let identifier = parseInt(request.params.id)
+
+    queryString = `SELECT title,album FROM songs WHERE artist_id = '${identifier}'`
+
+     pool.query(queryString, (err, result) => {
+        console.log(queryString)
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            console.log('query result:', result.rows);
+
+            const data = {
+                songs: result.rows
+            }
+
+            // const data = {
+            //     artist: result.rows[0]
+            // }
+            // response.render('artist',data)
+
+            response.render('songs',data)
           }
     });
 });
