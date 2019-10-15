@@ -60,6 +60,18 @@ app.get('/new', (request, response) => {
   response.render('new');
 });
 
+app.get('/artists/', (request, response) => {
+
+  pool.query('SELECT * FROM artists', (err, result) => {
+    if (err) {
+      return console.error('Error executing query', err.stack)
+    }
+    console.log(result.rows);
+    response.render('AllArtists', {artists: result.rows});
+  })
+  
+});
+
 
 /**
  * ===================================
