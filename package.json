@@ -18,6 +18,8 @@
     "method-override": "^3.0.0",
     "pg": "^7.4.3",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2"
-  }
+    "react-dom": "^16.5.2",
+    "uuidv4": "^5.0.1"
+  },
+  "keywords": []
 }
