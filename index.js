@@ -102,7 +102,7 @@ app.get('/artists/:id',(request,response)=>{
 
 app.get('/artists/:id/songs',(request,response)=>{
     let id = request.params.id;
-    let queryText = `SELECT title FROM songs WHERE artist_id = ${id};`
+    let queryText = `SELECT * FROM songs WHERE artist_id = ${id};`
     pool.query(queryText,(err,result)=>{
         const data = {
             artistArr: result.rows
@@ -162,6 +162,29 @@ let onClose = function(){
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
+
+app.get('/artists/:id/songs/new', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  let id = request.params.id;
+  const data = {
+    id: id
+  }
+  response.render('newSong.jsx',data);
+});
+
+app.post('/artists/:id/songs',(request,response)=>{
+    let title = request.body.title;
+    let album = request.body.album;
+    let id = request.params.id;
+    let queryText = `INSERT INTO songs(title,album,artist_id) VALUES ('${title}','${album}','${id}') RETURNING *`;
+    pool.query(queryText,(err,result)=>{
+        console.log(result.rows[0])
+        let title = "Title: "+result.rows[0]["title"] + "<br>";
+        let album = "Album: "+result.rows[0]["album"] + "<br>";
+        let str = "New Song added:<br>"+title+album;
+        response.send(str);
+    })
+});
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);

@@ -2,14 +2,15 @@ var React = require("react");
 
 class New extends React.Component {
   render() {
+    let id = this.props.id;
     return (
       <html>
         <head />
         <body>
-            <h3>Add new artists!</h3>
-            <form method="POST" action="/artists">
-                Name: <input type="text" name="name"/><br/>
-                Nationality: <input type="text" name="nationality"/><br/>
+            <h3>Add new songs!</h3>
+            <form method="POST" action={"/artists/"+id+"/songs"}>
+                Title: <input type="text" name="title"/><br/>
+                Album: <input type="text" name="album"/><br/>
                 <input type="submit"/>
             </form>
             <form method="GET" action="/">
