@@ -96,7 +96,7 @@ app.get('/artists/:id', (request, response) => {
 
 // GET Method - respond with HTML page with form to create new artist
 app.get('/artists/new', (request, response) => {
-  response.render('newArtist');
+    response.render('newArtist');
 });
 
 // POST Method - to create new artist in DB
@@ -152,6 +152,54 @@ app.get('/artists/:id/songs', (request, response) => {
 
                 response.render('artistSongs', data);
             });
+        }
+    });
+});
+
+// GET method - To render edit artist form
+app.get('/artists/:id/edit', (request, response) => {
+    // Get the ID from the URL parameter
+    let artistID = request.params.id;
+
+    // Construct the select statement to get all artists from database
+    const queryString = 'SELECT * FROM artists WHERE id=' + artistID;
+
+    // Use pool.query to run the select query
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+
+            const data = {
+                artistID: result.rows[0].id,
+                artistName: result.rows[0].name,
+                photoURL: result.rows[0].photo_url,
+                nationality: result.rows[0].nationality
+            };
+
+            // respond with HTML page
+            response.render('editArtistInfo', data);
+        }
+    });
+});
+
+// PUT method to update artist info back to database
+app.put('/artists/:id/', (request, response) => {
+    // Get the ID from the URL parameter
+    let artistID = request.params.id;
+    console.log("Name: " + request.body.artistName);
+    console.log("Photo URL: " + request.body.photoURL);
+    console.log("Nationality: " + request.body.nationality);
+
+    // Construct the update statement
+    const queryString = "UPDATE artists SET name= '" + request.body.artistName + "' , photo_url= '" + request.body.photoURL + "' , nationality= '" + request.body.nationality + "' WHERE id= " + artistID;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+            response.send("Artist info updated!");
         }
     });
 });

@@ -14,7 +14,7 @@ class NewArtist extends React.Component {
               <br />
               Nationality: <input type="text" name="nationality" />
               <br />
-              <input type="submit" value="submit" />
+              <input type="submit" value="Submit" />
           </form>
         </body>
       </html>
