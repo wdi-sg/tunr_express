@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+
 // Initialise postgres client
 const configs = {
 user: 'new_user',
@@ -43,6 +44,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(methodOverride('_method'));
 
 /**
  * ===================================
@@ -75,7 +77,7 @@ console.log('post to artists');
 
 let queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
 
-const values = [request.body.name , request.body.photo_url, request.body.nationality];
+const values = [request.body.name, request.body.photo_url, request.body.nationality];
 
  pool.query(queryText, values, (err, res) => {
        if (err) {
@@ -103,6 +105,44 @@ app.get('/artists/:id/edit', (request, response) => {
     const data = result.rows[0];
 
 
+  response.render('edit', data);
+    
+      });
+});
+
+app.get('/artists/:id', (request, response) => {
+    let inputId = parseInt( request.params.id )
+  const queryString = 'SELECT * from artists WHERE id='+inputId;
+
+  pool.query(queryString, (err, result) => {
+    // obj is the object from the pokedex json file
+    // extract input data from request
+    console.log(err);
+    // let inputId = parseInt( request.params.id );
+        console.log(result.rows[0]);
+    const data = result.rows[0];
+
+
+  response.render('show', data);
+    
+      });
+});
+
+app.put('/artists/:id', (request, response) => {
+          console.log('edit the data');
+  let inputId = parseInt( request.params.id )
+  const queryString = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id=${request.params.id}`;
+  // let queryString = 'UPDATE artists SET name=($1),photo_url=($2),nationality=($3) WHERE id ='+inputId;
+
+// const values = [request.body.name, request.body.photo_url, request.body.nationality];
+  pool.query(queryString, (err, result) => {
+    // obj is the object from the pokedex json file
+    // extract input data from request
+    console.log(err);
+    // let inputId = parseInt( request.params.id );
+    let data = request.body;
+    console.log(queryString);
+        console.log(data);
   response.render('edit', data);
     
       });
