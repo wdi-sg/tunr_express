@@ -101,11 +101,11 @@ app.get('/artists/:id', (req, res) => {
      })
 });
 //display form for editing artist//
-app.get('/artists/:id/edit', (req, res) => {
-
-});
-
-
+// app.get('/artists/:id/edit', (req, res) => {
+//
+// });
+//
+//
 
 /**
  * ===================================
