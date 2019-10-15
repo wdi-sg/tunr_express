@@ -55,10 +55,59 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
+//==== See all the artists =====
+
+app.get('/artists/', (request, response) => {
+
+    const queryString = 'SELECT * from artists';
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.message);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result);
+            response.send( result.rows );
+  }
+});
+});
+
+
+//==== Display the form for a single artist =====
+
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+
+
   response.render('new');
 });
+
+
+//====== Create a new artist ==========
+
+app.post('/artists/', (request,response) => {
+
+    let text = 'INSERT INTO artists (name,photo_url,nationality) VALUES($1,$2,$3) RETURNING *';
+    let values = [request.body.name,request.body.photo_url,request.body.nationality];
+    pool.query(text, values, (err, result) => {
+
+        if (err) {
+            console.log(err);
+            response.send("query error");
+
+        } else {
+            let data = {
+                artists : result.rows[0]
+            };
+            response.send( result.rows );
+            // response.render('home', data);
+        }
+        });
+});
+
+//====== See a single artist ==========
+
+
+
 
 
 /**
