@@ -110,7 +110,7 @@ app.post('/artists', (request, response) => {
     const inputValues = [artistName, photoURL, nationality];
 
     // Construct the insert into query with the values from the request body
-    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
 
     // Use pool.query to run the insert query
     pool.query(queryString, inputValues, (err, result) => {
@@ -118,7 +118,7 @@ app.post('/artists', (request, response) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
-            console.log("Artist added successfully");
+            response.send("Artist added successfully");
         }
     });
 

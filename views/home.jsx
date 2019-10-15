@@ -5,7 +5,7 @@ class Home extends React.Component {
 
     const artistInfo = this.props.artists.map((individualArtist) => (
             <div>
-                <li>{individualArtist.name}</li>
+                <li><a href={"../artists/" + individualArtist.id}>{individualArtist.name}</a></li>
                 <p>{individualArtist.photo_url}</p>
                 <p>{individualArtist.nationality}</p>
             </div>
