@@ -48,17 +48,62 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//test with 'Hello World'
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
   response.send('Hello World');
 });
 
-/*app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+//SHOWS FORM TO CREATE NEW ARTIST
+app.get('/artists/new', (request, response) => {
   response.render('new');
-});*/
+});
+
+//SUBMITS FORM TO CREATE NEW ARTIST
+app.post('/artists', (request, response) => {
+    let newArtist = request.body;
+    let newValues = [newArtist.name, newArtist.photo_url, newArtist.nationality];
+
+    const newData =  "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+
+    pool.query(newData, newValues, (err, result) => {
+
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log('query result:', result);
+
+        // redirect to home page
+        response.send( result.rows );
+    }
+    });
+});
+
+//SHOW INDIVIDUAL ARTIST PAGE
+app.get('/artists/:id', (request, response) => {
+    let inputId = request.params.id;
+    const artistsList = `SELECT * FROM artists WHERE id = ${inputId}`;
+    console.log(artistsList);
+
+    // find artist by id from the artists table
+    pool.query(artistsList, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'Artist not found' );
+        } else {
+            /*for( let i=0; i<result.rows.length; i++ ){
+                let currentArtist = result.rows[i];
+                if( currentArtist.id === inputId ){
+                    artist = currentArtist;
+                };
+            };*/
+            console.log('query result:', result);
+            // redirect to home page
+            response.send( result.rows );
+         };
+    });
+});
+
 
 
 /**
