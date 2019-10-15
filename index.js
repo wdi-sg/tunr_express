@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'home',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -60,7 +60,29 @@ app.get('/new', (request, response) => {
   response.render('new');
 });
 
+app.post('/', (request, response) => {
 
+let art = request.body
+const array = [art.name,art.photo,art.nationality]
+console.log(array)
+
+const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+
+    pool.query(queryString, array, (err, result) => {
+        console.log(queryString)
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            console.log('query result:', result);
+
+            // redirect to home page
+            response.send( result.rows );
+          }
+    });
+});
 /**
  * ===================================
  * Listen to requests on port 3000
@@ -69,13 +91,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
