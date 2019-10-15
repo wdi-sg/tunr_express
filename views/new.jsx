@@ -12,6 +12,12 @@ class New extends React.Component {
                 Nationality: <input type="text" name="nationality"/><br/>
                 <input type="submit"/>
             </form>
+            <form method="GET" action="/">
+                <p>
+                    Click here to go back: <br/>
+                    <input type="submit" value="Back"/>
+                </p>
+            </form>
         </body>
       </html>
     );

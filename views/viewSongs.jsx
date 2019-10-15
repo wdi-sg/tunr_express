@@ -4,10 +4,9 @@ class ArtistFunction extends React.Component {
     render(){
         let element = this.props.key1;
         return(
-            <div>
-                <h5><a href={"http://localhost:3000/artists/"+element.id}>{element.name}</a></h5>
-                {/*<img src={element.photo_url}/>*/}
-            </div>
+            <li>
+                {element.title}
+            </li>
         );
     }
 }
@@ -22,7 +21,8 @@ class vArtist extends React.Component {
             <html>
                 <head />
                 <body>
-                    <div>{artist}</div>
+                    <p>List of songs:</p>
+                    <ul>{artist}</ul>
                     <form method="GET" action="/">
                         <p>
                             Click here to go back: <br/>

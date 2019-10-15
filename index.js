@@ -61,7 +61,7 @@ app.get('/artists/new', (request, response) => {
 });
 
 app.get('/artists/', (request, response) => {
-  let queryText = 'SELECT name, photo_url FROM artists'
+  let queryText = 'SELECT * FROM artists'
   pool.query(queryText,(err, result)=>{
     if(err){
         console.log("View artist error", err.message);
@@ -88,6 +88,30 @@ app.post('/artists',(request, response)=>{
     })
 })
 
+app.get('/artists/:id',(request,response)=>{
+    let id = request.params.id;
+    let queryText = `SELECT * FROM artists WHERE id = ${id}`;
+    pool.query(queryText,(err,result)=>{
+        const data = {
+            artistArr: result.rows
+        }
+        response.render('selectedArtist.jsx',data)
+    })
+    // response.send(queryText)
+})
+
+app.get('/artists/:id/songs',(request,response)=>{
+    let id = request.params.id;
+    let queryText = `SELECT title FROM songs WHERE artist_id = ${id};`
+    pool.query(queryText,(err,result)=>{
+        const data = {
+            artistArr: result.rows
+        }
+
+        response.render('viewSongs.jsx',data)
+    })
+    // response.send("Working")
+})
 
 /**
  * ===================================
@@ -110,3 +134,7 @@ let onClose = function(){
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+
+//<---------   USING IN   --------->
+// let queryText = `SELECT title FROM songs WHERE artist_id IN (SELECT id FROM artists WHERE NAME = 'Yeah Yeah Yeahs');`

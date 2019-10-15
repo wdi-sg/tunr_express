@@ -3,9 +3,12 @@ var React = require("react");
 class ArtistFunction extends React.Component {
     render(){
         let element = this.props.key1;
+        console.log(element.name)
+        console.log(element.nationality)
         return(
             <div>
-                <h5><a href={"http://localhost:3000/artists/"+element.id}>{element.name}</a></h5>
+                <h3>{element.name}</h3>
+                <p>Nationality: {element.nationality}</p>
                 {/*<img src={element.photo_url}/>*/}
             </div>
         );
@@ -15,6 +18,9 @@ class ArtistFunction extends React.Component {
 class vArtist extends React.Component {
     render() {
         let artistArr = this.props.artistArr;
+        let id = artistArr[0]["id"];
+        let action = `${id}`;
+        console.log("Artist: ",artistArr)
         let artist = artistArr.map(element =>{
             return <ArtistFunction key1={element}/>
         })
@@ -23,6 +29,12 @@ class vArtist extends React.Component {
                 <head />
                 <body>
                     <div>{artist}</div>
+                    <form method="GET" action={action+"/songs"}>
+                        <p>
+                            Click here to view songs: <br/>
+                            <input type="submit" value="songs"/>
+                        </p>
+                    </form>
                     <form method="GET" action="/">
                         <p>
                             Click here to go back: <br/>
