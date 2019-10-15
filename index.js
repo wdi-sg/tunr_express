@@ -40,7 +40,7 @@ app.get('/artists/',(req,res)=>{
     text = 'SELECT * FROM artists ORDER BY id';
     pool.query(text,(err,result)=>{
         if (err) console.log(err);
-        res.send(result.rows);
+        res.render('index',result);
     });
 });
 /*================================================
@@ -55,33 +55,74 @@ app.get('/artists/new',(req,res)=>{res.render('new')});
 ╚═╝┴└─└─┘┴ ┴ ┴ └─┘
 ================================================*/
 app.post('/artists',(req,res)=>{
-    console.log(req.body);
-    res.send('WOWOWOW!')
+    let {name, photo_url, nationality} = req.body;
+    text = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${name}', '${photo_url}', '${nationality}') RETURNING *`
+    pool.query(text,(err,result)=>{
+        res.render('show',result.rows[0]);
+    });
 });
 /*================================================
 ╔═╗┬ ┬┌─┐┬ ┬
 ╚═╗├─┤│ ││││
 ╚═╝┴ ┴└─┘└┴┘
 ================================================*/
-app.get('/artists/:id',(req,res)=>{});
+app.get('/artists/:id',(req,res)=>{
+    let {id} = req.params;
+    text = `SELECT * FROM artists WHERE id=${id}`
+    console.log("HERERE!!!!")
+    pool.query(text,(err,result)=>{
+        res.render('show',result.rows[0]);
+    });
+});
 /*================================================
 ╔═╗┌┬┐┬┌┬┐
 ║╣  │││ │
 ╚═╝─┴┘┴ ┴
 ================================================*/
-app.get('/artists/:id/edit',(req,res)=>{});
+app.get('/artists/:id/edit',(req,res)=>{
+    let {id} = req.params;
+    text = `SELECT * FROM artists WHERE id=${id}`
+    pool.query(text,(err,result)=>{
+        res.render('edit',result.rows[0]);
+    });
+});
 /*================================================
 ╦ ╦┌─┐┌┬┐┌─┐┌┬┐┌─┐
 ║ ║├─┘ ││├─┤ │ ├┤
 ╚═╝┴  ─┴┘┴ ┴ ┴ └─┘
 ================================================*/
-app.put('/artists/:id',(req,res)=>{});
+app.put('/artists/:id',(req,res)=>{
+    let {id} = req.params;
+    let {name, photo_url, nationality} = req.body;
+    text = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${id} RETURNING *`;
+    pool.query(text,(err,result)=>{
+        res.render('show',result.rows[0]);
+    });
+});
 /*================================================
 ╔╦╗┌─┐┌─┐┌┬┐┬─┐┌─┐┬ ┬
  ║║├┤ └─┐ │ ├┬┘│ │└┬┘
 ═╩╝└─┘└─┘ ┴ ┴└─└─┘ ┴
 ================================================*/
-app.delete('/artists/:id',(req,res)=>{});
+app.delete('/artists/:id',(req,res)=>{
+    let {id} = req.params;
+    text = `DELETE FROM artists WHERE id=${id}`;
+    pool.query(text,(err,result)=>{
+        res.render('home');
+    });
+});
+/*================================================
+╔═╗┬ ┬┌─┐┬ ┬  ╔═╗┌─┐┌┐┌┌─┐┌─┐
+╚═╗├─┤│ ││││  ╚═╗│ │││││ ┬└─┐
+╚═╝┴ ┴└─┘└┴┘  ╚═╝└─┘┘└┘└─┘└─┘
+================================================*/
+app.get('/artists/:id/songs',(req,res)=>{
+    let {id} = req.params;
+    text = `SELECT * FROM songs WHERE artist_id=${id}`;
+    pool.query(text,(err,result)=>{
+        res.render('showsongs',result);
+    });
+});
 /*===================================
 ╔═╗┌─┐┬─┐┌┬┐
 ╠═╝│ │├┬┘ │
