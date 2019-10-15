@@ -1,24 +1,25 @@
 var React = require("react");
 
-class New extends React.Component {
+class Edit extends React.Component {
   render() {
+    let urlAction=`/artist/edit/${this.props.id}/?_method=put`;
     return (
       <html>
         <head />
         <body>
           <div>
-            <form action="/new/artist/updated" method ="POST">
+            <form action={urlAction} method ="POST">
                 <div>
                     <label> Artist name </label>
-                    <input type ="text" name="name"/>
+                    <input type ="text" name="name" defaultValue={this.props.name}/>
                 </div>
                 <div>
                     <label> Photo Url </label>
-                    <input type ="text" name="photo_url"/>
+                    <input type ="text" name="photo_url" defaultValue={this.props.photo_url}/>
                 </div>
                 <div>
                     <label> Nationality </label>
-                    <input type ="text" name="nationality"/>
+                    <input type ="text" name="nationality" defaultValue={this.props.nationality}/>
                 </div>
                 <input type="submit" value="submit"/>
             </form>
@@ -29,4 +30,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Edit;
