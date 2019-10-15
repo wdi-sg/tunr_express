@@ -93,6 +93,8 @@ app.post('/artists', (request, response) => {
   
 })
 
+
+
 app.get('/artists/:id', (request, response) => {
   let artistId = parseInt(request.params.id)
   
@@ -131,6 +133,42 @@ app.get('/artists/:id/songs', (request, response) =>{
     }
 });
 })
+
+app.get('/artists/:id/edit', (request, response) => {
+  let artistId = parseInt(request.params.id);
+  const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
+  
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error("query error:", err.stack);
+        response.send("query error");
+    } else {
+        const data = {
+          result: result.rows[0]
+        }
+        console.log(result.rows)
+        response.render("edit", data);
+    }
+});
+})
+
+app.put('/artists/:id', (request, response) => {
+  let artistId = parseInt(request.params.id);
+  let { name, photo_url, nationality }= request.body;
+  const queryString = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${artistId}`;
+
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error("query error:", err.stack);
+        response.send("query error");
+    } else {
+     
+        console.log("THIS IS THE RESULTAKDJADAJSDAKSDJHASKJD " + result.rows)
+        response.redirect(`/artists/${artistId}`);
+    }
+});
+})
+
 
 
 

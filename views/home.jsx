@@ -20,14 +20,17 @@ class Home extends React.Component {
           ></link>
         </head>
         <body>
-          <h1>Welcome!</h1>
+          <div className="container mt-5">
+          <h1 className="text-center">Welcome!</h1>
 
-          <a className="btn btn-primary btn text-light mb-5"
-            href="/artists/new"
-          >
-            Add a new artist
-          </a>
-          <ol>{list}</ol>
+<a className="btn btn-primary btn text-light mb-5"
+  href="/artists/new"
+>
+  Add a new artist
+</a>
+<ol>{list}</ol>
+          </div>
+         
         </body>
       </html>
     );

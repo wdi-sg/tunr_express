@@ -14,14 +14,24 @@ class Home extends React.Component {
           ></link>
         </head>
         <body>
-            <img src={this.props.result.photo_url} alt="" height="300" width="300" />
-          <h1>{this.props.result.name}</h1>
 
-          <a className="btn btn-primary btn text-light mb-5"
-            href={this.props.result.id + "/songs"}
-          >
+          
+
+          <div className="card text-center">
+          <div className="card-body">
+          <img src={this.props.result.photo_url} alt="" className="img-thumbnail text-center" width="300" height="300" />
+            <h3 className="card-title">{this.props.result.name}</h3>
+           
+           <div className="text-center well d-flex justify-content-around justify-content-center mt-5 " style={{width: "300px", margin:"0 auto"}}>
+           <a className="btn btn-primary btn-lg text-light "
+            href={this.props.result.id + "/songs"}>
             Songs
-          </a>
+          </a> 
+          <a href={this.props.result.id + "/edit"} className="btn btn-info btn-lg ">Edit</a>
+           </div>
+            
+          </div>
+        </div>
           
         </body>
       </html>
