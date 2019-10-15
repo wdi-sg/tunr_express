@@ -48,14 +48,12 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+app.get('/artists', (request, response) => {
 
-  // respond with HTML page displaying all pokemon
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
