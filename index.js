@@ -69,6 +69,31 @@ app.get('/artists/', (request, response) => {
     });
 });
 
+// GET Method - query database for an individual artist
+app.get('/artists/:id', (request, response) => {
+
+    // Get the ID from the URL parameter
+    let artistID = request.params.id;
+
+    // Construct the select statement to get all artists from database
+    const queryString = 'SELECT * FROM artists WHERE id=' + artistID;
+
+    // Use pool.query to run the select query
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+
+            const data = {
+                artist: result.rows
+            };
+            // respond with HTML page displaying all artists
+            response.render('artistInfo', data);
+        }
+    });
+});
+
 // GET Method - respond with HTML page with form to create new artist
 app.get('/artists/new', (request, response) => {
   response.render('newArtist');
