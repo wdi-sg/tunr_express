@@ -62,22 +62,38 @@ app.get('/artists/new', (request, response) => {
 });
 
 app.post('/artists/new', (request, response) => {
+    // INSERT new artist into artists db
     console.log(request.body);
     let newArtist = [ request.body.name, request.body.photo_url, request.body.nationality ];
 
-    let queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES($1, $2, $3) RETURNING *';
+    let queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES($1, $2, $3) RETURNING *';
 
-    pool.query(queryString, newArtist, (err, result) => {
+    pool.query(queryText, newArtist, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        // check if new artist is already in database
+        // check if new artist is already in database?
         response.send(result.rows);
-
     });
 });
 
+app.get('/artists/:id', (request, response) => {
+    // SELECT artist from artists db
+    let id = request.params.id;
+    console.log("Getting artist id: " + id);
+
+    let queryText = `SELECT * FROM artists WHERE id=${id}`;
+
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        let artist = result.rows[0];
+        response.send(artist);
+    })
+})
 /**
  * ===================================
  * Listen to requests on port 3000
