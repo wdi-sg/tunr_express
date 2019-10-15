@@ -94,6 +94,24 @@ app.get('/artists/:id', (request, response) => {
         response.send(artist);
     })
 })
+
+app.get('/artists/:id/songs', (request, response) => {
+    let artist_id = request.params.id;
+    console.log("Getting songs for artist id: " + artist_id);
+
+    let queryText = `SELECT * FROM songs WHERE artist_id=${artist_id}`;
+
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        let songs = result.rows
+        response.send(songs);
+    })
+})
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
