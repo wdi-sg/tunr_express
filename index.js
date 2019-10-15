@@ -48,19 +48,47 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
+app.get('/artists', (request, response) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
-app.post('/', (request, response) => {
+let queryString;
+app.get('/artists/:id', (request, response) => {
+    let identifier = parseInt(request.params.id)
+
+    queryString = `SELECT * FROM artists WHERE id = '${identifier}'`
+
+     pool.query(queryString, (err, result) => {
+        console.log(queryString)
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            console.log('query result:', result);
+
+            console.log(result.rows[0])
+
+            const data = {
+                artist: result.rows[0]
+            }
+
+            response.render('artist',data)
+          }
+    });
+
+
+
+});
+
+app.post('/artists', (request, response) => {
 
 let art = request.body
 const array = [art.name,art.photo,art.nationality]
