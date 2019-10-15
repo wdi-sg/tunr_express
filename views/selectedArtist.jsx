@@ -41,6 +41,12 @@ class vArtist extends React.Component {
                             <input type="submit" value="Edit"/>
                         </p>
                     </form>
+                    <form method="POST" action={artistId+"?_method=delete"}>
+                        <p>
+                            Click here to delete artist: <br/>
+                            <input type="submit" value="Delete"/>
+                        </p>
+                    </form>
                     <form method="GET" action="/">
                         <p>
                             Click here to go back: <br/>

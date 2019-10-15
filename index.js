@@ -135,6 +135,15 @@ app.put('/artists/:id',(request, response)=>{
     })
 })
 
+app.delete('/artists/:id',(request,response)=>{
+    let id = request.params.id;
+    let queryText = `DELETE FROM artists WHERE id = ${id}`;
+    pool.query(queryText,(err,result)=>{
+        response.send('Artist deleted!');
+    })
+    // response.send(id)
+})
+
 /**
  * ===================================
  * Listen to requests on port 3000
