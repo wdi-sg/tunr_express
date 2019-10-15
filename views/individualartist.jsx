@@ -23,6 +23,11 @@ class Home extends React.Component {
             <h3 className="card-title">{this.props.result.name}</h3>
            
            <div className="text-center well d-flex justify-content-around justify-content-center mt-5 " style={{width: "300px", margin:"0 auto"}}>
+
+           <a className="btn btn-danger btn-lg text-light "
+            href={this.props.result.id + "/delete"}>
+            Delete
+          </a> 
            <a className="btn btn-primary btn-lg text-light "
             href={this.props.result.id + "/songs"}>
             Songs

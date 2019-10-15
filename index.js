@@ -169,6 +169,38 @@ app.put('/artists/:id', (request, response) => {
 });
 })
 
+app.get('/artists/:id/delete', (request, response) => {
+  let artistId = parseInt(request.params.id);
+  const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
+  
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error("query error:", err.stack);
+        response.send("query error");
+    } else {
+        const data = {
+          result: result.rows[0]
+        }
+        console.log(result.rows)
+        response.render("delete", data);
+    }
+});
+})
+
+app.delete('/artists/:id', (request, response) =>{
+  let artistId = parseInt(request.params.id);
+  const queryString = `DELETE FROM artists WHERE id=${artistId}`;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error("query error:", err.stack);
+        response.send("query error");
+    } else {
+       
+        console.log(result.rows)
+        response.redirect("/artists");
+    }
+});
+})
 
 
 
