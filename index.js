@@ -73,8 +73,8 @@ app.post('/artists/new', (request, response) => {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        // check if new artist is already in database?
-        response.send(result.rows);
+        let artist = result.rows[0];
+        response.render('artist', artist);
     });
 });
 
@@ -127,9 +127,25 @@ app.put('/artists/:id', (request, response) => {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        console.log(queryText);
         let artist = result.rows[0];
         response.render('artist', artist);
+    });
+})
+
+app.delete('/artists/:id', (request, response) => {
+    // SELECT artist from artists db
+    let id = request.params.id;
+    console.log("Deleting artist id: " + id);
+
+    let queryText = `DELETE FROM artists WHERE id=${id} RETURNING *`;
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        console.log("Deleted: " + result.rows[0]);
+        let home = '<a href="http://localhost:3000/artists" alt="home">Back to Homepage</a>'
+        response.send(home);
     });
 })
 
