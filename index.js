@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: '13InchWong',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -47,18 +47,63 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-
+//------------------------------------------------------------------------------------
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
+  // respond with HTML page displaying a big Welcome
   response.render('home');
 });
-
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+//------------------------------------------------------------------------------------
+app.get('/artists', (request, response) => {
+  // query database for all artists
+  const queryString = 'SELECT * FROM artists'
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log("data downloaded");
+    }
+  // respond with HTML page displaying all artists
+  const data = { searched : result.rows };
+  response.render('indexArtists', data);
+  });    
 });
+//------------------------------------------------------------------------------------
+app.get('/artists/new', (request, response) => {
+  response.render('addArtists');
+});
+//------------------------------------------------------------------------------------
+app.post('/artists' , (request, response) => {
+  console.log("Added new artists: ", request.body);
+  queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+  const values = [request.body.name , request.body.photo_url , request.body.nationality];
+  console.log("INSERT=================================");
+  pool.query(queryString, values, (err, res) => {
+      if (err) {
+      console.log("query error", err.message);
+      } else {
+      console.log("id of the thing you just created:", res.rows[0].id);
+      }
+  });
+})
+//------------------------------------------------------------------------------------
+app.get('/artists/:id', (request, response) => {
+  const queryString = `SELECT * FROM artists WHERE id = '${request.params.id}'`;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log("Foundddddddddddddddddddddd");
+    }
+  // respond with HTML page displaying all artists
+  const data = { searched : result.rows };
+  response.render('eachArtist',data);
+  });    
+});
+
+
+//------------------------------------------------------------------------------------
 
 
 /**
