@@ -6,16 +6,16 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'sirron',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+    user: 'sirron',
+    host: '127.0.0.1',
+    database: 'tunr_db',
+    port: 5432,
 };
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+pool.on('error', function(err) {
+    console.log('idle client error', err.message, err.stack);
 });
 
 /**
@@ -30,7 +30,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+    extended: true
 }));
 
 app.use(methodOverride('_method'));
@@ -48,16 +48,60 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+//app.get to see all the artist
+app.get('/', (request, res) => {
+    const text = 'SELECT * FROM artists'
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            console.log("result", result.rows);
+            res.send(result.rows);
+            // res.render('home');
+        }
+    });
+    // response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+
+//app.get to create a form for new artist
+app.get('/artist/new', (request, res) => {
+
+    res.render('new');
+});
+
+
+
+//app.post to create a new artist
+app.post('/artist', (request, res) => {
+    console.log(request.body);
+    const artistArray = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    const text = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+    pool.query(text, artistArray, (err, result) => {
+
+        if (err) {
+            console.error("query error", err.message);
+            res.send("query error");
+        } else {
+            console.log("query result :", result);
+            res.send(result.rows);
+        }
+    });
+});
+
+//app.get to see a single artist
+app.get('/artist/:id', (request, res) => {
+    const id = parseInt(request.params.id);
+    const inputValues = [id];
+    const text = "SELECT * FROM artists WHERE id = ($1)";
+
+    pool.query(text, inputValues, (err, result) => {
+    console.log(result.rows);
+    res.send(result.rows[0]);
+    })
+
 });
 
 
@@ -68,16 +112,16 @@ app.get('/new', (request, response) => {
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
-  
-  console.log("closing");
-  
-  server.close(() => {
-    
-    console.log('Process terminated');
-    
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
+let onClose = function() {
+
+    console.log("closing");
+
+    server.close(() => {
+
+        console.log('Process terminated');
+
+        pool.end(() => console.log('Shut down db connection pool'));
+    })
 };
 
 process.on('SIGTERM', onClose);

@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Artist extends React.Component {
   render() {
     return (
       <html>
@@ -15,4 +15,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = Artist;
