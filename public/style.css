@@ -1,0 +1,26 @@
+h1{
+	text-align: center;
+	margin: 5% auto 5%;
+}
+
+.name{
+	color: white;
+	margin: 0 5%;
+}
+
+.cards{
+	text-align: center;
+}
+
+.imagez{
+	height: 40vh;
+}
+
+.card{
+	width: 18rem;
+	display: inline-block;
+}
+
+.forms{
+	padding: 0 20%;
+}

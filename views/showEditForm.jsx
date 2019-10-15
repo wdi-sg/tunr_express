@@ -2,26 +2,21 @@ var React = require('react');
 class EditForm extends React.Component {
   render() {
 
-    const center = {
-        textAlign: "center",
-        margin: "20px auto",
-    }
-
-    const form = {
-        padding: "5% 10%"
-    }
+    const Navbar = require("./navbar.jsx");
 
     return (
       <html>
         <head>
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossOrigin="anonymous"></link>
+            <link rel="stylesheet" href="/style.css"></link>
         </head>
         <body>
+        <Navbar/>
 
         <main>
           <div>
-            <h1 className="col-md-auto display-4" style={center}>Edit Artist Details</h1>
-            <form method='POST' action={'/artists/'+this.props.id+"?_method=put"} style={form} >
+            <h1 className="col-md-auto display-4">Edit Artist #{this.props.id} Details</h1>
+            <form method='POST' action={'/artists/'+this.props.id+"?_method=put"} className="forms">
               <div class="form-group">
                 <label for="exampleFormControlInput1">Name</label>
                 <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder={this.props.name} required/>

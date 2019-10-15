@@ -22,6 +22,8 @@ app.use(express.urlencoded({
   extended: true
 }));
 
+app.use(express.static(__dirname+'/public/'));
+
 app.use(methodOverride('_method'));
 
 const reactEngine = require('express-react-views').createEngine();
@@ -45,7 +47,7 @@ pool.on('error', function (err) {
 
 const showAll = (request, response)=>{
 
-    let queryText = "SELECT * FROM artists";
+    let queryText = "SELECT * FROM artists ORDER by id";
 
     pool.query(queryText, (err, results)=>{
         let data = {
@@ -127,6 +129,40 @@ const deleteArtist = (request, response)=>{
 }
 
 
+const showArtistSongs = (request, response)=>{
+
+    let id = parseInt(request.params.id);
+    let inputValues = [id];
+    let queryText = "SELECT * FROM songs WHERE artist_id = ($1)";
+
+    pool.query(queryText, inputValues, (err, results)=>{
+        let data = {
+            songs: results.rows
+        }
+        if (results.rows[0] === undefined){
+            response.send("No songs");
+        } else {
+            response.render("showSongs", data);
+        };
+
+    });
+
+};
+
+
+const showAllSongs = (request, response)=>{
+
+    let queryText = "SELECT title, album, preview_link FROM songs";
+
+    pool.query(queryText, (err, results)=>{
+        let data = {
+            songs: results.rows
+        }
+        response.render("showAllSongs", data)
+    });
+
+};
+
 //==========================================
 //          Restful Routes
 //==========================================
@@ -134,7 +170,8 @@ app.get('/artists/', showAll);
 app.get('/artists/new', showCreateForm);
 app.post('/artists', showNew);
 app.get('/artists/:id', showOne);
-// app.get('/artists/:id/songs', showAllSongs);
+app.get('/artists/:id/songs', showArtistSongs);
+// app.get('/artists/songs', showAllSongs);
 app.get('/artists/:id/edit', showEditForm);
 app.put('/artists/:id', showUpdated);
 app.delete('/artists/:id', deleteArtist);
