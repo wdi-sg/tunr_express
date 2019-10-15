@@ -48,18 +48,34 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all artists/songs
+// GET Method - query database for all artists
+app.get('/artists/', (request, response) => {
 
-  // respond with HTML page displaying all artists/songs
-  response.render('home');
+    // Construct the select statement to get all artists from database
+    const queryString = 'SELECT * FROM artists';
+
+    // Use pool.query to run the select query
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+
+            const data = {
+                artists: result.rows
+            };
+            // respond with HTML page displaying all artists
+            response.render('home', data);
+        }
+    });
 });
 
+// GET Method - respond with HTML page with form to create new artist
 app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new artist
   response.render('newArtist');
 });
 
+// POST Method - to create new artist in DB
 app.post('/artists', (request, response) => {
 
     // Get the individual values from each field of the request body
@@ -76,7 +92,7 @@ app.post('/artists', (request, response) => {
     pool.query(queryString, inputValues, (err, result) => {
 
         if (err) {
-            console.log("Error is " + err.message);
+            console.log("Error: ", err.message);
         } else {
             console.log("Artist added successfully");
         }
