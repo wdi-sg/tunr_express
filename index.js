@@ -6,9 +6,9 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'eden',
   host: '127.0.0.1',
-  database: 'tunr_db',
+  database: 'week5',
   port: 5432,
 };
 
@@ -60,6 +60,21 @@ app.get('/new', (request, response) => {
   response.render('new');
 });
 
+app.get('/artists/', (request, response) => {
+  let queryText = 'SELECT name, photo_url FROM artists'
+  pool.query(queryText,(err, result)=>{
+    if(err){
+        console.log("View artist error", err.message);
+    } else {
+        const data ={
+            artistArr: result.rows
+        }
+        response.render('viewArtists.jsx', data)
+    }
+  })
+  // response.render('new');
+});
+
 
 /**
  * ===================================
@@ -69,13 +84,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
