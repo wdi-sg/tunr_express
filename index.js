@@ -6,11 +6,13 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+user: 'new_user',
+password: 'password',
+host: '127.0.0.1',
+database: 'tunr_db',
+port: 5432,
 };
+
 
 const pool = new pg.Pool(configs);
 
