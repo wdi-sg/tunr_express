@@ -97,7 +97,36 @@ app.get("/artists/:id", (req, res) => {
       if (err) {
         return console.error("Error executing query", err.stack);
       }
-      res.render("SingleArtist", {artist: result.rows[0]});
+      res.render("SingleArtist", { artist: result.rows[0] });
+    }
+  );
+});
+
+app.get("/artists/:id/edit", (req, res) => {
+  pool.query(
+    "SELECT * FROM artists WHERE id = $1",
+    [req.params.id],
+    (err, result) => {
+      if (err) {
+        return console.error("Error executing query", err.stack);
+      }
+      res.render("EditArtist", { artist: result.rows[0], id: req.params.id });
+    }
+  );
+});
+
+app.put("/artists/:id", (req, res) => {
+  // console.log("PUT!!!!!!",req.body);
+  const { name, nationality, photo_url } = req.body;
+  pool.query(
+    "UPDATE artists SET (name, nationality, photo_url) = ($1, $2, $3) WHERE id = $4 RETURNING *",
+    [name, nationality, photo_url, req.params.id],
+    (err, result) => {
+      if (err) {
+        return console.error("Error executing query", err.stack);
+      }
+      // console.log("PUT RETURNING!!!!!", result);
+      res.render("SingleArtist", { artist: result.rows[0] });
     }
   );
 });
