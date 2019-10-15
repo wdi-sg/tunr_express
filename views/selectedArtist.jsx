@@ -19,7 +19,7 @@ class vArtist extends React.Component {
     render() {
         let artistArr = this.props.artistArr;
         let id = artistArr[0]["id"];
-        let action = `${id}`;
+        let artistId = `${id}`;
         console.log("Artist: ",artistArr)
         let artist = artistArr.map(element =>{
             return <ArtistFunction key1={element}/>
@@ -29,10 +29,16 @@ class vArtist extends React.Component {
                 <head />
                 <body>
                     <div>{artist}</div>
-                    <form method="GET" action={action+"/songs"}>
+                    <form method="GET" action={artistId+"/songs"}>
                         <p>
                             Click here to view songs: <br/>
                             <input type="submit" value="songs"/>
+                        </p>
+                    </form>
+                    <form method="GET" action={artistId+"/edit"}>
+                        <p>
+                            Click here to edit artist: <br/>
+                            <input type="submit" value="Edit"/>
                         </p>
                     </form>
                     <form method="GET" action="/">

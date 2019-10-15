@@ -110,7 +110,29 @@ app.get('/artists/:id/songs',(request,response)=>{
 
         response.render('viewSongs.jsx',data)
     })
-    // response.send("Working")
+})
+
+app.get('/artists/:id/edit',(request,response)=>{
+    let id = request.params.id;
+    let queryText = `SELECT * FROM artists WHERE id = ${id};`
+    pool.query(queryText,(err,result)=>{
+        const data = {
+            artistArr: result.rows[0]
+        }
+        response.render('editArtist.jsx',data)
+    })
+    // response.send(id)
+})
+
+app.put('/artists/:id',(request, response)=>{
+    let x = request.body
+    let id = request.params.id;
+    let name = request.body.name;
+    let nationality = request.body.nationality;
+    let queryText = `UPDATE artists SET name='${name}', nationality='${nationality}' WHERE id=${id}`;
+    pool.query(queryText,(err,result)=>{
+        response.send(`Artist updated: ${id}. ${name} - ${nationality}`);
+    })
 })
 
 /**
