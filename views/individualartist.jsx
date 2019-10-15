@@ -2,13 +2,7 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
-    let list = this.props.result.map(item => {
-      return <li>
-        <h3> <a href={"/artists/" + item.id }>{item.name}</a> </h3>
-
-
-      </li>;
-    });
+  
     return (
       <html>
         <head>
@@ -20,14 +14,15 @@ class Home extends React.Component {
           ></link>
         </head>
         <body>
-          <h1>Welcome!</h1>
+            <img src={this.props.result.photo_url} alt="" height="300" width="300" />
+          <h1>{this.props.result.name}</h1>
 
           <a className="btn btn-primary btn text-light mb-5"
-            href="/artists/new"
+            href="artists/songs"
           >
-            Add a new artist
+            Songs
           </a>
-          <ol>{list}</ol>
+          
         </body>
       </html>
     );

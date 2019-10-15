@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'nathanaeltan',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,15 +48,80 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/artists', (request, response) => {
+app.get('/artists/', (request, response) => {
 
-  response.render('home');
+  const queryString = `SELECT * FROM artists`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+          console.log("query result:", result);
+
+          const data = {
+            result: result.rows
+          }
+         
+          response.render('home', data);
+          
+      }
+  });
 });
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
+
+app.post('/artists', (request, response) => {
+  let { name, photo_url, nationality }= request.body;
+
+
+  const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${name}', '${photo_url}', '${nationality}')`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+          
+          response.render("successfuladd");
+          
+      }
+  });
+
+})
+
+app.get('/artists/:id', (request, response) => {
+  let artistId = parseInt(request.params.id)
+  
+  const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+          const data = {
+            result: result.rows[0]
+          }
+          
+          response.render("individualartist", data);
+          
+      }
+  });
+})
+
+
+
+
+
+
+
+
+
+
 
 
 /**
