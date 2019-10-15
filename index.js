@@ -101,10 +101,38 @@ app.get('/artists/:id', (request, response) => {
   response.render('eachArtist',data);
   });    
 });
-
+//------------------------------------------------------------------------------------
+app.get('/artists/:id/edit', (request, response) => {
+  const queryString = `SELECT * FROM artists WHERE id = '${request.params.id}'`;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log("Foundddddddddddddddddddddd");
+    }
+  // respond with HTML page displaying all artists
+  const data = { searched : result.rows };
+  response.render('editArtist',data);
+  });    
+});
 
 //------------------------------------------------------------------------------------
-
+app.put('/artists/:id', (request,response) => {
+  console.log("Artist Edited: " , request.body);
+  let {id} = request.params;
+  let {name, photo_url, nationality} = request.body;
+  queryString = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${id} RETURNING *`;
+  console.log("UPDATE=================================");
+  pool.query(queryString, (err, res) => {
+      if (err) {
+      console.log("query error", err.message);
+      } else {
+      console.log("id of the thing you just edited:", res.rows[0].id);
+      }
+  });
+  response.send(request.body)
+});
 
 /**
  * ===================================
