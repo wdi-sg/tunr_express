@@ -77,6 +77,55 @@ app.post('/artists', (request, response) => {
     })
 })
 
+app.get('/artists/:id', (request, response) => {
+    let inputID = request.params.id;
+
+    const queryString = `SELECT * FROM artists WHERE id=${inputID}`
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error: ', err.stack)
+            response.send('query error');
+        } else {
+            console.log('query results: ', result);
+            response.send(result.rows)
+        }
+    })
+})
+
+app.get('/artists/:id/songs', (request, response) => {
+    let inputID = request.params.id;
+
+    const queryString = `SELECT * FROM songs WHERE artist_id=${inputID}`
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error: ', err.stack)
+            response.send('query error');
+        } else {
+            console.log('query results: ', result);
+            response.send(result.rows)
+        }
+    })
+})
+
+// // Display the form for editing a single artist
+// app.get('/artist/:id/edit', (request, response) => {
+//     let inputID = request.params.id;
+
+//     const queryString = `SELECT * FROM artists WHERE id=${inputID}`
+
+//     pool.query(queryString, (err, result) => {
+//         if (err) {
+//             console.log('query error: ', err.stack)
+//             response.send('query error');
+//         } else {
+//             console.log('query results: ', result);
+//             response.send(result.rows)
+//         }
+//     })
+// })
+
 
 /**
  * ===================================
