@@ -52,19 +52,29 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
-app.get('/artists'), (req, res) => {
+app.get('/artists', (req, res) => {
+  const queryString = 'SELECT * FROM artists';
+  pool.query(queryString, (err, result) => {
 
-}
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        rows: result.rows
+      };
+      res.render('index', data);
+    }
+  });
+});
 
 app.get('/artists/new', (re, res) => {
   res.render('new');
 });
 
 app.post('/artists', (req, res) => {
-  console.log(req.body);
   const queryArray = [req.body.name, req.body.photo_url, req.body.nationality];
   const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
-  console.log(queryString);
 
   pool.query(queryString, queryArray, (err, result) => {
 
@@ -72,12 +82,10 @@ app.post('/artists', (req, res) => {
       console.error('query error:', err.stack);
       res.send( 'query error' );
     } else {
-      console.log('query result:', result);
-      // data = {
-      //   result : result
-      // };
-      // redirect to home page
-      res.send(result.rows);
+      data = {
+        rows : result.rows
+      };
+      res.render('create', data)
     }
   });
 });
