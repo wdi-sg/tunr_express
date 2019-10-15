@@ -7,7 +7,6 @@ class New extends React.Component {
         <head />
         <body>
             <h3>Add Artist</h3>
-            <font color="red">{this.props.message}</font>
             <form method="POST" action="/artists/new">
                 Name: <input type="text" name="name" required/><br/>
                 Photo URL: <input type="url" name="photo_url" required/><br/>
