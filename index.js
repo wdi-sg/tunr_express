@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'garrick',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,16 +48,41 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
+app.get('/', (req, res) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  res.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('/artists'), (req, res) => {
+
+}
+
+app.get('/artists/new', (re, res) => {
+  res.render('new');
+});
+
+app.post('/artists', (req, res) => {
+  console.log(req.body);
+  const artistArray = [req.body.name, req.body.photo_url, req.body.nationality];
+  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+  console.log(queryString);
+
+  pool.query(queryString, artistArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      console.log('query result:', result);
+      // data = {
+      //   result : result
+      // };
+      // redirect to home page
+      res.send(result.rows);
+    }
+  });
 });
 
 
