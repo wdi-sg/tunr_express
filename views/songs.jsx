@@ -14,7 +14,7 @@ class Song extends React.Component {
       <html>
 
         <body>
-          <h1>DISPLAYING SONGS</h1>
+          <h1>Songs by {this.props.name}</h1>
 
 
           <ul>Songs:

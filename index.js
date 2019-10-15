@@ -42,6 +42,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+let queryString;
+
 /**
  * ===================================
  * Routes
@@ -49,17 +51,32 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/artists', (request, response) => {
-  // query database for all pokemon
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    queryString = "SELECT name,id FROM artists"
+     pool.query(queryString, (err, result) => {
+        console.log(queryString)
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            console.log('query result:', result);
+
+            const data = {
+                list: result.rows
+            }
+              response.render('home', data);
+
+          }
+    });
+
 });
 
 app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
-let queryString;
+
 app.get('/artists/:id', (request, response) => {
     let identifier = parseInt(request.params.id)
 
@@ -109,29 +126,37 @@ const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES (
 app.get('/artists/:id/songs', (request, response) => {
     let identifier = parseInt(request.params.id)
 
-    queryString = `SELECT title,album FROM songs WHERE artist_id = '${identifier}'`
-
-     pool.query(queryString, (err, result) => {
-        console.log(queryString)
-
-          if (err) {
-            console.error('query error:', err.stack);
-            response.send( 'query error' );
-          } else {
+    queryString = `SELECT name FROM artists WHERE id = '${identifier}'`
+    pool.query(queryString, (err,result)=>{
+        if (err){
+                console.error('query error:', err.stack);
+                response.send( 'query error' );
+        } else{
             console.log('query result:', result.rows);
+            var name = result.rows[0].name
 
-            const data = {
-                songs: result.rows
-            }
+             queryString = `SELECT title,album FROM songs WHERE artist_id = '${identifier}'`
 
-            // const data = {
-            //     artist: result.rows[0]
-            // }
-            // response.render('artist',data)
+            pool.query(queryString, (err, result) => {
+                    console.log(queryString)
 
-            response.render('songs',data)
-          }
-    });
+                      if (err) {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                      } else {
+                        console.log('query result:', result.rows);
+
+                        const data = {
+                            songs: result.rows,
+                            name: name
+                        }
+
+                    response.render('songs',data)
+
+                    }
+            });
+        }
+    })
 });
 /**
  * ===================================
