@@ -46,7 +46,7 @@ app.engine('jsx', reactEngine);
 
 // Landing page
 app.get('/', (request, response) => {
-    response.send("Hello Music World");
+    response.render("home");
 });
 
 // add artist form
