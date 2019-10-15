@@ -49,9 +49,6 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (req, res) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
   res.render('home');
 });
 
@@ -65,11 +62,11 @@ app.get('/artists/new', (re, res) => {
 
 app.post('/artists', (req, res) => {
   console.log(req.body);
-  const artistArray = [req.body.name, req.body.photo_url, req.body.nationality];
+  const queryArray = [req.body.name, req.body.photo_url, req.body.nationality];
   const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
   console.log(queryString);
 
-  pool.query(queryString, artistArray, (err, result) => {
+  pool.query(queryString, queryArray, (err, result) => {
 
     if (err) {
       console.error('query error:', err.stack);
@@ -80,6 +77,25 @@ app.post('/artists', (req, res) => {
       //   result : result
       // };
       // redirect to home page
+      res.send(result.rows);
+    }
+  });
+});
+
+app.get('/artists/:id', (req, res) => {
+  const queryArray = [req.params.id];
+  const queryString = 'SELECT * FROM artists where ID = $1';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      console.log('query result:', result.rows);
+      data = {
+        rows : result.rows
+      };
       res.send(result.rows);
     }
   });
