@@ -55,7 +55,7 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
@@ -72,8 +72,21 @@ app.get('/artists/', (request, response) => {
         response.render('viewArtists.jsx', data)
     }
   })
-  // response.render('new');
 });
+
+app.post('/artists',(request, response)=>{
+    let name = request.body.name;
+    let nationality = request.body.nationality;
+    let queryText = `INSERT INTO artists(name,nationality) VALUES ('${name}','${nationality}') RETURNING *`;
+    pool.query(queryText,(err,result)=>{
+        console.log(result.rows[0])
+        let id = result.rows[0]["id"] + "<br>";
+        let name = result.rows[0]["name"] + "<br>";
+        let nationality = result.rows[0]["nationality"] + "<br>";
+        let str = "New artist added:<br>"+id+name+nationality
+        response.send(str);
+    })
+})
 
 
 /**

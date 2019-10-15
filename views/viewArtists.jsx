@@ -5,7 +5,6 @@ class ArtistFunction extends React.Component {
         let element = this.props.key1;
         return(
             <div>
-                <h4>Stand-in Image</h4>
                 <h5>{element.name}</h5>
                 {/*<img src={element.photo_url}/>*/}
             </div>
@@ -16,7 +15,6 @@ class ArtistFunction extends React.Component {
 class vArtist extends React.Component {
     render() {
         let artistArr = this.props.artistArr;
-        console.log(artistArr);
         let artist = artistArr.map(element =>{
             return <ArtistFunction key1={element}/>
         })
