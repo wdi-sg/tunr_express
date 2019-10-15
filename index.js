@@ -86,11 +86,11 @@ app.post('/artists', (request, response) => {
           response.send("query error");
       } else {
           
-          response.render("successfuladd");
+        response.redirect("/artists/")
           
       }
   });
-
+  
 })
 
 app.get('/artists/:id', (request, response) => {
@@ -113,6 +113,24 @@ app.get('/artists/:id', (request, response) => {
   });
 })
 
+app.get('/artists/:id/songs', (request, response) =>{
+  let artistId = parseInt(request.params.id);
+  const queryString = `SELECT * FROM songs WHERE artist_id=${artistId}`;
+
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error("query error:", err.stack);
+        response.send("query error");
+    } else {
+        const data = {
+          result: result.rows
+        }
+      
+        response.render("artistSongs", data);
+        
+    }
+});
+})
 
 
 
