@@ -52,12 +52,7 @@ app.get("/", (request, response) => {
   // query database for all pokemon
 
   // respond with HTML page displaying all pokemon
-  response.render("home");
-});
-
-app.get("/new", (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render("new");
+  response.render("Home");
 });
 
 app.get("/artists/", (request, response) => {
@@ -82,9 +77,10 @@ app.post("/artists", (req, res) => {
     "INSERT INTO artists (name, nationality, photo_url) VALUES ($1,$2,$3) RETURNING *",
     [name, nationality, photo_url],
     (err, result) => {
-      console.log("INSERTED:", result.rows[0]);
+      // console.log("INSERTED:", result.rows[0]);
 
-      res.send("added artist");
+
+      res.render("SingleArtist", { artist: result.rows[0], msg: "added:"});
     }
   );
 });
@@ -127,6 +123,22 @@ app.put("/artists/:id", (req, res) => {
       }
       // console.log("PUT RETURNING!!!!!", result);
       res.render("SingleArtist", { artist: result.rows[0] });
+    }
+  );
+});
+
+app.delete("/artists/:id", (req, res) => {
+  // console.log("PUT!!!!!!",req.body);
+  // const { name, nationality, photo_url } = req.body;
+  pool.query(
+    "DELETE FROM artists WHERE id = $1 RETURNING *",
+    [req.params.id],
+    (err, result) => {
+      if (err) {
+        return console.error("Error executing query", err.stack);
+      }
+      // console.log("PUT RETURNING!!!!!", result);
+      res.render("SingleArtist", { artist: result.rows[0], msg: "deleted:"});
     }
   );
 });
