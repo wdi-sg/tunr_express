@@ -16,8 +16,8 @@ class SingleArtist extends React.Component {
       <div>
           <strong>{this.props.msg}</strong>
           <Artist id={id} name={name} nationality={nationality} photo_url={photo_url}/>
-          <a href="/artists/">back to main</a><br/>
-          <a href={`/artists/${id}/edit`}>edit</a>
+          <a href={`/artists/${id}/edit`}>edit</a><br/>
+          <a href="/artists/">back to main</a>
       </div>
     );
   }

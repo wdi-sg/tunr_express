@@ -11,6 +11,7 @@ class AddArtist extends React.Component {
             <input type="text" name="photo_url" placeholder="enter photo url"/><br/>
             <input type="submit" value="add artist"/>
         </form>
+        <a href="/artists/">return to main</a>
       </div>
     );
   }

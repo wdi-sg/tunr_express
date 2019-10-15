@@ -20,6 +20,7 @@ class EditArtist extends React.Component {
             <input type="text" name="photo_url" defaultValue={photo_url} style={{width: "500px"}} disabled /><br/>
             <input type="submit" value="delete artist"/>
         </form>
+        <a href="/artists/">return to main</a>
       </div>
     );
   }
