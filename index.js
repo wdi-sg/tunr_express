@@ -99,6 +99,28 @@ app.get('/artists/:id', (req, res) => {
 
 })
 
+// see all songs of from an artist!
+app.get('/artists/:id/songs', (req,res) => {
+    console.log("tracking discography!")
+    let id = req.params.id;
+    const queryString = `SELECT * FROM songs WHERE artist_id = ${id}`;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.message);
+            res.send('query error');
+        } else {
+            console.log("found artist's songs!");
+            console.log('query result:', result);
+            // console.log();
+            // redirect to home page
+            // let artistData = 
+            console.log(result.rows);
+            res.send(result.rows);
+        }
+    })
+})
+
 // see all artists
 app.get('/artistsall/', (req,res) => {
     console.log("getting all the artists!");
