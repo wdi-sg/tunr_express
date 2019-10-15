@@ -10,8 +10,8 @@ class New extends React.Component {
             <font color="red">{this.props.message}</font>
             <form method="POST" action="/artists/new">
                 Name: <input type="text" name="name" required/><br/>
-                Photo URL: <input type="url" name="img" required/><br/>
-                Nationality: <input type="text" name="name" required/><br/>
+                Photo URL: <input type="url" name="photo_url" required/><br/>
+                Nationality: <input type="text" name="nationality" required/><br/>
                 <input type="submit" value="Submit"/>
             </form>
         </body>

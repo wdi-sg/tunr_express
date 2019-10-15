@@ -61,6 +61,22 @@ app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
+app.post('/artists/new', (request, response) => {
+    console.log(request.body);
+    let newArtist = [ request.body.name, request.body.photo_url, request.body.nationality ];
+
+    let queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES($1, $2, $3) RETURNING *';
+
+    pool.query(queryString, newArtist, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        // check if new artist is already in database
+        response.send(result.rows);
+
+    });
+});
 
 /**
  * ===================================
