@@ -106,7 +106,27 @@ app.post('/artists/', (request,response) => {
 
 //====== See a single artist ==========
 
+app.get('/artists/:id', (request,response) => {
 
+    const queryString = 'SELECT * FROM artists WHERE id =' + request.params.id;
+    console.log("REQUEST PARAAAAMS " + request.params.id);
+    pool.query(queryString, (err,result) => {
+
+    if (err) {
+            console.log(err);
+            response.send("query error");
+
+        } else {
+            let data = {
+                artists : result.rows[0]
+            };
+            response.send( result.rows );
+        }
+
+
+    })
+
+});
 
 
 
