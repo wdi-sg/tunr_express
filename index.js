@@ -72,6 +72,27 @@ app.get('/artists/', (request, response) => {
   
 });
 
+app.get('/artists/new', (req, res) => {
+
+  res.render("AddArtist");
+
+});
+
+app.post('/artists', (req, res) => {
+  // console.log(req.body);
+  const { name, nationality, photo_url } = req.body;
+
+  pool.query("INSERT INTO artists (name, nationality, photo_url) VALUES ($1,$2,$3) RETURNING *",
+  [name, nationality, photo_url], (err, result) => {
+    
+    console.log("INSERTED:", result.rows[0]);
+
+    res.send("added artist");
+  });
+
+
+})
+
 
 /**
  * ===================================
