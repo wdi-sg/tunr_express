@@ -27,7 +27,6 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -101,6 +100,36 @@ app.post('/artists', (request, response) => {
     response.send(request.body);
 });
 
+// GET method - To display songs for an artist
+app.get('/artists/:id/songs', (request, response) => {
+
+    // Get the ID from the URL parameter
+    let artistID = request.params.id;
+
+    // Construct the select query to get the song where the artist id = param id
+    const queryString = 'SELECT * FROM songs WHERE artist_id=' + artistID;
+
+    // Display the result using pool.query
+    pool.query(queryString, (err, resultOfSongsByArtist) => {
+
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+
+            const getArtistName = 'SELECT name FROM artists WHERE id=' + artistID;
+
+            pool.query(getArtistName, (err, resultOfArtistName) => {
+
+                const data = {
+                    artistName: resultOfArtistName.rows,
+                    artistSongs: resultOfSongsByArtist.rows
+                };
+
+                response.render('artistSongs', data);
+            });
+        }
+    });
+});
 
 /**
  * ===================================
