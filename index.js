@@ -42,23 +42,80 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-/**
- * ===================================
- * Routes
- * ===================================
- */
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+// Landing page
 app.get('/', (request, response) => {
-    // query database for all artists
-
-    // respond with HTML page displaying all artists
-    // response.render('home');
-    response.send("Hello World");
+    response.send("Hello Music World");
 });
 
-app.get('/new', (request, response) => {
+// add artist form
+app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new artists
+    console.log("rendering new artist form!");
     response.render('new');
+});
+
+// add a NEW artist
+app.post('/artists', (req, res) => {
+    console.log("creating new artist!");
+
+    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING*;';
+    let newArtistArry = [req.body.name, req.body.photo_url, req.body.nationality];
+
+    pool.query(queryString, newArtistArry, (err, result) => {
+        if (err) {
+            console.error('query error:', err.message)
+            res.send('query error')
+        } else {
+            console.log('query result:', result)
+            // redirect to home page
+            res.send(result.rows)
+        }
+    })
+
+});
+
+// see an artist!
+app.get('/artists/:id', (req, res) => {
+    console.log("finding artist!");
+    let id = req.params.id;
+    const queryString = `SELECT * FROM artists WHERE id = ${id}`
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.message);
+            res.send('query error');
+        } else {
+            console.log("found artist!");
+            console.log('query result:', result);
+            // console.log();
+            // redirect to home page
+            // let artistData = 
+            console.log(result.rows);
+            res.send(result.rows);
+        }
+    })
+
+})
+
+// see all artists
+app.get('/artistsall/', (req,res) => {
+    console.log("getting all the artists!");
+    let queryString = "SELECT * FROM artists;";
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.message);
+            res.send('query error');
+        } else {
+            console.log("got all artists!");
+            // // console.log();
+            // // redirect to home page
+            // // let artistData = 
+            // console.log(result.rows);
+            res.send(result.rows);
+        }
+    });
 });
 
 
