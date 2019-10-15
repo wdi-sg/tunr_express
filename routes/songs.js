@@ -96,4 +96,4 @@ router.get("/:id/songs", (req, res) => {
 //   });
 // });
 
-// module.exports = router;
+module.exports = router;
