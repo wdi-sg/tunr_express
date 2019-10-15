@@ -11,11 +11,11 @@ class New extends React.Component {
             <h1>Edit Artist: { this.props.name }</h1>
             <form method="POST" action={"/artists/"+this.props.id+"?_method=put"}>
             <br/>
-            Name: <input type="text" name="name" value={ this.props.name }/>
+            Name: <input type="text" name="name" value={this.props.name}/>
             <br/>
-            Image URL: <input type="text" name="img" value={ this.props.photo_url }/>
+            Image URL: <input type="text" name="photo_url" value={this.props.photo_url}/>
             <br/>
-            Nationality: <input type="text" name="height" value={ this.props.nationality }/>
+            Nationality: <input type="text" name="nationality" value={this.props.nationality}/>
             <br/>
             <input type="submit" value="Submit"/>
             </form>
