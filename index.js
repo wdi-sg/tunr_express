@@ -72,9 +72,15 @@ app.post('/artists', (request, response) => {
         response.send( 'query error' );
     } else {
         console.log('query result:', result);
+        const theArtist = {
+                "id": result.rows[0].id,
+                "name": result.rows[0].name,
+                "photo_url": result.rows[0].photo_url,
+                "nationality": result.rows[0].nationality
+            };
 
         // redirect to home page
-        response.send( result.rows[0] );
+        response.render('individual', theArtist);
     }
     });
 });
@@ -100,6 +106,102 @@ app.get('/artists/:id', (request, response) => {
             // redirect to home page
             response.render('individual', theArtist);
          };
+    });
+});
+
+//SHOWS FORM TO CREATE NEW PLAYLIST
+app.get('/playlists/new', (request, response) => {
+  response.render('newPlaylist');
+});
+
+//SUBMITS FORM TO CREATE NEW PLAYLIST
+app.post ('/playlists', (request, response) => {
+    let newPlaylist = [request.body.name];
+    console.log(request.body.name);
+
+    const newData =  "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
+
+    pool.query(newData, newPlaylist, (err, result) => {
+
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log('query result:', result);
+        const playlistName = {
+                "name": result.rows[0].name,
+            };
+
+        // redirect to home page
+        response.render('addedPlaylist', playlistName);
+    }
+    });
+});
+
+//SHOW INDIVIDUAL PLAYLIST PAGE
+app.get('/playlists/:id', (request, response) => {
+    let inputId = request.params.id;
+    const playlist = `SELECT * FROM playlist WHERE id = ${inputId}`;
+
+    // find playlist by id from the playlist table
+    pool.query(playlist, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'Playlist not found' );
+        } else {
+            console.log('query result:', result);
+            const thePlaylist = {
+                "id": result.rows[0].id,
+                "name": result.rows[0].name
+            };
+            // redirect to home page
+            response.render('OnePlaylist', thePlaylist);
+         };
+    });
+});
+
+//SHOW FORM TO ADD A SONG TO THE PLAYLIST
+app.get('/playlists/:id/newsong', (request, response) => {
+    let inputId = request.params.id;
+    const playlist = `SELECT * FROM playlist WHERE id = ${inputId}`;
+
+    // find playlist by id from the playlist table
+    pool.query(playlist, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'Playlist not found' );
+        } else {
+            console.log('query result:', result);
+            const thePlaylist = {
+                "id": result.rows[0].id,
+                "name": result.rows[0].name
+            };
+            response.render('addSong', thePlaylist);
+        };
+    });
+});
+
+//SUBMITS FORM TO ADD A SONG TO PLAYLIST
+app.post ('/playlists/:id', (request, response) => {
+    let addSong = [request.body];
+    let newValues = [addSong.title, addSong.album, addSong.preview_link, addSong.artwork, addSong.artists_id];
+
+    const newData =  "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
+
+    pool.query(newData, newPlaylist, (err, result) => {
+
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log('query result:', result);
+        const playlistName = {
+                "name": result.rows[0].name,
+            };
+
+        // redirect to home page
+        response.render('addedPlaylist', playlistName);
+    }
     });
 });
 
