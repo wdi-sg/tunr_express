@@ -224,6 +224,31 @@ app.get('/playlists/:id', (request, response) => {
     });
 });
 
+app.get('/playlists/:id/newsong', (request, response) => {
+    // respond with HTML page with form to add new song to playlist
+    console.log("Adding to playlist id: " + request.params.id);
+    response.render('newlistsong', request.params);
+});
+
+app.post('/playlists/:id/newsong', (request, response) => {
+    // INSERT song_id into playlist_song db
+    let song_id = request.body.song_id;
+    let playlist_id = request.params.id;
+    console.log("Inserting to playlist id: " + playlist_id);
+
+    let addSong = [ song_id, playlist_id ];
+    let queryText = `INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *`;
+
+    pool.query(queryText, addSong, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        console.log(result.rows[0]);
+        response.redirect('/playlists/'+playlist_id);
+    });
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
