@@ -44,7 +44,7 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes
+ *  Artists Routes
  * ===================================
  */
 
@@ -63,13 +63,13 @@ app.get('/artists', (req, res) => {
       data = {
         rows: result.rows
       };
-      res.render('index', data);
+      res.render('a-index', data);
     }
   });
 });
 
-app.get('/artists/new', (re, res) => {
-  res.render('new');
+app.get('/artists/new', (req, res) => {
+  res.render('a-new');
 });
 
 app.post('/artists', (req, res) => {
@@ -85,12 +85,30 @@ app.post('/artists', (req, res) => {
       data = {
         rows : result.rows
       };
-      res.render('create', data)
+      res.render('a-create', data)
     }
   });
 });
 
 app.get('/artists/:id', (req, res) => {
+  const queryArray = [req.params.id];
+  const queryString = 'SELECT * FROM artists where ID = $1 RETURNING *';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        rows : result.rows
+      };
+      res.render('a-show', data);
+    }
+  });
+});
+
+app.get('/artists/:id/edit', (req, res) => {
   const queryArray = [req.params.id];
   const queryString = 'SELECT * FROM artists where ID = $1';
 
@@ -100,15 +118,48 @@ app.get('/artists/:id', (req, res) => {
       console.error('query error:', err.stack);
       res.send( 'query error' );
     } else {
-      console.log('query result:', result.rows);
       data = {
-        rows : result.rows
+        id: req.params.id,
+        rows : result.rows[0]
       };
-      res.send(result.rows);
+      res.render('a-edit', data);
     }
   });
 });
 
+
+app.put('/artists/:id', (req, res) => {
+  const queryArray = [req.body.name, req.body.photo_url, req.body.nationality,req.params.id];
+  const queryString = 'UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        id: req.params.id,
+        rows : req.body
+      };
+      res.render('a-update', data);
+    }
+  });
+});
+
+
+
+/**
+ * ===================================
+ *  Songs Routes
+ * ===================================
+ */
+
+ /**
+ * ===================================
+ *  Playlists Routes
+ * ===================================
+ */
 
 /**
  * ===================================
