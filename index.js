@@ -66,7 +66,7 @@ app.get('/', (request, res) => {
 
 
 //app.get to create a form for new artist
-app.get('/artist/new', (request, res) => {
+app.get('/artists/new', (request, res) => {
 
     res.render('new');
 });
@@ -74,7 +74,7 @@ app.get('/artist/new', (request, res) => {
 
 
 //app.post to create a new artist
-app.post('/artist', (request, res) => {
+app.post('/artists', (request, res) => {
     console.log(request.body);
     const artistArray = [request.body.name, request.body.photo_url, request.body.nationality];
 
@@ -92,17 +92,44 @@ app.post('/artist', (request, res) => {
 });
 
 //app.get to see a single artist
-app.get('/artist/:id', (request, res) => {
+app.get('/artists/:id', (request, res) => {
     const id = parseInt(request.params.id);
     const inputValues = [id];
     const text = "SELECT * FROM artists WHERE id = ($1)";
 
     pool.query(text, inputValues, (err, result) => {
-    console.log(result.rows);
-    res.send(result.rows[0]);
+        console.log(result.rows);
+        res.send(result.rows[0]);
     })
 
 });
+
+//app.get to display form for editing an artist
+app.get('/artists/:id/edit', (request, res) => {
+    const id = parseInt(request.params.id);
+    const text = "SELECT * FROM artists WHERE id = ($1)";
+    console.log("KITTYYYYY");
+    pool.query(text, id, (err, result) => {
+
+        res.render('editform', id);
+    });
+});
+
+// //app.put to update an artist
+// //not working
+// app.put('/artists/:id', (request, res) => {
+//   const artistId = parseInt(request.params.id);
+//   const {name, photo_url, nationality} = request.body;
+//   const text = "UPDATE artists SET name="${name}", photo_url="${photo_url}", nationality="${nationality}" WHERE id = "($1)", RETURNING *";
+//   console.log("meoooowwwwww");
+
+//   pool.query(text, artistId, (err, result) => {
+
+//       // done writing the file
+//       res.render("update", result.rows[0]);
+//     });
+// })
+
 
 
 /**
