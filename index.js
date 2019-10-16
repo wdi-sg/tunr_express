@@ -138,7 +138,9 @@ app.get('/artists/:id/edit', (request, response) => {
             console.log('error', err.message);
             response.send('query error');
         } else {
-            const data = { artists : result.rows};
+            const data = {
+                artist : result.rows[0]
+            };
             response.render('edit', data);
         }
 })
