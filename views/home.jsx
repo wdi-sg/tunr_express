@@ -13,6 +13,12 @@ class Home extends React.Component {
                     <input type="submit" value="Artists"/>
                 </p>
             </form>
+            <form method="GET" action="/playlist">
+                <p>
+                    To see all your playlist: <br/>
+                    <input type="submit" value="Playlist"/>
+                </p>
+            </form>
             <form method="GET" action="/artists/new">
                 <p>
                     To add artists: <br/>

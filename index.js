@@ -144,6 +144,18 @@ app.delete('/artists/:id',(request,response)=>{
     // response.send(id)
 })
 
+app.get('/playlist',(request,response)=>{
+    let queryText = `SELECT * FROM playlist`;
+    pool.query(queryText,(err,result)=>{
+        // console.log(result.rows)
+        const data = {
+            arr: result.rows
+        }
+        response.render('viewPlaylist.jsx',data);
+    })
+
+})
+
 /**
  * ===================================
  * Listen to requests on port 3000
