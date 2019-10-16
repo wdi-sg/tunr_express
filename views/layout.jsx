@@ -18,10 +18,16 @@ class Layout extends React.Component {
                                     <a className="nav-link" href="http://localhost:3000/">Home</a>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link" href="http://localhost:3000/artists/">See All</a>
+                                    <a className="nav-link" href="http://localhost:3000/artists/">See All Artists</a>
                                 </li>
                                 <li className="nav-item">
                                     <a className="nav-link" href="http://localhost:3000/artists/new">New Artist</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="http://localhost:3000/playlists">See All Playlist</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="http://localhost:3000/playlists/new">New Playlist</a>
                                 </li>
                             </ul>
                             <form className="form-inline my-2 my-lg-0" method="GET" action={"/artists/"}>
