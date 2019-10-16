@@ -82,9 +82,18 @@ const showOne = (request, response)=>{
     let inputValues = [id];
     let queryText = "SELECT * FROM artists WHERE id = ($1)";
 
-    pool.query(queryText, inputValues, (err,results)=>{
-        response.render("showOne", results.rows[0]);
+    pool.query(queryText, inputValues, (err, results)=>{
+        if (results.rows[0] === undefined){
+            response.render("noArtist");
+        } else {
+            response.render("showOne", results.rows[0]);
+        };
+
     });
+
+
+
+
 };
 
 const showEditForm = (request, response)=>{
@@ -140,7 +149,7 @@ const showArtistSongs = (request, response)=>{
             songs: results.rows
         }
         if (results.rows[0] === undefined){
-            response.send("No songs");
+            response.render("noSongs");
         } else {
             response.render("showSongs", data);
         };
@@ -168,10 +177,10 @@ const showAllSongs = (request, response)=>{
 //==========================================
 app.get('/artists/', showAll);
 app.get('/artists/new', showCreateForm);
+app.get('/artists/songs', showAllSongs);
 app.post('/artists', showNew);
 app.get('/artists/:id', showOne);
 app.get('/artists/:id/songs', showArtistSongs);
-// app.get('/artists/songs', showAllSongs);
 app.get('/artists/:id/edit', showEditForm);
 app.put('/artists/:id', showUpdated);
 app.delete('/artists/:id', deleteArtist);

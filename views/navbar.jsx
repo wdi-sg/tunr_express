@@ -12,6 +12,7 @@ class Navbar extends React.Component {
             <div class="navbar-nav">
               <a class="nav-item nav-link" href="/artists/">Home</a>
               <a class="nav-item nav-link" href="/artists/new">Add New Artist</a>
+              <a class="nav-item nav-link" href="/artists/songs">All Songs</a>
             </div>
           </div>
         </nav>

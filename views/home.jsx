@@ -12,7 +12,7 @@ class Home extends React.Component {
         var nationality = x.nationality;
 
     return  <div className="card">
-                <img src={photo} className="card-img-top imagez" alt="artists_image"/>
+                <img src={photo} className="card-img-top" alt="artists_image"/>
                   <div className="card-body">
                     <h5 className="card-title">{name}</h5>
                     <p className="card-text">{nationality}</p>

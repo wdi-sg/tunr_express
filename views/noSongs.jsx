@@ -1,25 +1,8 @@
 var React = require('react');
-class ShowSongs extends React.Component {
+class NoSongs extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
-
-    var everything = this.props.songs.map(x=>{
-        var title = x.title;
-        var album = x.album;
-        var preview = x.preview_link;
-        var artwork = x.artwork;
-
-        return  <div className="card">
-                    <img src={artwork} className="card-img-top imagez" alt="artists_image"/>
-                      <div className="card-body">
-                        <h5 className="card-title">{title}</h5>
-                        <p className="card-text">{album}</p>
-                        <a href={preview} className="btn btn-dark">Preview Link</a>
-                      </div>
-                </div>
-    });
-
 
     return (
       <html>
@@ -34,10 +17,7 @@ class ShowSongs extends React.Component {
 
         <main>
           <div>
-              <h1 className="col-md-auto display-4">These Are All The Songs of Artist #{this.props.songs[0].artist_id}</h1>
-                <div className="cards">
-                    {everything}
-                </div>
+              <h1 className="col-md-auto display-4">There Are Such Songs In Our Database</h1>
           </div>
         </main>
 
@@ -51,4 +31,4 @@ class ShowSongs extends React.Component {
   }
 }
 
-module.exports = ShowSongs;
+module.exports = NoSongs;

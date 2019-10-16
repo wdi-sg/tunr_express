@@ -8,12 +8,16 @@ class ShowAllSongs extends React.Component {
         var title = x.title;
         var album = x.album;
         var preview = x.preview_link;
+        var artwork = x.artwork;
 
-        return  <tr>
-                  <th scope="row">{title}</th>
-                  <td>{album}</td>
-                  <td>{preview}</td>
-                </tr>
+        return  <div className="card">
+                    <img src={artwork} className="card-img-top imagez" alt="artists_image"/>
+                      <div className="card-body">
+                        <h5 className="card-title">{title}</h5>
+                        <p className="card-text">{album}</p>
+                        <a href={preview} className="btn btn-dark">Preview Link</a>
+                      </div>
+                </div>
     });
 
 
@@ -31,18 +35,9 @@ class ShowAllSongs extends React.Component {
         <main>
           <div>
               <h1 className="col-md-auto display-4">These Are All The Songs In Our Database</h1>
-                <table class="table">
-                  <thead class="thead-dark">
-                    <tr>
-                      <th scope="col">Titles</th>
-                      <th scope="col">Albums</th>
-                      <th scope="col">Previews</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                        {everything}
-                  </tbody>
-                </table>
+                <div className="cards">
+                    {everything}
+                </div>
           </div>
         </main>
 
