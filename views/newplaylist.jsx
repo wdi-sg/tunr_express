@@ -13,7 +13,7 @@ class Newplaylist extends React.Component {
                         <input className="form-control form-control-lg" type="text" placeholder="e.g. MOST AMAZING PLAYLIST" name="name" required/>
                     </div>
 
-                    <input type="submit" className="btn btn-success btn-block" value="Submit"/>
+                    <input type="submit" className="btn btn-primary btn-block" value="Submit"/>
                 </form>
 
             </Layout>

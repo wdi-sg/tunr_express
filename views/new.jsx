@@ -1,39 +1,32 @@
 const React = require('react');
+const Layout = require('./layout')
 
 class New extends React.Component{
     render(){
 
         return(
-            <html>
-
-                <body>
-                  <div>
+                <Layout>
                     <h1>ADD AN ARTIST</h1>
-                    <form action={"/artists/"} method="post" id="new">
-                      <div>
-                        <label>Name  </label>
-                        <input type="text" name="name" required/>
-                      </div>
-                      <div>
-                        <label>Photo:  </label>
-                        <input type="text" name="photo" required/>
-                      </div>
-                      <div>
-                        <label>Nationality:  </label>
-                        <input type="text" name="nationality" required/>
-                      </div>
+                  <form method="POST" action={"/"}>
+                    <div className="form-group">
+                        <label>Name: </label>
+                        <input className="form-control form-control-lg" type="text" name="name" required/>
 
-                    </form>
-                    <button type="submit" form="new" value="submit">
-                        Submit
-                    </button>
-
-                    <div className = "new">
                     </div>
+                   <div className="form-group">
+                        <label>Photo:  </label>
+                        <input className="form-control form-control-lg" type="text" name="photo" required/>
+                      </div>
+                      <div className="form-group">
+                        <label>Nationality:  </label>
+                        <input className="form-control form-control-lg" type="text" name="nationality" required/>
+                      </div>
 
-                  </div>
-                </body>
-              </html>
+
+                    <input type="submit" className="btn btn-primary btn-block" value="Submit"/>
+                </form>
+
+            </Layout>
             )
     }
 }

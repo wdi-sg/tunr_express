@@ -1,4 +1,5 @@
 var React = require("react");
+var Layout = require ('./layout')
 
 class Home extends React.Component {
 
@@ -8,15 +9,13 @@ class Home extends React.Component {
            return <a href = {`/artists/${artist.id}`}><li key = {i}> {artist.name} </li></a>
         })
     return (
-      <html>
-
-        <body>
+     <Layout>
         <h1> ARTISTS </h1>
             <ol>
                 {name}
             </ol>
-        </body>
-      </html>
+    </Layout>
+
     );
   }
 }

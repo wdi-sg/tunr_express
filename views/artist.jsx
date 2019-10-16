@@ -1,4 +1,5 @@
 var React = require("react");
+var Layout = require('./layout')
 
 class Artist extends React.Component {
   render() {
@@ -10,16 +11,13 @@ class Artist extends React.Component {
     } = this.props.artist
 
     return (
-      <html>
-        <head />
-        <body>
+      <Layout>
           <h1>DISPLAYING SINGLE ARTIST</h1>
 
           <img src = {photo_url}></img>
           <h2>Name: {name}</h2>
           <h2>Nationality: {nationality}</h2>
-        </body>
-      </html>
+    </Layout>
     );
   }
 }

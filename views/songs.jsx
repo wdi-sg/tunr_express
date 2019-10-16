@@ -1,4 +1,5 @@
 var React = require("react");
+var Layout = require('./layout')
 
 
 class Song extends React.Component {
@@ -11,18 +12,15 @@ class Song extends React.Component {
 
 
     return (
-      <html>
-
-        <body>
+       <Layout>
           <h1>Songs by {this.props.name}</h1>
 
 
-          <ul>Songs:
+          <ul>
             {songs}
 
           </ul>
-        </body>
-      </html>
+        </Layout>
     );
   }
 }
