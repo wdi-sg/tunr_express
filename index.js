@@ -4,7 +4,6 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
-
 // Initialise postgres client
 const configs = {
 user: 'new_user',
@@ -45,7 +44,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 app.use(methodOverride('_method'));
-
+app.use(express.static(__dirname+'/public/'));
 /**
  * ===================================
  * Routes
@@ -53,11 +52,23 @@ app.use(methodOverride('_method'));
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
-});
+  // query database
+// show all the artists
+  const queryString = 'SELECT * from artists';
+ pool.query(queryString, (err, result) => {
+    // obj is the object from the pokedex json file
+    // extract input data from request
+    console.log(err);
+    // let inputId = parseInt( request.params.id );
+            const data = {
+            artistsobj: result.rows
+        }
+    data.pageTitle = "All Artists";
+         console.log("artist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('home', data);
+  });
+ });
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
