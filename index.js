@@ -64,7 +64,7 @@ app.get('/artists/', (request, response) => {
                 artists: result.rows
             };
             // respond with HTML page displaying all artists
-            response.render('home', data);
+            response.render('allArtists', data);
         }
     });
 });
@@ -152,6 +152,62 @@ app.get('/artists/:id/songs', (request, response) => {
 
                 response.render('artistSongs', data);
             });
+        }
+    });
+});
+
+// GET method - To render form for creating new song for the artist
+app.get('/artists/:id/songs/new', (request, response) => {
+
+    // Get the ID from the URL parameter
+    let artistID = request.params.id;
+
+    // Construct the select query to get the song where the artist id = param id
+    const getArtistName = 'SELECT * FROM artists WHERE id=' + artistID;
+
+    // Display the result using pool.query
+    pool.query(getArtistName, (err, resultOfArtistName) => {
+
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+
+            const data = {
+                artistName: resultOfArtistName.rows
+            };
+            //response.send(data.artistName);
+            response.render('artistNewSong', data);
+        }
+    });
+});
+
+// POST method - To save new song for the artist
+app.post('/artists/:id/songs', (request, response) => {
+
+    // Get the ID from the URL parameter
+    let artistID = request.params.id;
+
+    // Get values from request body and save in variables
+    let songTitle = request.body.songTitle;
+    let album = request.body.album;
+    let previewLink = request.body.previewLink;
+    let artwork = request.body.artwork;
+
+    let inputValues = [songTitle, album, previewLink, artwork, artistID];
+
+    // Construct the insert query to save the artist's new song to DB
+    const createArtistSong = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)';
+
+    // Run pool.query
+    pool.query(createArtistSong, inputValues, (err, result) => {
+
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+
+            //Console log successful result
+            console.log("Song added successfully");
+            response.redirect('/artists/' + artistID + '/songs');
         }
     });
 });

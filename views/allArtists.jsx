@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Home extends React.Component {
+class AllArtists extends React.Component {
   render() {
 
     const artistInfo = this.props.artists.map((individualArtist) => (
@@ -26,4 +26,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = AllArtists;
