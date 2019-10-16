@@ -13,7 +13,6 @@ const configs = {
 };
 
 const pool = new pg.Pool(configs);
-
 pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
@@ -26,15 +25,12 @@ pool.on('error', function (err) {
 
 // Init express app
 const app = express();
-
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
 
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -50,7 +46,6 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
   // query database for all artists
-
   // respond with HTML page displaying all artists
   response.send('Hello World');
   //response.render('home');
@@ -63,7 +58,7 @@ app.get('/artists/new', (request, response) => {
 
 app.post('/artists/new', (request, response) => {
     // INSERT new artist into artists db
-    console.log(request.body);
+    console.log("Adding new artist: " + request.body);
     let newArtist = [ request.body.name, request.body.photo_url, request.body.nationality ];
 
     let queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES($1, $2, $3) RETURNING *';
@@ -179,6 +174,34 @@ app.get('/artists', (request, response) => {
         let data = {};
         data.artists = result.rows;
         response.render('home', data);
+    });
+});
+
+/**
+ * ===================================
+ * Part 2
+ * ===================================
+ */
+
+app.get('/playlists/new', (request, response) => {
+  // respond with HTML page with form to create new playlist
+  response.render('newlist');
+});
+
+app.post('/playlist/new', (request, response) => {
+    // INSERT new playlist into playlist db
+    console.log("Adding new playlist: " + request.body);
+    let newList = [ request.body.name ];
+
+    let queryText = 'INSERT INTO playlists (name) VALUES($1) RETURNING *';
+
+    pool.query(queryText, newList, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        let list = result.rows[0];
+        response.render('list', list);
     });
 });
 

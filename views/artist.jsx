@@ -21,7 +21,7 @@ class Artist extends React.Component {
             <form method="POST" action={formDelete}>
               <input type="submit" value="Delete"/>
             </form>
-            <a href="http://localhost:3000/artists" alt="homepage">Homepage</a>
+            <p><a href="http://localhost:3000/artists" alt="homepage">Back to Homepage</a></p>
         </body>
       </html>
     );
