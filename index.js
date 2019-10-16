@@ -150,6 +150,7 @@ app.get('/artists/:id/songs', (req, res) => {
 	console.log('tracking discography!');
 	let id = req.params.id;
 	const queryString = `SELECT * FROM songs WHERE artist_id = ${id}`;
+	let allsongs = `SELECT * FROM songs`;
 
 	pool.query(queryString, (err, result) => {
 		if (err) {
@@ -161,8 +162,10 @@ app.get('/artists/:id/songs', (req, res) => {
 			// console.log();
 			// redirect to home page
 			// let artistData =
-			console.log(result.rows);
+			// console.log(result.rows);
 			res.send(result.rows);
+
+			console.log(allsongs);
 		}
 	});
 });
@@ -170,7 +173,7 @@ app.get('/artists/:id/songs', (req, res) => {
 // see all artists
 app.get('/artistsall/', (req, res) => {
 	console.log('getting all the artists!');
-	let queryString = 'SELECT * FROM artists;';
+	let queryString = 'SELECT * FROM artists ORDER BY id ASC;';
 	pool.query(queryString, (err, result) => {
 		if (err) {
 			console.error('query error:', err.message);
@@ -248,6 +251,57 @@ app.get('/playlistsall/', (req, res) => {
 			// // redirect to home page
 			// // let artistData =
 			// console.log(result.rows);
+			res.send(result.rows);
+		}
+	});
+});
+
+// add existing song to playlist
+app.get('/playlists/:id/newsong', (req, res) => {
+	console.log('find songs to add to playlist!');
+	let id = req.params.id;
+	const queryString = 'SELECT * FROM songs';
+	pool.query(queryString, (err, result) => {
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			let data = {
+				songs: result.rows,
+				id: id
+			};
+			res.render('choosesong', data);
+		}
+		console.log('new playlist song form rendered!');
+	});
+});
+
+app.post('/playlists/:id', (req, res) => {
+	console.log('adding selected song to playlist!');
+	let playlistSongs = 'SELECT * FROM playlists_songs';
+	let playlistId = req.params.id;
+	let songId = req.body.id;
+	let array = [ songId, playlistId ];
+	const queryString = `INSERT INTO playlists_songs (songs_id, playlists_id) VALUES ($1, $2)`;
+
+	pool.query(queryString, array, (err, result) => {
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			console.log('song successfully added!');
+			res.send('song successfully added');
+		}
+	});
+});
+
+// see song id's in a given playlist
+app.get('/playlists/:id/songs', (req, res) => {
+	console.log('collating all songs in playlist');
+	let queryString = `SELECT * FROM playlists_songs`;
+	pool.query(queryString, (err, result) => {
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			console.log('loaded all songs successfully');
 			res.send(result.rows);
 		}
 	});
