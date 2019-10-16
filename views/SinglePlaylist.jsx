@@ -3,7 +3,7 @@ const Playlist = require("./Playlist");
 
 class SinglePlaylist extends React.Component {
   render() {
-    if (!this.props.playlist) {
+    if (!this.props.result) {
       return (
         <div>
           <h1>Playlist id not found!</h1>
@@ -11,12 +11,18 @@ class SinglePlaylist extends React.Component {
         </div>
       );
     }
-    const { id, name } = this.props.playlist;
+    // const { id, name } = this.props.result;
     return (
       <div>
           <strong>{this.props.msg}</strong>
-          <Playlist id={id} name={name} />
-          <a href={`/playlists/${id}/edit`}>edit</a><br/>
+          <h3>Playlist: {this.props.playlist_id}</h3>
+          <ul>
+          { this.props.result.map( result => {
+            return (
+              <li>Song id: {result.song_id}</li>
+            );
+          })}
+          </ul>
           <a href="/playlists/">back to main</a>
       </div>
     );

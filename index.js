@@ -175,13 +175,14 @@ app.post("/playlists", (req, res) => {
 
 app.get("/playlists/:id", (req, res) => {
   pool.query(
-    "SELECT * FROM playlist WHERE id = $1",
+    "SELECT * FROM playlist_song WHERE playlist_id = $1",
     [req.params.id],
     (err, result) => {
       if (err) {
         return console.error("Error executing query", err.stack);
       }
-      res.render("SinglePlaylist", { playlist: result.rows[0] });
+      console.log("result!!!!", result.rows);
+      res.render("SinglePlaylist", { result: result.rows, playlist_id : req.params.id });
     }
   );
 });

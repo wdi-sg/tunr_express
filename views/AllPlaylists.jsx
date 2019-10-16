@@ -6,10 +6,16 @@ class AllPlaylists extends React.Component {
     return (
       <div>
         <h1>All Playlists</h1>
-        <h2><a href="/playlists/new">add a new playlist</a></h2>
-        {this.props.playlists.map(playlist => (
-          <Playlist id={playlist.id} name={playlist.name} />
-        ))}
+        <h3>
+          <a href="/playlists/new">add a new playlist</a>
+        </h3>
+        <ul>
+          {this.props.playlists.map(playlist => (
+            <li>
+              <a href={`/playlists/${playlist.id}`}>{playlist.name}</a>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
