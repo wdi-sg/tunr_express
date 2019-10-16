@@ -3,7 +3,6 @@ var DefaultLayout = require('./layouts/default');
 class NewPlaylistSong extends React.Component {
 
   render() {
-console.log(this.props.songsobj)
         const songs = this.props.songsobj.map( (song, index) => {
             return (
                 <option value={index+1}>{song.title}</option>
@@ -12,15 +11,13 @@ console.log(this.props.songsobj)
         })
         return (
 
-          <DefaultLayout pageTitle="Playlist Main Page">
+          <DefaultLayout pageTitle={this.props.pageTitle}>
 
 
 
                   { this.props.warning }
-
-            <h1>Create a New Playlist</h1>
             <form method="POST" action={ this.props.action }>
-            <br/><select>
+            <br/><select name="song_id">
                  {songs}
                  </select>
             <input type="submit" value="Submit"/>
