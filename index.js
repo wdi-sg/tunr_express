@@ -200,11 +200,11 @@ app.get('/artists/:id/songs', (req, res) => {
  * ===================================
  */
 
-app.get('/playlist/new', (req, res) => {
+app.get('/playlists/new', (req, res) => {
     res.render('p-new');
 });
 
-app.post('/playlist', (req, res) => {
+app.post('/playlists', (req, res) => {
   const queryArray = [req.body.name];
   const queryString = 'INSERT INTO playlists (name) VALUES ($1) RETURNING *';
 
@@ -218,6 +218,65 @@ app.post('/playlist', (req, res) => {
         rows : result.rows
       };
       res.render('p-create', data)
+    }
+  });
+});
+
+app.get('/playlists/:id', (req, res) => {
+  const queryArray = [req.params.id];
+  const queryString = 'SELECT * FROM playlists INNER JOIN playlist_songs ON (playlists.id = playlist_songs.playlist_id) INNER JOIN songs ON (songs.id = playlist_songs.song_id) WHERE playlists.id = $1';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        id: req.params.id,
+        rows : result.rows
+      };
+      console.log(result.rows);
+      res.render('p-show', data);
+    }
+  });
+});
+
+app.get('/playlists/:id/newsong', (req, res) => {
+
+  const queryString = 'SELECT * FROM songs';
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        id: req.params.id,
+        rows : result.rows
+      };
+      res.render('s-new', data);
+    }
+  });
+});
+
+app.post('/playlists/:id', (req, res) => {
+  console.log(req.body);
+  console.log(req.params.id);
+  const queryArray = [parseInt(req.params.id), req.body.id];
+  const queryString = 'INSERT INTO playlist_songs (playlist_id, song_id) VALUES ($1, $2) RETURNING *';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        rows : req.body
+      };
+      res.render('s-create', data)
     }
   });
 });
