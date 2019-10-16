@@ -103,8 +103,12 @@ app.get('/artists/:id/songs', (request, response) => {
             console.log('query error: ', err.stack)
             response.send('query error');
         } else {
-            console.log('query results: ', result);
-            response.send(result.rows)
+            // console.log('query results: ', result);
+            const data = {
+                result: result.rows
+            }
+            console.log(data)
+            response.render('showsongs', data)
         }
     })
 })
