@@ -29,25 +29,33 @@ class DefaultLayout extends React.Component {
 					<nav class='navbar navbar-light' style={navStyle}>
 						<ul class='nav justify-content-center nav-tabs'>
 							<li class='nav-item'>
-								<a class='nav-link ml-2' href='http://localhost:3000/artists/' style={aStyle}>
+								<a class='nav-link ml-2' href='http://localhost:3000/artists' style={aStyle}><strong>TUNR</strong>
+									
+								</a>
+							</li>
+							<li class='nav-item'>
+								<a class='nav-link ml-2' href='http://localhost:3000/artists' style={aStyle}>
 									Home
 								</a>
 							</li>
 							<li class='nav-item'>
 								<a class='nav-link' href='http://localhost:3000/artists/new' style={aStyle}>
-									New
+									New Artist
+								</a>
+							</li>
+							<li class='nav-item'>
+								<a class='nav-link' href='http://localhost:3000/playlists/new' style={aStyle}>
+									New Playlist
+								</a>
+							</li>
+							<li class='nav-item'>
+								<a class='nav-link' href='http://localhost:3000/playlists' style={aStyle}>
+									Show all playlists
 								</a>
 							</li>
 						</ul>
 					</nav>
-					<div class='jumbotron jumbotron-fluid'>
-						<div class='container'>
-							<h1 class='display-4'>Fluid jumbotron</h1>
-							<p class='lead'>
-								This is a modified jumbotron that occupies the entire horizontal space of its parent.
-							</p>
-						</div>
-					</div>
+
                         <div>
                             {this.props.children}
                         </div>

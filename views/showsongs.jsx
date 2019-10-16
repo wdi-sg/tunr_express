@@ -8,7 +8,7 @@ class ShowSongs extends React.Component {
                 <div class="card col-3 m-2">
                     <div class="card-body">
                     <h5 class="card-title">{element.title}</h5>
-                    <p class="card-text">From {element.album}</p>
+                    <p class="card-text">From <span className="font-italic">{element.album}</span></p>
                     <a href={element.preview_link} class="btn btn-outline-info btn-block">Listen</a>
                   </div>
                 </div>
