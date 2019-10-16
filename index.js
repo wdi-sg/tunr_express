@@ -230,12 +230,43 @@ app.get('/playlist/:id/newsong', (request, response) => {
         }
     data.pageTitle = "All Playlists";
     data.id = inputId;
-    data.action = "/playlist/"+inputId+"/newsong";
+    data.action = "/playlist/"+inputId;
          // console.log("playlist data:", data);
   // respond with HTML page displaying all artists
     response.render('new_song', data);
   });
  });
+
+// GET SONG TO ADD TO THE PLAYLIST
+
+// FORM TO ADD THE SONGS IN THE PLAYLIST OPTIONS
+app.post('/playlist/:id', (request, response) => {
+      let inputId = parseInt( request.params.id )
+  // query database
+// show all the artists
+let queryString = 'INSERT INTO playlist_song (song_id , playlist_id) VALUES ($1, $2) RETURNING id';
+const values = [request.body.song_id, request.params.id];
+
+  pool.query(queryString, values, (err, result) => {
+    console.log(err);
+  });
+  queryString = 'SELECT * from songs';
+  pool.query(queryString, (err, result) => {
+    // get the other data
+
+            const data = {
+            songsobj: result.rows
+        }
+    data.pageTitle = "Song Added. Add another song?";
+    data.id = inputId;
+    data.action = "/playlist/"+inputId;
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('new_song', data);
+  });
+
+ });
+
 
 /**
  * ===================================
