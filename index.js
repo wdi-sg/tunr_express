@@ -61,18 +61,18 @@ app.get('/artists/new', (request, response) => {
 });
 
 
-app.get('/artists/', (request, response) => {
+app.get('/artists', (request, response) => {
   // query database for all pokemon
 const queryString = 'SELECT * from artists';
 
 pool.query(queryString, (err, result) => {
+    let data = {
+        artists: result.rows
+    }
+    console.log(data)
+    response.render('showall', data );
 
-    // let data = {
-    //     artists: result.rows
-    // }
-    // response.render('showall', data );
-
-    response.send(result.rows)
+    // response.send(result.rows)
   })
 });
 
@@ -146,21 +146,75 @@ app.get('/artists/:id',(request,response)=>{
 
 //********************************************************************************************************************
 
-    // app.put('/artists/:id',(request,response) =>{
-    //     let id = parseInt(request.params.id);
-    //     let name = request.body.name;
-    //     let photo_url = request.body.photo_url;
-    //     let nationality = request.body.nationality;
-    //     let inputV = [name,photo_url,nationality,id];
+    app.put('/artists/:id',(request,response) =>{
+        console.log(request.body);
+        let id = parseInt(request.params.id);
+        let name = request.body.name;
+        let photo_url = request.body.photo_url;
+        let nationality = request.body.nationality;
+        let inputV = [name,photo_url,nationality,id];
 
-    //     const queryString = 'UPDATE artist set name = ($1),photo_url = ($2),nationality,id = ($3) WHERE id = ($4) RETURNING *' ;
+        const queryString = 'UPDATE artist set name = ($1),photo_url = ($2),nationality,id = ($3) WHERE id = ($4) RETURNING *' ;
+        console.log(queryString);
+
+        pool.query(queryString,inputV,(err,result)=>{
+            response.redirect('/artists/' + request.params.id);
+        })
+
+    });
+//**********************************************************************************************************
+
+app.get('/playlist/new', (request, response) => {
+  // respond with HTML page with form to create new playlist
+  response.render('newPlaylist');
+});
+
+//**********************************************************************************************************
+app.post('/playlist',(request,response) =>{
+    console.log(request.body);
+    const playlistArray = [request.body.name];
+    const queryString = 'INSERT INTO playlist(name) VALUES ($1) RETURNING *';
+    console.log(queryString);
+
+    pool.query(queryString,playlistArray, (err,result) =>{
+        if (err) {
+            console.log('query error:',err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result: result');
+            response.send(result.rows);
+        }
+    })
+})
+//**********************************************************************************************************
+    app.get('/playlist/:id/newsong', (request, response) => {
+      // respond with HTML page with form to create new playlis
+      let data ={
+        id : parseInt(request.params.id)
+      }
+      response.render('playlistSong',data);
+    });
+//********************************************************************************************************************
+
+app.post('/playlist/:id',(request,response) =>{
+    console.log(request.body);
+    const songArray = [request.body.song_id,request.params.id];
+    const queryString = 'INSERT INTO playlist_song(song_id,playlist_id) VALUES ($1,$2) RETURNING *';
+    console.log(queryString);
+
+    pool.query(queryString,songArray, (err,result) =>{
+        if (err) {
+            console.log('query error:',err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result: result');
+            response.send(result.rows);
+        }
+    })
+})
 
 
-    //     pool.query(queryString,inputV,(err,results)=>{
-    //         response.render('showEditedArtist',results.rows[0]);
-    //     })
 
-    // });
 
 
 
