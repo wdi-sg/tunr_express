@@ -167,8 +167,6 @@ app.delete('/artists/:id', (req, res) => {
   });
 })
 
-
-
 /**
  * ===================================
  *  Songs Routes
@@ -189,7 +187,6 @@ app.get('/artists/:id/songs', (req, res) => {
         id: req.params.id,
         rows : result.rows
       };
-      console.log(result.rows);
       res.render('as-show', data);
     }
   });
