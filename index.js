@@ -280,8 +280,79 @@ app.post('/playlist', (request, response)=>{
   });
 })
 
+/**
+ * ===================================
+ * INDIVIDUAL PLAYLIST
+ * ===================================
+ */
+
+app.get('/playlist/:id', (request, response)=>{
+  let id = parseInt(request.params.id);
+  const queryString = `SELECT * FROM playlist WHERE id=${id}`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+
+        const data = {
+          result: result.rows[0]
+        }
+          
+         response.render('individualplaylist', data)
+          
+      }
+  });
+})
 
 
+/**
+ * ===================================
+ * ADD A SONG TO THE PLAYLIST
+ * ===================================
+ */
+
+
+app.get('/playlist/:id/newsong', (request, response)=>{
+  let id = parseInt(request.params.id);
+  const queryString = `SELECT * FROM songs`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+
+        const data = {
+          result: result.rows,
+          id: id
+        }
+          
+         response.render('newsong', data)
+          
+      }
+  });
+})
+app.post('/playlist/:id', (request, response)=>{
+  let playlistId = parseInt(request.params.id);
+  let songId = request.body.id;
+ 
+  const queryString = `INSERT INTO playlist_song (song_id, playlist_id) VALUES( ${songId}, ${playlistId})
+                      `;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error("query error:", err.stack);
+        response.send("query error");
+    } else {
+
+  console.log(queryString)
+        
+       response.redirect('/playlist/:id')
+        
+    }
+});
+})
 
 
 
