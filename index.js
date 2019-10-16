@@ -140,6 +140,35 @@ app.get('/artist/:id/edit', (request, response) => {
 });
 
 
+app.put('/artist/:id', (request, response) => {
+
+    console.log(request.body);
+    let name= request.body.name;
+    let photo=request.body.photo_url;
+    let nationality= request.body.nationality;
+    let inputId= parseInt(request.params.id);
+    const newArr= [name, photo, nationality, inputId];
+
+    const queryString= "UPDATE artist SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4";
+
+    // const queryString= "UPDATE artist SET name= "+request.body.name+", photo_url= "+request.body.photo_url+", nationality= "+request.body.nationality+" WHERE id ="+inputId;
+    console.log(queryString);
+
+    pool.query(queryString, newArr, (err, result) => {
+
+        if(err) {
+            console.error("query error", err.message);
+            response.send("Error In Codes");
+        }
+        else {
+            console.log("query result :", result);
+
+            response.redirect("/artist/"+request.params.id);
+        }
+    })
+})
+
+
 // find all songs through artist id
 app.get('/artist/:id/songs', (request, response) => {
 
