@@ -296,12 +296,28 @@ app.post('/playlists/:id', (req, res) => {
 // see song id's in a given playlist
 app.get('/playlists/:id/songs', (req, res) => {
 	console.log('collating all songs in playlist');
-	let queryString = `SELECT * FROM playlists_songs`;
+	let id = req.params.id;
+	let queryString = `SELECT * FROM playlists_songs WHERE playlists_id =${id}`;
 	pool.query(queryString, (err, result) => {
 		if (err) {
 			console.log('query error:', err.stack);
 		} else {
 			console.log('loaded all songs successfully');
+			res.send(result.rows);
+		}
+	});
+});
+
+// see which songs are in which playlists
+app.get('/playlists/:id/songtitles', (req, res) => {
+	console.log('getting you all song names in this playlist');
+	let playlistId = parseInt(req.params.id);
+	let queryString = `SELECT songs.title, songs.album FROM songs INNER JOIN playlists_songs ON (playlists_songs.songs_id = songs.id) WHERE (playlists_songs.playlists_id = ${playlistId})`;
+	pool.query(queryString, (err, result) => {
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			console.log('search completed!');
 			res.send(result.rows);
 		}
 	});
