@@ -48,6 +48,11 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+/**
+ * ===================================
+ * HOME PAGE
+ * ===================================
+ */
 app.get('/artists/', (request, response) => {
 
   const queryString = `SELECT * FROM artists`;
@@ -68,6 +73,12 @@ app.get('/artists/', (request, response) => {
       }
   });
 });
+
+/**
+ * ===================================
+ * ADD A NEW ARTIST
+ * ===================================
+ */
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
@@ -93,7 +104,11 @@ app.post('/artists', (request, response) => {
   
 })
 
-
+/**
+ * ===================================
+ * INDIVIDUAL ARTIST PAGE
+ * ===================================
+ */
 
 app.get('/artists/:id', (request, response) => {
   let artistId = parseInt(request.params.id)
@@ -115,6 +130,11 @@ app.get('/artists/:id', (request, response) => {
   });
 })
 
+/**
+ * ===================================
+ *INDIVIDUAL ARTIST SONGS
+ * ===================================
+ */
 app.get('/artists/:id/songs', (request, response) =>{
   let artistId = parseInt(request.params.id);
   const queryString = `SELECT * FROM songs WHERE artist_id=${artistId}`;
@@ -127,13 +147,18 @@ app.get('/artists/:id/songs', (request, response) =>{
         const data = {
           result: result.rows
         }
-      console.log(result.rows[0].artwork)
+
         response.render("artistSongs", data);
         
     }
 });
 })
 
+/**
+ * ===================================
+ * EDIT AN ARTIST
+ * ===================================
+ */
 app.get('/artists/:id/edit', (request, response) => {
   let artistId = parseInt(request.params.id);
   const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
@@ -146,7 +171,7 @@ app.get('/artists/:id/edit', (request, response) => {
         const data = {
           result: result.rows[0]
         }
-        console.log(result.rows)
+        
         response.render("edit", data);
     }
 });
@@ -163,12 +188,16 @@ app.put('/artists/:id', (request, response) => {
         response.send("query error");
     } else {
      
-        console.log("THIS IS THE RESULTAKDJADAJSDAKSDJHASKJD " + result.rows)
         response.redirect(`/artists/${artistId}`);
     }
 });
 })
 
+/**
+ * ===================================
+ * DELETE AN ARTIST
+ * ===================================
+ */
 app.get('/artists/:id/delete', (request, response) => {
   let artistId = parseInt(request.params.id);
   const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
@@ -181,7 +210,7 @@ app.get('/artists/:id/delete', (request, response) => {
         const data = {
           result: result.rows[0]
         }
-        console.log(result.rows)
+       
         response.render("delete", data);
     }
 });
@@ -199,6 +228,56 @@ app.delete('/artists/:id', (request, response) =>{
         response.redirect("/artists");
     }
 });
+})
+
+/**
+ * ===================================
+ * PLAYLIST INDEX
+ * ===================================
+ */
+
+ app.get('/playlist', (request, response)=>{
+  const queryString = `SELECT * FROM playlist`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+          const data = {
+            result: result.rows
+          }
+          console.log("THIS IS FOR PLAYLIST SAKDJNAKDJASNDANK " + result.rows)
+        response.render("playlist", data)
+          
+      }
+  });
+ })
+/**
+ * ===================================
+ * ADD A PLAYLIST
+ * ===================================
+ */
+app.get('/playlists/new', (request, response) =>{
+  response.render('newplaylist')
+})
+
+app.post('/playlist', (request, response)=>{
+  let name = request.body.name;
+
+  const queryString = `INSERT INTO playlist (name) VALUES ('${name}')`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+          
+          console.log("THIS IS FOR PLAYLIST SAKDJNAKDJASNDANK " + result.rows)
+        response.redirect("playlist")
+          
+      }
+  });
 })
 
 

@@ -30,6 +30,11 @@ class Home extends React.Component {
 >
   Add a new artist
 </a>
+<a className="btn btn-info btn text-light mb-5 ml-5"
+  href="/playlists/new"
+>
+  Add a new Playlist
+</a>
 <ol>{list}</ol>
           </div>
          
