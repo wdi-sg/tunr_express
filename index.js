@@ -177,7 +177,7 @@ app.delete('/artists/:id', (req, res) => {
 
 app.get('/artists/:id/songs', (req, res) => {
   const queryArray = [req.params.id];
-  const queryString = 'SELECT * FROM songs where artist_id = $1';
+  const queryString = 'SELECT * FROM artists INNER JOIN songs ON (artists.id = songs.artist_id) where artists.id = $1';
 
   pool.query(queryString, queryArray, (err, result) => {
 
@@ -189,7 +189,34 @@ app.get('/artists/:id/songs', (req, res) => {
         id: req.params.id,
         rows : result.rows
       };
-      res.render('s-show', data);
+      console.log(result.rows);
+      res.render('as-show', data);
+    }
+  });
+});
+
+app.get('/artists/:id/songs/new', (req, res) => {
+  data = {
+    id: req.params.id,
+  };
+  res.render('as-new', data);
+});
+
+app.post('/artists/:id/songs', (req, res) => {
+  console.log(req.body);
+  const queryArray = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
+  const queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        rows : result.rows
+      };
+      res.render('as-create', data)
     }
   });
 });
@@ -236,7 +263,7 @@ app.get('/playlists/:id', (req, res) => {
         id: req.params.id,
         rows : result.rows
       };
-      console.log(result.rows);
+
       res.render('p-show', data);
     }
   });
@@ -256,7 +283,7 @@ app.get('/playlists/:id/newsong', (req, res) => {
         id: req.params.id,
         rows : result.rows
       };
-      res.render('s-new', data);
+      res.render('ps-new', data);
     }
   });
 });
@@ -276,7 +303,7 @@ app.post('/playlists/:id', (req, res) => {
       data = {
         rows : req.body
       };
-      res.render('s-create', data)
+      res.render('ps-create', data)
     }
   });
 });

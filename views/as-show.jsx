@@ -19,6 +19,7 @@ class Show extends React.Component {
       <html>
         <body>
           <h1>Show</h1>
+          <h2>Songs by Artist: {this.props.rows[0].name}</h2>
           {list}
         </body>
       </html>
