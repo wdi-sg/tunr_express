@@ -23,6 +23,12 @@ class vArtist extends React.Component {
                 <head />
                 <body>
                     <div>{artist}</div>
+                    <form method="GET" action="/artists/new">
+                        <p>
+                            To add artists: <br/>
+                            <input type="submit" value="Add"/>
+                        </p>
+                    </form>
                     <form method="GET" action="/">
                         <p>
                             Click here to go back: <br/>

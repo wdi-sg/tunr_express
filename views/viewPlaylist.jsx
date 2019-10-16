@@ -25,6 +25,12 @@ class vArtist extends React.Component {
                 <body>
                     <p>List of playlist:</p>
                     <ul>{artist}</ul>
+                    <form method="GET" action="/playlist/new">
+                        <p>
+                            To add playlist: <br/>
+                            <input type="submit" value="Add"/>
+                        </p>
+                    </form>
                     <form method="GET" action="/">
                         <p>
                             Click here to go back: <br/>

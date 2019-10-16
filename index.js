@@ -57,7 +57,7 @@ app.get('/', (request, response) => {
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  response.render('newArtist.jsx');
 });
 
 app.get('/artists/', (request, response) => {
@@ -155,37 +155,22 @@ app.get('/playlist',(request,response)=>{
     })
 })
 
+app.get('/playlist/new',(request,response)=>{
+    response.render('newPlaylist.jsx')
+})
+
+
 app.get('/playlist/:id',(request,response)=>{
     let id = request.params.id;
     let queryArr = [id];
     let queryText = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE (playlist_song.playlist_id = $1)";
     pool.query(queryText, queryArr, (err,result)=>{
-        console.log(result.rows)
         const data = {
             arr: result.rows
         }
         response.render('viewPlaylistSong.jsx',data);
     })
 })
-
-/**
- * ===================================
- * Listen to requests on port 3000
- * ===================================
- */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
-
-let onClose = function(){
-
-  console.log("closing");
-
-  server.close(() => {
-
-    console.log('Process terminated');
-
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
-};
 
 app.get('/artists/:id/songs/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
@@ -209,6 +194,43 @@ app.post('/artists/:id/songs',(request,response)=>{
         response.send(str);
     })
 });
+
+
+app.post('/playlist',(request,response)=>{
+    console.log(request.body);
+    let name = request.body.name;
+    let queryArr = [name];
+    let queryText = `INSERT INTO playlist(name) VALUES ($1) RETURNING *`;
+    pool.query(queryText, queryArr, (err, result)=>{
+        console.log(result.rows[0])
+        let name = result.rows[0]["name"];
+        response.send("New playlist added: " + name)
+    })
+
+})
+
+
+
+
+/**
+ * ===================================
+ * Listen to requests on port 3000
+ * ===================================
+ */
+const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+
+let onClose = function(){
+
+  console.log("closing");
+
+  server.close(() => {
+
+    console.log('Process terminated');
+
+    pool.end( () => console.log('Shut down db connection pool'));
+  })
+};
+
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
