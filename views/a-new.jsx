@@ -14,7 +14,7 @@ class New extends React.Component {
             <input type="text" name="photo_url"/><br/><br/>
             <p>Nationality</p>
             <input type="text" name="nationality"/><br/><br/>
-            <input type="submit"/>
+            <input type="submit" value="create"/>
           </form>
         </body>
       </html>

@@ -92,7 +92,7 @@ app.post('/artists', (req, res) => {
 
 app.get('/artists/:id', (req, res) => {
   const queryArray = [req.params.id];
-  const queryString = 'SELECT * FROM artists where ID = $1 RETURNING *';
+  const queryString = 'SELECT * FROM artists where ID = $1';
 
   pool.query(queryString, queryArray, (err, result) => {
 
@@ -101,6 +101,7 @@ app.get('/artists/:id', (req, res) => {
       res.send( 'query error' );
     } else {
       data = {
+        id: req.params.id,
         rows : result.rows
       };
       res.render('a-show', data);
@@ -127,9 +128,8 @@ app.get('/artists/:id/edit', (req, res) => {
   });
 });
 
-
 app.put('/artists/:id', (req, res) => {
-  const queryArray = [req.body.name, req.body.photo_url, req.body.nationality,req.params.id];
+  const queryArray = [req.body.name, req.body.photo_url, req.body.nationality, req.params.id];
   const queryString = 'UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4';
 
   pool.query(queryString, queryArray, (err, result) => {
@@ -146,6 +146,26 @@ app.put('/artists/:id', (req, res) => {
     }
   });
 });
+
+app.delete('/artists/:id', (req, res) => {
+  console.log(req.params.id);
+  const queryArray = [parseInt(req.params.id)];
+  const queryString = `DELETE FROM artists WHERE id = $1 RETURNING *`;
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        id: req.params.id,
+        rows : req.body
+      };
+      res.render('a-delete', data);
+    }
+  });
+})
 
 
 
