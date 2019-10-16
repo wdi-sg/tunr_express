@@ -200,6 +200,28 @@ app.get('/artists/:id/songs', (req, res) => {
  * ===================================
  */
 
+app.get('/playlist/new', (req, res) => {
+    res.render('p-new');
+});
+
+app.post('/playlist', (req, res) => {
+  const queryArray = [req.body.name];
+  const queryString = 'INSERT INTO playlists (name) VALUES ($1) RETURNING *';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        rows : result.rows
+      };
+      res.render('p-create', data)
+    }
+  });
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000

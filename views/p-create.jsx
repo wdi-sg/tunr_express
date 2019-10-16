@@ -2,13 +2,11 @@ const React = require('react');
 
 class Create extends React.Component {
   render(){
-    const list = this.props.rows.map(artist  => {
+    const list = this.props.rows.map(playlist  => {
      return (
        <div>
-        <p>Id: {artist.id}</p>
-        <p>Name: {artist.name}</p>
-        <p>Photo URL: {artist.photo_url}</p>
-        <p>Nationality: {artist.nationality}</p>
+        <p>Id: {playlist.id}</p>
+        <p>Name: {playlist.name}</p>
        </div>
      );
     })
