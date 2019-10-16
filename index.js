@@ -246,6 +246,35 @@ app.delete('/artists/:id/', (request, response) => {
     });
 });
 
+// GET Method - get form to create new playlist
+app.get('/playlist/new', (request, response) => {
+
+    response.render('newPlaylist');
+});
+
+// POST Method - Save new playlist
+app.post('/playlist', (request, response) => {
+
+    // Get the data from request body
+    let newPlaylistName = request.body.playlistName;
+
+    const inputValues = [newPlaylistName];
+
+    // Construct insert query
+    const createPlaylist = 'INSERT INTO playlist (name) VALUES ($1)';
+
+    // Call pool.query to save the request body to database
+    pool.query(createPlaylist, inputValues, (err, result) => {
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+            response.send("Playlist created successfully.");
+        }
+    });
+
+});
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
