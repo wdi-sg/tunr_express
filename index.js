@@ -74,7 +74,7 @@ app.post('/artists', (request, response) => {
         console.log('query result:', result);
 
         // redirect to home page
-        response.send( result.rows );
+        response.send( result.rows[0] );
     }
     });
 });
@@ -83,7 +83,6 @@ app.post('/artists', (request, response) => {
 app.get('/artists/:id', (request, response) => {
     let inputId = request.params.id;
     const artistsList = `SELECT * FROM artists WHERE id = ${inputId}`;
-    console.log(artistsList);
 
     // find artist by id from the artists table
     pool.query(artistsList, (err, result) => {
@@ -91,15 +90,15 @@ app.get('/artists/:id', (request, response) => {
             console.error('query error:', err.stack);
             response.send( 'Artist not found' );
         } else {
-            /*for( let i=0; i<result.rows.length; i++ ){
-                let currentArtist = result.rows[i];
-                if( currentArtist.id === inputId ){
-                    artist = currentArtist;
-                };
-            };*/
             console.log('query result:', result);
+            const theArtist = {
+                "id": result.rows[0].id,
+                "name": result.rows[0].name,
+                "photo_url": result.rows[0].photo_url,
+                "nationality": result.rows[0].nationality
+            };
             // redirect to home page
-            response.send( result.rows );
+            response.render('individual', theArtist);
          };
     });
 });
