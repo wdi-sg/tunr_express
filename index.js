@@ -143,6 +143,15 @@ app.delete("/artists/:id", (req, res) => {
   );
 });
 
+app.get("/playlists/", (request, response) => {
+  pool.query("SELECT * FROM playlist", (err, result) => {
+    if (err) {
+      return console.error("Error executing query", err.stack);
+    }
+    console.log(result.rows);
+    response.render("AllPlaylists", { playlists: result.rows });
+  });
+});
 
 app.get("/playlists/new", (req, res) => {
   res.render("AddPlaylist");
@@ -162,6 +171,52 @@ app.post("/playlists", (req, res) => {
     }
   );
 });
+
+
+app.get("/playlists/:id", (req, res) => {
+  pool.query(
+    "SELECT * FROM playlist WHERE id = $1",
+    [req.params.id],
+    (err, result) => {
+      if (err) {
+        return console.error("Error executing query", err.stack);
+      }
+      res.render("SinglePlaylist", { playlist: result.rows[0] });
+    }
+  );
+});
+
+app.get("/playlists/:id/newsong", (req, res) => {
+  pool.query(
+    "SELECT * FROM playlist WHERE id = $1",
+    [req.params.id],
+    (err, result) => {
+      if (err) {
+        return console.error("Error executing query", err.stack);
+      }
+      res.render("AddNewSong", { playlist: result.rows[0] });
+    }
+  );
+
+});
+
+app.post("/playlists/:id", (req, res) => {
+  console.log(req.body);
+  const { id : song_id } = req.body;
+  const playlist_id = req.params.id;
+
+  pool.query(
+    "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *",
+    [song_id, playlist_id],
+    (err, result) => {
+      console.log("INSERTED:", result.rows[0]);
+
+      res.render("SinglePlaylist", { playlist: result.rows[0], msg: "added:"});
+    }
+  );
+});
+
+
 
 /**
  * ===================================
