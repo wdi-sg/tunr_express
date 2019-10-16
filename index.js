@@ -166,14 +166,14 @@ app.get('/playlist/:id',(request,response)=>{
     let queryText = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE (playlist_song.playlist_id = $1)";
     pool.query(queryText, queryArr, (err,result)=>{
         const data = {
-            arr: result.rows
+            arr: result.rows,
+            arr2: id
         }
         response.render('viewPlaylistSong.jsx',data);
     })
 })
 
 app.get('/artists/:id/songs/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   let id = request.params.id;
   const data = {
     id: id
@@ -206,10 +206,33 @@ app.post('/playlist',(request,response)=>{
         let name = result.rows[0]["name"];
         response.send("New playlist added: " + name)
     })
-
 })
 
+app.get('/playlist/:id/newsong', (request, response) => {
+  let id = request.params.id;
+  const data = {
+    id: id
+  }
+  response.render('newPlaylistSongs.jsx',data);
+});
 
+app.post('/playlist/:id',(request, response) => {
+  var id = request.params.id; //playlist id
+  let name = request.body.name; //song name
+  let album = request.body.album; //song album
+  let queryText = `SELECT id FROM songs WHERE title = '${name}' AND album = '${album}'`
+  pool.query(queryText,(err,result)=>{
+    var songId = result.rows[0]["id"];
+    console.log("playlist id:"+ id);
+    console.log("song id:"+ songId);
+    let queryText2 = `INSERT INTO playlist_song ("playlist_id","song_id") VALUES (${songId},${id})`
+    pool.query(queryText2,(err,result)=>{
+        response.send('Song added to playlist!')
+    })
+
+  })
+
+})
 
 
 /**

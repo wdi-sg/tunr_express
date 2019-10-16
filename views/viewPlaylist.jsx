@@ -31,6 +31,7 @@ class vArtist extends React.Component {
                             <input type="submit" value="Add"/>
                         </p>
                     </form>
+
                     <form method="GET" action="/">
                         <p>
                             Click here to go back: <br/>
