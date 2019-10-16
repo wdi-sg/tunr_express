@@ -24,7 +24,7 @@ class HomePlaylist extends React.Component {
         })
         return (
 
-          <DefaultLayout pageTitle="Playlist Main Page">
+          <DefaultLayout pageTitle={this.props.pageTitle}>
 
 
 
