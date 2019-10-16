@@ -316,6 +316,64 @@ app.get('/playlist/:id', (request, response) => {
     });
 });
 
+// GET Method - get form to add song to playlist
+app.get('/playlist/:id/newsong', (request, response) => {
+
+    let playlistId = request.params.id;
+
+    // Construct query to select the specified playlist from database using pool.query
+    const getSpecificPlaylist = 'SELECT * FROM playlist WHERE id=' + playlistId;
+
+    pool.query(getSpecificPlaylist, (err, resultOfPlaylistName) => {
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+
+            const getAllSongs = 'SELECT * FROM songs';
+
+            pool.query(getAllSongs, (err, resultOfSongList) => {
+
+                if (err) {
+                    console.log("Error getting songs: ", err.message);
+                } else {
+                    // Store the result as data object
+                    const data = {
+                        playlistName: resultOfPlaylistName.rows,
+                        songList: resultOfSongList.rows
+                    };
+
+                    response.render('addSongToPlaylist', data);
+                }
+            });
+        }
+    });
+});
+
+// POST Method - To add song to playlist
+app.post('/playlist/:id', (request, response) => {
+
+    // Get the ID
+    let playlistId = request.params.id;
+
+    // Get the song ID entered from the request body
+    let inputSongID = request.body.songID;
+    // response.send(request.body.songID);
+
+    let inputValues = [inputSongID, playlistId];
+
+    // Construct the query to insert the playlist ID and inputSongID into playlist_song table
+    const addSongToPlaylistQuery = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)";
+
+    // Call pool.query to run the query
+    pool.query(addSongToPlaylistQuery, inputValues, (err, result) => {
+        if (err) {
+            console.log("Error adding song to playlist: ", err.message);
+        } else {
+            response.send("Song added to playlist!");
+        }
+    });
+});
+
 
 /**
  * ===================================
