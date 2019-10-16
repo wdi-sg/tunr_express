@@ -55,7 +55,6 @@ app.get('/', (req, res) => {
 app.get('/artists', (req, res) => {
   const queryString = 'SELECT * FROM artists';
   pool.query(queryString, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -75,9 +74,7 @@ app.get('/artists/new', (req, res) => {
 app.post('/artists', (req, res) => {
   const queryArray = [req.body.name, req.body.photo_url, req.body.nationality];
   const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -93,9 +90,7 @@ app.post('/artists', (req, res) => {
 app.get('/artists/:id', (req, res) => {
   const queryArray = [req.params.id];
   const queryString = 'SELECT * FROM artists where ID = $1';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -112,9 +107,7 @@ app.get('/artists/:id', (req, res) => {
 app.get('/artists/:id/edit', (req, res) => {
   const queryArray = [req.params.id];
   const queryString = 'SELECT * FROM artists where ID = $1';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -131,9 +124,7 @@ app.get('/artists/:id/edit', (req, res) => {
 app.put('/artists/:id', (req, res) => {
   const queryArray = [req.body.name, req.body.photo_url, req.body.nationality, req.params.id];
   const queryString = 'UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -151,9 +142,7 @@ app.delete('/artists/:id', (req, res) => {
   console.log(req.params.id);
   const queryArray = [parseInt(req.params.id)];
   const queryString = `DELETE FROM artists WHERE id = $1 RETURNING *`;
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -176,9 +165,7 @@ app.delete('/artists/:id', (req, res) => {
 app.get('/artists/:id/songs', (req, res) => {
   const queryArray = [req.params.id];
   const queryString = 'SELECT * FROM artists INNER JOIN songs ON (artists.id = songs.artist_id) where artists.id = $1';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -203,9 +190,7 @@ app.post('/artists/:id/songs', (req, res) => {
   console.log(req.body);
   const queryArray = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
   const queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -231,9 +216,7 @@ app.get('/playlists/new', (req, res) => {
 app.post('/playlists', (req, res) => {
   const queryArray = [req.body.name];
   const queryString = 'INSERT INTO playlists (name) VALUES ($1) RETURNING *';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -249,9 +232,7 @@ app.post('/playlists', (req, res) => {
 app.get('/playlists/:id', (req, res) => {
   const queryArray = [req.params.id];
   const queryString = 'SELECT * FROM playlists INNER JOIN playlist_songs ON (playlists.id = playlist_songs.playlist_id) INNER JOIN songs ON (songs.id = playlist_songs.song_id) WHERE playlists.id = $1';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -260,18 +241,14 @@ app.get('/playlists/:id', (req, res) => {
         id: req.params.id,
         rows : result.rows
       };
-
       res.render('p-show', data);
     }
   });
 });
 
 app.get('/playlists/:id/newsong', (req, res) => {
-
   const queryString = 'SELECT * FROM songs';
-
   pool.query(queryString, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
@@ -286,13 +263,9 @@ app.get('/playlists/:id/newsong', (req, res) => {
 });
 
 app.post('/playlists/:id', (req, res) => {
-  console.log(req.body);
-  console.log(req.params.id);
   const queryArray = [parseInt(req.params.id), req.body.id];
   const queryString = 'INSERT INTO playlist_songs (playlist_id, song_id) VALUES ($1, $2) RETURNING *';
-
   pool.query(queryString, queryArray, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       res.send( 'query error' );
