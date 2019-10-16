@@ -7,7 +7,7 @@ class Newlist extends React.Component {
         <head />
         <body>
             <h3>Add Playlist</h3>
-            <form method="POST" action="/playlist/new">
+            <form method="POST" action="/playlists/new">
                 Name: <input type="text" name="name" required/><br/>
                 <input type="submit" value="Submit"/>
             </form>

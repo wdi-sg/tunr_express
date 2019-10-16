@@ -40,7 +40,7 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes
+ * Part 1 Artists
  * ===================================
  */
 
@@ -58,7 +58,8 @@ app.get('/artists/new', (request, response) => {
 
 app.post('/artists/new', (request, response) => {
     // INSERT new artist into artists db
-    console.log("Adding new artist: " + request.body);
+    console.log("Adding artist:");
+    console.log(request.body);
     let newArtist = [ request.body.name, request.body.photo_url, request.body.nationality ];
 
     let queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES($1, $2, $3) RETURNING *';
@@ -179,7 +180,7 @@ app.get('/artists', (request, response) => {
 
 /**
  * ===================================
- * Part 2
+ * Part 2 Playlists
  * ===================================
  */
 
@@ -188,9 +189,10 @@ app.get('/playlists/new', (request, response) => {
   response.render('newlist');
 });
 
-app.post('/playlist/new', (request, response) => {
+app.post('/playlists/new', (request, response) => {
     // INSERT new playlist into playlist db
-    console.log("Adding new playlist: " + request.body);
+    console.log("Adding playlist:")
+    console.log(request.body);
     let newList = [ request.body.name ];
 
     let queryText = 'INSERT INTO playlists (name) VALUES($1) RETURNING *';
@@ -205,6 +207,22 @@ app.post('/playlist/new', (request, response) => {
     });
 });
 
+app.get('/playlists/:id', (request, response) => {
+    // SELECT playlist from playlists db
+    let id = request.params.id;
+    console.log("Getting playlist id: " + id);
+
+    let queryText = `SELECT * FROM playlists WHERE id=${id}`;
+
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        let list = result.rows[0];
+        response.render('list', list);
+    });
+});
 
 /**
  * ===================================
