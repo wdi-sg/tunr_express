@@ -76,7 +76,7 @@ pool.query(queryString, (err, result) => {
   })
 });
 
-//*******************************************************************************************************************
+//***********************************************************************************************************************************
 
 app.post('/artists',(request,response) =>{
     console.log(request.body);
@@ -95,7 +95,7 @@ app.post('/artists',(request,response) =>{
     })
 })
 
-//*******************************************************************************************************************
+//***********************************************************************************************************************************
 
 app.get('/artists/:id',(request,response)=>{
 
@@ -129,7 +129,7 @@ app.get('/artists/:id',(request,response)=>{
             }
         })
     })
-//***********************************************************************************************************
+//***********************************************************************************************************************************
 
 
  app.get('/artists/:id/edit',(request, response)=> {
@@ -143,6 +143,27 @@ app.get('/artists/:id',(request,response)=>{
         response.render("editArtistsContent", result.rows[0])
     });
 });
+
+//********************************************************************************************************************
+
+    // app.put('/artists/:id',(request,response) =>{
+    //     let id = parseInt(request.params.id);
+    //     let name = request.body.name;
+    //     let photo_url = request.body.photo_url;
+    //     let nationality = request.body.nationality;
+    //     let inputV = [name,photo_url,nationality,id];
+
+    //     const queryString = 'UPDATE artist set name = ($1),photo_url = ($2),nationality,id = ($3) WHERE id = ($4) RETURNING *' ;
+
+
+    //     pool.query(queryString,inputV,(err,results)=>{
+    //         response.render('showEditedArtist',results.rows[0]);
+    //     })
+
+    // });
+
+
+
 
 
 
