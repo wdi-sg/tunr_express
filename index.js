@@ -171,6 +171,99 @@ const showAllSongs = (request, response)=>{
     });
 
 };
+//==========================================
+//==========================================
+
+
+//==========================================
+//       Code starts here part 2
+//==========================================
+
+const showAllPlaylist = (request, response)=>{
+
+    let queryText = "SELECT * FROM playlist ORDER BY id";
+
+    pool.query(queryText, (err, results)=>{
+        let data = {
+            playlist : results.rows
+        };
+        response.render('allPlaylist', data);
+    });
+
+
+}
+
+const createPlaylist = (request, response)=>{
+
+    response.render('createPlaylist');
+
+}
+
+const showNewPlaylist = (request, response)=>{
+
+    let name = request.body.name;
+    let inputValues = [name];
+    let queryText = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
+
+    pool.query(queryText, inputValues, (err, results)=>{
+        response.render('showNewPlaylist', results.rows[0])
+    });
+
+}
+
+const showOnePlaylist = (request, response)=>{
+
+    let playlistID = parseInt(request.params.id);
+    let inputValues = [playlistID];
+    let queryText = "SELECT * FROM playlist WHERE id = ($1)";
+
+    pool.query(queryText, inputValues, (err, results)=>{
+        response.render("showOnePlaylist", results.rows[0]);
+    })
+
+}
+
+const addSongToPlaylist = (request, response)=>{
+
+    let playlistID = parseInt(request.params.id);
+    let queryText = "SELECT * FROM songs";
+
+    pool.query(queryText, (err, results)=>{
+        let data = {
+            playID : playlistID,
+            songs : results.rows
+        };
+
+        response.render("addSongToPlaylist", data);
+
+    })
+
+}
+
+const showNewSongInPlaylist = (request, response)=>{
+
+    let playlistID = parseInt(request.params.id);
+    let songid = parseInt(request.body.song_id);
+    console.log(songid);
+    let inputValues = [songid, playlistID];
+    let queryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
+
+    pool.query(queryText, inputValues, (err, results)=>{
+        response.render("showOnePlaylist");
+
+    })
+}
+
+
+
+
+
+
+//==========================================
+//==========================================
+
+
+
 
 //==========================================
 //          Restful Routes
@@ -184,7 +277,16 @@ app.get('/artists/:id/songs', showArtistSongs);
 app.get('/artists/:id/edit', showEditForm);
 app.put('/artists/:id', showUpdated);
 app.delete('/artists/:id', deleteArtist);
-
+//==========================================
+//          Restful Routes Part 2
+//==========================================
+app.get('/playlist/', showAllPlaylist);
+app.get('/playlist/new', createPlaylist);
+app.post('/playlist', showNewPlaylist);
+app.get('/playlist/:id/newsong', addSongToPlaylist);
+app.get('/playlist/:id', showOnePlaylist);
+app.post('/playlist/:id', showNewSongInPlaylist)
+// app.delete('/playlist/:id', deletePlaylist);
 
 
 

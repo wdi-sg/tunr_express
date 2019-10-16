@@ -35,7 +35,7 @@ class ShowOne extends React.Component {
                             </a>
                             <div class="collapse" id="collapseExample">
                                 <div class="card card-body">
-                                    <p>Are you sure you want to delete this recipe? This will permanently remove the recipe from the database.</p>
+                                    <p>Are you sure you want to delete this artist? This will permanently remove the artist from the database.</p>
                                     <form method='POST' action={'/artists/'+this.props.id+"?_method=delete"}>
                                         <button class="btn btn-dark">Yes delete permanently</button>
                                     </form>
