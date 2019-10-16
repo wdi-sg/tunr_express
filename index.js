@@ -63,7 +63,7 @@ app.get('/artists/new', (request, response) => {
 });
 
 
-app.get('/artists', (request, response) => {
+app.get('/artists/', (request, response) => {
 
     // const data = {artists: result.rows};
 
@@ -84,7 +84,7 @@ app.get('/artists', (request, response) => {
 
 
         console.log(queryRes.rows);
-        response.render('home', data);
+        response.render('index', data);
     });
 });
 
