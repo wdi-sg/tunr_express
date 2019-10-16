@@ -127,7 +127,7 @@ app.get('/artists/:id/songs', (request, response) =>{
         const data = {
           result: result.rows
         }
-      
+      console.log(result.rows[0].artwork)
         response.render("artistSongs", data);
         
     }
@@ -195,8 +195,7 @@ app.delete('/artists/:id', (request, response) =>{
         console.error("query error:", err.stack);
         response.send("query error");
     } else {
-       
-        console.log(result.rows)
+   
         response.redirect("/artists");
     }
 });

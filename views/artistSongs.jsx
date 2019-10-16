@@ -4,7 +4,15 @@ class Home extends React.Component {
   render() {
   let list = this.props.result.map(item => {
     return(
-        <li>{item.title}</li>
+        <li className="list-group-item"> 
+          <p> <strong>Title:</strong> {item.title}  </p>
+          <p></p>
+          <p> <strong>Album:</strong> {item.album}  </p>
+          <p></p>
+          {/* <p><strong>Artwork: </strong></p>
+          <img src={item.artwork} alt=""/> */}
+        </li>
+        
     )
   })
     return (
@@ -18,12 +26,14 @@ class Home extends React.Component {
           ></link>
         </head>
         <body>
-            
-          <h1>Songs Of {this.props.result.name}</h1>
+            <div className="container">
+            <h1 className="display-3 text-center">Songs</h1>
 
-          <ol>
-              {list}
-          </ol>
+<ol className="form-group">
+    {list}
+</ol>
+            </div>
+         
           
         </body>
       </html>

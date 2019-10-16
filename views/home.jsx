@@ -5,10 +5,11 @@ class Home extends React.Component {
     let list = this.props.result.map(item => {
       return <li>
         <h3> <a href={"/artists/" + item.id }>{item.name}</a> </h3>
-
-
       </li>;
     });
+
+  
+
     return (
       <html>
         <head>
@@ -21,8 +22,9 @@ class Home extends React.Component {
         </head>
         <body>
           <div className="container mt-5">
-          <h1 className="text-center">Welcome!</h1>
-
+          <h1 className="text-center display-3 border-bottom">TunR 1.0</h1>
+     
+          
 <a className="btn btn-primary btn text-light mb-5"
   href="/artists/new"
 >
