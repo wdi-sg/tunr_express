@@ -5,6 +5,7 @@ class Artists extends React.Component {
     const {artists} = this.props;
     return (
       <div>
+        <a href={"/artists/new"}><button>Add artist</button></a>
         {artists.map((artist, i) => (
           <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}} key={i}>
             <h1>{artist.name}</h1>

@@ -10,7 +10,7 @@ class New extends React.Component {
             <input type="text" name="name"/>
           </div>
           <div>
-            <label htmlFor="img">Photo url: </label>
+            <label htmlFor="photo_url">Photo url: </label>
             <input type="text" name="photo_url"/>
           </div>
           <div>

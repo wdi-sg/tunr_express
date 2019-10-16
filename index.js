@@ -41,6 +41,7 @@ app.engine("jsx", reactEngine);
 app.use("/", routes.home);
 app.use("/artists", routes.artists);
 app.use("/artists", routes.songs);
+app.use("/playlist", routes.playlist);
 
 /**
  * ===================================
