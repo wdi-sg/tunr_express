@@ -18,10 +18,18 @@ class Playlist extends React.Component {
           ></link>
         </head>
         <body>
-          <h1>List of Playlists</h1>
-          <ol>
+            <div className="container mt-4">
+            <h1 className="text-center display-3">List of Playlists</h1>
+            <div className="container text-center">
+            <a className="btn btn-primary btn-lg text-light text-center " href="/playlists/new">Add a PlayList</a>
+          <a className="btn btn-info btn-lg text-light text-center ml-5" href="/artists/">Back To Home</a>
+            </div>
+
+          <ol className="mt-3">
               {list}
           </ol>
+            </div>
+         
         </body>
       </html>
     );

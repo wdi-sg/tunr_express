@@ -145,7 +145,8 @@ app.get('/artists/:id/songs', (request, response) =>{
         response.send("query error");
     } else {
         const data = {
-          result: result.rows
+          result: result.rows,
+          id: artistId
         }
 
         response.render("artistSongs", data);
@@ -153,6 +154,31 @@ app.get('/artists/:id/songs', (request, response) =>{
     }
 });
 })
+
+/**
+ * ===================================
+ *ADD SONG TO ARTIST
+ * ===================================
+ */
+
+ app.get("/artists/:id/songs/new", (request, response)=>{
+  let id = parseInt(request.params.id);
+  const queryString = `SELECT * FROM artists WHERE id=${id}`;
+
+  pool.query(queryString, (err, result) => {
+      if (err) {
+          console.error("query error:", err.stack);
+          response.send("query error");
+      } else {
+          const data = {
+            result: result.rows
+          }
+          
+          response.render("addsong", data);
+          
+      }
+  });
+ })
 
 /**
  * ===================================
@@ -247,7 +273,7 @@ app.delete('/artists/:id', (request, response) =>{
           const data = {
             result: result.rows
           }
-          console.log("THIS IS FOR PLAYLIST SAKDJNAKDJASNDANK " + result.rows)
+  
         response.render("playlist", data)
           
       }
@@ -273,7 +299,7 @@ app.post('/playlist', (request, response)=>{
           response.send("query error");
       } else {
           
-          console.log("THIS IS FOR PLAYLIST SAKDJNAKDJASNDANK " + result.rows)
+      
         response.redirect("playlist")
           
       }
@@ -289,7 +315,7 @@ app.post('/playlist', (request, response)=>{
 app.get('/playlist/:id', (request, response)=>{
   let id = parseInt(request.params.id);
   // const queryString = `SELECT * FROM playlist WHERE id=${id}`;
-  const queryString = `SELECT playlist_song.song_id, songs.title
+  const queryString = `SELECT playlist_song.song_id, songs.title, songs.album
                   FROM songs
                   INNER JOIN playlist_song
                   ON (playlist_song.song_id = songs.id)
@@ -306,7 +332,7 @@ app.get('/playlist/:id', (request, response)=>{
           id:id
         }
 
-        console.log(result.rows)
+
           
          response.render('individualplaylist', data)
           
@@ -354,7 +380,6 @@ app.post('/playlist/:id', (request, response)=>{
         response.send("query error");
     } else {
 
-  console.log(queryString)
         
   response.redirect('/playlist/' + playlistId)
         

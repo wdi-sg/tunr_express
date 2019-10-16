@@ -4,7 +4,11 @@ class Playlist extends React.Component {
   render() {
    let list = this.props.result.map(item => {
        return(
-           <li>{item.title}</li>
+           <li className="list-group-item"> 
+              <strong>Title:</strong>  {item.title} <br/><br/>
+               <strong>Album: </strong>{item.album} 
+           
+               </li>
        )
    })
     return (
@@ -18,12 +22,18 @@ class Playlist extends React.Component {
           ></link>
         </head>
         <body>
-          <h1>List of Songs</h1>
-          <a className="btn btn-primary btn-lg text-light " href={this.props.id + "/newsong"}>Add a New Song</a>
-          <a className="btn btn-primary btn-lg text-light ml-5" href={this.props.result.id + "/songs"}>Songs</a>
-        <ol>
+            <div className="container mt-5">
+            <h1 className="text-center display-4 border-bottom">List of Songs</h1>
+            <div className="container text-center mt-3">
+            <a className="btn btn-primary btn-lg text-light " href={this.props.id + "/newsong"}>Add a New Song</a>
+          <a className="btn btn-primary btn-lg text-light ml-5" href="/playlist">Back to Playlists</a>
+            </div>
+      
+        <ul className="list-group mt-4">
             {list}
-        </ol>
+        </ul>
+            </div>
+       
         </body>
       </html>
     );

@@ -2,11 +2,9 @@ var React = require("react");
 
 class NewSong extends React.Component {
   render() {
-      let list = this.props.result.map(item => {
-         return(
-            <option value={item.id}>{item.title}</option>
-         ) 
-      })
+    let list = this.props.result.map(item => {
+      return <option value={item.id}>{item.title}</option>;
+    });
     return (
       <html>
         <head>
@@ -20,27 +18,25 @@ class NewSong extends React.Component {
         <body>
           <div className="container text-center pt-5">
             <h1 className="display-2 border-bottom">Add a song </h1>
-            <form method="POST" action={"/playlist/" + this.props.id} className="pt-3">
-              <p>
-              <select
-                className="form-control form-control-lg"
-                name="id"
-                id="id"
-                multiple
-                size="3"
-              >
-                {list}
-              </select>
-              </p>
+            <form
+              method="POST"
+              action={"/playlist/" + this.props.id}
+              className="pt-3"
+            >
+
+              <div class="input-group mb-3">
+                <select class="custom-select" id="inputGroupSelect01">
+              {list}
+                </select>
+              </div>
 
               <button
                 type="submit"
                 className="btn btn-success btn-lg btn-block"
               >
-                Add 
+                Add
               </button>
             </form>
-            
           </div>
         </body>
       </html>

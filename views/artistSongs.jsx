@@ -26,10 +26,16 @@ class Home extends React.Component {
           ></link>
         </head>
         <body>
-            <div className="container">
-            <h1 className="display-3 text-center">Songs</h1>
+            <div className="container mt-4">
+            <h1 className="display-3 text-center border-bottom">Songs</h1>
+            <div className="container mt-3 text-center">
 
-<ol className="form-group">
+            <a className="btn btn-primary btn-lg text-light text-center " href={"/artists/" + this.props.id + "/songs/new"}>Add New Song</a>
+            <a className="btn btn-info btn-lg text-light text-center ml-4" href="/artists/">Back To Home</a>
+            </div>
+            
+
+<ol className="form-group mt-3">
     {list}
 </ol>
             </div>
