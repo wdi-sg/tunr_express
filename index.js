@@ -246,6 +246,26 @@ app.delete('/artists/:id/', (request, response) => {
     });
 });
 
+// GET Method - get form to show all playlists
+app.get('/playlist/', (request, response) => {
+
+    // Construct query to select all playlist from database using pool.query
+    const getAllPlaylists = 'SELECT * FROM playlist';
+
+    pool.query(getAllPlaylists, (err, result) => {
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+            // Store the result as data object
+            const data = {
+                playlists: result.rows
+            };
+
+            response.render('allPlaylist', data);
+        }
+    });
+});
+
 // GET Method - get form to create new playlist
 app.get('/playlist/new', (request, response) => {
 
