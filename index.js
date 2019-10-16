@@ -215,6 +215,24 @@ app.post('/playlists', (req, res) => {
 	});
 });
 
+// see playlist by its id
+
+app.get('/playlists/:id', (req, res) => {
+	console.log('finding requested playlist!');
+	let id = req.params.id;
+	const queryString = `SELECT * FROM playlists WHERE id = ${id}`;
+
+	pool.query(queryString, (err, result) => {
+		if (err) {
+			console.error('query error:', err.message);
+			res.send('query error');
+		} else {
+			console.log('found playlist!');
+			res.send(result.rows);
+		}
+	});
+});
+
 // see all playlists
 
 app.get('/playlistsall/', (req, res) => {
