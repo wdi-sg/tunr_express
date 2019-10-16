@@ -165,9 +165,10 @@ app.post("/playlists", (req, res) => {
     "INSERT INTO playlist (name) VALUES ($1) RETURNING *",
     [name],
     (err, result) => {
-      console.log("INSERTED:", result.rows[0]);
+      // console.log("INSERTED:", result.rows[0]);
 
-      res.render("SinglePlaylist", { playlist: result.rows[0], msg: "added:"});
+      // res.render("SinglePlaylist", { playlist: result.rows[0], msg: "added:"});
+      res.redirect('/playlists/');
     }
   );
 });
@@ -175,7 +176,7 @@ app.post("/playlists", (req, res) => {
 
 app.get("/playlists/:id", (req, res) => {
   pool.query(
-    "SELECT * FROM playlist_song WHERE playlist_id = $1",
+    "SELECT * FROM playlist_song INNER JOIN songs ON (songs.id = playlist_song.song_id) WHERE playlist_id = $1",
     [req.params.id],
     (err, result) => {
       if (err) {
@@ -212,7 +213,8 @@ app.post("/playlists/:id", (req, res) => {
     (err, result) => {
       console.log("INSERTED:", result.rows[0]);
 
-      res.render("SinglePlaylist", { playlist: result.rows[0], msg: "added:"});
+      // res.render("SinglePlaylist", { playlist: result.rows[0], msg: "added:"});
+      res.redirect('/playlists/');
     }
   );
 });

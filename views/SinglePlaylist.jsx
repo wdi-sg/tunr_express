@@ -19,7 +19,7 @@ class SinglePlaylist extends React.Component {
           <ul>
           { this.props.result.map( result => {
             return (
-              <li>Song id: {result.song_id}</li>
+              <li>{result.title}</li>
             );
           })}
           </ul>
