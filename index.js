@@ -143,6 +143,26 @@ app.delete("/artists/:id", (req, res) => {
   );
 });
 
+
+app.get("/playlists/new", (req, res) => {
+  res.render("AddPlaylist");
+});
+
+app.post("/playlists", (req, res) => {
+  console.log(req.body);
+  const { name } = req.body;
+
+  pool.query(
+    "INSERT INTO playlist (name) VALUES ($1) RETURNING *",
+    [name],
+    (err, result) => {
+      console.log("INSERTED:", result.rows[0]);
+
+      res.render("SinglePlaylist", { playlist: result.rows[0], msg: "added:"});
+    }
+  );
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
