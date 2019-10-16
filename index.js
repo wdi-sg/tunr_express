@@ -294,6 +294,28 @@ app.post('/playlist', (request, response) => {
 
 });
 
+// GET Method - get form to show details of individual playlist
+app.get('/playlist/:id', (request, response) => {
+
+    let playlistId = request.params.id;
+
+    // Construct query to select the specified playlist from database using pool.query
+    const getSpecificPlaylist = 'SELECT * FROM playlist WHERE id=' + playlistId;
+
+    pool.query(getSpecificPlaylist, (err, result) => {
+        if (err) {
+            console.log("Error: ", err.message);
+        } else {
+            // Store the result as data object
+            const data = {
+                playlist: result.rows
+            };
+
+            response.render('playlistInfo', data);
+        }
+    });
+});
+
 
 /**
  * ===================================
