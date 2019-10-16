@@ -13,6 +13,9 @@ class Home extends React.Component {
               <form action='/artists/all'>
                 <input type='submit' value='See All Artists!' />
               </form>
+              <form action='/playlist'>
+                <input type='submit' value='playlist' />
+              </form>
           </body>
       </html>
     );
