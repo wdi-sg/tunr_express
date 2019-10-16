@@ -35,7 +35,6 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
-
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
@@ -210,7 +209,7 @@ app.post('/artists/:id/songs', (req, res) => {
  */
 
 app.get('/playlists/new', (req, res) => {
-    res.render('p-new');
+  res.render('p-new');
 });
 
 app.post('/playlists', (req, res) => {
