@@ -209,25 +209,39 @@ app.post('/playlists/new', (request, response) => {
 
 app.get('/playlists/:id', (request, response) => {
     // SELECT playlist from playlists db
-    let id = request.params.id;
-    console.log("Getting playlist id: " + id);
+    let playlist_id = request.params.id;
+    console.log("Getting playlist id: " + playlist_id);
 
-    let queryText = `SELECT * FROM playlists WHERE id=${id}`;
+    let queryText = `SELECT playlists.name, songs.title FROM playlists INNER JOIN playlist_song ON (playlists.id = playlist_song.playlist_id) INNER JOIN songs ON (songs.id = playlist_song.song_id) WHERE playlist_song.playlist_id=${playlist_id}`;
 
     pool.query(queryText, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        let list = result.rows[0];
+        let list = {};
+        list.id = playlist_id;
+        list.songs = result.rows;
         response.render('list', list);
     });
 });
 
 app.get('/playlists/:id/newsong', (request, response) => {
     // respond with HTML page with form to add new song to playlist
-    console.log("Adding to playlist id: " + request.params.id);
-    response.render('newlistsong', request.params);
+    let playlist_id = request.params.id;
+    console.log("Adding to playlist id: " + playlist_id);
+    //input songs list to be rendered as option
+    let queryText = 'SELECT * FROM songs';
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        let list = {};
+        list.id = playlist_id;
+        list.songs = result.rows;
+        response.render('newlistsong', list);
+    });
 });
 
 app.post('/playlists/:id/newsong', (request, response) => {
@@ -245,9 +259,12 @@ app.post('/playlists/:id/newsong', (request, response) => {
             response.send('query error');
         }
         console.log(result.rows[0]);
+        //use redirect so id not need to be input
         response.redirect('/playlists/'+playlist_id);
     });
 });
+
+
 
 /**
  * ===================================
