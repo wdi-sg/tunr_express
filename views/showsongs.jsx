@@ -16,7 +16,7 @@ class ShowSongs extends React.Component {
       });
     return (
         <Layout>
-          <h1 className="text-center">Songs by Artist</h1>
+          <h1 className="text-center m-3 display-1">Songs by Artist</h1>
           <div class="text-center col-12 d-flex flex-wrap justify-content-center">
               {songs}
           </div>

@@ -12,6 +12,10 @@ class Home extends React.Component {
 						className='img-fluid'
 					/>
 				</div>
+				<div className='text-center'>
+					<p>Show songs by artist: 		/artists/:id/songs</p>
+					<p>Add songs to playlists: 		/playlist/:id/newsong</p>
+				</div>
 			</Layout>
 		);
 	}
