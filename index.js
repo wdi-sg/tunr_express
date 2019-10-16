@@ -153,7 +153,19 @@ app.get('/playlist',(request,response)=>{
         }
         response.render('viewPlaylist.jsx',data);
     })
+})
 
+app.get('/playlist/:id',(request,response)=>{
+    let id = request.params.id;
+    let queryArr = [id];
+    let queryText = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE (playlist_song.playlist_id = $1)";
+    pool.query(queryText, queryArr, (err,result)=>{
+        console.log(result.rows)
+        const data = {
+            arr: result.rows
+        }
+        response.render('viewPlaylistSong.jsx',data);
+    })
 })
 
 /**
