@@ -264,7 +264,21 @@ app.post('/playlists/:id/newsong', (request, response) => {
     });
 });
 
+app.get('/playlists', (request, response) => {
+    // display all playlists from playlists db
+    let queryText = "SELECT * FROM playlists ORDER BY name";
 
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        //response.send(result.rows);
+        let list = {};
+        list.playlists = result.rows;
+        response.render('listhome', list);
+    });
+});
 
 /**
  * ===================================
