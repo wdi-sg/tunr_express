@@ -1,22 +1,26 @@
 var React = require("react");
+var Layout = require('./defaultlayout.jsx');
 
 class ShowSongs extends React.Component {
   render() {
       const songs = this.props.result.map(element => {
-          return  <li>{element.title}</li>
+          return (
+                <div class="card col-3 m-2">
+                    <div class="card-body">
+                    <h5 class="card-title">{element.title}</h5>
+                    <p class="card-text">From {element.album}</p>
+                    <a href={element.preview_link} class="btn btn-outline-info btn-block">Listen</a>
+                  </div>
+                </div>
+          )  
       });
     return (
-      <html>
-        <head>
-            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
-            </head>
-        <body className="m-3">
-          <h1>Songs by Artist</h1>
-          <ul>
+        <Layout>
+          <h1 className="text-center">Songs by Artist</h1>
+          <div class="text-center col-12 d-flex flex-wrap justify-content-center">
               {songs}
-          </ul>
-        </body>
-      </html>
+          </div>
+        </Layout>
     );
   }
 }

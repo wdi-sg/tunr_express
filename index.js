@@ -129,14 +129,34 @@ app.get('/artists/:id/songs', (request, response) => {
 //         }
 //     })
 // })
+app.get('/playlists/new', (request, response) => {
+    // respond with HTML page with form to create new artist
+    response.render('newplaylist');
+});
 
+app.post('/playlists', (request, response) => {
+    let input = request.body;
+    let inputArr = [input.name];
+    console.log(inputArr);
+
+    const queryString = `INSERT INTO playlists (name) VALUES ($1) RETURNING *`
+    pool.query(queryString, inputArr, (err, result) => {
+        if (err) {
+            console.log('query error: ', err.stack)
+            response.send('query error');
+        } else {
+            console.log('query results: ', result);
+            response.send(result.rows)
+        }
+    })
+})
 
 /**
  * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3050, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function () {
 

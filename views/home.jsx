@@ -1,14 +1,12 @@
 var React = require("react");
+var Layout = require('./defaultlayout.jsx');
 
 class Home extends React.Component {
   render() {
     return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
+      <Layout>
+        <h1>Welcome!</h1>
+      </Layout>
     );
   }
 }
