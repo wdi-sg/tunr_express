@@ -159,7 +159,83 @@ app.put('/artists/:id', (request, response) => {
       });
 });
 
+// PLAYLIST SECTION
 
+// Give NEW PLAYLIST FORM
+app.get('/playlist/new', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  response.render('new_playlist');
+});
+
+// ADD a NEW PLAYLIST 
+// add to the database a new artist
+app.post('/playlist', (request, response) => {
+let data = {warning: ""};
+console.log('post to playlist');
+  if (request.body.name === "") {
+    data = {warning: "Empty name or other data..."}; 
+      } else  { 
+    data = {warning: "Playlist Added!"}; 
+      }
+
+let queryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING id';
+
+const values = [request.body.name];
+
+ pool.query(queryText, values, (err, res) => {
+       if (err) {
+         console.log("query error", err.message);
+       } else {
+         console.log("id of the thing you just created:", res.rows[0].id);
+       }
+   });
+
+  response.render('new_playlist', data);
+});
+
+// SHOW ALL PLAYLISTS
+
+app.get('/playlist', (request, response) => {
+  // query database
+// show all the artists
+  const queryString = 'SELECT * from playlist';
+ pool.query(queryString, (err, result) => {
+    // obj is the object from the pokedex json file
+    // extract input data from request
+    console.log(err);
+    // let inputId = parseInt( request.params.id );
+            const data = {
+            playlistsobj: result.rows
+        }
+    data.pageTitle = "All Playlists";
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('home_playlist', data);
+  });
+ });
+
+// FORM TO ADD THE SONGS IN THE PLAYLIST OPTIONS
+app.get('/playlist/:id/newsong', (request, response) => {
+      let inputId = parseInt( request.params.id )
+  // query database
+// show all the artists
+  const queryString = 'SELECT * from songs';
+ pool.query(queryString, (err, result) => {
+    // obj is the object from the pokedex json file
+    // extract input data from request
+    console.log(err);
+    // let inputId = parseInt( request.params.id );
+            const data = {
+            songsobj: result.rows
+        }
+    data.pageTitle = "All Playlists";
+    data.id = inputId;
+    data.action = "/playlist/"+inputId+"/newsong";
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('new_song', data);
+  });
+ });
 
 /**
  * ===================================
