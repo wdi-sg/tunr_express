@@ -215,13 +215,40 @@ const showOnePlaylist = (request, response)=>{
 
     let playlistID = parseInt(request.params.id);
     let inputValues = [playlistID];
-    let queryText = "SELECT * FROM playlist WHERE id = ($1)";
+    let queryText = "SELECT songs.title, songs.album, songs.preview_link, songs.artwork, playlist.name FROM songs INNER JOIN playlist_song on (playlist_song.song_id = songs.id) INNER JOIN playlist on (playlist_song.playlist_id = playlist.id) WHERE playlist_song.playlist_id = ($1)";
 
     pool.query(queryText, inputValues, (err, results)=>{
-        response.render("showOnePlaylist", results.rows[0]);
+        let data = {
+            playlistNum : playlistID,
+            titleName : results.rows
+        }
+        if (results.rows[0] === undefined){
+            response.render("emptyPlaylist", data);
+        } else {
+            console.log(results.rows);
+            response.render("showOnePlaylist", data);
+        }
+
     })
 
 }
+
+// SELECT songs.title, songs.album, songs.preview_link, songs.artwork, playlist.name
+// FROM songs INNER JOIN playlist_song
+// on (playlist_song.song_id = songs.id)
+// INNER JOIN playlist
+// on (playlist_song.playlist_id = playlist.id)
+// WHERE playlist_song.playlist_id = ($1)
+
+
+// "SELECT * FROM playlist WHERE id = ($1)";
+
+// SELECT songs.title, playlist.name
+// FROM songs INNER JOIN playlist_song
+// on (playlist_song.song_id = songs.id)
+// INNER JOIN playlist
+// on (playlist_song.playlist_id = playlist.id)
+// WHERE playlist_song.playlist_id = 1;
 
 const addSongToPlaylist = (request, response)=>{
 
@@ -249,8 +276,8 @@ const showNewSongInPlaylist = (request, response)=>{
     let queryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
 
     pool.query(queryText, inputValues, (err, results)=>{
-        response.render("showOnePlaylist");
-
+        console.log(results.rows[0])
+        response.render("playlistUpdated", results.rows[0]);
     })
 }
 

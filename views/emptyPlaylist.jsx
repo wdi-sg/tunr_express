@@ -1,25 +1,9 @@
 var React = require("react");
 
-class OnePlaylist extends React.Component {
+class EmptyPlaylist extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
-
-    var everything = this.props.titleName.map(x=>{
-        var title = x.title;
-        var album = x.album;
-        var preview = x.preview_link;
-        var artwork = x.artwork;
-
-        return  <div className="card">
-                    <img src={artwork} className="card-img-top imagez" alt="artists_image"/>
-                      <div className="card-body">
-                        <h5 className="card-title">{title}</h5>
-                        <p className="card-text">{album}</p>
-                        <a href={preview} className="btn btn-dark">Preview Link</a>
-                      </div>
-                </div>
-    });
 
     return (
       <html>
@@ -30,10 +14,9 @@ class OnePlaylist extends React.Component {
         <body>
         <Navbar/>
           <div>
-            <h1 className="col-md-auto display-4">{this.props.titleName[0].name}</h1>
-            <div className="cards">
-                {everything}
-            </div>
+            <h1 className="col-md-auto display-4">Playlist #{this.props.playlistNum}</h1>
+
+            <h3 className="col-md-auto display-5">There are no songs in this playlist yet</h3>
 
             <form method='GET' action={'/playlist/'+this.props.playlistNum+'/newsong'} className="addSong">
               <button type="submit" class="btn btn-dark">Add A Song</button>
@@ -49,4 +32,4 @@ class OnePlaylist extends React.Component {
   }
 }
 
-module.exports = OnePlaylist;
+module.exports = EmptyPlaylist;

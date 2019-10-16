@@ -1,25 +1,8 @@
-var React = require("react");
-
-class OnePlaylist extends React.Component {
+var React = require('react');
+class AddSongToPlaylist extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
-
-    var everything = this.props.titleName.map(x=>{
-        var title = x.title;
-        var album = x.album;
-        var preview = x.preview_link;
-        var artwork = x.artwork;
-
-        return  <div className="card">
-                    <img src={artwork} className="card-img-top imagez" alt="artists_image"/>
-                      <div className="card-body">
-                        <h5 className="card-title">{title}</h5>
-                        <p className="card-text">{album}</p>
-                        <a href={preview} className="btn btn-dark">Preview Link</a>
-                      </div>
-                </div>
-    });
 
     return (
       <html>
@@ -29,16 +12,16 @@ class OnePlaylist extends React.Component {
         </head>
         <body>
         <Navbar/>
-          <div>
-            <h1 className="col-md-auto display-4">{this.props.titleName[0].name}</h1>
-            <div className="cards">
-                {everything}
-            </div>
 
-            <form method='GET' action={'/playlist/'+this.props.playlistNum+'/newsong'} className="addSong">
-              <button type="submit" class="btn btn-dark">Add A Song</button>
-            </form>
+        <main>
+          <div>
+            <h1 className="col-md-auto display-4">Playlist Updated</h1>
           </div>
+
+            <form method='GET' action={'/playlist/'+this.props.playlist_id} className="addSong">
+              <button type="submit" class="btn btn-dark">Back to Playlist</button>
+            </form>
+        </main>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -49,4 +32,4 @@ class OnePlaylist extends React.Component {
   }
 }
 
-module.exports = OnePlaylist;
+module.exports = AddSongToPlaylist;
