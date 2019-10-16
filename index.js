@@ -56,7 +56,7 @@ app.get('/', (request, response) => {
     response.render('home');
 });
 
-//table for creating new artist
+//table for creating new artist, display form for new artist
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new artist
     response.render('new');
@@ -88,6 +88,22 @@ app.get('/artists/', (request, response) => {
     });
 });
 
+//show new artist, post
+
+app.post('/artists',(request, response)=>{
+
+     let {name, photo_url, nationality} = request.body;
+     queryText = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${name}', '${photo_url}', '${nationality}') RETURNING *`
+
+
+    pool.query(queryText,(err,queryRes)=>{
+        console.log(queryRes.rows[0])
+
+        response.render('showNewArtist',queryRes.rows[0]);
+
+    })
+})
+
 
 
 
@@ -110,6 +126,33 @@ app.get('/artists/:id', (request, response) => {
 
     })
 });
+
+
+// update
+app.put('/artists/:id',(request,response)=>{
+    let {id} = request.params;
+    let {name, photo_url, nationality} = request.body;
+   const queryText = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${id} RETURNING *`;
+    pool.query(queryText,(err,queryRes)=>{
+        response.render('show',queryRes.rows[0]);
+    });
+});
+
+
+//delete artist
+app.delete('/artists/:id',(request, result)=>{
+    let {id} = request.params;
+   const queryText = `DELETE FROM artists WHERE id=${id}`;
+    pool.query(queryText,(err,queryRes)=>{
+        response.render('home');
+    });
+});
+
+
+
+
+
+
 
 
 
