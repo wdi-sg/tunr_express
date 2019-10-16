@@ -63,3 +63,4 @@ const onClose = function() {
 
 process.on("SIGTERM", onClose);
 process.on("SIGINT", onClose);
+© 2019 GitHu
