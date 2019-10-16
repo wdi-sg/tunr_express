@@ -25,8 +25,10 @@ class DefaultLayout extends React.Component {
     <div className="col-3">
     <nav className="nav flex-column">
     <a className="nav-link" href="/">Top</a>
-    <a className="nav-link" href="/artists/">Show All Artists</a>
+    <a className="nav-link" href="/">Show All Artists</a>
     <a className="nav-link" href="/artists/new">Add a New Artist</a>
+    <a className="nav-link" href="/playlist">Show All Playlists</a>
+    <a className="nav-link" href="/playlist/new">Add a New Playlist</a>
     </nav> 
     </div>
     <div className="col-9">
