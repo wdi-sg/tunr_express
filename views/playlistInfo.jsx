@@ -3,10 +3,10 @@ var React = require("react");
 class PlaylistInfo extends React.Component {
   render() {
 
-    const viewPlaylistInfo = this.props.playlist.map((singlePlaylist) => {
+    const viewPlaylistInfo = this.props.songTitle.map((singlePlaylist) => {
         return (
             <div>
-                <p>{singlePlaylist.name}</p>
+                <li>{singlePlaylist.title}</li>
             </div>
         );
     });
@@ -15,9 +15,11 @@ class PlaylistInfo extends React.Component {
       <html>
         <head />
         <body>
-          <h1>You are viewing details of {this.props.playlist[0].name}</h1>
+          <h1>You are viewing details of {this.props.playlistName.name}</h1>
           <div>
+            <ul>
               {viewPlaylistInfo}
+            </ul>
           </div>
         </body>
       </html>

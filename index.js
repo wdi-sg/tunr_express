@@ -6,16 +6,16 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'siewling',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+    user: 'siewling',
+    host: '127.0.0.1',
+    database: 'tunr_db',
+    port: 5432,
 };
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+pool.on('error', function(err) {
+    console.log('idle client error', err.message, err.stack);
 });
 
 /**
@@ -29,7 +29,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+    extended: true
 }));
 
 app.use(methodOverride('_method'));
@@ -300,18 +300,30 @@ app.get('/playlist/:id', (request, response) => {
     let playlistId = request.params.id;
 
     // Construct query to select the specified playlist from database using pool.query
-    const getSpecificPlaylist = 'SELECT * FROM playlist WHERE id=' + playlistId;
+    const getSpecificPlaylist = 'SELECT title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_id = ' + playlistId;
 
-    pool.query(getSpecificPlaylist, (err, result) => {
+    pool.query(getSpecificPlaylist, (err, resultOfSongTitle) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
-            // Store the result as data object
-            const data = {
-                playlist: result.rows
-            };
 
-            response.render('playlistInfo', data);
+            const getPlaylistName = 'SELECT name FROM playlist WHERE id = ' + playlistId;
+
+            pool.query(getPlaylistName, (err, resultOfPlaylistName) => {
+                if (err) {
+                    console.log("Error getting playlist name: ", err.message);
+                } else {
+                    // Store the result as data object
+                    const data = {
+                        songTitle: resultOfSongTitle.rows,
+                        playlistName: resultOfPlaylistName.rows[0]
+                    };
+
+                    // response.send(data.songTitle);
+                    // response.send(data.playlistName);
+                    response.render('playlistInfo', data);
+                }
+            });
         }
     });
 });
@@ -382,16 +394,16 @@ app.post('/playlist/:id', (request, response) => {
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
+let onClose = function() {
 
-  console.log("closing");
+    console.log("closing");
 
-  server.close(() => {
+    server.close(() => {
 
-    console.log('Process terminated');
+        console.log('Process terminated');
 
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
+        pool.end(() => console.log('Shut down db connection pool'));
+    })
 };
 
 process.on('SIGTERM', onClose);
