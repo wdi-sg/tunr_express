@@ -1,5 +1,4 @@
 var React = require('react');
-// var Default = require('./layout/default');
 
 class Choosesong extends React.Component {
 	render() {
