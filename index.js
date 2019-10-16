@@ -50,6 +50,7 @@ let queryString;
  * ===================================
  */
 
+//HOME PAGE
 app.get('/artists', (request, response) => {
 
     queryString = "SELECT name,id FROM artists"
@@ -66,17 +67,73 @@ app.get('/artists', (request, response) => {
                 list: result.rows
             }
               response.render('home', data);
-
           }
     });
 
 });
 
+//NEW SONG FORM
 app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
+// app.get('/playlists', (request,response)=>{
 
+
+// })
+
+app.get('/playlists', (request,response)=>{
+    response.send('UNDER MAINTENANCE')
+})
+
+app.get('/playlists/new', (request,response)=>{
+    response.render('newplaylist')
+});
+
+app.post('/playlists', (request,response)=>{
+
+    console.log(request.body.name)
+
+    queryString = `INSERT INTO playlist (name) VALUES ('${request.body.name}') RETURNING *`
+
+    pool.query(queryString, (err, result) => {
+        console.log(queryString)
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            response.send( result.rows );
+        }
+    });
+})
+
+
+//ADD NEW ARTIST
+// app.post('/artists/:id', (request, response) => {
+
+// let art = request.body
+// const array = [art.name,art.photo,art.nationality]
+// console.log(array)
+
+// queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+//     pool.query(queryString, array, (err, result) => {
+//         console.log(queryString)
+
+//           if (err) {
+//             console.error('query error:', err.stack);
+//             response.send( 'query error' );
+//           } else {
+
+
+//             response.send( result.rows );
+
+//         }
+//     });
+// })
+
+//SHOW ARTIST
 app.get('/artists/:id', (request, response) => {
     let identifier = parseInt(request.params.id)
 
@@ -99,30 +156,7 @@ app.get('/artists/:id', (request, response) => {
     });
 });
 
-app.post('/artists', (request, response) => {
-
-let art = request.body
-const array = [art.name,art.photo,art.nationality]
-console.log(array)
-
-const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
-
-
-    pool.query(queryString, array, (err, result) => {
-        console.log(queryString)
-
-          if (err) {
-            console.error('query error:', err.stack);
-            response.send( 'query error' );
-          } else {
-            console.log('query result:', result);
-
-            // redirect to home page
-            response.send( result.rows );
-          }
-    });
-});
-
+//DISPLAY SONGS BY AN ARTIST
 app.get('/artists/:id/songs', (request, response) => {
     let identifier = parseInt(request.params.id)
 
