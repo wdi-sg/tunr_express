@@ -175,6 +175,25 @@ app.delete('/artists/:id', (req, res) => {
  * ===================================
  */
 
+app.get('/artists/:id/songs', (req, res) => {
+  const queryArray = [req.params.id];
+  const queryString = 'SELECT * FROM songs where artist_id = $1';
+
+  pool.query(queryString, queryArray, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        id: req.params.id,
+        rows : result.rows
+      };
+      res.render('s-show', data);
+    }
+  });
+});
+
  /**
  * ===================================
  *  Playlists Routes
