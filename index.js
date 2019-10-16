@@ -288,7 +288,12 @@ app.post('/playlist', (request, response)=>{
 
 app.get('/playlist/:id', (request, response)=>{
   let id = parseInt(request.params.id);
-  const queryString = `SELECT * FROM playlist WHERE id=${id}`;
+  // const queryString = `SELECT * FROM playlist WHERE id=${id}`;
+  const queryString = `SELECT playlist_song.song_id, songs.title
+                  FROM songs
+                  INNER JOIN playlist_song
+                  ON (playlist_song.song_id = songs.id)
+                  WHERE playlist_song.playlist_id = ${id}`
 
   pool.query(queryString, (err, result) => {
       if (err) {
@@ -297,8 +302,11 @@ app.get('/playlist/:id', (request, response)=>{
       } else {
 
         const data = {
-          result: result.rows[0]
+          result: result.rows,
+          id:id
         }
+
+        console.log(result.rows)
           
          response.render('individualplaylist', data)
           
@@ -336,11 +344,11 @@ app.get('/playlist/:id/newsong', (request, response)=>{
 })
 app.post('/playlist/:id', (request, response)=>{
   let playlistId = parseInt(request.params.id);
-  let songId = request.body.id;
+  let songId = parseInt(request.body.id);
+  let input = [songId, playlistId]
  
-  const queryString = `INSERT INTO playlist_song (song_id, playlist_id) VALUES( ${songId}, ${playlistId})
-                      `;
-  pool.query(queryString, (err, result) => {
+  const queryString = `INSERT INTO playlist_song (song_id, playlist_id) VALUES( $1, $2) `;
+  pool.query(queryString,input, (err, result) => {
     if (err) {
         console.error("query error:", err.stack);
         response.send("query error");
@@ -348,7 +356,7 @@ app.post('/playlist/:id', (request, response)=>{
 
   console.log(queryString)
         
-       response.redirect('/playlist/:id')
+  response.redirect('/playlist/' + playlistId)
         
     }
 });

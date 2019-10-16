@@ -23,7 +23,7 @@ class NewSong extends React.Component {
             <form method="POST" action={"/playlist/" + this.props.id} className="pt-3">
               <p>
               <select
-                class="form-control form-control-lg"
+                className="form-control form-control-lg"
                 name="id"
                 id="id"
                 multiple
