@@ -75,7 +75,7 @@ app.get('/artists/', (request, response) => {
 
 //==== Display the form for a single artist =====
 
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
 
 
   response.render('new');
@@ -122,11 +122,77 @@ app.get('/artists/:id', (request,response) => {
             };
             response.send( result.rows );
         }
-
-
     })
 
 });
+
+//======== Display the form for editing a single artist ==========
+
+app.get('/artists/:id/edit', (request, response) => {
+
+    const id = request.params.id;
+    const queryString = 'SELECT * FROM artists WHERE id =' + request.params.id;
+
+    pool.query(queryString, (err,result) => {
+        if (err) {
+            console.log('error', err.message);
+            response.send('query error');
+        } else {
+            const data = { artists : result.rows};
+            response.render('edit', data);
+        }
+})
+});
+
+
+//======== Update an Artist ==========
+
+app.put('/artists/:id/', (request,response) => {
+
+    let id = parseInt(request.body.id);
+    let name = request.body.name;
+    let photo_url = request.body.photo_url;
+    let nationality = request.body.nationality;
+
+    const values = [name, photo_url, nationality];
+    const queryString = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=" + request.params.id;
+
+    // const values = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(queryString, values, (err,result) => {
+    if (err) {
+        console.log('error', err.message);
+        response.send('query error');
+    } else {
+
+        response.send('Edited Artist!');
+    }
+
+})
+});
+
+
+//===== Remove an Artist =====
+
+app.get("/artist/:id/delete", (request, respond) => {
+    let queryText = 'SELECT * FROM artists WHERE id=$1';
+    const values = [request.params.id];
+
+    pool.query(queryText, values, (err, result)=> {
+
+        respond.render("delete", result.rows[0]);
+    })
+})
+
+app.delete("/artist/:id/delete", (request, respond) => {
+    let queryText = 'DELETE FROM artists WHERE id=$1';
+    const values = [request.params.id];
+
+    pool.query(queryText, values, (err, result)=> {
+
+        respond.send("Artist of id " + request.params.id + " is deleted");
+    })
+})
 
 
 
