@@ -5,6 +5,7 @@ class List extends React.Component {
     let songs = '/playlists/' + this.props.id + '/newsong';
     // let formEdit = '/artists/' + this.props.id + '/edit';
     // let formDelete = '/artists/' + this.props.id + '?_method=delete';
+    console.log(this.props.songs);
     let name = this.props.songs[0].name;
     let list = this.props.songs.map(song => {
         return ( <li>{song.title}</li> );

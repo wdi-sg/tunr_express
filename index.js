@@ -222,6 +222,12 @@ app.get('/playlists/:id', (request, response) => {
         let list = {};
         list.id = playlist_id;
         list.songs = result.rows;
+        if (list.songs.length === 0) {
+            list.songs = [{}];
+            list.songs[0].name = "Playlist " + playlist_id;
+            list.songs[0].title = "empty";
+        }
+        console.log(list);
         response.render('list', list);
     });
 });
