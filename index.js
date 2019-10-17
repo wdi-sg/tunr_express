@@ -251,6 +251,42 @@ app.post('/register', (req, res) => {
 
 })
 
+app.get('/login', (req, res) => {
+
+  res.render('Login');
+
+});
+
+app.post('/login', (req, res) => {
+
+  console.log('req.body', req.body);
+  const name = req.body.name;
+
+  pool.query(`SELECT * FROM users WHERE users.name = '${name}'`, (err, result) => {
+    console.log("result",result.rows);
+
+    if (result.rows.length > 0 ) {
+    let username = result.rows[0].name;
+    let user_id = result.rows[0].id; 
+    let loggedin = sha256(SALT + user_id);
+
+    res.cookie('username', username);
+    res.cookie('user_id', user_id);
+    res.cookie('loggedin', loggedin);
+    // res.send('user registered');
+    res.redirect('/');
+    } else {
+      res.send('please register first.')
+    }
+
+  });
+
+
+
+  // res.send('logggg');
+
+})
+
 
 
 /**
