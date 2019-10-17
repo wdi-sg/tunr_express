@@ -428,7 +428,6 @@ app.post('/favorites/new', (request, response) => {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        console.log(result.rows);
         response.redirect('/favorites');
     });
 });
@@ -445,7 +444,6 @@ app.get('/favorites', (request, response) => {
             response.send('query error');
         }
         // validate login
-        console.log(result.rows);
         if( hashedPw === result.rows[0].password ){
             queryText = `SELECT favorites.song_id,songs.title FROM favorites INNER JOIN songs ON (favorites.song_id=songs.id) INNER JOIN users ON (favorites.user_id=users.id) WHERE favorites.user_id=${user_id}`;
             pool.query(queryText, (err, result) => {
@@ -454,7 +452,6 @@ app.get('/favorites', (request, response) => {
                     response.send('query error');
                 }
                 // display favorites of user
-                console.log(result.rows);
                 let list = {};
                 list.songs = result.rows;
                 response.render('favhome', list);
