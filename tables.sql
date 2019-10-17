@@ -23,16 +23,16 @@ CREATE TABLE IF NOT EXISTS playlist_songs (
 	id SERIAL PRIMARY KEY,
 	playlist_id INTEGER,
 	song_id INTEGER
-)
+);
 
 CREATE TABLE IF NOT EXISTS users (
 	id SERIAL PRIMARY KEY,
 	username TEXT,
 	pw TEXT
-)
+);
 
 CREATE TABLE IF NOT EXISTS favorites (
 	id SERIAL PRIMARY KEY,
 	song_id INTEGER,
 	user_id INTEGER
-)
+);

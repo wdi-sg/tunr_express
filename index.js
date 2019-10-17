@@ -491,6 +491,35 @@ app.post('/favorites', (request,response)=>{
                 }
           }
     })
+})
+
+app.get('/favorites', (request,response)=>{
+    console.log(request.cookies.userid)
+
+    queryString = `SELECT songs.title, songs.album, songs.artist_id, artists.name
+    FROM songs
+    INNER JOIN artists ON (songs.artist_id = artists.id)
+    INNER JOIN favorites ON (favorites.song_id = songs.id)
+    WHERE favorites.user_id = ${request.cookies.userid}`
+
+     pool.query(queryString, (err, result) => {
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            console.log(result.rows)
+              const data = {
+                username: request.cookies.username,
+                songs: result.rows
+        }
+
+
+        response.render('favoritelist',data)
+          }
+    });
+
+
+
 
 
 })
