@@ -48,21 +48,15 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 // show home page
-app.get('/artists', (request, response) => {
-    // query database for all artist
-
-    // respond with HTML page displaying all artist
+const showHome = (request, response) => {
     response.render('home');
-});
+};
 
-// show form for new artist
-app.get('/artists/new', (request, response) => {
+const showNewArtistForm = (request, response) => {
     // respond with HTML page with form to create new artist
     response.render('new');
-});
-
-// after form is filled for new artist, add into artists PSQL table
-app.post('/artists', (request, response) => {
+};
+const postNewArtist = (request, response) => {
     let input = request.body;
     let inputArr = [input.name, input.photo_url, input.nationality];
     console.log(inputArr);
@@ -77,10 +71,8 @@ app.post('/artists', (request, response) => {
             response.send(result.rows)
         }
     })
-})
-
-// show the songs by each artist
-app.get('/artists/:id', (request, response) => {
+};
+const showArtistByID = (request, response) => {
     let inputID = request.params.id;
 
     const queryString = `SELECT * FROM artists WHERE id=${inputID}`
@@ -94,29 +86,9 @@ app.get('/artists/:id', (request, response) => {
             response.send(result.rows)
         }
     })
-})
+};
 
-
-
-// // Display the form for editing a single artist
-// app.get('/artist/:id/edit', (request, response) => {
-//     let inputID = request.params.id;
-
-//     const queryString = `SELECT * FROM artists WHERE id=${inputID}`
-
-//     pool.query(queryString, (err, result) => {
-//         if (err) {
-//             console.log('query error: ', err.stack)
-//             response.send('query error');
-//         } else {
-//             console.log('query results: ', result);
-//             response.send(result.rows)
-//         }
-//     })
-// })
-
-// shows songs by a single artists 
-app.get('/artists/:id/songs', (request, response) => {
+const showSongsByArtist = (request, response) => {
     let inputID = request.params.id;
 
     const queryString = `SELECT * FROM songs WHERE artist_id=${inputID}`
@@ -134,10 +106,9 @@ app.get('/artists/:id/songs', (request, response) => {
             response.render('showsongs', data)
         }
     })
-})
+};
 
-// shows all playlists
-app.get('/playlists', (request, response) => {
+const showPlaylists = (request, response) => {
     const queryString = `SELECT * FROM playlists ORDER BY id`
 
     pool.query(queryString, (err, result) => {
@@ -153,14 +124,17 @@ app.get('/playlists', (request, response) => {
             response.render('showplaylists', data)
         }
     })
-})
+};
 
-app.get('/playlists/new', (request, response) => {
+// shows all playlists
+
+const showNewPlaylistForm = (request, response) => {
     // respond with HTML page with form to create new artist
     response.render('newplaylist');
-});
+};
 
-app.post('/playlists', (request, response) => {
+
+const postNewPlaylist = (request, response) => {
     let input = request.body;
     let inputArr = [input.name];
     console.log(inputArr);
@@ -175,10 +149,8 @@ app.post('/playlists', (request, response) => {
             response.send(result.rows)
         }
     })
-})
-
-// GET /playlist/:id/newsong - render the form to create a new playlist
-app.get('/playlists/:id/newsong', (request, response) => {
+};
+const addNewSongToPlaylist = (request, response) => {
     let inputID = request.params.id;
 
     const queryString = `SELECT * FROM songs WHERE id=${inputID}`
@@ -196,9 +168,8 @@ app.get('/playlists/:id/newsong', (request, response) => {
             response.render('addtoplaylist', data)
         }
     })
-})
-// POST /playlist/:id - for this playlist, put a single song on the playlist
-app.post('/playlists/:id', (request, response) => {
+};
+const postNewSongsToPlaylist = (request, response) => {
     let input = request.body;
     let inputArr = [input.id, input.playlist_id];
     console.log(inputArr);
@@ -213,10 +184,8 @@ app.post('/playlists/:id', (request, response) => {
             response.send(result.rows)
         }
     })
-})
-
-// GET /playlist/:id - show all the song titles inside this playlist
-app.get('/playlists/:id', (request, response) => {
+}
+const showPlaylistByID = (request, response) => {
     let inputID = parseInt(request.params.id);
 
     const queryString = "SELECT playlists.name, songs.title, playlists.id FROM playlist_songs INNER JOIN playlists ON playlist_songs.playlist_id = playlists.id INNER JOIN songs ON playlist_songs.playlist_id = songs.id;"
@@ -235,8 +204,23 @@ app.get('/playlists/:id', (request, response) => {
             response.render('showoneplaylist', data)
         }
     })
-})
+};
 
+/*==========================================
+          Restful Routes
+==========================================*/
+
+app.get('/artists', showHome);
+app.get('/artists/new', showNewArtistForm);
+app.post('/artists', postNewArtist)
+app.get('/artists/:id', showArtistByID)
+app.get('/artists/:id/songs', showSongsByArtist)
+app.get('/playlists', showPlaylists);
+app.get('/playlists/new', showNewPlaylistForm);
+app.post('/playlists', postNewPlaylist);
+app.get('/playlists/:id/newsong', addNewSongToPlaylist)
+app.post('/playlists/:id', postNewSongsToPlaylist)
+app.get('/playlists/:id', showPlaylistByID)
 
 
 /**
