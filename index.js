@@ -250,6 +250,7 @@ app.get('/playlists/:id/newsong', (request, response) => {
             response.send('query error');
         }
         let list = {};
+        list.message = "Add Song to Playlist " + playlist_id;
         list.id = playlist_id;
         list.songs = result.rows;
         response.render('newlistsong', list);
@@ -393,6 +394,29 @@ app.post('/login', (request, response) => {
         }
     });
 });
+
+app.get('/favorites/new', (request, response) => {
+    // respond with HTML page with form to add new song to favorites
+    // get user_name from cookie
+    let user_name = request.cookies['user_name'];
+    // check if password correct?
+
+    console.log("Adding to favorites");
+    // input songs list to be rendered as option
+    let queryText = 'SELECT * FROM songs';
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        let list = {};
+        list.message = "Add Song to " + user_name + " Favorites";
+        list.songs = result.rows;
+        response.render('newlistsong', list);
+    });
+});
+
+
 
 /**
  * ===================================

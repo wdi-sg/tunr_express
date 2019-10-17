@@ -15,7 +15,7 @@ class Account extends React.Component {
             <h3>{this.props.message}</h3>
             <form method="POST" action={formAction}>
                 Name: <input type="text" name="name" required/><br/>
-                Password: <input type="text" name="password" required/><br/>
+                Password: <input type="password" name="password" required/><br/>
                 <input type="submit" value="Submit"/>
             </form>
             <p><a href="http://localhost:3000/artists" alt="homepage">Back to Homepage</a></p>
