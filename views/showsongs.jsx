@@ -11,6 +11,14 @@ class ShowSongs extends React.Component {
                     <p class="card-text">From <span className="font-italic">{element.album}</span></p>
                     <a href={element.preview_link} class="btn btn-outline-info btn-block">Listen</a>
                   </div>
+                  <form action={`/favourites`} method='POST'>
+						<input type='hidden' name='id' defaultValue={element.id} />
+						<input class='btn btn-danger' type='submit' value='&hearts;' />
+						<br />
+						<br />
+						<br />
+						<br />
+					</form>
                 </div>
           )  
       });
