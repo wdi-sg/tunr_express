@@ -351,7 +351,6 @@ let SALT = "meowmeow357"
 
 app.get ('/register', (request,response)=>{
     response.render('register')
-
 })
 
 app.post('/register', (request,response)=>{
@@ -361,17 +360,31 @@ app.post('/register', (request,response)=>{
     let hashedPw = sha256(request.body.password)
     console.log(hashedPw)
     let array = [request.body.username, hashedPw]
-    queryString = 'INSERT INTO users (username, pw) VALUES ($1, $2)'
 
-    pool.query(queryString, array, (err, result) => {
-
+    queryString = `SELECT * FROM users WHERE username = '${request.body.username}'`
+    console.log(queryString)
+    pool.query(queryString, (err, result) => {
 
           if (err) {
             console.error('query error:', err.stack);
             response.send( 'query error' );
           } else {
-            response.redirect('/login')
+            console.log('existing user ' + result.rows[0].username)
+                if(result.rows[0].username === request.body.username){
+                    response.send("Be more creative - that one's been taken.")
+                } else {
+                        queryString = 'INSERT INTO users (username, pw) VALUES ($1, $2)'
 
+                        pool.query(queryString, array, (err, result) => {
+                          if (err) {
+                            console.error('query error:', err.stack);
+                            response.send( 'query error' );
+                          } else {
+                            response.redirect('/login')
+
+                            }
+                        });
+                }
         }
     });
 })
@@ -399,12 +412,14 @@ app.post('/bananas', (request,response)=>{
             if (user === result.rows[0].username && hashedPw === result.rows[0].pw){
 
             let userId = result.rows[0].id
+            let user = result.rows[0].username
 
 
             let cookieHash = sha256(SALT + userId)
 
             response.cookie('loggedin', cookieHash);
-            response.cookie('user',userId)
+            response.cookie('userid',userId);
+            response.cookie('username', user)
             console.log(request.body)
             response.redirect('/bananas')
             } else {
@@ -417,17 +432,19 @@ app.post('/bananas', (request,response)=>{
 
 
 app.get('/bananas', (request,response)=>{
-    console.log("TESTTSTSTSTSTSTSTT")
-    console.log(request.cookies)
-    console.log("TESTTSTSTSTSTSTSTT")
-      // let id = request.cookies['user']
-    // let logged = sha256(id)
 
-    // if (request.cookies['loggedin'] === logged){
+    console.log(request.cookies)
+
+    let id = request.cookies['userid']
+    let logged = sha256(SALT + id)
+    console.log(request.cookies['loggedin'])
+    console.log(logged)
+
+    if (request.cookies['loggedin'] === logged){
         response.render('banana')
-    // } else {
-    //     response.send ('access forbidden')
-    // }
+    } else {
+        response.redirect ('/login')
+    }
 
 })
 

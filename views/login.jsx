@@ -7,6 +7,9 @@ class Login extends React.Component {
         return (
             <Layout>
                 <h1>WELCOME TO bnana.</h1>
+                <div className = "d-flex justify-content-center">
+                    <a href="/register"><input type="submit" className="btn btn-danger " value="REGISTER!!!"/></a>
+                </div>
                 <h2> Please login.</h2>
                 <form method="POST" action="/bananas">
                     <div className="form-group">
