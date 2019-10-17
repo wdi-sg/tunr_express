@@ -485,7 +485,7 @@ app.post('/favorites', (request,response)=>{
                             console.error('query error:', err.stack);
                             response.send( 'query error' );
                         } else {
-                            response.send(title + " has been added to your favorites")
+                            response.redirect('/favorites')
                         }
                     })
                 }
@@ -494,29 +494,40 @@ app.post('/favorites', (request,response)=>{
 })
 
 app.get('/favorites', (request,response)=>{
-    console.log(request.cookies.userid)
 
-    queryString = `SELECT songs.title, songs.album, songs.artist_id, artists.name
-    FROM songs
-    INNER JOIN artists ON (songs.artist_id = artists.id)
-    INNER JOIN favorites ON (favorites.song_id = songs.id)
-    WHERE favorites.user_id = ${request.cookies.userid}`
-
-     pool.query(queryString, (err, result) => {
-          if (err) {
-            console.error('query error:', err.stack);
-            response.send( 'query error' );
-          } else {
-            console.log(result.rows)
-              const data = {
-                username: request.cookies.username,
-                songs: result.rows
-        }
+    let id = request.cookies['userid']
+    let logged = sha256(SALT + id)
+    console.log("checking favs" + request.cookies['loggedin'])
+    console.log("checking favs" + logged)
 
 
-        response.render('favoritelist',data)
-          }
-    });
+    if (request.cookies['loggedin'] === logged){
+            queryString = `SELECT songs.title, songs.album, songs.artist_id, artists.name
+            FROM songs
+            INNER JOIN artists ON (songs.artist_id = artists.id)
+            INNER JOIN favorites ON (favorites.song_id = songs.id)
+            WHERE favorites.user_id = ${request.cookies.userid}`
+
+             pool.query(queryString, (err, result) => {
+                  if (err) {
+                    console.error('query error:', err.stack);
+                    response.send( 'query error' );
+                  } else {
+                    console.log(result.rows)
+                      const data = {
+                        username: request.cookies.username,
+                        songs: result.rows
+                        }
+                response.render('favoritelist',data)
+                  }
+            });
+
+    } else {
+        response.redirect('/login')
+    }
+
+
+
 
 
 

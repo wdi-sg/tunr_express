@@ -6,7 +6,7 @@ class Layout extends React.Component {
            <html>
                 <head>
                     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossOrigin="anonymous"></link>
-                    <title>Tunr</title>
+                    <title>bnana.</title>
                 </head>
                 <body>
                     <div className="container">
@@ -18,7 +18,7 @@ class Layout extends React.Component {
                                     <a className="nav-link" href="http://localhost:3000/">Home</a>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link" href="http://localhost:3000/favorites/new">New Favorite</a>
+                                    <a className="nav-link" href="http://localhost:3000/favorites">Favorites</a>
                                 </li>
                                 <li className="nav-item">
                                     <a className="nav-link" href="http://localhost:3000/bananas">SUPER SECRET</a>
