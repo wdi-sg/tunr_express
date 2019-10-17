@@ -351,6 +351,27 @@ app.get('/songs/:id',(req,res)=>{
     });
 });
 /*================================================
+╔═╗┬─┐┌─┐┌─┐┌┬┐┌─┐
+║  ├┬┘├┤ ├─┤ │ ├┤
+╚═╝┴└─└─┘┴ ┴ ┴ └─┘
+================================================*/
+app.post('/songs/:id',(req,res)=>{
+    let {id} = req.params;
+    let {loggedIn,username,userId} = req.cookies;
+    if (userId === undefined) {
+        res.redirect('/login');
+    } else {
+        text = `INSERT INTO favorites (song_id,user_id) VALUES ($1,$2)`
+        values = [id,userId];
+        pool.query(text,values,(err,result)=>{
+            text = `SELECT * FROM favorites INNER JOIN songs ON (favorites.song_id = songs.id) WHERE favorites.user_id=${userId}`
+            pool.query(text,(err,result)=>{
+                res.render('usersongs',result);
+            });
+        });
+    };
+});
+/*================================================
 ╔═╗┌─┐┬─┐┌┬┐
 ╠═╝│ │├┬┘ │
 ╩  └─┘┴└─ ┴

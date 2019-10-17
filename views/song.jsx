@@ -18,7 +18,7 @@ class Show extends React.Component {
                     <div className="col-12">
                         <hr className="my-4"/>
                         <p className="lead">Album: {album}</p>
-                        <form method="GET" action={"/songs/"+id+"/add"} className="ml-auto">
+                        <form method="POST" action={"/songs/"+id} className="ml-auto">
                             <input type="submit" className="btn btn-warning" value="Add to Favorites"/>
                         </form>
                     </div>
