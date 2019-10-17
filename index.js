@@ -496,6 +496,51 @@ app.post('/register', (request, response) => {
     });
 });
 
+// GET method - To render login page
+app.get('/login', (request, response) => {
+    response.render('login');
+});
+
+// POST method - To allow user to login if verified
+app.post('/login', (request, response) => {
+
+    // Get request body values
+    let inputUsername = request.body.username;
+
+    let inputPassword = request.body.password;
+    let hashedInputPassword = sha256(inputPassword);
+
+    const inputValues = [inputUsername];
+
+    // Construct SELECT query
+    const verifyUserQuery = "SELECT * FROM users WHERE username = $1";
+
+    // Use pool.query to store in DB
+    pool.query(verifyUserQuery, inputValues, (err, result) => {
+        // If user exists
+        if (result.rows.length > 0) {
+
+            // Check if password is correct
+            if (hashedInputPassword === result.rows[0].password) {
+
+                // If user has correct username and password, set cookie, log user in
+                let userId = result.rows[0].id;
+                response.cookie('user_id', userId);
+
+                let currentSessionCookie = sha256(userId + SALT);
+                response.cookie('logged_in', currentSessionCookie);
+
+                response.render('home');
+
+            } else {
+                response.send("Password do not match!");
+            }
+
+        } else {
+            response.send("Cannot find user!");
+        }
+    });
+});
 
 /**
  * ===================================
