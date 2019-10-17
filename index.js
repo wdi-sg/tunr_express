@@ -229,15 +229,13 @@ app.get('/register',(req,res)=>{res.render('register')});
 ================================================*/
 app.post('/register',(req,res)=>{
     let values = [req.body.username,req.body.password];
-    text = `INSERT INTO users (username,password) VALUES ($1,$2)`;
+    text = `INSERT INTO users (username,password) VALUES ($1,$2) RETURNING *`;
     pool.query(text,values,(err,result)=>{
-        text = "SELECT * FROM users WHERE username=$1 AND password=$2";
-        pool.query(text,values,(err,result)=>{
-            res.cookie('username',req.body.username);
-            res.cookie('loggedIn',sha256('yes'));
-            res.cookie('userId',req.body.username);
-            res.send('USER CREATED SUCCESSFULLY!');
-        });
+        console.log();
+        res.cookie('username',req.body.username);
+        res.cookie('loggedIn',sha256('yes'));
+        res.cookie('userId',result.rows[0].id);
+        res.send('USER CREATED SUCCESSFULLY!');
     });
 });
 /*================================================
@@ -263,7 +261,7 @@ app.post('/login',(req,res)=>{
         if (result.rows[0] !== undefined) {
             res.cookie('username',req.body.username);
             res.cookie('loggedIn',sha256('yes'));
-            res.cookie('userId',req.body.username);
+            res.cookie('userId',result.rows[0].id);
             res.send('USER LOGIN SUCCESSFULLY!');
         } else {
             res.send('WRONG USERNAME OR PASSWORD!')
