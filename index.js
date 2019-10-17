@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256')
 
 // Initialise postgres client
 const configs = {
@@ -42,6 +43,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+const SALT = 'Bun-nana'
+
 /**
  * ===================================
  * Routes
@@ -50,7 +53,6 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
   // query database for all pokemon
-
   // respond with HTML page displaying all pokemon
   response.render('home');
 });
@@ -229,11 +231,27 @@ app.post('/playlist/:id',(request, response) => {
     pool.query(queryText2,(err,result)=>{
         response.send('Song added to playlist!')
     })
-
   })
-
 })
 
+app.get('/register',(request, response) =>{
+    response.render("register.jsx")
+})
+
+app.post('/register',(request, response) =>{
+    var username = request.body.username;
+    var password = request.body.password;
+    var hashPassword = sha256(password+SALT);
+    let queryText = "INSERT INTO users (username, hashPassword) VALUES ($1, $2) RETURNING *"
+    let queryArr = [username,hashPassword]
+    pool.query(queryText, queryArr, (err, result)=>{
+        let userId = result.rows[0]["id"]
+        let hashedUser = sha256(result.rows[0]["username"]+SALT);
+        response.cookie('user_id', userId);
+        response.cookie('hasLoggedIn', hashedUser);
+        response.send('Newly registered!')
+    })
+})
 
 /**
  * ===================================
