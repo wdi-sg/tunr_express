@@ -163,6 +163,28 @@ pool.query(queryString, input, (err, result) => {
 
 })
 
+app.get('/favorites', (request, response)=>{
+  let userId = request.cookies['user_id'];
+  let input = [userId];
+  const queryString = "SELECT favorites.song_id, songs.title, artists.name FROM favorites INNER JOIN songs ON (favorites.song_id = songs.id)INNER JOIN artists  ON(songs.artist_id = artists.id) WHERE favorites.user_id = $1";
+
+
+  pool.query(queryString, input, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      console.log("query result:", result);
+
+      const data = {
+        result: result.rows
+      };
+
+      response.render("favorites", data);
+    }
+  });
+})
+
 
 /**
  * ===================================

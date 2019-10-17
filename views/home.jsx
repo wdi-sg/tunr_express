@@ -24,25 +24,30 @@ class Home extends React.Component {
           <div className="container mt-5">
           <h1 className="text-center display-3 border-bottom">TunR 1.0</h1>
      <div className="container mt-3 text-center">
-     <a className="btn btn-primary btn-lg btn text-light mb-5"
+     <a className="btn btn-primary  btn text-light mb-5"
   href="/artists/new"
 >
   Add a new artist
 </a>
-<a className="btn btn-info btn-lg btn text-light mb-5 ml-5"
+<a className="btn btn-info  btn text-light mb-5 ml-5"
   href="/playlists/new"
 >
   Add a new Playlist
 </a>
-<a className="btn btn-secondary btn-lg btn text-light mb-5 ml-5"
+<a className="btn btn-secondary  btn text-light mb-5 ml-5"
   href="/playlist"
 >
   See all Playlists
 </a>
-<a className="btn btn-warning btn-lg btn text-light mb-5 ml-5"
+<a className="btn btn-warning  btn text-light mb-5 ml-5"
   href="/favorites"
 >
   Favorites
+</a>
+<a className="btn btn-danger btn text-light mb-5 ml-5"
+  href="/favorites/new"
+>
+  Add to Favorites
 </a>
      </div>
           
