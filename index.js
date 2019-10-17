@@ -78,7 +78,7 @@ app.get('/', (request, response) => {
             artistsobj: result.rows
         }
     data.pageTitle = "All Artists";
-         console.log("artist data:", data);
+         // console.log("artist data:", data);
   // respond with HTML page displaying all artists
     response.render('home', data);
   });
@@ -93,7 +93,7 @@ app.get('/artists/new', (request, response) => {
 // add to the database a new artist
 app.post('/artists', (request, response) => {
 let data = {warning: ""};
-console.log('post to artists');
+// console.log('post to artists');
   if (request.body.name === "" || request.body.photo_url === "" || request.body.nationality === "") {
     data = {warning: "Empty name or other data..."}; 
       } else  { 
@@ -108,7 +108,7 @@ const values = [request.body.name, request.body.photo_url, request.body.national
        if (err) {
          console.log("query error", err.message);
        } else {
-         console.log("id of the thing you just created:", res.rows[0].id);
+         // console.log("id of the thing you just created:", res.rows[0].id);
        }
    });
 
@@ -144,7 +144,7 @@ app.get('/artists/:id', (request, response) => {
     // extract input data from request
     console.log(err);
     // let inputId = parseInt( request.params.id );
-        console.log(result.rows[0]);
+        // console.log(result.rows[0]);
     const data = result.rows[0];
 
 
@@ -154,7 +154,7 @@ app.get('/artists/:id', (request, response) => {
 });
 
 app.put('/artists/:id', (request, response) => {
-          console.log('edit the data');
+          // console.log('edit the data');
   let inputId = parseInt( request.params.id )
   const queryString = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id=${request.params.id}`;
   // let queryString = 'UPDATE artists SET name=($1),photo_url=($2),nationality=($3) WHERE id ='+inputId;
@@ -166,8 +166,8 @@ app.put('/artists/:id', (request, response) => {
     console.log(err);
     // let inputId = parseInt( request.params.id );
     let data = request.body;
-    console.log(queryString);
-        console.log(data);
+    // console.log(queryString);
+        // console.log(data);
   response.render('edit', data);
     
       });
@@ -185,7 +185,7 @@ app.get('/playlist/new', (request, response) => {
 // add to the database a new artist
 app.post('/playlist', (request, response) => {
 let data = {warning: ""};
-console.log('post to playlist');
+// console.log('post to playlist');
   if (request.body.name === "") {
     data = {warning: "Empty name or other data..."}; 
       } else  { 
@@ -200,7 +200,7 @@ const values = [request.body.name];
        if (err) {
          console.log("query error", err.message);
        } else {
-         console.log("id of the thing you just created:", res.rows[0].id);
+         // console.log("id of the thing you just created:", res.rows[0].id);
        }
    });
 
@@ -296,7 +296,7 @@ app.get('/playlist/:id', (request, response) => {
     data.pageTitle = "Playlist Songs";
     data.id = inputId;
     data.action = "/playlist/"+inputId;
-    console.log("playlistinfo: ", data)
+    // console.log("playlistinfo: ", data)
          // console.log("playlist data:", data);
   // respond with HTML page displaying all artists
     response.render('playlist_songs', data);
@@ -319,7 +319,7 @@ app.get('/artist/:id/songs', (request, response) => {
     data.pageTitle = "Artists Songs";
     data.id = inputId;
     data.action = "/artists/"+inputId;
-    console.log("ArtistsSongs: ", data)
+    // console.log("ArtistsSongs: ", data)
          // console.log("playlist data:", data);
   // respond with HTML page displaying all artists
     response.render('artists_songs', data);
@@ -396,7 +396,7 @@ let hashedPassword = sha256(request.body.password + SALT);
 
       if (result.rows[0].password === hashedPassword)  {
             data.warning = "Username ok..."
-            console.log('user/pw ok')
+            // console.log('user/pw ok')
             // store a cookie
             let currentSessionCookie = sha256( username + SALT );
             response.cookie('tunr_user', username);
@@ -404,12 +404,12 @@ let hashedPassword = sha256(request.body.password + SALT);
             response.redirect('/');
 
           } else {
-              console.log('password ng')
+              // console.log('password ng')
               data.warning = "Username or password does not match."
               response.render('login');
           }
       } else {
-        console.log('no user found')
+        // console.log('no user found')
       data.warning = "Username or password does not match."    
       response.render('login');
       }
@@ -423,9 +423,10 @@ app.get('/favorites/new', (request, response) => {
 
 
 if (sha256(request.cookies['tunr_user'] + SALT) === request.cookies['tunr_nr'] ){
-  console.log('logged in as', request.cookies["tunr_user"]);
+  // console.log('logged in as', request.cookies["tunr_user"]);
   } else {
-  console.log('not logged in');
+  // console.log('not logged in');
+  response.redirect('/');
   }
 
       let inputId = parseInt( request.params.id )
@@ -455,9 +456,10 @@ if (sha256(request.cookies['tunr_user'] + SALT) === request.cookies['tunr_nr'] )
 app.post('/favorites', (request, response) => {
 
   if (sha256(request.cookies['tunr_user'] + SALT) === request.cookies['tunr_nr'] ){
-    console.log('logged in as', request.cookies["tunr_user"]);
+    // console.log('logged in as', request.cookies["tunr_user"]);
      } else {
-    console.log('not logged in');
+    // console.log('not logged in');
+    response.redirect('/');
   }
 
   let username = request.cookies["tunr_user"];
@@ -499,9 +501,10 @@ app.get('/favorites', (request, response) => {
 
 
   if (sha256(request.cookies['tunr_user'] + SALT) === request.cookies['tunr_nr'] ){
-    console.log('logged in as', request.cookies["tunr_user"]);
+    // console.log('logged in as', request.cookies["tunr_user"]);
      } else {
-    console.log('not logged in');
+    // console.log('not logged in');
+    response.redirect('/');
   }
 
   let username = request.cookies["tunr_user"];
