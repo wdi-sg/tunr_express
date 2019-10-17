@@ -25,6 +25,9 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+const sha256 = require('js-sha256');
 /*================================================
 ╦  ┌─┐┌┐┌┌┬┐┬┌┐┌┌─┐
 ║  ├─┤│││ │││││││ ┬
@@ -228,7 +231,13 @@ app.post('/register',(req,res)=>{
     let values = [req.body.username,req.body.password];
     text = `INSERT INTO users (username,password) VALUES ($1,$2)`;
     pool.query(text,values,(err,result)=>{
-        res.send('USER CREATED SUCCESSFULLY!');
+        text = "SELECT * FROM users WHERE username=$1 AND password=$2";
+        pool.query(text,values,(err,result)=>{
+            res.cookie('username',req.body.username);
+            res.cookie('loggedIn',sha256('yes'));
+            res.cookie('userId',req.body.username);
+            res.send('USER CREATED SUCCESSFULLY!');
+        });
     });
 });
 /*================================================
@@ -252,6 +261,9 @@ app.post('/login',(req,res)=>{
     text = `SELECT * FROM users WHERE username=$1 AND password=$2`;
     pool.query(text,values,(err,result)=>{
         if (result.rows[0] !== undefined) {
+            res.cookie('username',req.body.username);
+            res.cookie('loggedIn',sha256('yes'));
+            res.cookie('userId',req.body.username);
             res.send('USER LOGIN SUCCESSFULLY!');
         } else {
             res.send('WRONG USERNAME OR PASSWORD!')
