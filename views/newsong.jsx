@@ -23,10 +23,9 @@ class NewSong extends React.Component {
               action={"/playlist/" + this.props.id}
               className="pt-3"
             >
-
               <div class="input-group mb-3">
-                <select class="custom-select" id="inputGroupSelect01">
-              {list}
+                <select class="custom-select" name="id" id="id">
+                  {list}
                 </select>
               </div>
 

@@ -1,21 +1,21 @@
 console.log("starting up!!");
 
-const express = require('express');
-const methodOverride = require('method-override');
-const pg = require('pg');
+const express = require("express");
+const methodOverride = require("method-override");
+const pg = require("pg");
 
 // Initialise postgres client
 const configs = {
-  user: 'nathanaeltan',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+  user: "nathanaeltan",
+  host: "127.0.0.1",
+  database: "tunr_db",
+  port: 5432
 };
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+pool.on("error", function(err) {
+  console.log("idle client error", err.message, err.stack);
 });
 
 /**
@@ -27,20 +27,20 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
 
-app.use(methodOverride('_method'));
-
+app.use(methodOverride("_method"));
 
 // Set react-views to be the default view engine
-const reactEngine = require('express-react-views').createEngine();
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jsx');
-app.engine('jsx', reactEngine);
+const reactEngine = require("express-react-views").createEngine();
+app.set("views", __dirname + "/views");
+app.set("view engine", "jsx");
+app.engine("jsx", reactEngine);
 
 /**
  * ===================================
@@ -53,24 +53,22 @@ app.engine('jsx', reactEngine);
  * HOME PAGE
  * ===================================
  */
-app.get('/artists/', (request, response) => {
-
+app.get("/artists/", (request, response) => {
   const queryString = `SELECT * FROM artists`;
 
   pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
-          console.log("query result:", result);
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      console.log("query result:", result);
 
-          const data = {
-            result: result.rows
-          }
-         
-          response.render('home', data);
-          
-      }
+      const data = {
+        result: result.rows
+      };
+
+      response.render("home", data);
+    }
   });
 });
 
@@ -80,29 +78,25 @@ app.get('/artists/', (request, response) => {
  * ===================================
  */
 
-app.get('/artists/new', (request, response) => {
+app.get("/artists/new", (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  response.render("new");
 });
 
-app.post('/artists', (request, response) => {
-  let { name, photo_url, nationality }= request.body;
-
+app.post("/artists", (request, response) => {
+  let { name, photo_url, nationality } = request.body;
 
   const queryString = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${name}', '${photo_url}', '${nationality}')`;
 
   pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
-          
-        response.redirect("/artists/")
-          
-      }
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      response.redirect("/artists/");
+    }
   });
-  
-})
+});
 
 /**
  * ===================================
@@ -110,151 +104,123 @@ app.post('/artists', (request, response) => {
  * ===================================
  */
 
-app.get('/artists/:id', (request, response) => {
-  let artistId = parseInt(request.params.id)
-  
+app.get("/artists/:id", (request, response) => {
+  let artistId = parseInt(request.params.id);
+
   const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
 
   pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
-          const data = {
-            result: result.rows[0]
-          }
-          
-          response.render("individualartist", data);
-          
-      }
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      const data = {
+        result: result.rows[0]
+      };
+
+      response.render("individualartist", data);
+    }
   });
-})
+});
 
 /**
  * ===================================
  *INDIVIDUAL ARTIST SONGS
  * ===================================
  */
-app.get('/artists/:id/songs', (request, response) =>{
+app.get("/artists/:id/songs", (request, response) => {
   let artistId = parseInt(request.params.id);
   const queryString = `SELECT * FROM songs WHERE artist_id=${artistId}`;
 
   pool.query(queryString, (err, result) => {
     if (err) {
-        console.error("query error:", err.stack);
-        response.send("query error");
+      console.error("query error:", err.stack);
+      response.send("query error");
     } else {
-        const data = {
-          result: result.rows,
-          id: artistId
-        }
+      const data = {
+        result: result.rows
+      };
 
-        response.render("artistSongs", data);
-        
+      response.render("artistSongs", data);
     }
-});
-})
-
-/**
- * ===================================
- *ADD SONG TO ARTIST
- * ===================================
- */
-
- app.get("/artists/:id/songs/new", (request, response)=>{
-  let id = parseInt(request.params.id);
-  const queryString = `SELECT * FROM artists WHERE id=${id}`;
-
-  pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
-          const data = {
-            result: result.rows
-          }
-          
-          response.render("addsong", data);
-          
-      }
   });
- })
+});
 
 /**
  * ===================================
  * EDIT AN ARTIST
  * ===================================
  */
-app.get('/artists/:id/edit', (request, response) => {
+app.get("/artists/:id/edit", (request, response) => {
   let artistId = parseInt(request.params.id);
   const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
-  
+
   pool.query(queryString, (err, result) => {
     if (err) {
-        console.error("query error:", err.stack);
-        response.send("query error");
+      console.error("query error:", err.stack);
+      response.send("query error");
     } else {
-        const data = {
-          result: result.rows[0]
-        }
-        
-        response.render("edit", data);
-    }
-});
-})
+      const data = {
+        result: result.rows[0]
+      };
 
-app.put('/artists/:id', (request, response) => {
+      response.render("edit", data);
+    }
+  });
+});
+
+app.put("/artists/:id", (request, response) => {
   let artistId = parseInt(request.params.id);
-  let { name, photo_url, nationality }= request.body;
+  let { name, photo_url, nationality } = request.body;
   const queryString = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${artistId}`;
 
   pool.query(queryString, (err, result) => {
     if (err) {
-        console.error("query error:", err.stack);
-        response.send("query error");
+      console.error("query error:", err.stack);
+      response.send("query error");
     } else {
-     
-        response.redirect(`/artists/${artistId}`);
+      response.redirect(`/artists/${artistId}`);
     }
+  });
 });
-})
 
 /**
  * ===================================
  * DELETE AN ARTIST
  * ===================================
  */
-app.get('/artists/:id/delete', (request, response) => {
+app.get("/artists/:id/delete", (request, response) => {
   let artistId = parseInt(request.params.id);
-  const queryString = `SELECT * FROM artists WHERE id=${artistId}`;
-  
-  pool.query(queryString, (err, result) => {
-    if (err) {
-        console.error("query error:", err.stack);
-        response.send("query error");
-    } else {
-        const data = {
-          result: result.rows[0]
-        }
-       
-        response.render("delete", data);
-    }
-});
-})
+  let input =[artistId]
+  const queryString = `SELECT * FROM artists WHERE id=$1`;
 
-app.delete('/artists/:id', (request, response) =>{
-  let artistId = parseInt(request.params.id);
-  const queryString = `DELETE FROM artists WHERE id=${artistId}`;
-  pool.query(queryString, (err, result) => {
+  pool.query(queryString, input, (err, result) => {
     if (err) {
-        console.error("query error:", err.stack);
-        response.send("query error");
+      console.error("query error:", err.stack);
+      response.send("query error");
     } else {
-   
-        response.redirect("/artists");
+      const data = {
+        result: result.rows[0]
+      };
+
+      response.render("delete", data);
     }
+  });
 });
-})
+
+app.delete("/artists/:id", (request, response) => {
+  let artistId = parseInt(request.params.id);
+  let input = [artistId]
+  const queryString = `DELETE FROM artists WHERE id=$1`;
+  pool.query(queryString,input, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      response.redirect("/artists");
+    }
+  });
+});
 
 /**
  * ===================================
@@ -262,49 +228,47 @@ app.delete('/artists/:id', (request, response) =>{
  * ===================================
  */
 
- app.get('/playlist', (request, response)=>{
+app.get("/playlist", (request, response) => {
   const queryString = `SELECT * FROM playlist`;
 
   pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
-          const data = {
-            result: result.rows
-          }
-  
-        response.render("playlist", data)
-          
-      }
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      const data = {
+        result: result.rows
+      };
+      console.log("THIS IS FOR PLAYLIST SAKDJNAKDJASNDANK " + result.rows);
+      response.render("playlist", data);
+    }
   });
- })
+});
 /**
  * ===================================
  * ADD A PLAYLIST
  * ===================================
  */
-app.get('/playlists/new', (request, response) =>{
-  response.render('newplaylist')
-})
+app.get("/playlists/new", (request, response) => {
+  response.render("newplaylist");
+});
 
-app.post('/playlist', (request, response)=>{
+app.post("/playlist", (request, response) => {
   let name = request.body.name;
+  let input = [name]
 
-  const queryString = `INSERT INTO playlist (name) VALUES ('${name}')`;
+  const queryString = `INSERT INTO playlist (name) VALUES ($1)`;
 
-  pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
-          
-      
-        response.redirect("playlist")
-          
-      }
+  pool.query(queryString, input, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      console.log("THIS IS FOR PLAYLIST SAKDJNAKDJASNDANK " + result.rows);
+      response.redirect("playlist");
+    }
   });
-})
+});
 
 /**
  * ===================================
@@ -312,34 +276,31 @@ app.post('/playlist', (request, response)=>{
  * ===================================
  */
 
-app.get('/playlist/:id', (request, response)=>{
+app.get("/playlist/:id", (request, response) => {
   let id = parseInt(request.params.id);
-  // const queryString = `SELECT * FROM playlist WHERE id=${id}`;
+  let input = [id]
   const queryString = `SELECT playlist_song.song_id, songs.title, songs.album
                   FROM songs
                   INNER JOIN playlist_song
                   ON (playlist_song.song_id = songs.id)
-                  WHERE playlist_song.playlist_id = ${id}`
+                  WHERE playlist_song.playlist_id = $1`;
 
-  pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
+  pool.query(queryString,input, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      const data = {
+        result: result.rows,
+        id: id
+      };
 
-        const data = {
-          result: result.rows,
-          id:id
-        }
+      console.log(result.rows);
 
-
-          
-         response.render('individualplaylist', data)
-          
-      }
+      response.render("individualplaylist", data);
+    }
   });
-})
-
+});
 
 /**
  * ===================================
@@ -347,71 +308,59 @@ app.get('/playlist/:id', (request, response)=>{
  * ===================================
  */
 
-
-app.get('/playlist/:id/newsong', (request, response)=>{
+app.get("/playlist/:id/newsong", (request, response) => {
   let id = parseInt(request.params.id);
   const queryString = `SELECT * FROM songs`;
 
   pool.query(queryString, (err, result) => {
-      if (err) {
-          console.error("query error:", err.stack);
-          response.send("query error");
-      } else {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      const data = {
+        result: result.rows,
+        id: id
+      };
 
-        const data = {
-          result: result.rows,
-          id: id
-        }
-          
-         response.render('newsong', data)
-          
-      }
+      response.render("newsong", data);
+    }
   });
-})
-app.post('/playlist/:id', (request, response)=>{
+});
+app.post("/playlist/:id", (request, response) => {
   let playlistId = parseInt(request.params.id);
   let songId = parseInt(request.body.id);
-  let input = [songId, playlistId]
- 
-  const queryString = `INSERT INTO playlist_song (song_id, playlist_id) VALUES( $1, $2) `;
-  pool.query(queryString,input, (err, result) => {
+  let input = [songId, playlistId];
+  const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES($1, $2)";
+  pool.query(queryString, input, (err, result) => {
     if (err) {
-        console.error("query error:", err.stack);
-        response.send("query error");
+      console.error("query error:", err.stack);
+      response.send("query error");
     } else {
-
-        
-  response.redirect('/playlist/' + playlistId)
-        
+      
+console.log(result)
+      response.redirect("/playlist/" + playlistId);
     }
+  });
 });
-})
-
-
-
-
-
-
-
 
 /**
  * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const server = app.listen(3000, () =>
+  console.log("~~~ Tuning in to the waves of port 3000 ~~~")
+);
 
-let onClose = function(){
-  
+let onClose = function() {
   console.log("closing");
-  
+
   server.close(() => {
-    
-    console.log('Process terminated');
-    
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
+    console.log("Process terminated");
+
+    pool.end(() => console.log("Shut down db connection pool"));
+  });
 };
 
-process.on('SIGTERM', onClose);
-process.on('SIGINT', onClose);
+process.on("SIGTERM", onClose);
+process.on("SIGINT", onClose);
