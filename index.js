@@ -3,9 +3,9 @@ console.log("starting up!!");
 const express = require("express");
 const methodOverride = require("method-override");
 const pg = require("pg");
-const sha256 = require('js-sha256');
-const cookieParser = require('cookie-parser')
-let SALT ="SUPERSECRETPASSWORD"
+const sha256 = require("js-sha256");
+const cookieParser = require("cookie-parser");
+let SALT = "SUPERSECRETPASSWORD";
 
 // Initialise postgres client
 const configs = {
@@ -52,21 +52,19 @@ app.engine("jsx", reactEngine);
  * ===================================
  */
 
-
-
 /**
  * ===================================
  * REGISTER PAGE
  * ===================================
  */
-app.get('/register', (request, response) =>{
-  response.render("register")
-})
+app.get("/register", (request, response) => {
+  response.render("register");
+});
 
-app.post('/register', (request, response)=>{
+app.post("/register", (request, response) => {
   let hashedPassword = sha256(request.body.password + SALT);
   let username = request.body.username;
-  let input = [username, hashedPassword]
+  let input = [username, hashedPassword];
   const queryString = `INSERT INTO users (usernames, password) VALUES ($1, $2)`;
 
   pool.query(queryString, input, (err, result) => {
@@ -77,7 +75,7 @@ app.post('/register', (request, response)=>{
       response.redirect("/artists/");
     }
   });
-})
+});
 
 /**
  * ===================================
@@ -85,41 +83,87 @@ app.post('/register', (request, response)=>{
  * ===================================
  */
 
- app.get('/login', (request, response)=>{
-   response.render("login")
- });
+app.get("/login", (request, response) => {
+  response.render("login");
+});
 
- app.post('/login', (request, response)=>{
+app.post("/login", (request, response) => {
   let requestUsername = request.body.username;
   let requestPassword = request.body.password;
   let input = [requestUsername];
-  const queryString = "SELECT * FROM users WHERE usernames=$1"
-  pool.query(queryString,input, (err, result) => {
+  const queryString = "SELECT * FROM users WHERE usernames=$1";
+  pool.query(queryString, input, (err, result) => {
     if (err) {
       console.error("query error:", err.stack);
       response.send("query error");
     } else {
       console.log("query result:", result);
-      if(result.rows.length > 0) {
+      if (result.rows.length > 0) {
         let hashPassword = sha256(requestPassword + SALT);
 
-        if(hashPassword === result.rows[0].password){
+        if (hashPassword === result.rows[0].password) {
           let user_id = result.rows[0].id;
 
           let hashCookie = sha256(SALT + user_id);
-          response.cookie('user_id', user_id)
-          response.cookie('Logged_in', hashCookie);
-         
-
+          response.cookie("user_id", user_id);
+          response.cookie("Logged_in", hashCookie);
         } else {
-          response.status(403).send('WRONG PASSWORD')
+          response.status(403).send("WRONG PASSWORD");
         }
       }
 
-      response.redirect("/artists/")
+      response.redirect("/artists/");
     }
   });
- })
+});
+/**
+ * ===================================
+ * FAVORITES
+ * ===================================
+ */
+app.get("/favorites/new", (request, response) => {
+  const queryString = `SELECT songs.title, songs.id, songs.artist_id, artists.name
+                  FROM artists
+                  INNER JOIN songs
+                  ON (songs.artist_id = artists.id)`;
+
+  pool.query(queryString, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+    
+
+      const data = {
+        result: result.rows
+      };
+      
+
+      response.render("newfavorite", data);
+    }
+  });
+
+});
+
+app.post('/favorites', (request, response)=> {
+  let song = request.body.song
+let userId = request.cookies['user_id']
+let input = [song, userId]
+const queryString = "INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *"
+pool.query(queryString, input, (err, result) => {
+  if (err) {
+    console.error("query error:", err.stack);
+    response.send("query error");
+  } else {
+    
+
+    response.redirect("/favorites");
+  }
+});
+
+})
+
+
 /**
  * ===================================
  * HOME PAGE
@@ -263,7 +307,7 @@ app.put("/artists/:id", (request, response) => {
  */
 app.get("/artists/:id/delete", (request, response) => {
   let artistId = parseInt(request.params.id);
-  let input =[artistId]
+  let input = [artistId];
   const queryString = `SELECT * FROM artists WHERE id=$1`;
 
   pool.query(queryString, input, (err, result) => {
@@ -282,9 +326,9 @@ app.get("/artists/:id/delete", (request, response) => {
 
 app.delete("/artists/:id", (request, response) => {
   let artistId = parseInt(request.params.id);
-  let input = [artistId]
+  let input = [artistId];
   const queryString = `DELETE FROM artists WHERE id=$1`;
-  pool.query(queryString,input, (err, result) => {
+  pool.query(queryString, input, (err, result) => {
     if (err) {
       console.error("query error:", err.stack);
       response.send("query error");
@@ -327,7 +371,7 @@ app.get("/playlists/new", (request, response) => {
 
 app.post("/playlist", (request, response) => {
   let name = request.body.name;
-  let input = [name]
+  let input = [name];
 
   const queryString = `INSERT INTO playlist (name) VALUES ($1)`;
 
@@ -336,7 +380,6 @@ app.post("/playlist", (request, response) => {
       console.error("query error:", err.stack);
       response.send("query error");
     } else {
-     
       response.redirect("playlist");
     }
   });
@@ -350,14 +393,14 @@ app.post("/playlist", (request, response) => {
 
 app.get("/playlist/:id", (request, response) => {
   let id = parseInt(request.params.id);
-  let input = [id]
+  let input = [id];
   const queryString = `SELECT playlist_song.song_id, songs.title, songs.album
                   FROM songs
                   INNER JOIN playlist_song
                   ON (playlist_song.song_id = songs.id)
                   WHERE playlist_song.playlist_id = $1`;
 
-  pool.query(queryString,input, (err, result) => {
+  pool.query(queryString, input, (err, result) => {
     if (err) {
       console.error("query error:", err.stack);
       response.send("query error");
@@ -402,14 +445,14 @@ app.post("/playlist/:id", (request, response) => {
   let playlistId = parseInt(request.params.id);
   let songId = parseInt(request.body.id);
   let input = [songId, playlistId];
-  const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES($1, $2)";
+  const queryString =
+    "INSERT INTO playlist_song (song_id, playlist_id) VALUES($1, $2)";
   pool.query(queryString, input, (err, result) => {
     if (err) {
       console.error("query error:", err.stack);
       response.send("query error");
     } else {
-      
-console.log(result)
+      console.log(result);
       response.redirect("/playlist/" + playlistId);
     }
   });

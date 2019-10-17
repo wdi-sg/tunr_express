@@ -39,6 +39,11 @@ class Home extends React.Component {
 >
   See all Playlists
 </a>
+<a className="btn btn-warning btn-lg btn text-light mb-5 ml-5"
+  href="/favorites"
+>
+  Favorites
+</a>
      </div>
           
 <h2 className="display-4">Artists: </h2>
