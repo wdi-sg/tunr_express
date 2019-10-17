@@ -17,6 +17,11 @@ port: 5432,
 };
 
 
+
+
+
+
+
 const pool = new pg.Pool(configs);
 
 pool.on('error', function (err) {
@@ -41,6 +46,7 @@ app.use(express.urlencoded({
 app.use(methodOverride('_method'));
 
 
+
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
@@ -48,6 +54,11 @@ app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 app.use(methodOverride('_method'));
 app.use(express.static(__dirname+'/public/'));
+
+const cookieParser = require('cookie-parser')
+app.use(cookieParser());
+
+
 /**
  * ===================================
  * Routes
@@ -388,8 +399,9 @@ let hashedPassword = sha256(request.body.password + SALT);
             console.log('user/pw ok')
             // store a cookie
             let currentSessionCookie = sha256( username + SALT );
-            response.cookie('logged_in', currentSessionCookie);
-            response.render('login');
+            response.cookie('tunr_user', username);
+            response.cookie('tunr_nr', currentSessionCookie);
+            response.redirect('/');
 
           } else {
               console.log('password ng')
@@ -403,6 +415,117 @@ let hashedPassword = sha256(request.body.password + SALT);
       }
 
   });
+ });
+
+
+// FORM TO ADD SONGS TO THE USERS FAVORITES
+app.get('/favorites/new', (request, response) => {
+
+
+if (sha256(request.cookies['tunr_user'] + SALT) === request.cookies['tunr_nr'] ){
+  console.log('logged in as', request.cookies["tunr_user"]);
+  } else {
+  console.log('not logged in');
+  }
+
+      let inputId = parseInt( request.params.id )
+  // query database
+// show all the artists
+  const queryString = 'SELECT * from songs ORDER BY title ASC';
+ pool.query(queryString, (err, result) => {
+    // obj is the object from the pokedex json file
+    // extract input data from request
+    console.log(err);
+    // let inputId = parseInt( request.params.id );
+            const data = {
+            songsobj: result.rows
+        }
+    data.pageTitle ="Add to Favorites";
+    data.id = inputId;
+    data.username = request.cookies['tunr_user'];
+    data.action = "/favorites";
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('new_song', data);
+  });
+ });
+
+
+// FORM TO ADD THE SONGS IN THE USERS FAVORITES
+app.post('/favorites', (request, response) => {
+
+  if (sha256(request.cookies['tunr_user'] + SALT) === request.cookies['tunr_nr'] ){
+    console.log('logged in as', request.cookies["tunr_user"]);
+     } else {
+    console.log('not logged in');
+  }
+
+  let username = request.cookies["tunr_user"];
+
+// get the users ID from the database
+  let queryString = "SELECT * from users WHERE username='"+username+"'";
+
+  pool.query(queryString, (err, result) => {
+    console.log(err);
+    let user_id = result.rows[0].id;
+  // query database
+// update the favorites database with the users choice of song
+  queryString = 'INSERT INTO favorites (song_id , user_id) VALUES ($1, $2) RETURNING id';
+  const values = [request.body.song_id, user_id];
+
+  pool.query(queryString, values, (err, result) => {
+    console.log(err);
+  });
+    });
+  queryString = 'SELECT * from songs ORDER BY title ASC';
+  pool.query(queryString, (err, result) => {
+    // get the other data
+
+            const data = {
+            songsobj: result.rows
+        }
+    data.pageTitle = "Song Added. Add another song?";
+    data.action = "/favorites";
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('new_song', data);
+  });
+
+ });
+
+
+// SHOW ALL SONGS IN USERS FAVORITES
+app.get('/favorites', (request, response) => {
+
+
+  if (sha256(request.cookies['tunr_user'] + SALT) === request.cookies['tunr_nr'] ){
+    console.log('logged in as', request.cookies["tunr_user"]);
+     } else {
+    console.log('not logged in');
+  }
+
+  let username = request.cookies["tunr_user"];
+  let queryString = "SELECT * from users WHERE username='"+username+"'";
+
+  pool.query(queryString, (err, result) => {
+    console.log(err);
+    let user_id = result.rows[0].id;
+
+  // query database
+  queryString = 'SELECT favorites.song_id, songs.title from favorites INNER JOIN songs ON songs.id = favorites.song_id WHERE user_id='+user_id;
+  pool.query(queryString, (err, result) => {
+    // get the other data
+
+            const data = {
+            songsobj: result.rows
+        }
+    data.pageTitle = "My Favorite Songs";
+    data.action = "/favorites";
+         // console.log("playlist data:", data)
+           // respond with HTML page displaying all artists
+    response.render('playlist_songs', data);
+  });
+ });
  });
 
 /**
