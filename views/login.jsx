@@ -1,14 +1,14 @@
 const React = require("react");
 const GetUserCredentials = require("./components/GetUserCredentials");
 
-class Register extends React.Component {
+class Login extends React.Component {
   render() {
     return (
       <div>
-        <GetUserCredentials type="Register" />
+        <GetUserCredentials type="Login" />
       </div>
     );
   }
 }
 
-module.exports = Register;
+module.exports = Login;
