@@ -4,6 +4,9 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+const sha256 = require('js-sha256');
+const SALT = "gasei20rocks";
+
 // Initialise postgres client
 const configs = {
     user: 'siewling',
@@ -112,7 +115,7 @@ app.post('/artists', (request, response) => {
     const inputValues = [artistName, photoURL, nationality];
 
     // Construct the insert into query with the values from the request body
-    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
 
     // Use pool.query to run the insert query
     pool.query(queryString, inputValues, (err, result) => {
@@ -194,7 +197,7 @@ app.post('/artists/:id/songs', (request, response) => {
     let inputValues = [songTitle, album, previewLink, artwork, artistID];
 
     // Construct the insert query to save the artist's new song to DB
-    const createArtistSong = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)";
+    const createArtistSong = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *";
 
     // Run pool.query
     pool.query(createArtistSong, inputValues, (err, result) => {
@@ -347,7 +350,7 @@ app.post('/playlist', (request, response) => {
     const inputValues = [newPlaylistName];
 
     // Construct insert query
-    const createPlaylist = "INSERT INTO playlist (name) VALUES ($1)";
+    const createPlaylist = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
 
     // Call pool.query to save the request body to database
     pool.query(createPlaylist, inputValues, (err, result) => {
@@ -444,7 +447,7 @@ app.post('/playlist/:id', (request, response) => {
     let inputValues = [inputSongID, playlistId];
 
     // Construct the query to insert the playlist ID and inputSongID into playlist_song table
-    const addSongToPlaylistQuery = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)";
+    const addSongToPlaylistQuery = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
 
     // Call pool.query to run the query
     pool.query(addSongToPlaylistQuery, inputValues, (err, result) => {
@@ -452,6 +455,43 @@ app.post('/playlist/:id', (request, response) => {
             console.log("Error adding song to playlist: ", err.message);
         } else {
             response.send("Song added to playlist!");
+        }
+    });
+});
+
+// GET method - To render registration page
+app.get('/register', (request, response) => {
+    response.render('register');
+});
+
+// POST method - To save user account details to DB
+app.post('/register', (request, response) => {
+
+    // Get request body values
+    let inputUsername = request.body.username;
+
+    let inputPassword = request.body.password;
+    let hashedInputPassword = sha256(inputPassword);
+
+    const inputValues = [inputUsername, hashedInputPassword];
+
+    // Construct INSERT query
+    const createUserQuery = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *";
+
+    // Use pool.query to store in DB
+    pool.query(createUserQuery, inputValues, (err, result) => {
+
+        if (err) {
+            console.log("Error creating user: " + err.message);
+        } else {
+            // After user has been created, set cookie
+            let userId = result.rows[0].id;
+            response.cookie('user_id', userId);
+
+            let currentSessionCookie = sha256(userId + SALT);
+            response.cookie('logged_in', currentSessionCookie);
+
+            response.render('home');
         }
     });
 });
