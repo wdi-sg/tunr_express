@@ -401,7 +401,7 @@ let hashedPassword = sha256(request.body.password + SALT);
             let currentSessionCookie = sha256( username + SALT );
             response.cookie('tunr_user', username);
             response.cookie('tunr_nr', currentSessionCookie);
-            response.redirect('/');
+            response.redirect('/favorites');
 
           } else {
               // console.log('password ng')
