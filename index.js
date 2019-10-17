@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser')
 
 // Initialise postgres client
 const configs = {
@@ -41,6 +42,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(cookieParser());
 
 /**
  * ===================================
@@ -206,41 +208,128 @@ const showPlaylistByID = (request, response) => {
     })
 };
 
-/*==========================================
-          Restful Routes
-==========================================*/
+const showNewRegistrationForm = (request, response) => {
+    // respond with HTML page with form to create new artist
+    // get the currently set cookie
+    var visits = request.cookies['visits'];
 
-app.get('/artists', showHome);
-app.get('/artists/new', showNewArtistForm);
-app.post('/artists', postNewArtist)
-app.get('/artists/:id', showArtistByID)
-app.get('/artists/:id/songs', showSongsByArtist)
-app.get('/playlists', showPlaylists);
-app.get('/playlists/new', showNewPlaylistForm);
-app.post('/playlists', postNewPlaylist);
-app.get('/playlists/:id/newsong', addNewSongToPlaylist)
-app.post('/playlists/:id', postNewSongsToPlaylist)
-app.get('/playlists/:id', showPlaylistByID)
+    // see if there is a cookie
+    if (visits === undefined) {
 
+        // set a default value if it doesn't exist
+        visits = 1;
+    } else {
 
-/**
- * ===================================
- * Listen to requests on port 3000
- * ===================================
- */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+        // if a cookie exists, make a value thats 1 bigger
+        visits = parseInt(visits) + 1;
+    }
 
-let onClose = function () {
-
-    console.log("closing");
-
-    server.close(() => {
-
-        console.log('Process terminated');
-
-        pool.end(() => console.log('Shut down db connection pool'));
-    })
+    // set the cookie
+    response.cookie('visits', visits);
+    response.render('register');
 };
 
-process.on('SIGTERM', onClose);
-process.on('SIGINT', onClose);
+const postNewRegistration = (request, response) => {
+    let input = request.body;
+    let inputArr = [input.username, input.password];
+    console.log(inputArr);
+
+    const queryString = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`
+    pool.query(queryString, inputArr, (err, result) => {
+        if (err) {
+            console.log('query error: ', err.stack)
+            response.send('query error');
+        } else {
+            console.log('query results: ', result);
+            response.send(result.rows)
+        }
+    })
+}
+const showLoginPage = (request, response) => {
+    response.render('login')
+}
+// FIXME: FIX the hash
+const postLogin = (request, response) => {
+        let input = request.body;
+        let inputArr = [input.username, input.password];
+        console.log(inputArr);
+
+        const queryString = "SELECT * from users WHERE username=($1);
+        console.log('db query', queryString);
+
+        pool.query(queryString, inputArr, (err, result) => {
+                if (err) {
+                    console.error('query error:', err.stack);
+                    response.send('query error');
+                } else {
+                    console.log('query result:', result.rows);
+                    // if this user exists in the db
+
+                    if (result.rows.length > 0) {
+                        let hashedRequestPassword = sha256(input.password);
+                        console.log('hashed request password: ' + hashedRequestPassword);
+
+                        // check to see if the password in request.body matches what's in the db
+                        if (hashedRequestPassword === result.rows[0].password) {
+                            let user_id = result.rows[0].id;
+
+                            let hashedCookie = sha256(SALT + user_id);
+
+                            response.cookie('user_id', user_id);
+                            response.cookie('hasLoggedIn', hashedCookie);
+
+                            // if it matches they have been verified, log them in
+                            response.send('about to log you in');
+                        } else {
+                            response.status(403).send('wrong password');
+                        }
+
+                        //
+                    } else {
+                        response.status(403).send('no username');
+                    }
+
+                    // redirect to home page
+                }
+            }
+        }
+        /*==========================================
+                  Restful Routes
+        ==========================================*/
+
+        app.get('/artists', showHome);
+        app.get('/artists/new', showNewArtistForm);
+        app.post('/artists', postNewArtist)
+        app.get('/artists/:id', showArtistByID)
+        app.get('/artists/:id/songs', showSongsByArtist)
+        app.get('/playlists', showPlaylists);
+        app.get('/playlists/new', showNewPlaylistForm);
+        app.post('/playlists', postNewPlaylist);
+        app.get('/playlists/:id/newsong', addNewSongToPlaylist)
+        app.post('/playlists/:id', postNewSongsToPlaylist)
+        app.get('/playlists/:id', showPlaylistByID)
+        app.get('/register', showNewRegistrationForm)
+        app.post('/register', postNewRegistration)
+        app.get('/login', showLoginPage)
+
+        /**
+         * ===================================
+         * Listen to requests on port 3000
+         * ===================================
+         */
+        const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+
+        let onClose = function () {
+
+            console.log("closing");
+
+            server.close(() => {
+
+                console.log('Process terminated');
+
+                pool.end(() => console.log('Shut down db connection pool'));
+            })
+        };
+
+        process.on('SIGTERM', onClose);
+        process.on('SIGINT', onClose);

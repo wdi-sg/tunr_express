@@ -30,7 +30,6 @@ class DefaultLayout extends React.Component {
 						<ul class='nav justify-content-center nav-tabs'>
 							<li class='nav-item'>
 								<a class='nav-link ml-2' href='http://localhost:3000/artists' style={aStyle}><strong>TUNR</strong>
-									
 								</a>
 							</li>
 							<li class='nav-item'>
@@ -56,6 +55,16 @@ class DefaultLayout extends React.Component {
 							<li class='nav-item'>
 								<a class='nav-link' href='http://localhost:3000/playlists' style={aStyle}>
 									Show all playlists
+								</a>
+							</li>
+							<li class='nav-item'>
+								<a class='nav-link' href='http://localhost:3000/register' style={aStyle}>
+									Register!
+								</a>
+							</li>
+							<li class='nav-item'>
+								<a class='nav-link' href='http://localhost:3000/login' style={aStyle}>
+									Log In
 								</a>
 							</li>
 						</ul>
