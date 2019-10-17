@@ -3,6 +3,9 @@ console.log("starting up!!");
 const express = require("express");
 const methodOverride = require("method-override");
 const pg = require("pg");
+const cookieParser = require('cookie-parser')
+const SALT = 'banana';
+var sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -35,6 +38,7 @@ app.use(
 );
 
 app.use(methodOverride("_method"));
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require("express-react-views").createEngine();
@@ -218,6 +222,34 @@ app.post("/playlists/:id", (req, res) => {
     }
   );
 });
+
+app.get('/register', (req, res) => {
+
+  res.render('Register');
+})
+
+app.post('/register', (req, res) => {
+
+  const { name } = req.body;
+  console.log("req.body", req.body);
+  console.log("name", name);
+
+  pool.query(`INSERT INTO users (name) VALUES ('${name}') RETURNING *`, (err, result) => {
+    console.log('result', result.rows);
+
+    let username = result.rows[0].name;
+    let user_id = result.rows[0].id; 
+    let loggedin = sha256(SALT + user_id);
+
+    res.cookie('username', username);
+    res.cookie('user_id', user_id);
+    res.cookie('loggedin', loggedin);
+    // res.send('user registered');
+    res.redirect('/');
+  
+  })
+
+})
 
 
 
