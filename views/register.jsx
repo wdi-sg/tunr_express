@@ -13,20 +13,11 @@ class Register extends React.Component {
         <body>
          <h2 class="text-center" style={{margin: '100px auto', width: '500px', fontFamily: 'Montserrat'}}>Create User Account: </h2>
          <main class="form-row" style={{ margin: '50px auto',  width: '500px', fontFamily: 'Montserrat'}} >
-          <form method="POST" action="/register" style={{width: '300px', display: 'block', margin: '0 auto'}}>
-
-
-
-
-
-                Username: <input name="name" class="text-center" placeholder="Create Username:" style={{width: '300px', display: 'block', margin: '0 auto'}}/>
-
-
-                Password: <input name="password" class="text-center" placeholder="Create password" style={{width: '300px', display: 'block', margin: '0 auto'}}/>
-
-                <input type="submit" class="btn btn-primary btn-block" style={{width: '300px', display: 'block', margin: '10px auto'}}/>
-
-          </form>
+            <form method="POST" action="/register" style={{width: '300px', display: 'block', margin: '0 auto'}}>
+             Username: <input name="name" class="text-center" placeholder="Create Username:" style={{width: '300px', display: 'block', margin: '0 auto'}}/>
+             Password: <input name="password" class="text-center" placeholder="Create password" style={{width: '300px', display: 'block', margin: '0 auto'}}/>
+             <input type="submit" class="btn btn-primary btn-block" style={{width: '300px', display: 'block', margin: '10px auto'}}/>
+            </form>
         </main>
           </body>
       </html>

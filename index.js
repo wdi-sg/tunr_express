@@ -6,6 +6,8 @@ const pg = require('pg');
 const cookieParser = require('cookie-parser');
 const sha256 = require('js-sha256');
 
+var SALT = "shdhs:!DJDSkdmsldsfksjensshdhs:!DJDSkdmsldsfksjens;:!DJDSkdmsldsfksjensshdhs:!DJDSkdmsldsfksjens;"
+
 // Initialise postgres client
 const configs = {
     user: 'mariadimitrijevic',
@@ -243,21 +245,29 @@ app.get('/register', (request, response) => {
 //post
 app.post('/register', (request, response) => {
     console.log(request.body);
+    let newUser = request.body;
+    let hashedPassword = sha256(newUser.password + SALT);
 
     const queryString = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
 
     const values = [
-        request.body.name,
-        request.body.password
+        newUser.name,
+        hashedPassword
     ];
 
     pool.query(queryString, values, (err, queryRes) => {
+
+        let userID = queryRes.rows[0].id;
+        let hashedCookie = sha256(userID + 'loggedin' + SALT);
 
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
         } else {
             console.log('query result:', queryRes);
+
+            response.cookie('loggedin', hashedCookie)
+            response.cookie('user_id', userID)
 
 
             // response.send( queryRes.rows );
@@ -278,7 +288,9 @@ app.get('/login', (request, response) => {
 
 //post
 
+
 app.post('/login', (request, response) => {
+    let newUser = request.body;
     let requestUsername = request.body.name;
     let requestPassword = request.body.password;
 
@@ -297,48 +309,110 @@ app.post('/login', (request, response) => {
 
             if (result.rows.length > 0) {
 
-                if (requestPassword === result.rows[0].password) {
+                let hashedRequestPassword = sha256(requestPassword + SALT);
+                console.log("hashed request password: " + hashedRequestPassword);
+
+                // check to see if the password in request.body matches what's in the db
+                //or hashedRequestPassword === requestPassword ?
+                if (hashedRequestPassword === result.rows[0].password) {
                     let user_id = result.rows[0].id
 
-                    // if it matches log user in
+                    let hashedCookie = sha256(SALT + user_id);
+
+                    response.cookie('user_id', user_id);
+                    response.cookie('hasLoggedIn', hashedCookie);
+
+                    // if it matches they have been verified, log them in
                     response.send('about to log you in')
+
                 } else {
-                    //if wrong password
+
                     response.status(403).send('wrong password');
                 }
 
+
+                //
+
             } else {
-                //if wrong username
                 response.status(403).send('wrong username');
 
             }
 
+
+            // redirect to home page
+            // response.render('home');
         }
-        response.render('home');
     });
+
+    response.render('home');
+
 
 });
 
+//favorites
+
+app.get('/login/favorites/new', (request, response) => {
+            const queryString = `SELECT * FROM songs`;
+        let id = request.params.id;
+            //recognise logged in user? how? cookies?
+
+            pool.query(queryString, (err, queryRes) => {
+
+                    const data = {
+                        songsList: queryRes.rows
+                    }
+
+                    data.id = id;
+
+                    response.render('formForFavorite', data);
+                });
+
+            });
+//form renders with song library to choose, but submit doesn't work
+
+        app.post('/favorites', (request, response) => {
+            let newFavSong = request.body.id;
+            let cookie = request.cookies;
+
+            const queryString = `INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) returning *`;
+
+            //const data for songs
+            // let values
+            //cookies?? how?
+
+            pool.query(queryString, values, (err, queryRes) => {
+                if (err) {
+                    console.log('query error:', err.stack);
+                    response.send('query error');
+                } else {
+                    response.render('Favorites', data);
+                }
+            })
+        });
 
 
-/**
- * ===================================
- * Listen to requests on port 3000
- * ===================================
- */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function() {
 
-    console.log("closing");
 
-    server.close(() => {
 
-        console.log('Process terminated');
 
-        pool.end(() => console.log('Shut down db connection pool'));
-    })
-};
+        /**
+         * ===================================
+         * Listen to requests on port 3000
+         * ===================================
+         */
+        const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-process.on('SIGTERM', onClose);
-process.on('SIGINT', onClose);
+        let onClose = function() {
+
+            console.log("closing");
+
+            server.close(() => {
+
+                console.log('Process terminated');
+
+                pool.end(() => console.log('Shut down db connection pool'));
+            })
+        };
+
+        process.on('SIGTERM', onClose); process.on('SIGINT', onClose);

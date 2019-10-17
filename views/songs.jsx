@@ -17,8 +17,8 @@ class Showsongs extends React.Component {
                     <main style={{ margin: '50px auto',  width: '500px', fontFamily: 'Montserrat'}} >
                     <img src={artwork} style={{ width: '500px', fontFamily: 'Montserrat'}} />
 
-                        <h3 class="text-center" style={{width: '500px'}}>{title}</h3>
-                        <h3 class="text-center" style={{width: '500px'}}>{album}</h3>
+                    <h3 class="text-center" style={{width: '500px'}}>{title}</h3>
+                    <h3 class="text-center" style={{width: '500px'}}>{album}</h3>
 
                 </main>
                   </body>
