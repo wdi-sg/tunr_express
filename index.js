@@ -280,6 +280,60 @@ const checkLogIn = (request, response) => {
 
     })
 }
+const showNewFav = (request, response) => {
+    const queryString = `SELECT * FROM songs`
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error: ', err.stack)
+            response.send('query error');
+        } else {
+            // console.log('query results: ', result);
+            const data = {
+                result: result.rows
+            }
+            console.log("~~~~~~~~~~~~~YO~~~~~~~~~~~~~`")
+            response.render('newfavsong', data)
+        }
+    })
+}
+const addToFav = (request, response) => {
+    let loggedinID = request.cookies['user_id'];
+    let input = request.body;
+    let inputArr = [loggedinID, input.id];
+    console.log(inputArr);
+
+    const queryString = `INSERT INTO favourites (user_id, song_id) VALUES ($1, $2) RETURNING *`
+    pool.query(queryString, inputArr, (err, result) => {
+        if (err) {
+            console.log('query error: ', err.stack)
+            response.send('query error');
+        } else {
+            console.log('added to favourites table: ', result.rows[0]);
+            response.send('added to favourites')
+        }
+    })
+}
+const showAllFavs = (request, response) => {
+    let loggedin = request.cookies['user_id'];
+
+    const queryString = "SELECT songs.title FROM songs FULL OUTER JOIN favourites ON songs.id = favourites.song_id WHERE user_id='" + loggedin + "'"
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('query error: ', err.stack)
+            response.send('query error');
+        } else {
+            // console.log('query results: ', result);
+            const data = {
+                result: result.rows
+            }
+            console.log("~~~~~~~~~~~~~YO~~~~~~~~~~~~~`")
+            response.render('showsongs', data)
+        }
+    })
+}
+
 /*==========================================
           Restful Routes
 ==========================================*/
@@ -299,6 +353,9 @@ app.get('/register', showNewRegistrationForm)
 app.post('/register', postNewRegistration)
 app.get('/login', showLoginPage)
 app.post('/login', checkLogIn)
+app.get('/favourites/new', showNewFav)
+app.post('/favourites', addToFav)
+app.get('/favourites', showAllFavs)
 
 /**
  * ===================================

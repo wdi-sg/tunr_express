@@ -53,6 +53,11 @@ class DefaultLayout extends React.Component {
 								</a>
 							</li>
 							<li class='nav-item'>
+								<a class='nav-link' href='http://localhost:3000/favourites' style={aStyle}>
+									Favourites
+								</a>
+							</li>
+							<li class='nav-item'>
 								<a class='nav-link' href='http://localhost:3000/register' style={aStyle}>
 									Register!
 								</a>
