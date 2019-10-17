@@ -4,6 +4,8 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser')
+const sha256 = require('js-sha256');
+const SALT = "leilani"
 
 // Initialise postgres client
 const configs = {
@@ -231,7 +233,7 @@ const showNewRegistrationForm = (request, response) => {
 
 const postNewRegistration = (request, response) => {
     let input = request.body;
-    let inputArr = [input.username, input.password];
+    let inputArr = [input.username, sha256(input.password)];
     console.log(inputArr);
 
     const queryString = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`
@@ -248,88 +250,80 @@ const postNewRegistration = (request, response) => {
 const showLoginPage = (request, response) => {
     response.render('login')
 }
-// FIXME: FIX the hash
-const postLogin = (request, response) => {
-        let input = request.body;
-        let inputArr = [input.username, input.password];
-        console.log(inputArr);
 
-        const queryString = "SELECT * from users WHERE username=($1);
-        console.log('db query', queryString);
+const checkLogIn = (request, response) => {
+    let input = request.body;
+    let inputArr = [input.username, input.password];
+    console.log(inputArr);
+    const queryString = "SELECT * FROM users WHERE username='" + input.username + "'"
+    console.log('postLogin queryString:', queryString);
 
-        pool.query(queryString, inputArr, (err, result) => {
-                if (err) {
-                    console.error('query error:', err.stack);
-                    response.send('query error');
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack)
+            response.send('query error');
+        } else {
+            console.log('query result:', result.rows);
+
+            if (result.rows.length > 0) {
+                let hashedRequestPassword = sha256(input.password);
+                console.log('hashed request password: ', hashedRequestPassword);
+
+                if (hashedRequestPassword === result.rows[0].password) {
+                    let user_id = result.rows[0].id;
+
+                    let hashedCookie = sha256(SALT + user_id);
+
+                    response.cookie('user_id', user_id);
+                    response.cookie('hasLoggedIn', hashedCookie);
+
+                    response.redirect('artists');
                 } else {
-                    console.log('query result:', result.rows);
-                    // if this user exists in the db
-
-                    if (result.rows.length > 0) {
-                        let hashedRequestPassword = sha256(input.password);
-                        console.log('hashed request password: ' + hashedRequestPassword);
-
-                        // check to see if the password in request.body matches what's in the db
-                        if (hashedRequestPassword === result.rows[0].password) {
-                            let user_id = result.rows[0].id;
-
-                            let hashedCookie = sha256(SALT + user_id);
-
-                            response.cookie('user_id', user_id);
-                            response.cookie('hasLoggedIn', hashedCookie);
-
-                            // if it matches they have been verified, log them in
-                            response.send('about to log you in');
-                        } else {
-                            response.status(403).send('wrong password');
-                        }
-
-                        //
-                    } else {
-                        response.status(403).send('no username');
-                    }
-
-                    // redirect to home page
+                    response.status(403).send('wrong password');
                 }
             }
         }
-        /*==========================================
-                  Restful Routes
-        ==========================================*/
 
-        app.get('/artists', showHome);
-        app.get('/artists/new', showNewArtistForm);
-        app.post('/artists', postNewArtist)
-        app.get('/artists/:id', showArtistByID)
-        app.get('/artists/:id/songs', showSongsByArtist)
-        app.get('/playlists', showPlaylists);
-        app.get('/playlists/new', showNewPlaylistForm);
-        app.post('/playlists', postNewPlaylist);
-        app.get('/playlists/:id/newsong', addNewSongToPlaylist)
-        app.post('/playlists/:id', postNewSongsToPlaylist)
-        app.get('/playlists/:id', showPlaylistByID)
-        app.get('/register', showNewRegistrationForm)
-        app.post('/register', postNewRegistration)
-        app.get('/login', showLoginPage)
+    })
+}
+/*==========================================
+          Restful Routes
+==========================================*/
 
-        /**
-         * ===================================
-         * Listen to requests on port 3000
-         * ===================================
-         */
-        const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+app.get('/artists', showHome);
+app.get('/artists/new', showNewArtistForm);
+app.post('/artists', postNewArtist)
+app.get('/artists/:id', showArtistByID)
+app.get('/artists/:id/songs', showSongsByArtist)
+app.get('/playlists', showPlaylists);
+app.get('/playlists/new', showNewPlaylistForm);
+app.post('/playlists', postNewPlaylist);
+app.get('/playlists/:id/newsong', addNewSongToPlaylist)
+app.post('/playlists/:id', postNewSongsToPlaylist)
+app.get('/playlists/:id', showPlaylistByID)
+app.get('/register', showNewRegistrationForm)
+app.post('/register', postNewRegistration)
+app.get('/login', showLoginPage)
+app.post('/login', checkLogIn)
 
-        let onClose = function () {
+/**
+ * ===================================
+ * Listen to requests on port 3000
+ * ===================================
+ */
+const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-            console.log("closing");
+let onClose = function () {
 
-            server.close(() => {
+    console.log("closing");
 
-                console.log('Process terminated');
+    server.close(() => {
 
-                pool.end(() => console.log('Shut down db connection pool'));
-            })
-        };
+        console.log('Process terminated');
 
-        process.on('SIGTERM', onClose);
-        process.on('SIGINT', onClose);
+        pool.end(() => console.log('Shut down db connection pool'));
+    })
+};
+
+process.on('SIGTERM', onClose);
+process.on('SIGINT', onClose);

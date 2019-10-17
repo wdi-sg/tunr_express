@@ -33,11 +33,6 @@ class DefaultLayout extends React.Component {
 								</a>
 							</li>
 							<li class='nav-item'>
-								<a class='nav-link ml-2' href='http://localhost:3000/artists' style={aStyle}>
-									Home
-								</a>
-							</li>
-							<li class='nav-item'>
 								<a class='nav-link' href='http://localhost:3000/artists/1/songs' style={aStyle}>
 									Songs By Artist 1
 								</a>
