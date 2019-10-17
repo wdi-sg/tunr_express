@@ -4,6 +4,8 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+const cookieParser = require('cookie-parser');
+
 const sha256 = require('js-sha256');
 const SALT = "gasei20rocks";
 
@@ -36,6 +38,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+app.use(cookieParser());
 
 
 // Set react-views to be the default view engine
@@ -538,6 +541,69 @@ app.post('/login', (request, response) => {
 
         } else {
             response.send("Cannot find user!");
+        }
+    });
+});
+
+// GET method - To display all favorite songs
+app.get('/favorites', (request, response) => {
+
+    let userId = request.cookies["user_id"];
+    const inputValues = [userId];
+
+    if (userId !== undefined) {
+
+        // Get all favorite songs for this user ID
+        const getFavoriteSongs = "SELECT songs.title FROM songs INNER JOIN favorites ON (favorites.song_id = songs.id) WHERE favorites.user_id = $1";
+
+        pool.query(getFavoriteSongs, inputValues, (err, result) => {
+            if (err) {
+                console.log("Error getting favorite songs: ", err.message);
+            } else {
+                const data = {
+                    favSongList: result.rows
+                };
+
+                response.render('favorites', data);
+            }
+        });
+
+    } else {
+        response.send("You must login to access favorites page.");
+    }
+
+});
+
+// GET method - To render add song to favorites page
+app.get('/favorites/new', (request, response) => {
+
+    let userId = request.cookies["user_id"];
+
+    if (userId !== undefined) {
+        response.render('newFavorites');
+    } else {
+        response.send("You must login to access favorites page.");
+    }
+});
+
+// POST method - To save the song to favorites
+app.post('/favorites', (request, response) => {
+
+    // Get value from request body & cookie
+    let userId = request.cookies["user_id"];
+    let songId = request.body.songID;
+
+    let inputValues = [songId, userId];
+
+    // Construct insert statement
+    const createFavorite = "INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *";
+
+    // Save to DB using pool.query
+    pool.query(createFavorite, inputValues, (err, result) => {
+        if (err) {
+            console.log("Error adding favorite song: ", err.message);
+        } else {
+            response.redirect("/favorites");
         }
     });
 });
