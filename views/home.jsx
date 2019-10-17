@@ -24,6 +24,9 @@ class Home extends React.Component {
             <form method="GET" action='/login'>
               <input type="submit" value="Login Account"/>
             </form>
+            <form method="GET" action='/favorites'>
+              <input type="submit" value="Favorites"/>
+            </form>
             <form method="GET" action='/playlists'>
               <input type="submit" value="Playlists"/>
             </form>
