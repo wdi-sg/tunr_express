@@ -5,7 +5,9 @@ const methodOverride = require('method-override');
 const pg = require('pg');
 const sha256 = require('js-sha256');
 var SALT = 'apple';
+const app = express();
 const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // Initialise postgres client
 const configs = {
@@ -28,7 +30,6 @@ pool.on('error', function(err) {
  */
 
 // Init express app
-const app = express();
 
 app.use(express.json());
 app.use(
@@ -402,12 +403,12 @@ app.post('/login', (req, res) => {
 				// console.log(returningUser.name);
 				// console.log(returningUserName);
 				console.log('login successful');
-				let hashedLoginCookie = sha256(returningUser.id + 'loggedin' + SALT);
+				let hashedLoginCookie = sha256(user.id + 'loggedin' + SALT);
 				console.log('login successful!');
 				// cookie for hashedlogin cookie
 				res.cookie('loggedin', hashedLoginCookie);
 				// cookie for user id
-				res.cookie('user_id', returningUser.id);
+				res.cookie('user_id', user.id);
 				res.redirect('/');
 				// if password is incorrect
 			} else {
@@ -437,6 +438,23 @@ app.get('/favorites/new', (req, res) => {
 		}
 	});
 	console.log('new favorites form rendered');
+});
+
+app.post('/favorites', (req, res) => {
+	console.log('creating your favorites list!');
+	let newFavSongId = req.body.id;
+	let usering_id = parseInt(req.cookies['user_id']);
+	let data = [ newFavSongId, usering_id ];
+	const queryString = `INSERT INTO favorites (songs_id, users_id) VALUES ($1, $2) RETURNING *`;
+
+	pool.query(queryString, data, (err, result) => {
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			console.log('song added to favorites success!');
+			res.redirect('/favorites/new');
+		}
+	});
 });
 
 /**
