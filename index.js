@@ -42,6 +42,11 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+var sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+var SALT = "bababanana";
+
 /**
  * ===================================
  * Routes
@@ -53,12 +58,12 @@ app.get('/', (request, response) => {
   response.send('Hello World');
 });
 
-//SHOWS FORM TO CREATE NEW ARTIST
+//////////SHOWS FORM TO CREATE NEW ARTIST//////////
 app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
-//SUBMITS FORM TO CREATE NEW ARTIST
+//////////SUBMITS FORM TO CREATE NEW ARTIST/////////
 app.post('/artists', (request, response) => {
     let newArtist = request.body;
     let newValues = [newArtist.name, newArtist.photo_url, newArtist.nationality];
@@ -85,7 +90,7 @@ app.post('/artists', (request, response) => {
     });
 });
 
-//SHOW INDIVIDUAL ARTIST PAGE
+////////SHOW INDIVIDUAL ARTIST PAGE////////
 app.get('/artists/:id', (request, response) => {
     let inputId = request.params.id;
     const artistsList = `SELECT * FROM artists WHERE id = ${inputId}`;
@@ -114,7 +119,7 @@ app.get('/playlists/new', (request, response) => {
   response.render('newPlaylist');
 });
 
-//SUBMITS FORM TO CREATE NEW PLAYLIST
+////////SUBMITS FORM TO CREATE NEW PLAYLIST///////
 app.post ('/playlists', (request, response) => {
     let newPlaylist = [request.body.name];
     //console.log("Newly created playlist: " + request.body.name);
@@ -138,7 +143,7 @@ app.post ('/playlists', (request, response) => {
     });
 });
 
-//SHOW INDIVIDUAL PLAYLIST PAGE
+////////SHOW INDIVIDUAL PLAYLIST PAGE////////
 app.get('/playlists/:id', (request, response) => {
     let inputId = request.params.id;
     const playlist = `SELECT * FROM playlist WHERE id = ${inputId}`;
@@ -149,7 +154,7 @@ app.get('/playlists/:id', (request, response) => {
             console.error('query error:', err.stack);
             response.send( 'Playlist not found' );
         } else {
-            //console.log('query result:', result);
+            console.log('The query result is: ', result);
             const thePlaylist = {
                 "id": result.rows[0].id,
                 "name": result.rows[0].name
@@ -160,7 +165,7 @@ app.get('/playlists/:id', (request, response) => {
     });
 });
 
-//SHOW FORM TO ADD A SONG TO THE PLAYLIST
+///////SHOW FORM TO ADD A SONG TO THE PLAYLIST///////
 app.get('/playlists/:id/newsong', (request, response) => {
     let inputId = request.params.id;
     const playlist = `SELECT * FROM playlist WHERE id = ${inputId}`;
@@ -186,7 +191,7 @@ app.get('/playlists/:id/newsong', (request, response) => {
     });
 });
 
-//SUBMITS FORM TO ADD A SONG TO PLAYLIST
+///////SUBMITS FORM TO ADD A SONG TO PLAYLIST///////
 app.post ('/playlists/:id', (request, response) => {
     //added song_id
     let addedSong = parseInt(request.body.song_id);
@@ -216,6 +221,76 @@ app.post ('/playlists/:id', (request, response) => {
     }
     });
 });
+
+//////SHOWS FORM FOR USER TO REGISTER//////
+app.get('/register', (request, response) => {
+    response.render('register');
+});
+
+/////SUBMITS NEW USER DATA FOR REGISTRATION//////
+app.post('/register', (request, response) => {
+    let username = request.body.username;
+    let password = sha256(request.body.password + SALT);
+
+    let newValues = [username, password];
+    const newUser = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *";
+
+    pool.query(newUser, newValues, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            let user_id = result.rows[0].id
+            let currentSessionCookie = sha256(user_id + SALT );
+            response.cookie('loggedIn', currentSessionCookie);
+
+            response.send("User created!");
+        }
+    });
+});
+
+//////SHOWS LOG IN PAGE//////
+app.get('/login', (request, response) => {
+    response.render('login');
+});
+
+///////VERIFY DATA TO LOG IN/////
+app.post('/login', (request, response) => {
+    let reqUsername = request.body.username;
+    let reqPassword = request.body.password;
+
+    let hashedReqPassword = sha256( reqPassword + SALT );
+    console.log( "hashed request password: "+ hashedReqPassword );
+    //check database for this user
+    const userValue = [reqUsername];
+    const queryString = "SELECT * FROM users WHERE username = $1";
+    console.log("the user is " + queryString);
+
+    pool.query(queryString, userValue, (err, result) => {
+        // if this user exists in the database
+        console.log(result.rows);
+        if( result.rows.length > 0 ){
+            //check to see if the password in request.body matches what's in the database
+            if( hashedReqPassword === result.rows[0].password ){
+                let user_id = result.rows[0].id;
+                let hashedCookie = sha256(user_id + SALT);
+
+                response.cookie('user_id', user_id);
+                response.cookie('loggedIn', hashedCookie);
+
+                // if it matches they have been verified, log them in
+                response.send('Successfully logged in! Redirecting to your page now')
+            } else {
+                response.status(403).send('wrong password');
+            };
+        };
+      // redirect to home page
+    });
+});
+
+
+
+
 
 
 
