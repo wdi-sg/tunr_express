@@ -3,7 +3,9 @@ h1, h3{
 	margin: 5% auto 5%;
 }
 
-
+.alert{
+	text-align: center;
+}
 
 .name{
 	color: white;
@@ -33,4 +35,8 @@ h1, h3{
 .addSong{
 	margin: 5% auto;
 	text-align: center;
+}
+
+.music{
+	width: 100%;
 }

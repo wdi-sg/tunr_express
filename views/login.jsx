@@ -1,9 +1,8 @@
 var React = require('react');
-class ShowDeleted extends React.Component {
+class Login extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
-
 
     return (
       <html>
@@ -16,16 +15,24 @@ class ShowDeleted extends React.Component {
 
         <main>
           <div>
-            <h1 className="col-md-auto display-4">You've Deleted Artist #{this.props.id}</h1>
-                <div className="cards">
-                    <div className="card">
-                        <img src={this.props.photo_url} className="card-img-top" alt="artists_image"/>
-                          <div className="card-body">
-                            <h5 className="card-title">{this.props.name}</h5>
-                            <p className="card-text">{this.props.nationality}</p>
-                          </div>
-                    </div>
-                </div>
+            <h1 className="col-md-auto display-4">Welcome to Tunr App</h1>
+            <form method='POST' action='/login' className="forms">
+              <h3>Login:</h3>
+              <div class="form-group">
+                <label for="exampleFormControlInput1">Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" name="name" required/>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlInput1">Password</label>
+                <input type="password" class="form-control" id="exampleFormControlInput1" name="password" required/>
+              </div>
+              <button type="submit" class="btn btn-dark">Login</button>
+            </form>
+
+            <br/>
+            <form method='GET' action='/register' className="forms">
+              <button type="submit" class="btn btn-dark">Not a user yet? Register here</button>
+            </form>
           </div>
         </main>
 
@@ -38,4 +45,4 @@ class ShowDeleted extends React.Component {
   }
 }
 
-module.exports = ShowDeleted;
+module.exports = Login;

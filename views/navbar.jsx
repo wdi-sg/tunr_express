@@ -15,6 +15,7 @@ class Navbar extends React.Component {
               <a class="nav-item nav-link" href="/artists/songs">All Songs</a>
               <a class="nav-item nav-link" href="/playlist">Your Playlists</a>
               <a class="nav-item nav-link" href="/playlist/new">Add New Playlist</a>
+              <a class="nav-item nav-link" href="/favorites">Favorites</a>
             </div>
           </div>
         </nav>

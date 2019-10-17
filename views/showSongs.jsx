@@ -11,11 +11,14 @@ class ShowSongs extends React.Component {
         var artwork = x.artwork;
 
         return  <div className="card">
-                    <img src={artwork} className="card-img-top imagez" alt="artists_image"/>
                       <div className="card-body">
                         <h5 className="card-title">{title}</h5>
                         <p className="card-text">{album}</p>
-                        <a href={preview} className="btn btn-dark">Preview Link</a>
+                        <audio className="music" controls>
+                          <source src={preview} type="audio/ogg"/>
+                          <source src={preview} type="audio/mpeg"/>
+                          Your browser does not support the audio tag.
+                        </audio>
                       </div>
                 </div>
     });

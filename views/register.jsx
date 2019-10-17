@@ -1,6 +1,5 @@
-var React = require("react");
-
-class NewPlaylist extends React.Component {
+var React = require('react');
+class Register extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
@@ -13,14 +12,29 @@ class NewPlaylist extends React.Component {
         </head>
         <body>
         <Navbar/>
+
+        <main>
           <div>
-            <h1 className="col-md-auto display-4">Your New Playlists</h1>
-            <div className="listz">
-                <div class="list-group">
-                  <button type="button" class="list-group-item list-group-item-action">{this.props.name}</button>
-                </div>
-            </div>
+            <h1 className="col-md-auto display-4">Welcome to Tunr App</h1>
+            <form method='POST' action='/register' className="forms">
+              <h3>Register:</h3>
+              <div class="form-group">
+                <label for="exampleFormControlInput1">Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" name="name" required/>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlInput1">Password</label>
+                <input type="password" class="form-control" id="exampleFormControlInput1" name="password" required/>
+              </div>
+              <button type="submit" class="btn btn-dark">Register</button>
+            </form>
+
+            <br/>
+            <form method='GET' action='/login' className="forms">
+              <button type="submit" class="btn btn-dark">Already a user? Login here</button>
+            </form>
           </div>
+        </main>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -31,4 +45,4 @@ class NewPlaylist extends React.Component {
   }
 }
 
-module.exports = NewPlaylist;
+module.exports = Register;

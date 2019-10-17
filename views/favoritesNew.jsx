@@ -1,8 +1,18 @@
 var React = require('react');
-class ShowNew extends React.Component {
+class AddSongsToFavorite extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
+
+    let songs = this.props.songs.map(x=>{
+        let title = x.title;
+        let id = x.id;
+        let album = x.album;
+        let artwork = x.artwork;
+
+        return <option value={id}>{title}</option>
+    });
+
 
     return (
       <html>
@@ -15,16 +25,16 @@ class ShowNew extends React.Component {
 
         <main>
           <div>
-            <h1 className="col-md-auto display-4">You've added Artist #{this.props.id}</h1>
-                <div className="cards">
-                    <div className="card">
-                        <img src={this.props.photo_url} className="card-img-top" alt="artists_image"/>
-                          <div className="card-body">
-                            <h5 className="card-title">{this.props.name}</h5>
-                            <p className="card-text">{this.props.nationality}</p>
-                          </div>
-                    </div>
-                </div>
+            <h1 className="col-md-auto display-4">Favorite these songs to {this.props.username}'s account</h1>
+            <form method='POST' action={'/favorites'} className="forms">
+              <div class="form-group">
+                <label for="exampleFormControlSelect1">Song Titles</label>
+                <select name="song_id" class="form-control" id="exampleFormControlSelect1">
+                    {songs}
+                </select>
+              </div>
+              <button type="submit" class="btn btn-dark">Add This Song</button>
+            </form>
           </div>
         </main>
 
@@ -37,4 +47,4 @@ class ShowNew extends React.Component {
   }
 }
 
-module.exports = ShowNew;
+module.exports = AddSongsToFavorite;

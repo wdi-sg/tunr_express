@@ -6,6 +6,8 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -25,6 +27,8 @@ app.use(express.urlencoded({
 app.use(express.static(__dirname+'/public/'));
 
 app.use(methodOverride('_method'));
+
+app.use(cookieParser());
 
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
@@ -71,7 +75,7 @@ const showNew = (request, response)=>{
     let queryText = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
 
     pool.query(queryText, inputValues, (err, results)=>{
-        response.render('showNew', results.rows[0])
+        response.redirect('/artists/');
     });
 
 };
@@ -90,9 +94,6 @@ const showOne = (request, response)=>{
         };
 
     });
-
-
-
 
 };
 
@@ -118,7 +119,7 @@ const showUpdated = (request, response)=>{
     let queryText = "UPDATE artists SET name=($1), photo_url=($2), nationality=($3) WHERE id=($4) RETURNING *";
 
     pool.query(queryText, inputValues, (err, results)=>{
-        response.render('showUpdated', results.rows[0])
+        response.redirect('/artists/'+ id)
     });
 
 
@@ -132,7 +133,7 @@ const deleteArtist = (request, response)=>{
     let queryText = "DELETE from artists WHERE id = ($1) RETURNING *";
 
     pool.query(queryText, inputValues, (err,results)=>{
-        response.render("showDeleted", results.rows[0]);
+        response.redirect('/artists/')
     })
 
 }
@@ -175,6 +176,8 @@ const showAllSongs = (request, response)=>{
 //==========================================
 
 
+
+
 //==========================================
 //       Code starts here part 2
 //==========================================
@@ -206,7 +209,7 @@ const showNewPlaylist = (request, response)=>{
     let queryText = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
 
     pool.query(queryText, inputValues, (err, results)=>{
-        response.render('showNewPlaylist', results.rows[0])
+        response.redirect('/playlist/');
     });
 
 }
@@ -215,7 +218,7 @@ const showOnePlaylist = (request, response)=>{
 
     let playlistID = parseInt(request.params.id);
     let inputValues = [playlistID];
-    let queryText = "SELECT songs.title, songs.album, songs.preview_link, songs.artwork, playlist.name FROM songs INNER JOIN playlist_song on (playlist_song.song_id = songs.id) INNER JOIN playlist on (playlist_song.playlist_id = playlist.id) WHERE playlist_song.playlist_id = ($1)";
+    let queryText = "SELECT songs.title, songs.album, songs.preview_link, songs.artwork, playlist.name, playlist_song.id FROM songs INNER JOIN playlist_song on (playlist_song.song_id = songs.id) INNER JOIN playlist on (playlist_song.playlist_id = playlist.id) WHERE playlist_song.playlist_id = ($1) ORDER BY playlist_song.id ";
 
     pool.query(queryText, inputValues, (err, results)=>{
         let data = {
@@ -225,7 +228,6 @@ const showOnePlaylist = (request, response)=>{
         if (results.rows[0] === undefined){
             response.render("emptyPlaylist", data);
         } else {
-            console.log(results.rows);
             response.render("showOnePlaylist", data);
         }
 
@@ -233,22 +235,6 @@ const showOnePlaylist = (request, response)=>{
 
 }
 
-// SELECT songs.title, songs.album, songs.preview_link, songs.artwork, playlist.name
-// FROM songs INNER JOIN playlist_song
-// on (playlist_song.song_id = songs.id)
-// INNER JOIN playlist
-// on (playlist_song.playlist_id = playlist.id)
-// WHERE playlist_song.playlist_id = ($1)
-
-
-// "SELECT * FROM playlist WHERE id = ($1)";
-
-// SELECT songs.title, playlist.name
-// FROM songs INNER JOIN playlist_song
-// on (playlist_song.song_id = songs.id)
-// INNER JOIN playlist
-// on (playlist_song.playlist_id = playlist.id)
-// WHERE playlist_song.playlist_id = 1;
 
 const addSongToPlaylist = (request, response)=>{
 
@@ -271,24 +257,235 @@ const showNewSongInPlaylist = (request, response)=>{
 
     let playlistID = parseInt(request.params.id);
     let songid = parseInt(request.body.song_id);
-    console.log(songid);
     let inputValues = [songid, playlistID];
     let queryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
 
     pool.query(queryText, inputValues, (err, results)=>{
-        console.log(results.rows[0])
-        response.render("playlistUpdated", results.rows[0]);
+        response.redirect('/playlist/'+playlistID);
     })
 }
+//==========================================
+//==========================================
 
 
 
+
+//==========================================
+//       Code starts here part 3
+//==========================================
+
+
+const SALT = "xiangjiao"
+
+
+const register = (request, response)=>{
+
+    response.render("register");
+
+};
+
+
+
+const redirectToLogin = (request, response)=>{
+
+    let hashedPassword = sha256(request.body.password + SALT);
+    let inputValues = [request.body.name, hashedPassword];
+
+    let queryText = "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *";
+
+    pool.query(queryText, inputValues, (err, results)=>{
+        console.log("The results are "+results.rows);
+
+        response.redirect("/login");
+
+    })
+
+};
+
+
+
+const login = (request, response)=>{
+
+    response.render("login");
+
+};
+
+
+const redirectToHome = (request, response)=>{
+
+    let requestUsername = request.body.name;
+    let requestPassword = request.body.password;
+
+    let queryText = "SELECT * FROM users WHERE name = '" +requestUsername+"'";
+
+    pool.query(queryText, (err, results)=>{
+        console.log(results.rows)
+        if (results.rows.length > 0){
+            let hashedRequestPassword = sha256(requestPassword + SALT);
+
+            if(hashedRequestPassword === results.rows[0].password){
+                let user_id = results.rows[0].id;
+                let username = results.rows[0].name;
+                let hashedCookie = sha256(SALT + user_id);
+
+                response.cookie('user_id', user_id);
+                response.cookie("username", username);
+                response.cookie("hasLoggedIn", hashedCookie);
+
+                response.redirect("/favorites");
+            } else {
+                response.status(403).render("errorLogin");
+            };
+
+        } else {
+            response.status(403).render("errorLogin");
+        }
+
+    });
+
+
+};
+
+// app.get('/special', (request, response)=>{
+
+
+//   let user_id = request.cookies['user_id'];
+//   let hashedValue = sha256( SALT + user_id );
+
+//   // if there is a cookie that says hasLoggedIn yes, let them access this page
+//   if( request.cookies['hasLoggedIn'] === hashedValue ){
+//     response.send('you can do stuff');
+
+//   }else{
+
+//     //otherwise, show them a message
+//     response.send('go awayyyy');
+//     // response.redirect('/login');
+
+//   }
+
+
+
+// });
+
+
+const favorites = (request, response)=>{
+
+    let user_id = request.cookies['user_id'];
+    let username = request.cookies['username'];
+    let hashedValue = sha256( SALT + user_id );
+
+    // if there is a cookie that says hasLoggedIn yes, let them access this page
+    if( request.cookies['hasLoggedIn'] === hashedValue ){
+
+        let inputValues = [user_id];
+
+        let queryText = "SELECT album, preview_link, title, song_id, name FROM favorites INNER JOIN users on (favorites.user_id = users.id) INNER JOIN songs on (favorites.song_id = songs.id) WHERE favorites.user_id = ($1) ORDER BY songs.id ";
+
+        pool.query(queryText, inputValues, (err, results)=>{
+
+            let data = {
+                favoriteSongs: results.rows
+            };
+
+            response.render("favorites", data);
+
+        });
+
+    }else{
+
+        response.redirect('/login');
+
+    };
+
+
+};
+
+const favoritesNew = (request, response)=>{
+
+    let user_id = request.cookies['user_id'];
+    let username = request.cookies['username'];
+    let hashedValue = sha256( SALT + user_id );
+
+    // if there is a cookie that says hasLoggedIn yes, let them access this page
+    if( request.cookies['hasLoggedIn'] === hashedValue ){
+
+
+        let queryText = "SELECT * FROM songs";
+
+        pool.query(queryText, (err, results)=>{
+
+            let data = {
+                username: username,
+                songs: results.rows
+            }
+
+            response.render("favoritesNew", data);
+
+        });
+
+    }else{
+
+        response.redirect('/login');
+
+    };
+
+
+};
+
+
+const songsFavorited = (request, response)=>{
+
+    let user_id = request.cookies['user_id'];
+    let username = request.cookies['username'];
+    let hashedValue = sha256( SALT + user_id );
+
+    // if there is a cookie that says hasLoggedIn yes, let them access this page
+    if( request.cookies['hasLoggedIn'] === hashedValue ){
+
+
+        let songid = parseInt(request.body.song_id);
+        console.log("songid = "+songid);
+        console.log("user_id = "+user_id);
+        let inputValues = [songid, user_id];
+        let queryText = 'INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *';
+
+        pool.query(queryText, inputValues, (err, results)=>{
+
+            response.redirect('/favorites');
+
+        });
+
+    }else{
+
+        response.redirect('/login');
+
+    };
+
+
+};
 
 
 
 //==========================================
 //==========================================
 
+
+
+
+
+//==========================================
+//          Restful Routes 3
+app.get('/register', register);
+app.post('/register', redirectToLogin);
+app.get('/login', login);
+app.post('/login', redirectToHome);
+
+app.get('/favorites/new', favoritesNew);
+app.get('/favorites', favorites);
+app.post('/favorites', songsFavorited);
+//==========================================
+//==========================================
 
 
 
