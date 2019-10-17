@@ -222,6 +222,7 @@ app.get('/playlists/:id', (request, response) => {
         let list = {};
         list.id = playlist_id;
         list.songs = result.rows;
+        // if no songs in playlist yet
         if (list.songs.length === 0) {
             list.songs = [{}];
             list.songs[0].name = "Playlist " + playlist_id;
@@ -286,6 +287,34 @@ app.get('/playlists', (request, response) => {
     });
 });
 
+/**
+ * ===================================
+ * Part 3 User Account
+ * ===================================
+ */
+
+app.get('/register', (request, response) => {
+  // respond with HTML page with form to register
+  response.render('register');
+});
+
+app.post('/register', (request, response) => {
+    // INSERT new user into user db
+    console.log("Adding user:")
+    console.log(request.body);
+    let newUser = [ request.body.name, request.body.password ];
+
+    let queryText = 'INSERT INTO users (name, password) VALUES($1, $2) RETURNING *';
+
+    pool.query(queryText, newUser, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        let user = result.rows[0];
+        response.send('Welcome ' + result.rows[0].name);
+    });
+});
 /**
  * ===================================
  * Listen to requests on port 3000
