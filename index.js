@@ -230,11 +230,15 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
 
-  const { name } = req.body;
+  const { name, password } = req.body;
+
   console.log("req.body", req.body);
   console.log("name", name);
+  console.log("password", password);
 
-  pool.query(`INSERT INTO users (name) VALUES ('${name}') RETURNING *`, (err, result) => {
+  const hashedPassword = sha256(SALT + password);
+
+  pool.query(`INSERT INTO users (name, password) VALUES ('${name}', '${hashedPassword}') RETURNING *`, (err, result) => {
     console.log('result', result.rows);
 
     let username = result.rows[0].name;
