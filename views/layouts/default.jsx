@@ -2,6 +2,7 @@ var React = require('react');
 
 class DefaultLayout extends React.Component {
   render() {
+
     return (
 <html lang="en">
   <head><title>{this.props.pageTitle}</title>
@@ -29,6 +30,12 @@ class DefaultLayout extends React.Component {
     <a className="nav-link" href="/artists/new">Add a New Artist</a>
     <a className="nav-link" href="/playlist">Show All Playlists</a>
     <a className="nav-link" href="/playlist/new">Add a New Playlist</a>
+    <br/>
+    <a className="nav-link" href="/favorites/new">Add a Favorite</a>
+    <a className="nav-link" href="/favorites">See All Favorites</a>
+    <br/>
+    <a className="nav-link" href="/register">Register</a>
+    <a className="nav-link" href="/login">Login</a>
     </nav> 
     </div>
     <div className="col-9">
