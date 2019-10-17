@@ -369,8 +369,8 @@ app.post('/register', (request,response)=>{
             console.error('query error:', err.stack);
             response.send( 'query error' );
           } else {
-            console.log('existing user ' + result.rows[0].username)
-                if(result.rows[0].username === request.body.username){
+
+                if(result.rows[0]!= undefined && result.rows[0].username === request.body.username){
                     response.send("Be more creative - that one's been taken.")
                 } else {
                         queryString = 'INSERT INTO users (username, pw) VALUES ($1, $2)'
@@ -448,6 +448,52 @@ app.get('/bananas', (request,response)=>{
 
 })
 
+
+// ____________________   ____________ __________._________________________
+// \_   _____/  _  \   \ /   /\_____  \\______   \   \__    ___/\_   _____/
+//  |    __)/  /_\  \   Y   /  /   |   \|       _/   | |    |    |    __)_
+//  |     \/    |    \     /  /    |    \    |   \   | |    |    |        \
+//  \___  /\____|__  /\___/   \_______  /____|_  /___| |____|   /_______  /
+//      \/         \/                 \/       \/                       \/
+
+app.get('/favorites/new', (request,response)=>{
+    response.render('favorite')
+})
+
+app.post('/favorites', (request,response)=>{
+    let song = request.body.favorite
+
+    queryString = `SELECT * FROM songs WHERE title = '${song}' `
+
+     pool.query(queryString, (err, result) => {
+        console.log(result.rows[0])
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+
+                if (result.rows[0]=== undefined){
+                    response.send("This song does not exist.")
+                } else{
+                    let songid = result.rows[0].id;
+                    let title = result.rows[0].title
+                    let array = [songid, request.cookies.userid]
+                    queryString = `INSERT INTO favorites (song_id,user_id) VALUES ($1, $2)`
+                    pool.query(queryString, array, (err,result)=>{
+                        if (err){
+                            console.error('query error:', err.stack);
+                            response.send( 'query error' );
+                        } else {
+                            response.send(title + " has been added to your favorites")
+                        }
+                    })
+                }
+          }
+    })
+
+
+})
 
 
 /**
