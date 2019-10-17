@@ -4,6 +4,9 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+const SALT = "racketofthesaltyrunlamb";
+const sha256 = require('js-sha256');
+
 // Initialise postgres client
 const configs = {
 user: 'new_user',
@@ -318,6 +321,58 @@ app.get('/register', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('register');
 });
+
+
+// FORM TO ADD THE SONGS IN THE PLAYLIST OPTIONS
+app.post('/register', (request, response) => {
+let username = request.body.username;
+username = username.toLowerCase();
+// console.log(username);
+let hashedPassword = sha256(request.body.password + SALT);
+// console.log (hashedPassword);
+// check if this username has been used before...
+  queryString = "SELECT * from users WHERE username='"+username+"'";
+  console.log(queryString);
+  pool.query(queryString, (err, result) => {
+    // get the other data
+
+    const data = {};
+  // console.log("results: "+result.rows[0])
+  console.log("result: "+result.rows)
+    if (result.rows.length>0) {
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+      data.warning = "Username already taken"
+      response.render('register', data);
+      }else{
+
+
+        let queryString = 'INSERT INTO users (username , password) VALUES ($1, $2) RETURNING id';
+        const values = [username, hashedPassword];
+
+        pool.query(queryString, values, (err, result) => {
+          console.log(err);
+
+             // console.log("playlist data:", data);
+          // respond with HTML page displaying all artists
+          data.warning = "Username registered- login to continue."
+          response.render('login', data);
+        });
+      }
+  });
+ });
+
+// DISPLAY USER LOGIN
+app.get('/register', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  response.render('login');
+});
+
+
+// RECIEVE USER LOGIN
+app.post('/login', (request, response) => {
+      
+ });
 
 /**
  * ===================================
