@@ -219,7 +219,7 @@ app.get('/playlist/:id/newsong', (request, response) => {
       let inputId = parseInt( request.params.id )
   // query database
 // show all the artists
-  const queryString = 'SELECT * from songs';
+  const queryString = 'SELECT * from songs ORDER BY title ASC';
  pool.query(queryString, (err, result) => {
     // obj is the object from the pokedex json file
     // extract input data from request
@@ -228,7 +228,7 @@ app.get('/playlist/:id/newsong', (request, response) => {
             const data = {
             songsobj: result.rows
         }
-    data.pageTitle = "All Playlists";
+    data.pageTitle = "Playlist: " + inputId;
     data.id = inputId;
     data.action = "/playlist/"+inputId;
          // console.log("playlist data:", data);
@@ -250,7 +250,7 @@ const values = [request.body.song_id, request.params.id];
   pool.query(queryString, values, (err, result) => {
     console.log(err);
   });
-  queryString = 'SELECT * from songs';
+  queryString = 'SELECT * from songs ORDER BY title ASC';
   pool.query(queryString, (err, result) => {
     // get the other data
 
@@ -263,6 +263,29 @@ const values = [request.body.song_id, request.params.id];
          // console.log("playlist data:", data);
   // respond with HTML page displaying all artists
     response.render('new_song', data);
+  });
+
+ });
+
+
+// SHOW ALL SONGS IN A PLAYLIST
+app.get('/playlist/:id', (request, response) => {
+  let inputId = parseInt( request.params.id )
+  // query database
+  queryString = 'SELECT playlist_song.song_id, songs.title from playlist_song INNER JOIN songs ON songs.id = playlist_song.song_id WHERE playlist_id='+inputId;
+  pool.query(queryString, (err, result) => {
+    // get the other data
+
+            const data = {
+            songsobj: result.rows
+        }
+    data.pageTitle = "Playlist Songs";
+    data.id = inputId;
+    data.action = "/playlist/"+inputId;
+    console.log("playlistinfo: ", data)
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('playlist_songs', data);
   });
 
  });
