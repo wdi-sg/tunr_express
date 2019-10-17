@@ -9,6 +9,7 @@ class Playlist extends React.Component {
            </li>
        )
    })
+
     return (
       <html>
         <head>
@@ -26,7 +27,7 @@ class Playlist extends React.Component {
             <a href="/favorites/new" className="btn btn-primary btn-lg">Add a song</a>
             <a href="/artists/" className="btn btn-info btn-lg ml-3">Back</a>
             </div>
-            
+          
           <ul className="list-group mt-5">
               {list}
           </ul>

@@ -29,22 +29,27 @@ class Home extends React.Component {
 >
   Add a new artist
 </a>
-<a className="btn btn-info  btn text-light mb-5 ml-5"
+<a className="btn btn-info  btn text-light mb-5 ml-3"
   href="/playlists/new"
 >
   Add a new Playlist
 </a>
-<a className="btn btn-secondary  btn text-light mb-5 ml-5"
+<a className="btn btn-success  btn text-light mb-5 ml-3"
+  href="/songs"
+>
+  Songs
+</a>
+<a className="btn btn-secondary  btn text-light mb-5 ml-3"
   href="/playlist"
 >
   See all Playlists
 </a>
-<a className="btn btn-warning  btn text-light mb-5 ml-5"
+<a className="btn btn-warning  btn text-light mb-5 ml-3"
   href="/favorites"
 >
   Favorites
 </a>
-<a className="btn btn-danger btn text-light mb-5 ml-5"
+<a className="btn btn-danger btn text-light mb-5 ml-3"
   href="/favorites/new"
 >
   Add to Favorites

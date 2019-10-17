@@ -37,7 +37,7 @@ class Login extends React.Component {
               </p>
               <p>
                 <input
-                  type="text"
+                  type="password"
                   name="password"
                   placeholder="password"
                   class="form-control form-control-lg"
