@@ -33,6 +33,6 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS favorites (
     id SERIAL PRIMARY KEY,
-    user_id TEXT,
-    song_id TEXT
+    user_id INTEGER,
+    song_id INTEGER
 );

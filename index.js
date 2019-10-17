@@ -291,6 +291,45 @@ app.post('/login', (req, res) => {
     }
 
   });
+});
+
+app.get('/favorites/new', (req, res) => {
+  res.render('AddFavorites');
+})
+
+app.post('/favorites', (req, res) => {
+  console.log("req.body", req.body);
+  console.log("req.cookies", req.cookies);
+
+  const queryText = `INSERT INTO favorites (song_id, user_id) VALUES('${req.body.song_id}','${req.cookies.user_id}') RETURNING *`;
+
+  pool.query(queryText, (err, result) => {
+    console.log("result", result);
+  });
+
+  res.send("added fav song")
+
+});
+
+app.get('/favorites', (req, res) => {
+
+  console.log('coookies', req.cookies);
+
+  if (req.cookies.loggedin) {
+    // res.send('show favorites');
+
+    // const text = `SELECT * FROM favorites WHERE user_id = '${req.cookies.user_id}'`;
+    const text = `SELECT songs.title FROM favorites INNER JOIN songs ON ( favorites.song_id = songs.id ) WHERE user_id = '${req.cookies.user_id}'`;
+
+    pool.query(text, (err, result) => {
+      console.log("result rows", result.rows);
+      res.render('ShowFavorites', {songs : result.rows});
+    })
+
+  } else {
+    res.send('not logged in')
+  }
+
 })
 
 
