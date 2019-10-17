@@ -15,7 +15,7 @@ class ArtistSongs extends React.Component {
       <html>
         <head />
         <body>
-          <h1>Songs by the Artist: {this.props.artistName[0].name}</h1>
+          <h1>Songs by the Artist: {this.props.artistSongs[0].name}</h1>
           <ul>
               {songByArtist}
           </ul>

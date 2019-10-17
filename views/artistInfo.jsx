@@ -17,9 +17,11 @@ class ArtistInfo extends React.Component {
         <head />
         <body>
           <h1>You are viewing details of {this.props.artist[0].name}</h1>
-          <ul>
-              {viewArtistInfo}
-          </ul>
+          <div>
+              <p>{viewArtistInfo}</p>
+              <a href={"/artists/" + this.props.artist[0].id +"/edit"}>Edit Artist Info </a>|
+              <a href={"/artists/" + this.props.artist[0].id +"/delete"}> Delete Artist</a>
+          </div>
         </body>
       </html>
     );

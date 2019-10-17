@@ -47,11 +47,16 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// GET Method - respond with HTML page with form to create new artist
+app.get('/artists/new', (request, response) => {
+    response.render('newArtist');
+});
+
 // GET Method - query database for all artists
 app.get('/artists/', (request, response) => {
 
     // Construct the select statement to get all artists from database
-    const queryString = 'SELECT * FROM artists';
+    const queryString = "SELECT * FROM artists";
 
     // Use pool.query to run the select query
     pool.query(queryString, (err, result) => {
@@ -75,11 +80,13 @@ app.get('/artists/:id', (request, response) => {
     // Get the ID from the URL parameter
     let artistID = request.params.id;
 
+    const inputValues = [artistID];
+
     // Construct the select statement to get all artists from database
-    const queryString = 'SELECT * FROM artists WHERE id=' + artistID;
+    const queryString = "SELECT * FROM artists WHERE id = $1";
 
     // Use pool.query to run the select query
-    pool.query(queryString, (err, result) => {
+    pool.query(queryString, inputValues, (err, result) => {
 
         if (err) {
             console.log("Error: ", err.message);
@@ -94,11 +101,6 @@ app.get('/artists/:id', (request, response) => {
     });
 });
 
-// GET Method - respond with HTML page with form to create new artist
-app.get('/artists/new', (request, response) => {
-    response.render('newArtist');
-});
-
 // POST Method - to create new artist in DB
 app.post('/artists', (request, response) => {
 
@@ -110,7 +112,7 @@ app.post('/artists', (request, response) => {
     const inputValues = [artistName, photoURL, nationality];
 
     // Construct the insert into query with the values from the request body
-    const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
+    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
 
     // Use pool.query to run the insert query
     pool.query(queryString, inputValues, (err, result) => {
@@ -118,11 +120,9 @@ app.post('/artists', (request, response) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
-            response.send("Artist added successfully");
+            response.redirect("/artists");
         }
     });
-
-    response.send(request.body);
 });
 
 // GET method - To display songs for an artist
@@ -131,27 +131,23 @@ app.get('/artists/:id/songs', (request, response) => {
     // Get the ID from the URL parameter
     let artistID = request.params.id;
 
+    const inputValues = [artistID];
+
     // Construct the select query to get the song where the artist id = param id
-    const queryString = 'SELECT * FROM songs WHERE artist_id=' + artistID;
+    const queryString = "SELECT songs.title, songs.album, artists.name FROM songs INNER JOIN artists ON (artists.id = songs.artist_id) WHERE artist_id = $1";
 
     // Display the result using pool.query
-    pool.query(queryString, (err, resultOfSongsByArtist) => {
+    pool.query(queryString, inputValues, (err, result) => {
 
         if (err) {
             console.log("Error: ", err.message);
         } else {
 
-            const getArtistName = 'SELECT name FROM artists WHERE id=' + artistID;
+            const data = {
+                artistSongs: result.rows
+            };
 
-            pool.query(getArtistName, (err, resultOfArtistName) => {
-
-                const data = {
-                    artistName: resultOfArtistName.rows,
-                    artistSongs: resultOfSongsByArtist.rows
-                };
-
-                response.render('artistSongs', data);
-            });
+            response.render('artistSongs', data);
         }
     });
 });
@@ -162,18 +158,20 @@ app.get('/artists/:id/songs/new', (request, response) => {
     // Get the ID from the URL parameter
     let artistID = request.params.id;
 
+    const inputValues = [artistID];
+
     // Construct the select query to get the song where the artist id = param id
-    const getArtistName = 'SELECT * FROM artists WHERE id=' + artistID;
+    const getArtistName = "SELECT * FROM artists WHERE id = $1";
 
     // Display the result using pool.query
-    pool.query(getArtistName, (err, resultOfArtistName) => {
+    pool.query(getArtistName, inputValues, (err, result) => {
 
         if (err) {
             console.log("Error: ", err.message);
         } else {
 
             const data = {
-                artistName: resultOfArtistName.rows
+                artistName: result.rows
             };
             //response.send(data.artistName);
             response.render('artistNewSong', data);
@@ -196,7 +194,7 @@ app.post('/artists/:id/songs', (request, response) => {
     let inputValues = [songTitle, album, previewLink, artwork, artistID];
 
     // Construct the insert query to save the artist's new song to DB
-    const createArtistSong = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)';
+    const createArtistSong = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)";
 
     // Run pool.query
     pool.query(createArtistSong, inputValues, (err, result) => {
@@ -217,11 +215,13 @@ app.get('/artists/:id/edit', (request, response) => {
     // Get the ID from the URL parameter
     let artistID = request.params.id;
 
+    const inputValues = [artistID];
+
     // Construct the select statement to get all artists from database
-    const queryString = 'SELECT * FROM artists WHERE id=' + artistID;
+    const queryString = "SELECT * FROM artists WHERE id = $1";
 
     // Use pool.query to run the select query
-    pool.query(queryString, (err, result) => {
+    pool.query(queryString, inputValues, (err, result) => {
 
         if (err) {
             console.log("Error: ", err.message);
@@ -245,14 +245,20 @@ app.put('/artists/:id/', (request, response) => {
     // Get the ID from the URL parameter
     let artistID = request.params.id;
 
-    // Construct the update statement
-    const queryString = "UPDATE artists SET name= '" + request.body.artistName + "' , photo_url= '" + request.body.photoURL + "' , nationality= '" + request.body.nationality + "' WHERE id= " + artistID;
+    let artistName = request.body.artistName;
+    let photoURL = request.body.photoURL;
+    let nationality = request.body.nationality;
 
-    pool.query(queryString, (err, result) => {
+    const inputValues = [artistName, photoURL, nationality, artistID];
+
+    // Construct the update statement
+    const queryString = "UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4";
+
+    pool.query(queryString, inputValues, (err, result) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
-            response.send("Artist info updated!");
+            response.redirect("/artists/" + artistID);
         }
     });
 });
@@ -262,11 +268,13 @@ app.get('/artists/:id/delete', (request, response) => {
     // Get the ID from the URL parameter
     let artistID = request.params.id;
 
+    const inputValues = [artistID];
+
     // Construct the select statement to get all artists from database
-    const queryString = 'SELECT * FROM artists WHERE id=' + artistID;
+    const queryString = "SELECT * FROM artists WHERE id = $1";
 
     // Use pool.query to run the select query
-    pool.query(queryString, (err, result) => {
+    pool.query(queryString, inputValues, (err, result) => {
 
         if (err) {
             console.log("Error: ", err.message);
@@ -290,14 +298,16 @@ app.delete('/artists/:id/', (request, response) => {
     // Get the ID from the URL parameter
     let artistID = request.params.id;
 
-    // Construct the update statement
-    const queryString = "DELETE from artists WHERE id= " + artistID;
+    const inputValues = [artistID];
 
-    pool.query(queryString, (err, result) => {
+    // Construct the update statement
+    const queryString = "DELETE from artists WHERE id = $1";
+
+    pool.query(queryString, inputValues, (err, result) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
-            response.send("Artist info deleted!");
+            response.redirect("/artists");
         }
     });
 });
@@ -306,7 +316,7 @@ app.delete('/artists/:id/', (request, response) => {
 app.get('/playlist/', (request, response) => {
 
     // Construct query to select all playlist from database using pool.query
-    const getAllPlaylists = 'SELECT * FROM playlist';
+    const getAllPlaylists = "SELECT * FROM playlist";
 
     pool.query(getAllPlaylists, (err, result) => {
         if (err) {
@@ -337,14 +347,14 @@ app.post('/playlist', (request, response) => {
     const inputValues = [newPlaylistName];
 
     // Construct insert query
-    const createPlaylist = 'INSERT INTO playlist (name) VALUES ($1)';
+    const createPlaylist = "INSERT INTO playlist (name) VALUES ($1)";
 
     // Call pool.query to save the request body to database
     pool.query(createPlaylist, inputValues, (err, result) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
-            response.send("Playlist created successfully.");
+            response.redirect("/playlist");
         }
     });
 
@@ -355,17 +365,19 @@ app.get('/playlist/:id', (request, response) => {
 
     let playlistId = request.params.id;
 
-    // Construct query to select the specified playlist from database using pool.query
-    const getSpecificPlaylist = 'SELECT title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_id = ' + playlistId;
+    const inputValues = [playlistId];
 
-    pool.query(getSpecificPlaylist, (err, resultOfSongTitle) => {
+    // Construct query to select the specified playlist from database using pool.query
+    const getSpecificPlaylist = "SELECT title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_id = $1";
+
+    pool.query(getSpecificPlaylist, inputValues, (err, resultOfSongTitle) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
 
-            const getPlaylistName = 'SELECT name FROM playlist WHERE id = ' + playlistId;
+            const getPlaylistName = "SELECT name FROM playlist WHERE id = $1";
 
-            pool.query(getPlaylistName, (err, resultOfPlaylistName) => {
+            pool.query(getPlaylistName, inputValues, (err, resultOfPlaylistName) => {
                 if (err) {
                     console.log("Error getting playlist name: ", err.message);
                 } else {
@@ -389,15 +401,17 @@ app.get('/playlist/:id/newsong', (request, response) => {
 
     let playlistId = request.params.id;
 
-    // Construct query to select the specified playlist from database using pool.query
-    const getSpecificPlaylist = 'SELECT * FROM playlist WHERE id=' + playlistId;
+    const inputValues = [playlistId];
 
-    pool.query(getSpecificPlaylist, (err, resultOfPlaylistName) => {
+    // Construct query to select the specified playlist from database using pool.query
+    const getSpecificPlaylist = "SELECT * FROM playlist WHERE id = $1";
+
+    pool.query(getSpecificPlaylist, inputValues, (err, resultOfPlaylistName) => {
         if (err) {
             console.log("Error: ", err.message);
         } else {
 
-            const getAllSongs = 'SELECT * FROM songs';
+            const getAllSongs = "SELECT * FROM songs";
 
             pool.query(getAllSongs, (err, resultOfSongList) => {
 

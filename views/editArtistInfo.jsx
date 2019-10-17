@@ -15,7 +15,7 @@ class EditArtistInfo extends React.Component {
               <br />
               Nationality: <input type="text" name="nationality" value={this.props.nationality} />
               <br />
-              <input type="submit" value="Submit" />
+              <input type="submit" value="Save Changes" />
           </form>
         </body>
       </html>
