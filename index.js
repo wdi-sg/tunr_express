@@ -241,6 +241,33 @@ app.get('/register', (request, response)=>{
 });
 
 //post
+app.post('/register', (request, response)=>{
+  console.log( request.body );
+
+  const queryString = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
+
+  const values = [
+    request.body.name,
+    request.body.password
+  ];
+
+  pool.query(queryString, values, (err, queryRes) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      console.log('query result:', queryRes);
+
+
+      response.send( queryRes.rows );
+      //response render home, after issue fixed
+
+
+    }
+  });
+  });
+
 
 
 //login
