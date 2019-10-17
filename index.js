@@ -112,28 +112,113 @@ app.get('/artists/:id/edit', (request, response) => {
         console.log("Foundddddddddddddddddddddd");
     }
   // respond with HTML page displaying all artists
-  const data = { searched : result.rows };
+  const data = { searched : result.rows[0] };
   response.render('editArtist',data);
   });    
 });
 
+//NOT WORKING YET------------------------------------------------------------------------------------
+// app.put('/artists/:id', (request,response) => {
+//   console.log("Artist Edited: " , request.body);
+//   let {id} = request.params;
+//   let {name, photo_url, nationality} = request.body;
+//   queryString = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${id} RETURNING *`;
+//   console.log("UPDATE=================================");
+//   pool.query(queryString, (err, res) => {
+//       if (err) {
+//       console.log("query error", err.message);
+//       } else {
+//       console.log("id of the thing you just edited:", res.rows[0].id);
+//       }
+//   });
+//   response.send(request.body)
+// });
+
+//PLAYLISTSSSS------------------------------------------------------------------------------------
+app.get('/playlists', (request, response) => {
+  // query database for all artists
+  const queryString = 'SELECT * FROM playlist'
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log("playlist downloaded" , result );
+    }
+  // respond with HTML page displaying all artists
+  const data = { searched : result.rows };
+  response.render('indexPlaylists', data);
+  });    
+});
 //------------------------------------------------------------------------------------
-app.put('/artists/:id', (request,response) => {
-  console.log("Artist Edited: " , request.body);
-  let {id} = request.params;
-  let {name, photo_url, nationality} = request.body;
-  queryString = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${id} RETURNING *`;
-  console.log("UPDATE=================================");
-  pool.query(queryString, (err, res) => {
+app.get('/playlists/new', (request, response) => {
+  response.render('addPlaylist');
+});
+//------------------------------------------------------------------------------------
+app.post('/playlists' , (request, response) => {
+  console.log("Added new playlist: ", request.body);
+  queryString = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+  const values = [request.body.name];
+  console.log("INSERT PLAYLIST=================================");
+  pool.query(queryString, values, (err, res) => {
       if (err) {
       console.log("query error", err.message);
       } else {
-      console.log("id of the thing you just edited:", res.rows[0].id);
+      console.log("playlist id of the thing you just created:", res.rows[0].id);
       }
+      response.redirect('/playlists');
   });
-  response.send(request.body)
+})
+//------------------------------------------------------------------------------------
+app.get('/playlists/:id', (request, response) => {
+  const queryString = `SELECT * FROM playlist WHERE id = '${request.params.id}'`;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log("Playlist Foundddddddddddddddddddddd" , result);
+    }
+  // respond with HTML page displaying all artists
+  const data = { searched : result.rows };
+  response.render('eachPlaylist',data);
+  });    
 });
 
+
+
+
+//SONGSSSSSS------------------------------------------------------------------------------------
+app.get('/playlists/:id/newsong', (request, response) => {
+  const queryString = `SELECT * FROM playlist WHERE id = '${request.params.id}'`;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+    } else {
+        console.log("Foundddddddddddddddddddddd");
+    }
+  // respond with HTML page displaying all artists
+  const data = { searched : result };
+  response.render('addSong',data);
+  });    
+});
+
+//NOT YET------------------------------------------------------------------------------------
+
+app.post('/playlists/:id' , (request, response) => {
+  console.log("Added new song to playlist: ", request.body);
+  queryString = 'INSERT INTO artists (name) VALUES ($1) RETURNING *';
+  const values = [request.body.name , request.body.photo_url , request.body.nationality];
+  console.log("INSERT=================================");
+  pool.query(queryString, values, (err, res) => {
+      if (err) {
+      console.log("query error", err.message);
+      } else {
+      console.log("id of the thing you just created:", res.rows[0].id);
+      }
+  });
+})
 /**
  * ===================================
  * Listen to requests on port 3000

@@ -2,14 +2,14 @@ var React = require('react');
 
 class editArtist extends React.Component {
   render() {
-    let profile = this.props.searched[0];
+    let profile = this.props.searched;
     
     return (
       <html>
         <body>
           <div>
             <h1>Editing artist {this.props.title}</h1>
-            <form method="POST" action={"/artists/'+artists.id+'?_method=put"}>
+            <form method="POST" action={"/artists/"+profile.id+"?_method=put"}>
                 <div class="artist-attribute">
                     <b>ID: </b>
                     <input type="text" name="id" value={profile.id}/>
