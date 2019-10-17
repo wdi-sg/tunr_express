@@ -7,14 +7,17 @@ class AllSongs extends React.Component {
         const songsArray = this.props.rows;
         const lists = songsArray.map(song=>{
             return (
-                <div className="form-group form-check">
-                    <input type="checkbox" className="form-check-input" id={song.id} name={song.id}/>
-                    <label className="form-check-label" for={song.id}>
-                        <ul>
-                            <li>Title: {song.title}</li>
-                            <li>Album: {song.album}</li>
-                        </ul>
-                    </label>
+                <div className="card form-group m-1">
+                    <div className="card-body">
+                        <h5 className="card-title">Title: {song.title}</h5>
+                        <p className="card-text">Album: {song.album}</p>
+                    </div>
+                    <div className="card-footer">
+                        <small class="text-muted d-flex justify-content-center">
+                            <input type="checkbox" className="form-check-input" id={song.id} name={song.id}/>
+                            <label className="form-check-label" for={song.id}>Add</label>
+                        </small>
+                    </div>
                 </div>
             );
         });
