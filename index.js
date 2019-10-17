@@ -332,13 +332,11 @@ let hashedPassword = sha256(request.body.password + SALT);
 // console.log (hashedPassword);
 // check if this username has been used before...
   queryString = "SELECT * from users WHERE username='"+username+"'";
-  console.log(queryString);
   pool.query(queryString, (err, result) => {
     // get the other data
 
     const data = {};
   // console.log("results: "+result.rows[0])
-  console.log("result: "+result.rows)
     if (result.rows.length>0) {
          // console.log("playlist data:", data);
   // respond with HTML page displaying all artists
@@ -363,7 +361,7 @@ let hashedPassword = sha256(request.body.password + SALT);
  });
 
 // DISPLAY USER LOGIN
-app.get('/register', (request, response) => {
+app.get('/login', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('login');
 });
@@ -371,7 +369,40 @@ app.get('/register', (request, response) => {
 
 // RECIEVE USER LOGIN
 app.post('/login', (request, response) => {
-      
+    let username = request.body.username;
+username = username.toLowerCase();
+// console.log(username)
+// console.log(username);
+let hashedPassword = sha256(request.body.password + SALT);
+  queryString = "SELECT * from users WHERE username='"+username+"'";
+  // console.log(queryString)
+  pool.query(queryString, (err, result) => {
+    // get the other data
+  // console.log(result.rows[0])
+    const data = {};
+
+  if (result.rows.length >0) {
+
+      if (result.rows[0].password === hashedPassword)  {
+            data.warning = "Username ok..."
+            console.log('user/pw ok')
+            // store a cookie
+            let currentSessionCookie = sha256( username + SALT );
+            response.cookie('logged_in', currentSessionCookie);
+            response.render('login');
+
+          } else {
+              console.log('password ng')
+              data.warning = "Username or password does not match."
+              response.render('login');
+          }
+      } else {
+        console.log('no user found')
+      data.warning = "Username or password does not match."    
+      response.render('login');
+      }
+
+  });
  });
 
 /**
