@@ -491,7 +491,7 @@ app.post("/playlist/:id", (request, response) => {
  */
 
  app.get('/songs', (request, response)=>{
-   const queryString = "SELECT songs.title, songs.album, songs.artist_id, artists.name, songs.id FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)"
+   const queryString = "SELECT songs.title, songs.album, songs.artist_id, songs.preview_link, artists.name, songs.id FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)"
    
    pool.query(queryString, (err, result) => {
     if (err) {
@@ -511,7 +511,7 @@ app.post("/playlist/:id", (request, response) => {
  app.get('/songs/:id', (request, response) =>{
    let id = request.params.id;
    let input = [id]
-   const queryString = "SELECT songs.title, songs.album, songs.artist_id, artists.name, songs.id FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) WHERE songs.id= $1"
+   const queryString = "SELECT songs.title, songs.album, songs.artist_id, songs.preview_link, artists.name, songs.id FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) WHERE songs.id= $1"
 
    pool.query(queryString, input, (err, result) => {
     if (err) {
@@ -557,7 +557,7 @@ app.post("/playlist/:id", (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000, () =>
+const server = app.listen(5000, () =>
   console.log("~~~ Tuning in to the waves of port 3000 ~~~")
 );
 

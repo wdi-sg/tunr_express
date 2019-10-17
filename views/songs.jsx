@@ -14,6 +14,7 @@ class Songs extends React.Component {
             <strong>album:</strong>
             {item.album}
           </p>
+  
           <form action="/songtofav" method="POST">
           <input type="hidden" name="songId" value={item.id}/>
           <button type="submit" className="btn btn-success">Add to Favorites</button>
