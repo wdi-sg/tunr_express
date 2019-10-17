@@ -357,7 +357,7 @@ app.get('/login', (request, response) => {
 });
 
 app.post('/login', (request, response) => {
-    // respond with HTML page with form to register
+    // check user login
     let user_name = request.body.name;
     let hashedPw = sha256(request.body.password + SALT);
 
@@ -376,6 +376,7 @@ app.post('/login', (request, response) => {
                 //let loginPw = result.rows[0].password;
 
                 // send login cookies
+                response.cookie('user_id', result.rows[0].id);
                 response.cookie('user_name', result.rows[0].name);
                 response.cookie('loggedIn', result.rows[0].password);
                 // redirect to homepage
@@ -404,6 +405,7 @@ app.get('/favorites/new', (request, response) => {
     console.log("Adding to favorites");
     // input songs list to be rendered as option
     let queryText = 'SELECT * FROM songs';
+
     pool.query(queryText, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
@@ -416,7 +418,25 @@ app.get('/favorites/new', (request, response) => {
     });
 });
 
+app.post('/favorites/new', (request, response) => {
+    // INSERT user & song into favorites db
+    let user_id = request.cookies['user_id'];
+    // check if password correct?
+    let song_id = request.body.song_id
+    console.log("Adding song: " + song_id);
+    let addFav = [ song_id, user_id ];
 
+    let queryText = 'INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *';
+
+    pool.query(queryText, addFav, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        console.log(result.rows)
+        response.send("Successfully favorited");
+    });
+});
 
 /**
  * ===================================
