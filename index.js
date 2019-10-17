@@ -390,15 +390,17 @@ app.post('/login', (req, res) => {
 		if (err) {
 			console.log('query error:', err.stack);
 		} else {
-			let returningUser = result.rows[0];
+			let user = result.rows[0];
 			// if name/password is incorrect
-			if (returningUser === undefined) {
+			if (user === undefined) {
 				console.log('Incorrect username/password, please try again');
-				console.log(returningUser);
+				// console.log(returningUser);
 				console.log(hashedPassword);
 				res.redirect(`/login`);
 				// if entire account is correct - this is logical, so that hackers can't know if a username exists
-			} else if (hashedPassword === returningUser.password) {
+			} else if (returningUserName === user.name && hashedPassword === user.password) {
+				// console.log(returningUser.name);
+				// console.log(returningUserName);
 				console.log('login successful');
 				let hashedLoginCookie = sha256(returningUser.id + 'loggedin' + SALT);
 				console.log('login successful!');
@@ -407,10 +409,19 @@ app.post('/login', (req, res) => {
 				// cookie for user id
 				res.cookie('user_id', returningUser.id);
 				res.redirect('/');
+				// if password is incorrect
+			} else {
+				res.redirect('/login');
 			}
 		}
 	});
 });
+
+/**
+ * ===================================
+ * LOGINGINGNIGNING
+ * ===================================
+ */
 
 /**
  * ===================================
