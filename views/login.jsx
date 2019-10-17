@@ -1,6 +1,6 @@
 var React = require('react');
 var DefaultLayout = require('./layouts/default');
-class Register extends React.Component {
+class Login extends React.Component {
   render() {
     return (
 
@@ -28,4 +28,4 @@ class Register extends React.Component {
   }
 }
 
-module.exports = Register;
+module.exports = Login;
