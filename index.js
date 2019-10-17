@@ -291,6 +291,29 @@ app.get('/playlist/:id', (request, response) => {
  });
 
 
+// SHOW ALL SONGS BY AN ARTIST
+app.get('/artist/:id/songs', (request, response) => {
+  let inputId = parseInt( request.params.id )
+  // query database
+  queryString = 'SELECT * from songs WHERE artist_id='+inputId;
+  pool.query(queryString, (err, result) => {
+    // get the other data
+
+            const data = {
+            songsobj: result.rows
+        }
+    data.pageTitle = "Artists Songs";
+    data.id = inputId;
+    data.action = "/artists/"+inputId;
+    console.log("ArtistsSongs: ", data)
+         // console.log("playlist data:", data);
+  // respond with HTML page displaying all artists
+    response.render('artists_songs', data);
+  });
+
+ });
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
