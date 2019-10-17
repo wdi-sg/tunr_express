@@ -325,13 +325,12 @@ app.post('/register', (request, response) => {
           let output = {};
           output.message = "User name already exist!";
           response.render('account', output);
-
-        // if not, register user
         } else {
+            // if not, register user
             let hashedPw = sha256(request.body.password + SALT);
             let newUser = [ user_name, hashedPw ];
 
-            let queryText = 'INSERT INTO users (name, password) VALUES($1, $2) RETURNING *';
+            queryText = 'INSERT INTO users (name, password) VALUES($1, $2) RETURNING *';
 
             pool.query(queryText, newUser, (err, result) => {
                 if (err) {
@@ -368,27 +367,24 @@ app.post('/login', (request, response) => {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        console.log(result.rows[0]);
         // if there is result
         if ( result.rows.length > 0 ) {
             // check if password correct
             if ( hashedPw === result.rows[0].password) {
-                //let loginPw = result.rows[0].password;
-
                 // send login cookies
                 response.cookie('user_id', result.rows[0].id);
                 response.cookie('user_name', result.rows[0].name);
                 response.cookie('loggedIn', result.rows[0].password);
                 // redirect to homepage
                 response.redirect('/artists');
-            // else return incorrect password
             } else {
+                // else return incorrect password
                 let output = {};
                 output.message = "Incorrect password, please try again";
                 response.render('account', output);
             }
-        // if there is no result
         } else {
+            // if there is no result
             let output = {};
             output.message = "Incorrect user name, please try again";
             response.render('account', output);
@@ -401,7 +397,6 @@ app.get('/favorites/new', (request, response) => {
     // get user_name from cookie
     let user_name = request.cookies['user_name'];
     // check if password correct?
-
     console.log("Adding to favorites");
     // input songs list to be rendered as option
     let queryText = 'SELECT * FROM songs';
@@ -433,10 +428,43 @@ app.post('/favorites/new', (request, response) => {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        console.log(result.rows)
-        response.send("Successfully favorited");
+        console.log(result.rows);
+        response.redirect('/favorites');
     });
 });
+
+app.get('/favorites', (request, response) => {
+    let user_id = request.cookies['user_id'];
+    let hashedPw = request.cookies['loggedIn'];
+
+    let queryText = `SELECT * FROM users WHERE id=${user_id}`;
+
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        // validate login
+        console.log(result.rows);
+        if( hashedPw === result.rows[0].password ){
+            queryText = `SELECT favorites.song_id,songs.title FROM favorites INNER JOIN songs ON (favorites.song_id=songs.id) INNER JOIN users ON (favorites.user_id=users.id) WHERE favorites.user_id=${user_id}`;
+            pool.query(queryText, (err, result) => {
+                if (err) {
+                    console.error('query error:', err.stack);
+                    response.send('query error');
+                }
+                // display favorites of user
+                console.log(result.rows);
+                let list = {};
+                list.songs = result.rows;
+                response.render('favhome', list);
+            });
+        }else{
+            // redirect to homepage
+            response.redirect('/artists');
+        }
+    })
+})
 
 /**
  * ===================================
