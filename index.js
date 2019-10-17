@@ -3,6 +3,8 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -41,6 +43,8 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+
+app.use(cookieParser());
 
 /**
  * ===================================
@@ -210,6 +214,29 @@ app.post('/playlist/:id', (request, response) => {
 
         response.render('playlistNewSong', data);
     });
+
+});
+
+///part 3
+
+// Create a route and jsx file that renders a form for the user to register.
+
+// GET /register
+
+// Create a route that accepts the POST request from the form.
+
+// After the user has been put in the DB, set cookies to set them as logged in:
+
+// a cookie for their username
+// a cookie for their hashed loggedIn cookie
+// their user id
+// Redirect them to the home page.
+
+// POST /register
+
+
+app.get('/register', (request, response)=>{
+  response.render('register')
 
 });
 
