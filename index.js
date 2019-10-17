@@ -322,14 +322,15 @@ const showAllFavs = (request, response) => {
     pool.query(queryString, (err, result) => {
         if (err) {
             console.log('query error: ', err.stack)
-            response.send('query error');
+            response.send('go log in');
         } else {
             // console.log('query results: ', result);
             const data = {
+                loggedin: loggedin,
                 result: result.rows
             }
             console.log("~~~~~~~~~~~~~YO~~~~~~~~~~~~~`")
-            response.render('showsongs', data)
+            response.render('showfavsongs', data)
         }
     })
 }
