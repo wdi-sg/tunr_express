@@ -118,38 +118,73 @@ app.get('/artists/:id/edit', (request, res) => {
 // //app.put to update an artist
 // //not working
 // app.put('/artists/:id', (request, res) => {
-//   const artistId = parseInt(request.params.id);
-//   const {name, photo_url, nationality} = request.body;
-//   const text = "UPDATE artists SET name="${name}", photo_url="${photo_url}", nationality="${nationality}" WHERE id = "($1)", RETURNING *";
-//   console.log("meoooowwwwww");
+//     const artistId = parseInt(request.params.id);
+//     const { name, photo_url, nationality } = request.body;
+//     const text = "UPDATE artists SET name="
+//     $ { name }
+//     ", photo_url="
+//     $ { photo_url }
+//     ", nationality="
+//     $ { nationality }
+//     " WHERE id = "($1)
+//     ", RETURNING *";
+//     console.log("meoooowwwwww");
 
-//   pool.query(text, artistId, (err, result) => {
+//     pool.query(text, artistId, (err, result) => {
 
-//       // done writing the file
-//       res.render("update", result.rows[0]);
+//         // done writing the file
+//         res.render("update", result.rows[0]);
 //     });
 // })
 
 
+//**** PLAYLIST ****//
 
-/**
- * ===================================
- * Listen to requests on port 3000
- * ===================================
- */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+//app.get playlist home page
+app.get('/playlist', (request, res) => {
+    console.log('list of playlist');
+    let queryString = 'SELECT * FROM playlists';
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.error('query error:', err.message);
+            res.send('query error');
+        } else {
+            console.log('display all playlists!');
+            res.send(result.rows);
+        }
+    });
+});
 
-let onClose = function() {
+//create playlist and playlist song table in database
+//
 
-    console.log("closing");
+// //app.get list all the playlists
+// app.get('/playlist/new', (request, res) => {
+//             const text = 'SELECT * FROM artist'
+//             pool.query(text, (err, result) => {
+//                 if (err)
 
-    server.close(() => {
+//             })
 
-        console.log('Process terminated');
 
-        pool.end(() => console.log('Shut down db connection pool'));
-    })
-};
+            /**
+             * ===================================
+             * Listen to requests on port 3000
+             * ===================================
+             */
+            const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-process.on('SIGTERM', onClose);
-process.on('SIGINT', onClose);
+            let onClose = function() {
+
+                console.log("closing");
+
+                server.close(() => {
+
+                    console.log('Process terminated');
+
+                    pool.end(() => console.log('Shut down db connection pool'));
+                })
+            };
+
+            process.on('SIGTERM', onClose);
+            process.on('SIGINT', onClose);
