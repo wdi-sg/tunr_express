@@ -3,6 +3,9 @@ console.log('starting up!!');
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
+var SALT = 'apple';
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -319,6 +322,45 @@ app.get('/playlists/:id/songtitles', (req, res) => {
 		} else {
 			console.log('search completed!');
 			res.send(result.rows);
+		}
+	});
+});
+
+/**
+ * ===================================
+ * PASSWORD AND COOKIES
+ * ===================================
+ */
+
+app.get('/register', (req, res) => {
+	console.log('creating registration form');
+	res.render('register');
+});
+
+app.post('/register', (req, res) => {
+	console.log('saving your login details');
+	console.log(req.body);
+
+	let hashedPassword = sha256(req.body.password + SALT);
+
+	const data = [ req.body.name, hashedPassword ];
+	const queryString = `INSERT INTO users (name, password) VALUES ($1, $2) RETURNING*`;
+
+	pool.query(queryString, data, (err, result) => {
+		let userId = result.rows[0].id;
+		let registeredCookie = sha256(userId + 'registered' + SALT);
+
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			console.log('registration successful!');
+			console.log('query result:', result);
+			// cookie for their hashed loggin cookie
+			res.cookie('registered', registeredCookie);
+			// cookie for userid
+			res.cookie('user_id', userId);
+			// cookie for username
+			res.redirect(`/register`);
 		}
 	});
 });
