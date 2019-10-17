@@ -5,9 +5,19 @@ Spotify haters can't keep up with us).
 
 ![https://media.giphy.com/media/ku5EcFe4PNGWA/giphy.gif](https://media.giphy.com/media/ku5EcFe4PNGWA/giphy.gif)
 
+## How to run my version
+### Create your own .env file
+```
+touch .env
+```
+* Assign SALT to your own secret code
+    ```
+    SALT = "my own secret code"
+    ```
+
 ## Part 1 - Database / Schema / Models
 
-In this repo are two files `artist_data.sql` and `songs.sql`. 
+In this repo are two files `artist_data.sql` and `songs.sql`.
 
 ### Create the database
 
@@ -63,7 +73,7 @@ Don't move to the next feature without first finishing a feature.
 | /artists/new      | GET       | new      | Display the form for a single artist |
 | /artists          | POST      | create   | Create a new artist |
 | /artists/:id      | GET       | show     | See a single artist |
-| /artists/:id/edit | GET       | edit     | Display the form for editing a single artist | 
+| /artists/:id/edit | GET       | edit     | Display the form for editing a single artist |
 | /artists/:id      | PATCH/PUT | update   | Update a artist |
 | /artists/:id      | DELETE    | destroy  | Remove a artist |
 
@@ -79,14 +89,14 @@ Build the show feature for an `artist`
 
 
 
-### Further 
+### Further
 
 #### 1 to Many
 
 `/artists/1/songs` - display all the songs for this artist
 
 
-### Further 
+### Further
 
 ##### The Index Feature
 
@@ -101,7 +111,7 @@ Build a feature that allows a user to edit an existing `artist` in the database
 
 Build a feature that allows users to delete an existing `artist` from the database.
 
-  
+
 ### Further
 - finish the 7 RESTful Routes for `songs`
 
