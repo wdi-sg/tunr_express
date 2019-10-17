@@ -452,7 +452,31 @@ app.post('/favorites', (req, res) => {
 			console.log('query error:', err.stack);
 		} else {
 			console.log('song added to favorites success!');
-			res.redirect('/favorites/new');
+			res.redirect('/favorites/something');
+		}
+	});
+});
+
+app.get('/favorites/something', (req, res) => {
+	let cookie = req.cookies;
+	const queryString = `SELECT from favorites INNER JOIN songs ON (favorites.songs_id = songs.id) WHERE users_id = ${cookie.user_id}`;
+
+	pool.query(queryString, (err, result) => {
+		let cookieKillMe = sha256(cookie.user_id + 'loggedin' + SALT);
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			if (cookie.loggedin === cookieKillMe) {
+				console.log('you are authorised to be here');
+				let data = {
+					songs: result.rows
+				};
+				res.render('favorites', data);
+				console.log(cookieKillMe);
+				console.log(cookie.loggedin);
+			} else {
+				res.send('PLEASE LEAVE, YOU ARE NOT WELCOME ANTI-USER');
+			}
 		}
 	});
 });
