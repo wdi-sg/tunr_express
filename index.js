@@ -314,6 +314,11 @@ app.get('/artist/:id/songs', (request, response) => {
  });
 
 
+app.get('/register', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  response.render('register');
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
