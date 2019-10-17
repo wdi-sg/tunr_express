@@ -30,3 +30,9 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT,
     password TEXT
 );
+
+CREATE TABLE IF NOT EXISTS favorites (
+    id SERIAL PRIMARY KEY,
+    user_id TEXT,
+    song_id TEXT
+);

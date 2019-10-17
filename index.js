@@ -264,12 +264,16 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
 
   console.log('req.body', req.body);
-  const name = req.body.name;
+  const {name, password} = req.body;
+  const hashedReqPassword = sha256(SALT + password);
 
   pool.query(`SELECT * FROM users WHERE users.name = '${name}'`, (err, result) => {
     console.log("result",result.rows);
 
     if (result.rows.length > 0 ) {
+
+      if (result.rows[0].password === hashedReqPassword) {
+
     let username = result.rows[0].name;
     let user_id = result.rows[0].id; 
     let loggedin = sha256(SALT + user_id);
@@ -279,16 +283,14 @@ app.post('/login', (req, res) => {
     res.cookie('loggedin', loggedin);
     // res.send('user registered');
     res.redirect('/');
+      } else {
+        res.send('password is wrong.');
+      }
     } else {
-      res.send('please register first.')
+      res.send('please register first.');
     }
 
   });
-
-
-
-  // res.send('logggg');
-
 })
 
 
