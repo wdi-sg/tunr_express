@@ -297,6 +297,7 @@ app.get('/playlists', (request, response) => {
  * Part 3 User Account
  * ===================================
  */
+const SALT = 'tunr_db';
 
 app.get('/register', (request, response) => {
   // respond with HTML page with form to register
@@ -326,7 +327,6 @@ app.post('/register', (request, response) => {
 
         // if not, register user
         } else {
-            const SALT = 'tunr_db';
             let hashedPw = sha256(request.body.password + SALT);
             let newUser = [ user_name, hashedPw ];
 
@@ -358,7 +358,7 @@ app.get('/login', (request, response) => {
 app.post('/login', (request, response) => {
     // respond with HTML page with form to register
     let user_name = request.body.name;
-    let user_password = request.body.password;
+    let hashedPw = sha256(request.body.password + SALT);
 
     let queryText = `SELECT * FROM users WHERE name='${user_name}'`;
 
@@ -371,7 +371,7 @@ app.post('/login', (request, response) => {
         // if there is result
         if ( result.rows.length > 0 ) {
             // check if password correct
-            if ( user_password === result.rows[0].password) {
+            if ( hashedPw === result.rows[0].password) {
                 //let loginPw = result.rows[0].password;
 
                 // send login cookies
