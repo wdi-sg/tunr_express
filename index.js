@@ -1,9 +1,13 @@
+//jshint esversion:6
 console.log("starting up!!");
 
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
+const IAMSALTY = 'saltyaf';
 // Initialise postgres client
 const configs = {
   user: 'datguyrhy',
@@ -27,7 +31,7 @@ pool.on('error', function(err) {
 // Init express app
 const app = express();
 
-
+app.use(cookieParser()); /// THIS LINE IS REQUIRED TO PARSE req.cookies
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -42,10 +46,141 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
+
+
 //front page
 app.get('/', (request, response) => {
   response.render("home");
 });
+
+
+//registration form
+app.get('/register', (req, res) => {
+  res.render('registration');
+});
+
+////// collect content from reg. form
+app.post('/register', (req, res) => {
+  console.log(req.body);
+  let hashedPw = sha256(req.body.password);
+  let regArr = [
+    req.body.name,
+    hashedPw
+  ];
+  const queryText = `INSERT INTO users (user_name,pw) VALUES ($1,$2)`;
+
+  pool.query(queryText, regArr, (err, result) => {
+    if (err) {
+      console.error('query error:', err.message);
+      res.send('query error');
+    } else {
+      console.log('query result:', result);
+      // redirect to home page
+      res.send("Registration completed for " + req.body.name);
+    }
+  })
+});
+
+// login page
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', (req, res) => {
+  let reqUserName = req.body.name;
+  let reqPw = req.body.password;
+
+  //check vs db for user
+  const queryString = "SELECT*FROM users WHERE user_name='" + reqUserName + "'";
+  console.log('checking for user match');
+
+  pool.query(queryString, (err, result) => {
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send('query error');
+    } else {
+      console.log('query result:', result.rows);
+      // if this user exists in the db
+      if (result.rows.length > 0) {
+        let hashedReqPw = sha256(reqPw);
+        console.log("hashed request password: " + hashedReqPw);
+
+        // check to see if the password in request.body matches what's in the db
+
+        if (hashedReqPw === result.rows[0].pw) {
+          let user_id = result.rows[0].id;
+          let user_name = result.rows[0].user_name;
+          console.log('muahahaha' + user_id);
+          console.log('hashing cookies');
+
+          console.log("ok?");
+          /////TAKE NOTE////
+          //tried result.rows[0].id >>>>> throw err <==
+          //SPECIFICALLY IDs REQUIRE SALTING
+          //Maybe i wasnt paying attention dyring that part....
+          //tried sha256(4) >>>>>> invalid input
+          //tried sha256(result.rows[0].user_name) >>>> works
+          let hashedCookie = sha256(IAMSALTY + user_id);
+          let hashedUser = sha256(user_name);
+          res.cookie(hashedUser, hashedCookie);
+          res.cookie('user_id', user_id);
+          res.cookie("hasLoggedIn", hashedCookie);
+          // if it matches they have been verified, log them in
+          // res.redirect('/');
+        }
+      } else {
+
+        res.status(403).send('wrong password');
+      }
+      // redirect to home page0
+      res.redirect('/');
+    }
+
+  });
+});
+
+
+//favorites form
+
+/// req.cookies returning undefined.....
+/// cant solve this issue
+app.get('/favorites/form', (req, res) => {
+  let x = req.cookies;
+  res.render('newSong');
+  console.log(x);
+});
+app.post('/favorites/form', (req, res) => {
+      let pickedSong = req.body.song_id;
+      let user_id = req.cookies['user_id'];
+      console.log(req.cookies);
+      let hashedValue = sha256(IAMSALTY + user_id);
+      console.log(hashedValue);
+  if (req.cookies['hasLoggedin'] === hashedValue) {
+      res.send('good');
+  } else {
+
+    //otherwise, show them a message
+    res.send('go awayyyy');
+  }
+});
+
+// create a route that renders a form for the user to enter the song they want to favorite. This form can just be a normal input where the user enters the id of a song they want to favorite.
+//
+// GET /favorites/new
+//
+// use the user id cookie mentionmed above and the request.body to create the record in the DB
+//
+// POST /favorites
+//
+// display a list of all the user's favorites
+//
+// GET /favorites
+//
+// show an error if the user is not logged in
+
+
+
 // see all artists index///
 app.get('/artists/all', (req, res) => {
   console.log("Showing artist list");
@@ -142,12 +277,12 @@ let onClose = function() {
 // show all playlists//// tried out constructor component had some error
 app.get('/playlist', (req, res) => {
   let playlistShow = `SELECT * FROM playlist`;
-  pool.query(playlistShow,(err,result)=>{
-      // console.log(result.rows)
-      const list = {
-          arr: result.rows
-      }
-      res.render('viewPlaylist.jsx',list);
+  pool.query(playlistShow, (err, result) => {
+    // console.log(result.rows)
+    const list = {
+      arr: result.rows
+    }
+    res.render('viewPlaylist.jsx', list);
   })
 });
 
@@ -161,10 +296,10 @@ app.post('/playlist', (req, res) => {
   let name = req.body.name;
   let queryArr = [name];
   let queryText = `INSERT INTO playlist(name) VALUES ($1) RETURNING *`;
-  pool.query(queryText, queryArr, (err, result)=>{
-      console.log(result.rows[0])
-      let name = result.rows[0]["name"];
-      res.send("New playlist added: " + name)
+  pool.query(queryText, queryArr, (err, result) => {
+    console.log(result.rows[0])
+    let name = result.rows[0]["name"];
+    res.send("New playlist added: " + name)
   })
 });
 
@@ -173,9 +308,15 @@ app.get('/playlist/:id/newsong', (req, res) => {
   let id = req.params.id;
   const data = {
     id: id
-  }
-  res.render('PlaylistSongAdd',data);
+  };
+  res.render('PlaylistSongAdd', data);
 });
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+
+// a cookie for their username ///////DONE
+// a cookie for their hashed loggedIn cookie ///DONE
+// their user id </////DONE
+// Redirect them to the home page. ///// DONE

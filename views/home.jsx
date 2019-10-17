@@ -16,6 +16,9 @@ class Home extends React.Component {
               <form action='/playlist'>
                 <input type='submit' value='playlist' />
               </form>
+              <form action='/favorites/form'>
+                <input type='submit' value='add song to favorites' />
+              </form>
           </body>
       </html>
     );
