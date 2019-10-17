@@ -11,7 +11,7 @@ class Login extends React.Component {
         <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville&display=swap" rel="stylesheet"></link>
         </head>
         <body>
-         <h2 class="text-center" style={{margin: '100px auto', width: '500px', fontFamily: 'Montserrat'}}>Create User Account: </h2>
+         <h2 class="text-center" style={{margin: '100px auto', width: '500px', fontFamily: 'Montserrat'}}>Log In to your Account: </h2>
          <main class="form-row" style={{ margin: '50px auto',  width: '500px', fontFamily: 'Montserrat'}} >
             <form method="POST" action="/login" style={{width: '300px', display: 'block', margin: '0 auto'}}>
              Username: <input name="name" class="text-center" placeholder="Create Username:" style={{width: '300px', display: 'block', margin: '0 auto'}}/>
