@@ -360,8 +360,7 @@ app.post('/register', (req, res) => {
 			res.cookie('loggedin', hashedCookie);
 			// cookie for userid
 			res.cookie('user_id', userId);
-			// cookie for username
-			res.redirect(`/register`);
+			res.redirect(`/login`);
 		}
 	});
 });
@@ -375,6 +374,42 @@ app.post('/register', (req, res) => {
 app.get('/login', (req, res) => {
 	console.log('bringing you to login page!');
 	res.render('login');
+});
+
+app.post('/login', (req, res) => {
+	console.log('logging you in!');
+	let returningUserName = req.body.name;
+	let returningUserPassword = req.body.password;
+	const data = [ returningUserName ];
+	// grabbing user name from db
+	const queryString = `SELECT * FROM users WHERE name=$1`;
+
+	pool.query(queryString, data, (err, result) => {
+		let hashedPassword = sha256(returningUserPassword + SALT);
+
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			let returningUser = result.rows[0];
+			// if name/password is incorrect
+			if (returningUser === undefined) {
+				console.log('Incorrect username/password, please try again');
+				console.log(returningUser);
+				console.log(hashedPassword);
+				res.redirect(`/login`);
+				// if entire account is correct - this is logical, so that hackers can't know if a username exists
+			} else if (hashedPassword === returningUser.password) {
+				console.log('login successful');
+				let hashedLoginCookie = sha256(returningUser.id + 'loggedin' + SALT);
+				console.log('login successful!');
+				// cookie for hashedlogin cookie
+				res.cookie('loggedin', hashedLoginCookie);
+				// cookie for user id
+				res.cookie('user_id', returningUser.id);
+				res.redirect('/');
+			}
+		}
+	});
 });
 
 /**
