@@ -73,8 +73,8 @@ app.get('/artists/', (request, response) => {
     pool.query(queryText, (err, queryRes) => {
         // const data = {artists: queryRes.rows};
 
-         const artistsDB = queryRes.rows;
-         const data = {
+        const artistsDB = queryRes.rows;
+        const data = {
             artists: artistsDB
         };
 
@@ -90,16 +90,16 @@ app.get('/artists/', (request, response) => {
 
 //show new artist, post
 
-app.post('/artists',(request, response)=>{
+app.post('/artists', (request, response) => {
 
-     let {name, photo_url, nationality} = request.body;
-     queryText = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${name}', '${photo_url}', '${nationality}') RETURNING *`
+    let { name, photo_url, nationality } = request.body;
+    queryText = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${name}', '${photo_url}', '${nationality}') RETURNING *`
 
 
-    pool.query(queryText,(err,queryRes)=>{
+    pool.query(queryText, (err, queryRes) => {
         console.log(queryRes.rows[0])
 
-        response.render('showNewArtist',queryRes.rows[0]);
+        response.render('showNewArtist', queryRes.rows[0]);
 
     })
 })
@@ -129,29 +129,89 @@ app.get('/artists/:id', (request, response) => {
 
 
 // update
-app.put('/artists/:id',(request,response)=>{
-    let {id} = request.params;
-    let {name, photo_url, nationality} = request.body;
-   const queryText = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${id} RETURNING *`;
-    pool.query(queryText,(err,queryRes)=>{
-        response.render('show',queryRes.rows[0]);
+app.put('/artists/:id', (request, response) => {
+    let { id } = request.params;
+    let { name, photo_url, nationality } = request.body;
+    const queryText = `UPDATE artists SET name='${name}', photo_url='${photo_url}', nationality='${nationality}' WHERE id=${id} RETURNING *`;
+    pool.query(queryText, (err, queryRes) => {
+        response.render('show', queryRes.rows[0]);
     });
 });
 
 
 //delete artist
-app.delete('/artists/:id',(request, result)=>{
-    let {id} = request.params;
-   const queryText = `DELETE FROM artists WHERE id=${id}`;
-    pool.query(queryText,(err,queryRes)=>{
+app.delete('/artists/:id', (request, result) => {
+    let { id } = request.params;
+    const queryText = `DELETE FROM artists WHERE id=${id}`;
+    pool.query(queryText, (err, queryRes) => {
         response.render('home');
     });
+});
+
+//songs
+
+app.get('/artists/:id/songs', (request, result) => {
+    let { id } = request.params;
+    const queryText = `SELECT * FROM songs WHERE artist_id=${id}`;
+    pool.query(queryText, (err, queryRes) => {
+        response.render('songs', queryRes);
+    });
+});
+
+
+//playlist new form
+app.get('/playlist/new', (request, response) => {
+    // respond with HTML page with form to create new artist
+    response.render('newPlaylist');
+});
+
+
+//show playlist, post
+
+app.post('/playlist', (request, response) => {
+
+
+    let queryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING id';
+
+    const values = [request.body.playlistName];
+
+    pool.query(queryText, values, (err, queryRes) => {
+
+
+        response.render('newPlaylist', data);
+    });
+
 });
 
 
 
 
 
+//add song to a playlist
+app.post('/playlist/:id', (request, response) => {
+    let id = request.params.id;
+    const values = [request.body.song_id, request.params.id];
+    let queryText = 'INSERT INTO playlist_song (song_id , playlist_id) VALUES ($1, $2) RETURNING id';
+
+
+    pool.query(queryText, values, (err, queryRes) => {
+        console.log(err);
+    });
+    queryText = 'SELECT * from songs';
+    pool.query(queryText, (err, queryRes) => {
+
+
+        const data = {
+            songsList: queryRes.rows
+        }
+
+        data.id = id;
+
+
+        response.render('playlistNewSong', data);
+    });
+
+});
 
 
 

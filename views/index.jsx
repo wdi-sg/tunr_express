@@ -7,9 +7,9 @@ class Index extends React.Component {
         return (
         <div>
 
-          <h5>Id: {item.id}</h5>
-          <h5>Artist Name: {item.name} </h5>
-          <h5>Artist Nationality: {item.nationality}</h5>
+          <h3>Id: {item.id}</h3>
+          <h3>Artist Name: {item.name} </h3>
+          <h3>Artist Nationality: {item.nationality}</h3>
           <img width="500px" src={item.photo_url} />
           </div>
           )
