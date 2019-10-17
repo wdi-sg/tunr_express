@@ -188,8 +188,106 @@ app.get('/artist/:id/songs', (request, response) => {
 
             response.send(result.rows);
         }
+    });
+});
+
+
+app.get('/playlist/new', (request, response) => {
+
+    response.render("playlist");
+});
+
+
+app.post('/playlist', (request, response) => {
+
+    console.log(request.body);
+    const inputName= [request.body.name];
+
+    const queryString= "INSERT INTO playlists (name) VALUES ($1) RETURNING *";
+    console.log(queryString);
+
+    pool.query(queryString, inputName, (err, result) => {
+
+        if(err) {
+            console.error("query error", err.message);
+            response.send("query error");
+        }
+        else {
+            console.log("query result :", result);
+
+            response.send(result.rows);
+        }
+    });
+});
+
+
+// SELECT playlist_song.playlist_id, songs.title
+// FROM playlist_song
+// INNER JOIN songs
+// ON (songs.id = playlist_song.song_id)
+// WHERE playlist_song.playlist_id = 1;
+
+
+
+
+// work in progress. want to show up both playlist and song names
+app.get('/playlist/:id', (request, response) => {
+
+    let inputId= parseInt(request.params.id);
+    console.log("id :", inputId);
+
+    // const queryString= "SELECT * FROM playlists WHERE id="+inputId;
+    const queryString= "SELECT playlist_song.playlist_id, songs.title FROM playlist_song INNER JOIN songs ON (songs.id = playlist_song.song_id) WHERE playlist_song.playlist_id ="+inputId;
+    console.log(queryString);
+
+    pool.query(queryString, (err, result) => {
+
+        if(err) {
+            console.error("query error", err.message);
+            response.send("No such Playlist");
+        }
+        else {
+            console.log("query result :", result);
+
+            response.send(result.rows);
+        }
+    });
+});
+
+
+app.get('/playlist/:id/addsong', (request, response) => {
+
+    let data= {
+        id : parseInt(request.params.id)
+    }
+    response.render("addsong", data);
+})
+
+
+app.post('/playlist/:id', (request, response) => {
+
+    console.log(request.body);
+    let songId= request.body.song_id;
+    let inputId= request.params.id;
+    const newArr= [songId, inputId];
+
+    const queryString= 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)';
+    console.log(queryString);
+
+    pool.query(queryString, newArr, (err, result) => {
+
+        if(err) {
+            console.error("query error", err.message);
+            response.send("No such Thing");
+        }
+        else {
+            console.log("query result: result");
+
+            response.send(result.rows);
+        }
     })
 })
+
 
 
 /**
