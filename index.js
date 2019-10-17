@@ -3,6 +3,8 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser')
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -27,6 +29,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -273,6 +276,70 @@ app.post('/playlists/:id', (req, res) => {
         rows : req.body
       };
       res.render('ps-create', data)
+    }
+  });
+});
+
+ /**
+ * ===================================
+ *  Register Routes
+ * ===================================
+ */
+const salt = "rnsogisbpiahzcvb";
+
+app.get('/register', (req, res) => {
+  res.render('r-new.jsx');
+});
+
+app.post('/register', (req, res) => {
+  const queryArray = [req.body.username, sha256(req.body.password+salt)];
+  const queryString = 'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *';
+  pool.query(queryString, queryArray, (err, result) => {
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      data = {
+        rows : req.body
+      };
+      res.render('r-create', data)
+    }
+  });
+});
+
+ /**
+ * ===================================
+ *  Login Routes
+ * ===================================
+ */
+
+app.get('/login', (req, res) => {
+  res.render('login.jsx');
+});
+
+app.post('/login', (req, res) => {
+  const queryArray = [req.body.username];
+  const queryString = 'SELECT * FROM users WHERE username = $1';
+  pool.query(queryString, queryArray, (err, result) => {
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send( 'query error' );
+    } else {
+      if (result.rows.length > 0) {
+        let hashedPassword = sha256(req.body.password+salt);
+        if (hashedPassword === result.rows[0].password) {
+          let user_id = result.rows[0].id;
+          let hashedCookie = sha256(user_id + salt);
+
+          res.cookie('user_id', user_id);
+          res.cookie('hasLoggedIn', hashedCookie);
+          res.redirect('/');
+        } else {
+          res.status(403).send('wrong password');
+        }
+      } else {
+        res.status(403).send('wrong username');
+      }
     }
   });
 });
