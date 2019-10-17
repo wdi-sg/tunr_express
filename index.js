@@ -232,13 +232,26 @@ app.post('/playlist/:id', (request, response) => {
 // their user id
 // Redirect them to the home page.
 
-// POST /register
-
+// register
+//get form
 
 app.get('/register', (request, response)=>{
   response.render('register')
 
 });
+
+//post
+
+
+//login
+//get form
+app.get('/login', (request, response)=>{
+  response.render('login')
+});
+
+//post
+
+
 
 
 
