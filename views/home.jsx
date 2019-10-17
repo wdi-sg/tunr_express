@@ -7,7 +7,7 @@ class Home extends React.Component {
         <head />
         <body>
             <h1>Welcome!</h1>
-            <form method="GET" action="/artists/">
+            <form method="GET" action="/artists">
                 <p>
                     To see all our artists: <br/>
                     <input type="submit" value="Artists"/>
@@ -19,7 +19,12 @@ class Home extends React.Component {
                     <input type="submit" value="Playlist"/>
                 </p>
             </form>
-
+            <form method="GET" action="/favorites">
+                <p>
+                    To see your favorites: <br/>
+                    <input type="submit" value="Favorites"/>
+                </p>
+            </form>
         </body>
       </html>
     );

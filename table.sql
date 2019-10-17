@@ -29,4 +29,10 @@ CREATE TABLE IF NOT EXISTS users(
 	id SERIAL PRIMARY KEY,
 	username TEXT,
 	hashPassword TEXT
-)
+);
+
+CREATE TABLE IF NOT EXISTS favorite(
+	id SERIAL PRIMARY KEY,
+	user_id INTEGER,
+	song_id INTEGER
+);

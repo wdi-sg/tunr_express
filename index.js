@@ -56,7 +56,6 @@ const SALT = 'Bun-nana'
 app.get('/home', (request, response) => {
   // query database for all pokemon
   // respond with HTML page displaying all pokemon
-    console.log(request.cookies)
     let userId = request.cookies.user_id
     let queryArr = [userId];
     let queryText = 'SELECT * FROM users WHERE id = $1'
@@ -64,7 +63,6 @@ app.get('/home', (request, response) => {
         if(err){
             response.redirect('/login');
         } else {
-            console.log(result.rows[0])
             let username = result.rows[0]['username']
             let hashedUser = sha256(username+SALT);
             if(request.cookies.hasLoggedIn === hashedUser){
@@ -74,7 +72,6 @@ app.get('/home', (request, response) => {
             }
         }
     })
-
 });
 
 app.get('/artists/new', (request, response) => {
@@ -101,7 +98,6 @@ app.post('/artists',(request, response)=>{
     let nationality = request.body.nationality;
     let queryText = `INSERT INTO artists(name,nationality) VALUES ('${name}','${nationality}') RETURNING *`;
     pool.query(queryText,(err,result)=>{
-        console.log(result.rows[0])
         let id = result.rows[0]["id"] + "<br>";
         let name = result.rows[0]["name"] + "<br>";
         let nationality = result.rows[0]["nationality"] + "<br>";
@@ -169,7 +165,6 @@ app.delete('/artists/:id',(request,response)=>{
 app.get('/playlist',(request,response)=>{
     let queryText = `SELECT * FROM playlist`;
     pool.query(queryText,(err,result)=>{
-        // console.log(result.rows)
         const data = {
             arr: result.rows
         }
@@ -209,7 +204,6 @@ app.post('/artists/:id/songs',(request,response)=>{
     let id = request.params.id;
     let queryText = `INSERT INTO songs(title,album,artist_id) VALUES ('${title}','${album}','${id}') RETURNING *`;
     pool.query(queryText,(err,result)=>{
-        console.log(result.rows[0])
         let title = "Title: "+result.rows[0]["title"] + "<br>";
         let album = "Album: "+result.rows[0]["album"] + "<br>";
         let str = "New Song added:<br>"+title+album;
@@ -219,7 +213,6 @@ app.post('/artists/:id/songs',(request,response)=>{
 
 
 app.post('/playlist',(request,response)=>{
-    console.log(request.body);
     let name = request.body.name;
     let queryArr = [name];
     let queryText = `INSERT INTO playlist(name) VALUES ($1) RETURNING *`;
@@ -297,10 +290,42 @@ app.post('/login',(request, response) =>{
         } else {
             response.send("No such user")
         }
+    })
+})
 
+app.get('/favorites', (request,response)=>{
+    let userId = request.cookies.user_id;
+    let queryArr = [userId];
+    let queryText = "SELECT songs.title FROM favorite INNER JOIN songs ON (songs.id = favorite.song_id) WHERE (favorite.user_id= $1)";
+    pool.query(queryText, queryArr, (err, result)=>{
+        const data = {
+            favArr: result.rows
+        }
+        response.render('viewFavorite.jsx',data);
     })
 
-    // response.render("login.jsx")
+})
+
+app.get('/favorites/new',(request,response)=>{
+    response.render('newFavorite.jsx');
+})
+
+app.post('/favorites',(request,response)=>{
+        console.log(response)
+
+    let song = request.body.title;
+    let album = request.body.album;
+    let userId = request.cookies.user_id;
+    let queryArr = [song, album];
+    let queryText = "SELECT id FROM songs WHERE title=$1 AND album=$2 ";
+    pool.query(queryText,queryArr,(err,result)=>{
+        let songId = result.rows[0]["id"];
+        let queryText2 = "INSERT INTO favorite(user_id,song_id) VALUES($1,$2)";
+        let queryArr2 = [userId, songId];
+        pool.query(queryText2,queryArr2,(err,result)=>{
+            response.send("New song added to favorite!")
+        })
+    })
 })
 /**
  * ===================================
