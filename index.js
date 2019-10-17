@@ -28,6 +28,7 @@ app.engine('jsx', reactEngine);
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 const sha256 = require('js-sha256');
+const SALT = "iodine";
 /*================================================
 ╦  ┌─┐┌┐┌┌┬┐┬┌┐┌┌─┐
 ║  ├─┤│││ │││││││ ┬
@@ -228,14 +229,14 @@ app.get('/register',(req,res)=>{res.render('register')});
 ╚═╝┴└─└─┘┴ ┴ ┴ └─┘
 ================================================*/
 app.post('/register',(req,res)=>{
-    let values = [req.body.username,req.body.password];
+    let values = [req.body.username,sha256(req.body.password+SALT)];
     text = `INSERT INTO users (username,password) VALUES ($1,$2) RETURNING *`;
     pool.query(text,values,(err,result)=>{
         console.log();
         res.cookie('username',req.body.username);
         res.cookie('loggedIn',sha256('yes'));
         res.cookie('userId',result.rows[0].id);
-        res.send('USER CREATED SUCCESSFULLY!');
+        res.redirect('/');
     });
 });
 /*================================================
@@ -255,18 +256,82 @@ app.get('/login',(req,res)=>{res.render('login')});
 ╚═╝┴└─└─┘┴ ┴ ┴ └─┘
 ================================================*/
 app.post('/login',(req,res)=>{
-    let values = [req.body.username,req.body.password];
+    let values = [req.body.username,sha256(req.body.password+SALT)];
     text = `SELECT * FROM users WHERE username=$1 AND password=$2`;
     pool.query(text,values,(err,result)=>{
         if (result.rows[0] !== undefined) {
             res.cookie('username',req.body.username);
             res.cookie('loggedIn',sha256('yes'));
             res.cookie('userId',result.rows[0].id);
-            res.send('USER LOGIN SUCCESSFULLY!');
+            res.redirect('/');
         } else {
-            res.send('WRONG USERNAME OR PASSWORD!')
+            res.send('WRONG USERNAME OR PASSWORD!');
         };
     });
+});
+/*================================================
+╔═╗┌─┐┬  ┬┌─┐┬─┐┬┌┬┐┌─┐┌─┐
+╠╣ ├─┤└┐┌┘│ │├┬┘│ │ ├┤ └─┐
+╚  ┴ ┴ └┘ └─┘┴└─┴ ┴ └─┘└─┘
+================================================*/
+/*================================================
+╔╗╔┌─┐┬ ┬
+║║║├┤ │││
+╝╚╝└─┘└┴┘
+================================================*/
+app.get('/favorites/new',(req,res)=>{
+    let {loggedIn,username,userId} = req.cookies;
+// check if user is logged in
+    if (loggedIn === sha256('yes')) {
+        text = "SELECT * FROM songs";
+        pool.query(text,(err,result)=>{
+            res.render('allsongs',result);
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+/*================================================
+╔═╗┬─┐┌─┐┌─┐┌┬┐┌─┐
+║  ├┬┘├┤ ├─┤ │ ├┤
+╚═╝┴└─└─┘┴ ┴ ┴ └─┘
+================================================*/
+app.post('/favorites',async function(req,res){
+    try{
+        let selectedSongIdArray = Object.keys(req.body);
+        let {loggedIn,username,userId} = req.cookies;
+        if (selectedSongIdArray.length===0) {
+            res.send('nothing selected');
+        } else {
+            selectedSongIdArray.forEach(async function(songId){
+                text = `INSERT INTO favorites (song_id,user_id) VALUES (${parseInt(songId)},${parseInt(userId)})`;
+                let result = await pool.query(text);
+            });
+            text = `SELECT * FROM favorites INNER JOIN songs ON (favorites.song_id = songs.id) WHERE favorites.user_id=${userId}`
+            pool.query(text,(err,result)=>{
+                console.log(result.rows);
+                res.render('usersongs',result);
+            });
+        };
+    } catch(err) {
+        console.log(err);
+    }
+});
+/*================================================
+╔═╗┬ ┬┌─┐┬ ┬
+╚═╗├─┤│ ││││
+╚═╝┴ ┴└─┘└┴┘
+================================================*/
+app.get('/favorites',(req,res)=>{
+    let {loggedIn,username,userId} = req.cookies;
+    if (userId === undefined) {
+        res.redirect('/login');
+    } else {
+        text = `SELECT * FROM favorites INNER JOIN songs ON (favorites.song_id = songs.id) WHERE favorites.user_id=${userId}`
+        pool.query(text,(err,result)=>{
+            res.render('usersongs',result);
+        });
+    };
 });
 /*================================================
 ╔═╗┌─┐┬─┐┌┬┐

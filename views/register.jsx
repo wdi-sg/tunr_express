@@ -5,6 +5,7 @@ class New extends React.Component {
     render() {
         return (
             <Layout>
+
                 <h1 className="display-4">New User Registration</h1>
                 <form method="POST" action="/register">
                     <div className="form-group">

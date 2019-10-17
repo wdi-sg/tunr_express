@@ -29,6 +29,9 @@ class Layout extends React.Component {
                                 <li className="nav-item">
                                     <a className="nav-link" href="http://localhost:3000/playlists/new">New Playlist</a>
                                 </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="http://localhost:3000/favorites">Favorites</a>
+                                </li>
                             </ul>
                             <form className="form-inline my-2 my-lg-0" method="GET" action={"/login"}>
                                 <input className="btn btn-outline-success my-2 my-sm-0" type="submit" value="Log In"/>
