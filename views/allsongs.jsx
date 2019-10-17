@@ -9,7 +9,7 @@ class AllSongs extends React.Component {
             return (
                 <div className="card form-group m-1">
                     <div className="card-body">
-                        <h5 className="card-title">Title: {song.title}</h5>
+                        <h5 className="card-title">Title: <a href={"/songs/"+song.id}>{song.title}</a></h5>
                         <p className="card-text">Album: {song.album}</p>
                     </div>
                     <div className="card-footer">

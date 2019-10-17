@@ -11,6 +11,7 @@ class UserSongs extends React.Component {
                     <div className="card-body">
                         <h5 className="card-title">{song.title}</h5>
                         <h6 className="card-subtitle mb-2">Album: {song.album}</h6>
+                        <a href={"/songs/"+song.id} className="stretched-link"></a>
                     </div>
                 </div>
             );
