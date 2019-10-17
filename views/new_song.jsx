@@ -5,7 +5,7 @@ class NewPlaylistSong extends React.Component {
   render() {
         const songs = this.props.songsobj.map( (song, index) => {
             return (
-                <option value={index+1}>{song.title}</option>
+                <option value={song.id}>{song.title}</option>
                 )
 
         })
