@@ -3,6 +3,8 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+
 
 // Initialise postgres client
 const configs = {
@@ -17,6 +19,8 @@ const pool = new pg.Pool(configs);
 pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
+
+var sha256 = require('js-sha256');
 
 /**
  * ===================================
@@ -34,6 +38,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+app.use(cookieParser());
 
 
 // Set react-views to be the default view engine
@@ -333,6 +338,101 @@ app.get('/artists/:id/songs', (request, response) => {
         }
     })
 });
+
+
+// .____    ________    ________.___ _______
+// |    |   \_____  \  /  _____/|   |\      \
+// |    |    /   |   \/   \  ___|   |/   |   \
+// |    |___/    |    \    \_\  \   /    |    \
+// |_______ \_______  /\______  /___\____|__  /
+//         \/       \/        \/            \/
+
+let SALT = "meowmeow357"
+
+app.get ('/register', (request,response)=>{
+    response.render('register')
+
+})
+
+app.post('/register', (request,response)=>{
+
+    console.log(request.body)
+
+    let hashedPw = sha256(request.body.password)
+    console.log(hashedPw)
+    let array = [request.body.username, hashedPw]
+    queryString = 'INSERT INTO users (username, pw) VALUES ($1, $2)'
+
+    pool.query(queryString, array, (err, result) => {
+
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            response.redirect('/login')
+
+        }
+    });
+})
+
+app.get('/login', (request,response)=>{
+    response.render('login')
+})
+
+app.post('/bananas', (request,response)=>{
+
+    let user = request.body.username
+    let password = request.body.password
+    let hashedPw = sha256(request.body.password)
+    console.log(user, password, hashedPw)
+
+   queryString = `SELECT * FROM users WHERE username = '${user}'`
+
+    pool.query(queryString, (err, result) => {
+        console.log(result.rows[0])
+
+          if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+          } else {
+            if (user === result.rows[0].username && hashedPw === result.rows[0].pw){
+
+            let userId = result.rows[0].id
+
+
+            let cookieHash = sha256(SALT + userId)
+
+            response.cookie('loggedin', cookieHash);
+            response.cookie('user',userId)
+            console.log(request.body)
+            response.redirect('/bananas')
+            } else {
+                response.send ('nope')
+            }
+
+        }
+    })
+})
+
+
+app.get('/bananas', (request,response)=>{
+    console.log("TESTTSTSTSTSTSTSTT")
+    console.log(request.cookies)
+    console.log("TESTTSTSTSTSTSTSTT")
+      // let id = request.cookies['user']
+    // let logged = sha256(id)
+
+    // if (request.cookies['loggedin'] === logged){
+        response.render('banana')
+    // } else {
+    //     response.send ('access forbidden')
+    // }
+
+})
+
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
