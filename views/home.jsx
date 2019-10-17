@@ -26,6 +26,13 @@ class Home extends React.Component {
           <a href="/playlist">
             <button>View playlists</button>
           </a>
+          {name === undefined ? (
+            <span></span>
+          ) : (
+            <a href="/favorites">
+              <button>View favorites</button>
+            </a>
+          )}
         </body>
       </html>
     );

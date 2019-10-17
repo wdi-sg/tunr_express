@@ -44,6 +44,7 @@ app.use("/", routes.home);
 app.use("/artists", routes.artists);
 app.use("/artists", routes.songs);
 app.use("/playlist", routes.playlist);
+app.use("/favorites", routes.favorites);
 
 /**
  * ===================================
