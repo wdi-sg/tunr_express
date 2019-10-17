@@ -1,14 +1,8 @@
-var React = require('react');
+var React = require("react");
 
 class New extends React.Component {
   render() {
     return (
-      <html>
-        <head />
-        <body>
-          <h3>Form Goes Here!</h3>
-        </body>
-      </html>
       <div>
         <form action="/artists" method="post" id="artist">
           <div>
@@ -16,7 +10,7 @@ class New extends React.Component {
             <input type="text" name="name"/>
           </div>
           <div>
-            <label htmlFor="img">Photo url: </label>
+            <label htmlFor="photo_url">Photo url: </label>
             <input type="text" name="photo_url"/>
           </div>
           <div>
@@ -31,3 +25,5 @@ class New extends React.Component {
     );
   }
 }
+
+module.exports = New;
