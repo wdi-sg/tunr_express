@@ -71,7 +71,7 @@ app.post('/artists', (request, response) => {
         console.error('query error:', err.stack);
         response.send( 'query error' );
     } else {
-        console.log('query result:', result);
+        //console.log('query result:', result);
         const theArtist = {
                 "id": result.rows[0].id,
                 "name": result.rows[0].name,
@@ -96,7 +96,7 @@ app.get('/artists/:id', (request, response) => {
             console.error('query error:', err.stack);
             response.send( 'Artist not found' );
         } else {
-            console.log('query result:', result);
+            //console.log('query result:', result);
             const theArtist = {
                 "id": result.rows[0].id,
                 "name": result.rows[0].name,
@@ -117,7 +117,7 @@ app.get('/playlists/new', (request, response) => {
 //SUBMITS FORM TO CREATE NEW PLAYLIST
 app.post ('/playlists', (request, response) => {
     let newPlaylist = [request.body.name];
-    console.log(request.body.name);
+    //console.log("Newly created playlist: " + request.body.name);
 
     const newData =  "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
 
@@ -127,7 +127,7 @@ app.post ('/playlists', (request, response) => {
         console.error('query error:', err.stack);
         response.send( 'query error' );
     } else {
-        console.log('query result:', result);
+        //console.log('query result:', result);
         const playlistName = {
                 "name": result.rows[0].name,
             };
@@ -149,7 +149,7 @@ app.get('/playlists/:id', (request, response) => {
             console.error('query error:', err.stack);
             response.send( 'Playlist not found' );
         } else {
-            console.log('query result:', result);
+            //console.log('query result:', result);
             const thePlaylist = {
                 "id": result.rows[0].id,
                 "name": result.rows[0].name
@@ -165,42 +165,54 @@ app.get('/playlists/:id/newsong', (request, response) => {
     let inputId = request.params.id;
     const playlist = `SELECT * FROM playlist WHERE id = ${inputId}`;
 
+    const songlist = `SELECT * FROM songs`;
+
     // find playlist by id from the playlist table
     pool.query(playlist, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send( 'Playlist not found' );
         } else {
-            console.log('query result:', result);
+            //find the song from songs tab;e
+            pool.query(songlist, (err, result2) => {
             const thePlaylist = {
                 "id": result.rows[0].id,
-                "name": result.rows[0].name
+                "name": result.rows[0].name,
+                //"songlist": result2.rows
             };
-            response.render('addSong', thePlaylist);
+             response.render('addSong', thePlaylist);
+            });
         };
     });
 });
 
 //SUBMITS FORM TO ADD A SONG TO PLAYLIST
 app.post ('/playlists/:id', (request, response) => {
-    let addSong = [request.body];
-    let newValues = [addSong.title, addSong.album, addSong.preview_link, addSong.artwork, addSong.artists_id];
+    //added song_id
+    let addedSong = parseInt(request.body.song_id);
+    console.log(addedSong);
 
-    const newData =  "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
+    //selects playlist_id
+    let inputId = request.params.id;
+    console.log(inputId);
 
-    pool.query(newData, newPlaylist, (err, result) => {
+    //add song to the playlist
+    let newValues = [addedSong, inputId];
+    const addedPlaylist =  "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
 
-    if (err) {
-        console.error('query error:', err.stack);
-        response.send( 'query error' );
-    } else {
-        console.log('query result:', result);
-        const playlistName = {
+    pool.query(addedPlaylist, newValues, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            //console.log('query result:', result);
+            const updatedPlaylist = {
                 "name": result.rows[0].name,
-            };
-
+                "song_id": result.rows[0].song_id
+        };
         // redirect to home page
-        response.render('addedPlaylist', playlistName);
+        response.send('added!');
+        //response.render('playlistSongs', updatedPlaylist);
     }
     });
 });
