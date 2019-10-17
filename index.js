@@ -17,6 +17,7 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
+
 /**
  * ===================================
  * Configurations and set up
@@ -37,6 +38,10 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+var sha256 = require('js-sha256');
 
 /**
  * ===================================
@@ -295,26 +300,100 @@ app.get('/playlists', (request, response) => {
 
 app.get('/register', (request, response) => {
   // respond with HTML page with form to register
-  response.render('register');
+  let output = {};
+  output.message = "Register An Account";
+  response.render('account', output);
 });
 
 app.post('/register', (request, response) => {
     // INSERT new user into user db
     console.log("Adding user:")
     console.log(request.body);
-    let newUser = [ request.body.name, request.body.password ];
 
-    let queryText = 'INSERT INTO users (name, password) VALUES($1, $2) RETURNING *';
-
-    pool.query(queryText, newUser, (err, result) => {
+    // check if user name taken
+    let user_name = request.body.name;
+    let queryText = `SELECT * FROM users WHERE name='${user_name}'`;
+    pool.query(queryText, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
         }
-        let user = result.rows[0];
-        response.send('Welcome ' + result.rows[0].name);
+
+        if (result.rows.length > 0) {
+          let output = {};
+          output.message = "User name already exist!";
+          response.render('account', output);
+
+        // if not, register user
+        } else {
+            const SALT = 'tunr_db';
+            let hashedPw = sha256(request.body.password + SALT);
+            let newUser = [ user_name, hashedPw ];
+
+            let queryText = 'INSERT INTO users (name, password) VALUES($1, $2) RETURNING *';
+
+            pool.query(queryText, newUser, (err, result) => {
+                if (err) {
+                    console.error('query error:', err.stack);
+                    response.send('query error');
+                }
+                // send login cookies
+                console.log("Registered" + result.rows[0]);
+                response.cookie('user_name', result.rows[0].name);
+                response.cookie('loggedIn', result.rows[0].password);
+                // redirect to homepage
+                response.redirect('/artists');
+            });
+        }
     });
 });
+
+app.get('/login', (request, response) => {
+  // respond with HTML page with form to register
+  let output = {};
+  output.message = "Login Account";
+  response.render('account', output);
+});
+
+app.post('/login', (request, response) => {
+    // respond with HTML page with form to register
+    let user_name = request.body.name;
+    let user_password = request.body.password;
+
+    let queryText = `SELECT * FROM users WHERE name='${user_name}'`;
+
+    pool.query(queryText, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        }
+        console.log(result.rows[0]);
+        // if there is result
+        if ( result.rows.length > 0 ) {
+            // check if password correct
+            if ( user_password === result.rows[0].password) {
+                //let loginPw = result.rows[0].password;
+
+                // send login cookies
+                response.cookie('user_name', result.rows[0].name);
+                response.cookie('loggedIn', result.rows[0].password);
+                // redirect to homepage
+                response.redirect('/artists');
+            // else return incorrect password
+            } else {
+                let output = {};
+                output.message = "Incorrect password, please try again";
+                response.render('account', output);
+            }
+        // if there is no result
+        } else {
+            let output = {};
+            output.message = "Incorrect user name, please try again";
+            response.render('account', output);
+        }
+    });
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
