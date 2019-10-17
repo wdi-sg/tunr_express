@@ -84,7 +84,7 @@ app.post('/artists', (req, res) => {
       data = {
         rows : result.rows
       };
-      res.render('a-create', data)
+      res.render('a-create', data);
     }
   });
 });
@@ -141,7 +141,6 @@ app.put('/artists/:id', (req, res) => {
 });
 
 app.delete('/artists/:id', (req, res) => {
-  console.log(req.params.id);
   const queryArray = [parseInt(req.params.id)];
   const queryString = `DELETE FROM artists WHERE id = $1 RETURNING *`;
   pool.query(queryString, queryArray, (err, result) => {
@@ -189,7 +188,6 @@ app.get('/artists/:id/songs/new', (req, res) => {
 });
 
 app.post('/artists/:id/songs', (req, res) => {
-  console.log(req.body);
   const queryArray = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
   const queryString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
   pool.query(queryString, queryArray, (err, result) => {
@@ -200,7 +198,7 @@ app.post('/artists/:id/songs', (req, res) => {
       data = {
         rows : result.rows
       };
-      res.render('as-create', data)
+      res.render('as-create', data);
     }
   });
 });
@@ -226,7 +224,7 @@ app.post('/playlists', (req, res) => {
       data = {
         rows : result.rows
       };
-      res.render('p-create', data)
+      res.render('p-create', data);
     }
   });
 });
@@ -275,7 +273,7 @@ app.post('/playlists/:id', (req, res) => {
       data = {
         rows : req.body
       };
-      res.render('ps-create', data)
+      res.render('ps-create', data);
     }
   });
 });
@@ -285,6 +283,7 @@ app.post('/playlists/:id', (req, res) => {
  *  Register Routes
  * ===================================
  */
+
 const salt = "rnsogisbpiahzcvb";
 
 app.get('/register', (req, res) => {
@@ -302,7 +301,7 @@ app.post('/register', (req, res) => {
       data = {
         rows : req.body
       };
-      res.render('r-create', data)
+      res.render('r-create', data);
     }
   });
 });
@@ -333,6 +332,7 @@ app.post('/login', (req, res) => {
 
           res.cookie('user_id', user_id);
           res.cookie('hasLoggedIn', hashedCookie);
+          res.cookie('username', req.body.username);
           res.redirect('/');
         } else {
           res.status(403).send('wrong password');
@@ -343,6 +343,76 @@ app.post('/login', (req, res) => {
     }
   });
 });
+
+ /**
+ * ===================================
+ *  Favorite Routes
+ * ===================================
+ */
+
+app.get('/favorites/new', (req, res) => {
+  if (req.cookies.hasLoggedIn === sha256(req.cookies.user_id+salt)){
+    const queryString = 'SELECT * FROM songs';
+    pool.query(queryString, (err, result) => {
+      if (err) {
+        console.error('query error:', err.stack);
+        res.send( 'query error' );
+      } else {
+        data = {
+          rows : result.rows
+        };
+        res.render('f-new', data);
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+app.post('/favorites', (req, res) => {
+  if (req.cookies.hasLoggedIn === sha256(req.cookies.user_id+salt)) {
+    const queryArray = [req.body.id, req.cookies.user_id];
+    const queryString = 'INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *';
+    pool.query(queryString, queryArray, (err, result) => {
+      if (err) {
+        console.error('query error:', err.stack);
+        res.send( 'query error' );
+      } else {
+        data = {
+          rows : req.body
+        };
+        res.render('f-create', data);
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
+
+app.get('/favorites', (req, res) => {
+  if (req.cookies.hasLoggedIn === sha256(req.cookies.user_id+salt)) {
+    const queryArray = [req.cookies.user_id];
+    const queryString = 'SELECT * FROM favorites INNER JOIN users ON (favorites.user_id = users.id) INNER JOIN songs ON (songs.id = favorites.song_id) WHERE users.id = $1';
+    pool.query(queryString, queryArray, (err, result) => {
+      if (err) {
+        console.error('query error:', err.stack);
+        res.send( 'query error' );
+      } else {
+        data = {
+          id: req.cookies.user_id,
+          name: req.cookies.username,
+          rows : result.rows
+
+        };
+        res.render('f-show', data);
+      }
+    });
+   } else {
+    res.redirect('/login');
+  }
+});
+
+
 
 /**
  * ===================================

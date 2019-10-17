@@ -18,8 +18,8 @@ class Show extends React.Component {
       <html>
         <body>
           <h1>Show</h1>
-          <h2>Playlist Id: {this.props.id}</h2>
-          <h2>Playlist Name: {this.props.rows[0].name}</h2><br/><br/>
+          <h2>User Id: {this.props.id}</h2>
+          <h2>Username: {this.props.name}</h2><br/><br/>
           {list}<br/><br/>
         </body>
       </html>
