@@ -176,7 +176,7 @@ app.put('/artists/:id/', (request,response) => {
 
 //===== Remove an Artist =====
 
-app.get("/artist/:id/delete", (request, respond) => {
+app.get("/artists/:id/delete", (request, response) => {
     let queryText = 'SELECT * FROM artists WHERE id=$1';
     const values = [request.params.id];
 
@@ -186,7 +186,7 @@ app.get("/artist/:id/delete", (request, respond) => {
     })
 })
 
-app.delete("/artist/:id/delete", (request, respond) => {
+app.delete("/artist/:id/delete", (request, response) => {
     let queryText = 'DELETE FROM artists WHERE id=$1';
     const values = [request.params.id];
 
@@ -195,6 +195,86 @@ app.delete("/artist/:id/delete", (request, respond) => {
         respond.send("Artist of id " + request.params.id + " is deleted");
     })
 })
+
+//============ PART 2 ==================================
+
+//=== New Form for Playlist =====
+
+app.get('/playlist/new', (request,response) => {
+
+    response.render('playlist');
+
+});
+
+app.post('/playlist/', (request,response) => {
+
+    const newArray = [request.body.name];
+    const queryString = 'INSERT INTO playlists (name) VALUES ($1) RETURNING *';
+
+        pool.query(queryString, newArray, (err,result) => {
+           if (err) {
+            console.log(err);
+            response.send("query error");
+
+        } else {
+            let data = {
+                artist : result.rows[0]
+            };
+            response.send( result.rows );
+        }
+})
+});
+
+// ======  Get playlist by ID ======
+
+app.get('/playlist/:id', (request,response) => {
+
+    const id = parseInt(request.params.id);
+    const queryString = `SELECT * FROM playlist WHERE id = ${id}`;
+
+
+    pool.query(queryString, (err,result) => {
+
+    if (err) {
+            console.log(err);
+            response.send("query error");
+
+        } else {
+            let data = {
+                artist : result.rows[0]
+            };
+            response.send( result.rows );
+        }
+    })
+
+});
+
+// ==== Get songs =====
+
+app.get('/playlist/:id/newsong', (request,response) => {
+
+    const id = parseInt(request.params.id);
+    const queryString = `SELECT * FROM playlist WHERE id = ${id}`;
+
+    pool.query(queryString, (err,result) => {
+
+    if (err) {
+            console.log(err);
+            response.send("query error");
+
+        } else {
+             let data = {
+                artist : result.rows[0]
+            };
+            response.send( result.rows );
+        }
+    })
+
+});
+
+
+
+
 
 
 
