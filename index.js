@@ -4,6 +4,8 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const sha256 = require('js-sha256')
+const cookieParser = require('cookie-parser');
+
 
 // Initialise postgres client
 const configs = {
@@ -27,7 +29,7 @@ pool.on('error', function (err) {
 
 // Init express app
 const app = express();
-
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -51,10 +53,28 @@ const SALT = 'Bun-nana'
  * ===================================
  */
 
-app.get('/', (request, response) => {
+app.get('/home', (request, response) => {
   // query database for all pokemon
   // respond with HTML page displaying all pokemon
-  response.render('home');
+    console.log(request.cookies)
+    let userId = request.cookies.user_id
+    let queryArr = [userId];
+    let queryText = 'SELECT * FROM users WHERE id = $1'
+    pool.query(queryText, queryArr, (err, result)=>{
+        if(err){
+            response.redirect('/login');
+        } else {
+            console.log(result.rows[0])
+            let username = result.rows[0]['username']
+            let hashedUser = sha256(username+SALT);
+            if(request.cookies.hasLoggedIn === hashedUser){
+                response.render('home');
+            } else {
+                response.redirect('/login');
+            }
+        }
+    })
+
 });
 
 app.get('/artists/new', (request, response) => {
@@ -253,6 +273,35 @@ app.post('/register',(request, response) =>{
     })
 })
 
+app.get('/login',(request, response) =>{
+    response.render("login.jsx")
+})
+
+app.post('/login',(request, response) =>{
+    var username = request.body.username;
+    var password = request.body.password;
+    let queryText = "SELECT * FROM users WHERE username = '" + username + "'";
+    var hashPassword = sha256(password+SALT);
+    pool.query(queryText, (err, result)=>{
+        if(result.rows.length > 0){
+            let dbPassword = result.rows[0]["hashpassword"];
+            let userId = result.rows[0]["id"]
+            let hashedUser = sha256(result.rows[0]["username"]+SALT);
+            response.cookie('user_id', userId);
+            response.cookie('hasLoggedIn', hashedUser);
+            if(dbPassword === hashPassword){
+                response.redirect('/home')
+            } else {
+                response.send('Wrong password');
+            }
+        } else {
+            response.send("No such user")
+        }
+
+    })
+
+    // response.render("login.jsx")
+})
 /**
  * ===================================
  * Listen to requests on port 3000
