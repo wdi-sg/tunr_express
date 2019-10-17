@@ -235,51 +235,89 @@ app.post('/playlist/:id', (request, response) => {
 // register
 //get form
 
-app.get('/register', (request, response)=>{
-  response.render('register')
+app.get('/register', (request, response) => {
+    response.render('register')
 
 });
 
 //post
-app.post('/register', (request, response)=>{
-  console.log( request.body );
+app.post('/register', (request, response) => {
+    console.log(request.body);
 
-  const queryString = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
+    const queryString = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
 
-  const values = [
-    request.body.name,
-    request.body.password
-  ];
+    const values = [
+        request.body.name,
+        request.body.password
+    ];
 
-  pool.query(queryString, values, (err, queryRes) => {
+    pool.query(queryString, values, (err, queryRes) => {
 
-    if (err) {
-      console.error('query error:', err.stack);
-      response.send( 'query error' );
-    } else {
-      console.log('query result:', queryRes);
-
-
-      response.send( queryRes.rows );
-      //response render home, after issue fixed
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result:', queryRes);
 
 
-    }
-  });
-  });
+            // response.send( queryRes.rows );
+            //response render home, after issue fixed
+            response.render('home');
+
+        }
+    });
+});
 
 
 
 //login
 //get form
-app.get('/login', (request, response)=>{
-  response.render('login')
+app.get('/login', (request, response) => {
+    response.render('login')
 });
 
 //post
 
+app.post('/login', (request, response) => {
+    let requestUsername = request.body.name;
+    let requestPassword = request.body.password;
 
+    // check in the database for a row with this user
+    const queryString = "SELECT * from users WHERE name='" + requestUsername + "'";
+    console.log("db query", queryString);
 
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result:', result.rows);
+            // if this user exists in the db
+
+            if (result.rows.length > 0) {
+
+                if (requestPassword === result.rows[0].password) {
+                    let user_id = result.rows[0].id
+
+                    // if it matches log user in
+                    response.send('about to log you in')
+                } else {
+                    //if wrong password
+                    response.status(403).send('wrong password');
+                }
+
+            } else {
+                //if wrong username
+                response.status(403).send('wrong username');
+
+            }
+
+        }
+        response.render('home');
+    });
+
+});
 
 
 
