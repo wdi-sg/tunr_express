@@ -107,12 +107,19 @@ app.post("/login", (request, response) => {
           let hashCookie = sha256(SALT + user_id);
           response.cookie("user_id", user_id);
           response.cookie("Logged_in", hashCookie);
+          response.redirect("/artists/");
         } else {
-          response.status(403).send("WRONG PASSWORD");
+        
+          const data = {
+            message: "Please Try again"
+          }
+         
+          response.render("login", data)
+          console.log(" THIS IS THE MESSAGE: " + data["message"])
         }
       }
 
-      response.redirect("/artists/");
+     
     }
   });
 });
@@ -132,42 +139,36 @@ app.get("/favorites/new", (request, response) => {
       console.error("query error:", err.stack);
       response.send("query error");
     } else {
-    
-
       const data = {
         result: result.rows
       };
-      
 
       response.render("newfavorite", data);
     }
   });
-
 });
 
-app.post('/favorites', (request, response)=> {
-  let song = request.body.song
-let userId = request.cookies['user_id']
-let input = [song, userId]
-const queryString = "INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *"
-pool.query(queryString, input, (err, result) => {
-  if (err) {
-    console.error("query error:", err.stack);
-    response.send("query error");
-  } else {
-    
-
-    response.redirect("/favorites");
-  }
+app.post("/favorites", (request, response) => {
+  let song = request.body.song;
+  let userId = request.cookies["user_id"];
+  let input = [song, userId];
+  const queryString =
+    "INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *";
+  pool.query(queryString, input, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      response.redirect("/favorites");
+    }
+  });
 });
 
-})
-
-app.get('/favorites', (request, response)=>{
-  let userId = request.cookies['user_id'];
+app.get("/favorites", (request, response) => {
+  let userId = request.cookies["user_id"];
   let input = [userId];
-  const queryString = "SELECT favorites.song_id, songs.title, artists.name FROM favorites INNER JOIN songs ON (favorites.song_id = songs.id)INNER JOIN artists  ON(songs.artist_id = artists.id) WHERE favorites.user_id = $1";
-
+  const queryString =
+    "SELECT favorites.song_id, songs.title, artists.name FROM favorites INNER JOIN songs ON (favorites.song_id = songs.id)INNER JOIN artists  ON(songs.artist_id = artists.id) WHERE favorites.user_id = $1";
 
   pool.query(queryString, input, (err, result) => {
     if (err) {
@@ -183,8 +184,7 @@ app.get('/favorites', (request, response)=>{
       response.render("favorites", data);
     }
   });
-})
-
+});
 
 /**
  * ===================================
@@ -416,11 +416,13 @@ app.post("/playlist", (request, response) => {
 app.get("/playlist/:id", (request, response) => {
   let id = parseInt(request.params.id);
   let input = [id];
-  const queryString = `SELECT playlist_song.song_id, songs.title, songs.album
-                  FROM songs
-                  INNER JOIN playlist_song
-                  ON (playlist_song.song_id = songs.id)
-                  WHERE playlist_song.playlist_id = $1`;
+  const queryString = `SELECT playlist_song.song_id, songs.title, songs.album, artists.name
+                        FROM songs
+                        INNER JOIN playlist_song
+                        ON (playlist_song.song_id = songs.id)
+                        INNER JOIN artists
+                        ON(songs.artist_id = artists.id)
+                        WHERE playlist_song.playlist_id = $1`;
 
   pool.query(queryString, input, (err, result) => {
     if (err) {

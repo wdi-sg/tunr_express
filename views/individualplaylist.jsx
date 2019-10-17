@@ -2,10 +2,13 @@ var React = require("react");
 
 class Playlist extends React.Component {
   render() {
+    let playlistName = this.props.result[0].name
    let list = this.props.result.map(item => {
        return(
            <li className="list-group-item"> 
               <strong>Title:</strong>  {item.title} <br/><br/>
+              <strong>Artist:</strong>  {item.name} <br/><br/>
+
                <strong>Album: </strong>{item.album} <br/>
                
                </li>
@@ -23,7 +26,7 @@ class Playlist extends React.Component {
         </head>
         <body>
             <div className="container mt-5">
-            <h1 className="text-center display-4 border-bottom">List of Songs</h1>
+            <h1 className="text-center display-4 border-bottom">List of Songs </h1>
             <div className="container text-center mt-3">
             <a className="btn btn-primary btn-lg text-light " href={this.props.id + "/newsong"}>Add a New Song</a>
           <a className="btn btn-primary btn-lg text-light ml-5" href="/playlist">Back to Playlists</a>
