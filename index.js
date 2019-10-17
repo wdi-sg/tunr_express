@@ -211,22 +211,12 @@ const showPlaylistByID = (request, response) => {
 };
 
 const showNewRegistrationForm = (request, response) => {
-    // respond with HTML page with form to create new artist
-    // get the currently set cookie
     var visits = request.cookies['visits'];
-
-    // see if there is a cookie
     if (visits === undefined) {
-
-        // set a default value if it doesn't exist
         visits = 1;
     } else {
-
-        // if a cookie exists, make a value thats 1 bigger
         visits = parseInt(visits) + 1;
     }
-
-    // set the cookie
     response.cookie('visits', visits);
     response.render('register');
 };
@@ -248,15 +238,19 @@ const postNewRegistration = (request, response) => {
     })
 }
 const showLoginPage = (request, response) => {
-    response.render('login')
+    let loggedin = request.cookies['user_id'];
+    console.log(loggedin)
+    response.render('login', {
+        loggedin
+    })
 }
 
 const checkLogIn = (request, response) => {
     let input = request.body;
-    let inputArr = [input.username, input.password];
-    console.log(inputArr);
+    console.log(input.username, input.password)
+
     const queryString = "SELECT * FROM users WHERE username='" + input.username + "'"
-    console.log('postLogin queryString:', queryString);
+    // console.log('postLogin queryString:', queryString);
 
     pool.query(queryString, (err, result) => {
         if (err) {
@@ -264,7 +258,7 @@ const checkLogIn = (request, response) => {
             response.send('query error');
         } else {
             console.log('query result:', result.rows);
-
+            // if there is a username matching the username entered, then run all this 
             if (result.rows.length > 0) {
                 let hashedRequestPassword = sha256(input.password);
                 console.log('hashed request password: ', hashedRequestPassword);
