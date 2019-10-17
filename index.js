@@ -3,6 +3,9 @@ console.log("starting up!!");
 const express = require("express");
 const methodOverride = require("method-override");
 const pg = require("pg");
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser')
+let SALT ="SUPERSECRETPASSWORD"
 
 // Initialise postgres client
 const configs = {
@@ -40,6 +43,7 @@ app.use(methodOverride("_method"));
 const reactEngine = require("express-react-views").createEngine();
 app.set("views", __dirname + "/views");
 app.set("view engine", "jsx");
+app.use(cookieParser());
 app.engine("jsx", reactEngine);
 
 /**
@@ -48,6 +52,74 @@ app.engine("jsx", reactEngine);
  * ===================================
  */
 
+
+
+/**
+ * ===================================
+ * REGISTER PAGE
+ * ===================================
+ */
+app.get('/register', (request, response) =>{
+  response.render("register")
+})
+
+app.post('/register', (request, response)=>{
+  let hashedPassword = sha256(request.body.password + SALT);
+  let username = request.body.username;
+  let input = [username, hashedPassword]
+  const queryString = `INSERT INTO users (usernames, password) VALUES ($1, $2)`;
+
+  pool.query(queryString, input, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      response.redirect("/artists/");
+    }
+  });
+})
+
+/**
+ * ===================================
+ * Log In Page
+ * ===================================
+ */
+
+ app.get('/login', (request, response)=>{
+   response.render("login")
+ });
+
+ app.post('/login', (request, response)=>{
+  let requestUsername = request.body.username;
+  let requestPassword = request.body.password;
+  let input = [requestUsername];
+  const queryString = "SELECT * FROM users WHERE usernames=$1"
+  pool.query(queryString,input, (err, result) => {
+    if (err) {
+      console.error("query error:", err.stack);
+      response.send("query error");
+    } else {
+      console.log("query result:", result);
+      if(result.rows.length > 0) {
+        let hashPassword = sha256(requestPassword + SALT);
+
+        if(hashPassword === result.rows[0].password){
+          let user_id = result.rows[0].id;
+
+          let hashCookie = sha256(SALT + user_id);
+          response.cookie('user_id', user_id)
+          response.cookie('Logged_in', hashCookie);
+         
+
+        } else {
+          response.status(403).send('WRONG PASSWORD')
+        }
+      }
+
+      response.redirect("/artists/")
+    }
+  });
+ })
 /**
  * ===================================
  * HOME PAGE
@@ -264,7 +336,7 @@ app.post("/playlist", (request, response) => {
       console.error("query error:", err.stack);
       response.send("query error");
     } else {
-      console.log("THIS IS FOR PLAYLIST SAKDJNAKDJASNDANK " + result.rows);
+     
       response.redirect("playlist");
     }
   });

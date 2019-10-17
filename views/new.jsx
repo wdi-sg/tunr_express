@@ -18,28 +18,13 @@ class New extends React.Component {
             <h1 className="display-2 border-bottom">Add an Artist</h1>
             <form method="POST" action="/artists" className="pt-3">
               <p>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Name"
-                  class="form-control form-control-lg"
-                />
+                <input type="text" name="name" placeholder="Name" class="form-control form-control-lg"/>
               </p>
               <p>
-                <input
-                  type="text"
-                  name="photo_url"
-                  placeholder="Photo URL"
-                  class="form-control form-control-lg"
-                />
+                <input type="text" name="photo_url" placeholder="Photo URL" class="form-control form-control-lg"/>
               </p>
               <p>
-                <input
-                  type="text"
-                  name="nationality"
-                  placeholder="Nationality"
-                  class="form-control form-control-lg"
-                />
+                <input type="text" name="nationality" placeholder="Nationality" class="form-control form-control-lg"/>
               </p>
           
               <button type="submit" className="btn btn-success btn-lg btn-block" >Add</button>

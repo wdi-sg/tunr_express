@@ -6,8 +6,8 @@ class Playlist extends React.Component {
        return(
            <li className="list-group-item"> 
               <strong>Title:</strong>  {item.title} <br/><br/>
-               <strong>Album: </strong>{item.album} 
-           
+               <strong>Album: </strong>{item.album} <br/>
+               
                </li>
        )
    })
