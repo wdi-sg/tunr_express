@@ -419,9 +419,25 @@ app.post('/login', (req, res) => {
 
 /**
  * ===================================
- * LOGINGINGNIGNING
+ * FAVORITEIEITES
  * ===================================
  */
+
+app.get('/favorites/new', (req, res) => {
+	console.log('rendering favorites form');
+	const queryString = `SELECT * FROM songs`;
+	pool.query(queryString, (err, result) => {
+		if (err) {
+			console.log('query error:', err.stack);
+		} else {
+			const data = {
+				songs: result.rows
+			};
+			res.render('favorites', data);
+		}
+	});
+	console.log('new favorites form rendered');
+});
 
 /**
  * ===================================
