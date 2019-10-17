@@ -2,11 +2,6 @@ var React = require('react');
 
 class indexArtists extends React.Component {
   render() {
-console.log("this is it!!!!!!!!!!!!!!!!!!!!!!!!!!!!" , this.props.searched);
-
-//bunch of JS code
-//establish var = link
-//establish variables/functions/conditionals
     let list = this.props.searched.map(id => {
         return <li> {id.name}</li>
     });
@@ -27,7 +22,15 @@ console.log("this is it!!!!!!!!!!!!!!!!!!!!!!!!!!!!" , this.props.searched);
                 </select>
                 <input type="submit" value="Submit"/>
             </form> 
+
+            <form action="/artists/new" method="GET">
+            <button>Click here to add new artist!</button>
+            </form>
+
+            <a type="button" href="/artists/new">Click here to add new artist!</a>
+            
             <br/>
+
             <div><ul>{list}</ul></div>
           </div>
         </body>
