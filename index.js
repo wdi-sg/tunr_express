@@ -348,21 +348,33 @@ app.post('/register', (req, res) => {
 
 	pool.query(queryString, data, (err, result) => {
 		let userId = result.rows[0].id;
-		let registeredCookie = sha256(userId + 'registered' + SALT);
+		let hashedCookie = sha256(userId + 'loggedin' + SALT);
 
 		if (err) {
 			console.log('query error:', err.stack);
 		} else {
 			console.log('registration successful!');
 			console.log('query result:', result);
+			console.log(hashedCookie);
 			// cookie for their hashed loggin cookie
-			res.cookie('registered', registeredCookie);
+			res.cookie('loggedin', hashedCookie);
 			// cookie for userid
 			res.cookie('user_id', userId);
 			// cookie for username
 			res.redirect(`/register`);
 		}
 	});
+});
+
+/**
+ * ===================================
+ * LOGINGINGNIGNING
+ * ===================================
+ */
+
+app.get('/login', (req, res) => {
+	console.log('bringing you to login page!');
+	res.render('login');
 });
 
 /**
