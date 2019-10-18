@@ -76,8 +76,8 @@ app.get('/artists/', (request, response) => {
         } else {
             console.log('query result:', result);
             response.send( result.rows );
-  }
-});
+        }
+    });
 });
 
 
@@ -292,29 +292,29 @@ app.get('/register', (request,response) => {
 });
 
 app.post('/register', (request,response) => {
-console.log(request.body);
+    console.log(request.body);
 
-let hashedPassword = sha256(request.body.password + SALT);
+    let hashedPassword = sha256(request.body.password + SALT);
 
-const queryString ='INSERT INTO users (name,password) VALUES ($1, $2) RETURNING *';
+    const queryString ='INSERT INTO users (name,password) VALUES ($1, $2) RETURNING *';
 
-const values = [
-request.body.name,
-hashedPassword,
-];
+    const values = [
+    request.body.name,
+    hashedPassword,
+    ];
 
-pool.query(queryString, values, (err,result) =>{
+    pool.query(queryString, values, (err,result) =>{
 
-  if (err) {
-      console.error('query error:', err.stack);
-      response.send( 'query error' );
-    } else {
-      console.log('query result:', result);
+        if (err) {
+          console.error('query error:', err.stack);
+          response.send( 'query error' );
+        } else {
+          console.log('query result:', result);
 
 
-      response.send( result.rows );
-    }
-  });
+          response.send( result.rows );
+        }
+      });
 })
 
 // ====== User to login ========
