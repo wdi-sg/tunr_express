@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS playlist_song (
 
 CREATE TABLE IF NOT EXISTS users (
 	id SERIAL PRIMARY KEY,
-	name TEXT,
+	name TEXT UNIQUE,
 	password TEXT
 );
 

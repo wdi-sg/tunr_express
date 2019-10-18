@@ -294,9 +294,18 @@ const redirectToLogin = (request, response)=>{
     let queryText = "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *";
 
     pool.query(queryText, inputValues, (err, results)=>{
-        console.log("The results are "+results.rows);
 
-        response.redirect("/login");
+        if (results === undefined) {
+
+            response.cookie('temp_username', request.body.name);
+
+            response.redirect('/register');
+
+        } else {
+
+            response.redirect("/login");
+
+        }
 
     })
 
@@ -346,29 +355,6 @@ const redirectToHome = (request, response)=>{
 
 };
 
-// app.get('/special', (request, response)=>{
-
-
-//   let user_id = request.cookies['user_id'];
-//   let hashedValue = sha256( SALT + user_id );
-
-//   // if there is a cookie that says hasLoggedIn yes, let them access this page
-//   if( request.cookies['hasLoggedIn'] === hashedValue ){
-//     response.send('you can do stuff');
-
-//   }else{
-
-//     //otherwise, show them a message
-//     response.send('go awayyyy');
-//     // response.redirect('/login');
-
-//   }
-
-
-
-// });
-
-
 const favorites = (request, response)=>{
 
     let user_id = request.cookies['user_id'];
@@ -385,6 +371,7 @@ const favorites = (request, response)=>{
         pool.query(queryText, inputValues, (err, results)=>{
 
             let data = {
+                name: username,
                 favoriteSongs: results.rows
             };
 

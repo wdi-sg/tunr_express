@@ -34,7 +34,7 @@ class Favorites extends React.Component {
         <body>
         <Navbar/>
           <div>
-            <h1 className="col-md-auto display-4">{this.props.favoriteSongs[0].name}'s Favorite Songs</h1>
+            <h1 className="col-md-auto display-4">{this.props.name}'s Favorite Songs</h1>
             <div class="cards">
               {favSongs}
             </div>
