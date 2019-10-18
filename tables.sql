@@ -17,8 +17,6 @@ CREATE TABLE IF NOT EXISTS songs (
 );
 
 
-
-
 CREATE TABLE IF NOT EXISTS playlists (
     id SERIAL PRIMARY KEY,
     name TEXT
@@ -29,4 +27,16 @@ CREATE TABLE IF NOT EXISTS playlist_song (
     id SERIAL PRIMARY KEY,
     song_id INTEGER,
     playlist_id INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS register (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    password TEXT
+);
+
+CREATE TABLE IF NOT EXISTS favourite (
+    id SERIAL PRIMARY KEY,
+    song_id INTEGER,
+    user_id INTEGER
 );
