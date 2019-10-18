@@ -4,6 +4,15 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+
+//Express cookie implementation
+const cookieParser = require('cookie-parser')
+
+
+// Hash Implementation
+var sha256 = require('js-sha256');
+var SALT = "sweet"
+
 // Initialise postgres client
 const configs = {
   user: 'tanweekiat',
@@ -41,6 +50,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(cookieParser());
 
 /**
  * ===================================
@@ -212,8 +222,102 @@ app.post('/playlist/:id',(request,response) =>{
         }
     })
 })
+//********************************************************************************************************************
+
+ app.get('/register', (request, response) => {
+    response.render('register');
+        console.log(request.body);
+      });
+//********************************************************************************************************************
+app.post('/register', (request,response) => {
+
+    let hashedPassword = sha256(request.body.password + SALT);
+
+    const queryString = 'INSERT INTO users (name,password) VALUES ($1,$2) RETURNING *';
+
+    const values = [request.body.name,hashedPassword];
+
+    pool.query(queryString,values, (err,result) => {
+        if(err){
+
+            response.send('query error')
+        }else {
+
+        }
+        response.send(result.rows);
+    })
+
+});
+//********************************************************************************************************************
+
+app.get('/login',(request,response) =>{
+    response.render('login');
+})
+//********************************************************************************************************************
 
 
+app.post('/login',(request,response) => {
+    let requestUsername = request.body.name;
+    let requestPassword = request.body.password;
+
+    const queryString = "SELECT * from users WHERE name='"+requestUsername+"'";
+
+    pool.query(queryString,(err,result) => {
+        if (err) {
+            response.send('query error')
+        } else {
+            console.log(result.rows);
+
+            if ( result.rows.length > 0){
+                let hashedRequestPassword = sha256(requestPassword + SALT);
+                console.log(hashedRequestPassword);
+                if(hashedRequestPassword === result.rows[0].password) {
+                    let user_id = result.rows[0].id
+                    let hashedCookie = sha256(SALT + user_id);
+
+                    response.cookie('user_id', user_id);
+                    response.cookie('hasLoggedIn',hashedCookie);
+
+                    response.send('Lets go ready to RUMBLE!')
+
+                }else {
+                    response.status(403).send('wrong password');
+                }
+            }else{
+        response.status(403).send('no username');
+        }
+    }
+});
+});
+//********************************************************************************************************************
+
+app.get('/favourites/new',(request,response) =>{
+    const queryString = 'SELECT * FROM SONGS';
+    pool.query(queryString,(err,result) => {
+        if (err){
+               response.send('query error')
+           } else {
+            let songData = {
+                songs: result.rows
+            }
+            response.render('newFavourites',songData);
+           }
+
+    })
+})
+
+
+//********************************************************************************************************************
+app.get('/special', (request,response) => {
+    let user_id = request.cookie['user_id'];
+    let hashedValue = sha256(user_id + SALT);
+
+    if(request.cookies['hasLoggedIn'] === hashedValue){
+        response.send("YOU CAN DO IT!!!, GROUP HUG IN THE SHOWER TONIGHT")
+    } else{
+        response.send('putang inamo');
+    }
+});
 
 
 
