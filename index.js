@@ -1,5 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const methodOverride = require("method-override");
+const cookieParser = require("cookie-parser");
 const routes = require("./routes");
 const pool = require("./utils/database");
 
@@ -24,8 +26,8 @@ app.use(
     extended: true,
   }),
 );
-
 app.use(methodOverride("_method"));
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require("express-react-views").createEngine();
@@ -42,6 +44,7 @@ app.use("/", routes.home);
 app.use("/artists", routes.artists);
 app.use("/artists", routes.songs);
 app.use("/playlist", routes.playlist);
+app.use("/favorites", routes.favorites);
 
 /**
  * ===================================
