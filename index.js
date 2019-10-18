@@ -393,7 +393,7 @@ app.get('/login', (request,response)=>{
     response.render('login')
 })
 
-app.post('/bananas', (request,response)=>{
+app.post('/login', (request,response)=>{
 
     let user = request.body.username
     let password = request.body.password
@@ -409,7 +409,7 @@ app.post('/bananas', (request,response)=>{
             console.error('query error:', err.stack);
             response.send( 'query error' );
           } else {
-            if (user === result.rows[0].username && hashedPw === result.rows[0].pw){
+            if (result.rows[0]!=undefined && user === result.rows[0].username && hashedPw === result.rows[0].pw ){
 
             let userId = result.rows[0].id
             let user = result.rows[0].username
@@ -423,7 +423,12 @@ app.post('/bananas', (request,response)=>{
             console.log(request.body)
             response.redirect('/bananas')
             } else {
-                response.send ('nope')
+
+                const data = {
+                    fail: "No entry"
+                }
+                response.render('login',data)
+
             }
 
         }
