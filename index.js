@@ -149,13 +149,10 @@ app.get('/favorites/form', (req, res) => {
   let x = req.cookies;
   res.render('newSong');
   console.log(x);
-});
-app.post('/favorites/form', (req, res) => {
-      let pickedSong = req.body.song_id;
-      let user_id = req.cookies['user_id'];
-      console.log(req.cookies);
-      let hashedValue = sha256(IAMSALTY + user_id);
-      console.log(hashedValue);
+  let user_id = req.cookies['user_id'];
+  console.log(req.cookies);
+  let hashedValue = sha256(IAMSALTY + user_id);
+  console.log(hashedValue);
   if (req.cookies['hasLoggedin'] === hashedValue) {
       res.send('good');
   } else {
@@ -165,6 +162,37 @@ app.post('/favorites/form', (req, res) => {
   }
 });
 
+app.post('/favorites/form', (req, res) => {
+      let pickedSong = req.body.song_id;
+      let user_id = req.cookies['user_id'];
+      cont newArr =[song_id, user_id];
+      const queryString = "INSERT INTO favorites (song_id,user id) VALUES ($1,$2) RETURNING *"
+
+      pool.query(queryString,(err, result)=>{
+        if (err) {
+      console.error('query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      console.log("query: result", result);
+      res.send(result.rows);
+      }
+      })
+});
+
+app.get('/favorites/:id', (req, res) => {
+  let inputId= parseInt(req.params.id_);
+
+  const queryString = "SELECT user_name, title, song_id FROM songs INNER JOIN favorites ON(favorites.song_id = songs.id) INNER JOIN users ON(users.id = favorites.user_id) WHERE favorites.user_id=" +inputId;
+  pool.query(queryString,(err, result)=>{
+  if (err) {
+  console.error('query error:', err.stack);
+  response.send( 'query error' );
+} else {
+  console.log("query: result", result);
+  res.send(result.rows);
+    }
+  });
+});
 // create a route that renders a form for the user to enter the song they want to favorite. This form can just be a normal input where the user enters the id of a song they want to favorite.
 //
 // GET /favorites/new
