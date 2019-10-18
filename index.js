@@ -433,35 +433,42 @@ app.post('/favorites/new', (request, response) => {
 });
 
 app.get('/favorites', (request, response) => {
-    let user_id = request.cookies['user_id'];
-    let hashedPw = request.cookies['loggedIn'];
+    // check if user is logged in
+    if (request.cookies['user_id']===undefined) {
+        // redirect to homepage if not
+        response.redirect('/artists');
+    } else {
+        let user_id = request.cookies['user_id'];
+        let hashedPw = request.cookies['loggedIn'];
 
-    let queryText = `SELECT * FROM users WHERE id=${user_id}`;
+        let queryText = `SELECT * FROM users WHERE id=${user_id}`;
 
-    pool.query(queryText, (err, result) => {
-        if (err) {
-            console.error('query error:', err.stack);
-            response.send('query error');
-        }
-        // validate login
-        if( hashedPw === result.rows[0].password ){
-            queryText = `SELECT favorites.song_id,songs.title FROM favorites INNER JOIN songs ON (favorites.song_id=songs.id) INNER JOIN users ON (favorites.user_id=users.id) WHERE favorites.user_id=${user_id}`;
-            pool.query(queryText, (err, result) => {
-                if (err) {
-                    console.error('query error:', err.stack);
-                    response.send('query error');
-                }
-                // display favorites of user
-                let list = {};
-                list.songs = result.rows;
-                response.render('favhome', list);
-            });
-        }else{
-            // redirect to homepage
-            response.redirect('/artists');
-        }
-    })
+        pool.query(queryText, (err, result) => {
+            if (err) {
+                console.error('query error:', err.stack);
+                response.send('query error');
+            }
+            // validate login
+            if( hashedPw === result.rows[0].password ){
+                queryText = `SELECT favorites.song_id,songs.title FROM favorites INNER JOIN songs ON (favorites.song_id=songs.id) INNER JOIN users ON (favorites.user_id=users.id) WHERE favorites.user_id=${user_id}`;
+                pool.query(queryText, (err, result) => {
+                    if (err) {
+                        console.error('query error:', err.stack);
+                        response.send('query error');
+                    }
+                    // display favorites of user
+                    let list = {};
+                    list.songs = result.rows;
+                    response.render('favhome', list);
+                });
+            }else{
+                // redirect to homepage
+                response.redirect('/artists');
+            }
+        })
+    }
 })
+
 
 /**
  * ===================================
