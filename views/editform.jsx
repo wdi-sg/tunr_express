@@ -15,7 +15,7 @@ class Edit extends React.Component {
                       <input type="text" name="photo_url"/><br/>
                         <p>Nationality:</p>
                       <input type="text" name="nationality"/><br/>
-                      <input type="submit" value="Submit" placeholder="Search!!"/>
+                      <input type="submit" value="Submit"/>
                 </form>
         </body>
       </html>
