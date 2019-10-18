@@ -13,7 +13,7 @@ class Login extends React.Component {
             </p>
             <p>
                 Password <br/>
-                <input name="password"/>
+                <input name="password" type="password"/>
             </p>
             <p>
                 <input type="submit"/>
