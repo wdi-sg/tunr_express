@@ -6,16 +6,16 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'postgres',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+    user: 'postgres',
+    host: '127.0.0.1',
+    database: 'tunr_db',
+    port: 5432,
 };
 
 const pool = new pg.Pool(configs);
 
 pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+    console.log('idle client error', err.message, err.stack);
 });
 
 /**
@@ -30,7 +30,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+    extended: true
 }));
 
 app.use(methodOverride('_method'));
@@ -49,16 +49,43 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('/artists/new', (request, response) => {
+    // respond with HTML page with form to create new artist
+    response.render('new');
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post('/artists', (request, response) => {
+
+})
+
+
+
+
+
+
+
+
 
 
 /**
@@ -70,14 +97,14 @@ const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of
 
 let onClose = function(){
 
-  console.log("closing");
+    console.log("closing");
 
-  server.close(() => {
+    server.close(() => {
 
-    console.log('Process terminated');
+        console.log('Process terminated');
 
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
+        pool.end( () => console.log('Shut down db connection pool'));
+    })
 };
 
 process.on('SIGTERM', onClose);
