@@ -83,20 +83,60 @@ const showArtistSongs = (request,response)=>{
                 response.render("artistSongs", data);
             })
 };
+const showArtists = (request,response)=>{
+            let queryText = 'SELECT * FROM artists ORDER BY id asc';
+            pool.query(queryText, (err, res)=>{
+                const data = {
+                    artists: res.rows
+                }
+                response.render("home", data);
+            })
+}
+const editArtist = (request,response)=>{
+    let queryText = 'SELECT * FROM artists WHERE id=$1';
+    let values = [request.params.id];
+    pool.query(queryText,values, (err,res)=>{
+        response.render("editArtist",res.rows[0]);
+    })
+}
+const storeEditArtist = (request,response)=>{
+     let queryText = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4';
+     let values = [request.body.name, request.body.photo_url, request.body.nationality, request.params.id];
+     console.log("Here");
+     pool.query(queryText, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        let path ="/artists/"+request.params.id;
+        response.redirect(path);
+     });
+}
+const deleteArtist = (request,response)=>{
+     let queryText = `DELETE FROM artists WHERE id=$1`;
+     let values=[request.params.id];
+     pool.query(queryText,values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+      console.log('DELETED');
+      response.redirect('/');
+    });
+  };
 /**
  * ===================================
  * Routes
  * ===================================
  */
 
-app.get('/', (request, response) => {
-});
+app.get('/', showArtists);
 
 app.get('/new', addArtistPage);
 app.post('/', addArtist);
 app.get('/artists/:id/songs',showArtistSongs);
+app.get('/artists/:id/edit',editArtist);
+app.put('/artists/:id',storeEditArtist);
 app.get('/artists/:id',showArtist);
-
+app.delete('/artists/:id', deleteArtist);
 /**
  * ===================================
  * Listen to requests on port 3000
