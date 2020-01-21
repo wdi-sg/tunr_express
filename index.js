@@ -108,23 +108,21 @@ app.get('/artists/:id/songs', (request,response)=> {
         let artist_id = result.rows[0].id;
         //select title from songs where artist_id = (value above)
         let songTitles = "SELECT title FROM songs WHERE artist_id="+artist_id;
-
+        var responseArray =[];
           pool.query(songTitles, (titleErr, titleResult)=>{
           console.log(titleResult);
           let titleArray = titleResult.rows;
           for (var i = 0; i < titleArray.length; i++) {
-            var song = titleArray[i].title;
+            song = titleArray[i].title;
             console.log(song);
-
+          const data = {
+              title: song
+            };
           }
-          // titleArray.forEach(titleObj => {
-          //   song = titleObj.title
-          //   console.log(song);
-          // });
-            response.render('', );
+          response.send(); //get all songs to print out
         });
       }
-    });
+    })
 });
 
 
