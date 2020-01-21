@@ -195,34 +195,6 @@ app.get('/artists/:id/songs',(request, response) => {
 });
 
 
-
-
- /**********************************
-┌─┐┌─┐┌┬┐
-│ ┬├┤  │
-└─┘└─┘ ┴
-************************************/
-
-// app.get('/list', (req, res) => {
-// const queryString = 'SELECT * from artists';
-
-// pool.query(queryString, (err, result) => {
-
-//     if (err) {
-//         console.error('query error:', err.stack);
-//         res.send( 'query error' );
-//     } else {
-//         console.log('query result:', result);
-//     // redirect to home page
-//         res.render('home');
-    // res.send( result.rows );
-//         console.log(result.rows );
-//     }
-// });
-// });
-
-
-
 /**
  * ===================================
  * Listen to requests on port 3000
