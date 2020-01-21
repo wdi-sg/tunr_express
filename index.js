@@ -63,6 +63,41 @@ app.get('/artists/new', (request, response) => {
     response.render('new');
 });
 
+app.get('/artists/:id', (request, response) => {
+    if (isNaN(request.params.id)) {
+        response.render('home', {
+            message: 'Invalid Id No.'
+        });
+        return;
+    };
+    const queryString = "SELECT * FROM artists WHERE id=$1";
+    const queryValues = [request.params.id];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            });
+            return;
+        }
+        if (!result.rows.length) {
+            const data = {
+                message: "Invalid Artist Id"
+            };
+            response.render('home', data);
+            return;
+        }
+        const artist = result.rows[0];
+
+        const message = `Artist: ${artist.name} - Nationality: ${artist.nationality}`;
+        const data = {
+            message: message
+        };
+        response.render('home', data);
+
+    })
+})
+
 app.post('/artists', (request, response) => {
     // respond with HTML page with form to create new
     const message = `${request.body.name} = ${request.body.photo_url} - ${request.body.nationality}`;
