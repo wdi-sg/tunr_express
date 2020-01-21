@@ -62,7 +62,9 @@ app.get('/', (request, response) => {
             return;
         }
         if (!result.rows.length) {
-            const data = { message: "No artists in database " };
+            const data = {
+                message: "No artists in database "
+            };
             response.render('home', data);
             return;
         }
@@ -77,7 +79,7 @@ app.get('/', (request, response) => {
 
 
 app.get('/artists/', (request, response) => {
-  response.status(300).redirect('/');
+    response.status(300).redirect('/');
 })
 
 
@@ -100,9 +102,11 @@ app.get('/artists/:id/songs', (request, response) => {
     const queryValues = [request.params.id];
     pool.query(queryString, queryValues, (err, artistResult) => {
         if (!artistResult.rows.length) {
-          const data = { message: "Invalid Artist Id." };
-          response.render('home', data);
-          return;
+            const data = {
+                message: "Invalid Artist Id."
+            };
+            response.render('home', data);
+            return;
         }
 
         const artist = artistResult.rows[0];
@@ -134,6 +138,31 @@ app.get('/artists/:id/songs', (request, response) => {
 })
 
 
+// Edit an artist:
+app.get('/artists/:id/edit', (request, response) => {
+    if (isNaN(request.params.id)) {
+        response.render('home', {
+            message: 'Invalid Id No.'
+        });
+        return;
+    };
+    const queryString = "SELECT * FROM artists WHERE id=$1";
+    const queryValues = [request.params.id];
+    pool.query(queryString, queryValues, (err, artistResult) => {
+        if (!artistResult.rows.length) {
+            const data = {
+                message: "Invalid Artist Id."
+            };
+            response.render('home', data);
+            return;
+        }
+        const artist = artistResult.rows[0];
+        const data = {artist: artist};
+        response.render('edit', data);
+    })
+})
+
+
 app.get('/artists/:id', (request, response) => {
     if (isNaN(request.params.id)) {
         response.render('home', {
@@ -159,12 +188,10 @@ app.get('/artists/:id', (request, response) => {
             return;
         }
         const artist = result.rows[0];
-
-        const message = `Artist: ${artist.name} - Nationality: ${artist.nationality}`;
         const data = {
-            message: message
+            artist: artist
         };
-        response.render('home', data);
+        response.render('artist', data);
 
     })
 })
