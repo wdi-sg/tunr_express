@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'eunicelok',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -42,23 +42,146 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
 /**
  * ===================================
  * Routes
  * ===================================
  */
 
+/**********************************
+┬┌┐┌┬┌┬┐┬┌─┐┬      ┬─┐┌─┐┬ ┬┌┬┐┌─┐
+│││││ │ │├─┤│      ├┬┘│ ││ │ │ ├┤
+┴┘└┘┴ ┴ ┴┴ ┴┴─┘    ┴└─└─┘└─┘ ┴ └─┘
+************************************/
+
+
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+
+
+
+
+
+/**
+ * =========================================
+.*.
+.*.┌─┐┌─┐┌┬┐  ┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐  ┌─┐┌─┐┬─┐┌┬┐
+.*.│ ┬├┤  │   │  ├┬┘├┤ ├─┤ │ ├┤   ├┤ │ │├┬┘│││
+.*.└─┘└─┘ ┴   └─┘┴└─└─┘┴ ┴ ┴ └─┘  └  └─┘┴└─┴ ┴
+.*.
+ * ===========================================
+ */
+
+
+//Display the form for a single artist
+//Build a feature that creates a new artist in the database.
+//path working
+app.get('/artists/new', (request, response) => {
+    response.render('new');
 });
+
+/**
+ * ===================================
+.*.┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐
+.*.│  ├┬┘├┤ ├─┤ │ ├┤
+.*.└─┘┴└─└─┘┴ ┴ ┴ └─┘
+ * ===================================
+ */
+
+//URL -> /recipes && HTTP Verb -> POST && Action -> create && Purpose -> Create a new recipe  && ensure that strings is in lowercase
+app.post('/artists', (request, response) => {
+
+  let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
+
+  const values = [
+    request.body.name,
+    request.body.photo_url,
+    request.body.nationality
+  ];
+
+  pool.query(insertQueryText, values, (err, result)=> {
+    console.log("INSERT query callback");
+
+    if( err ) {
+      console.log("ERREEERRRRRR", err);
+      response.send("errorr")
+    } else {
+        console.log("DONE", result.rows, 'You have added ' + request.body.name);
+        const newlyAdded = {
+            name: request.body.name,
+            photo_url: request.body.photo_url,
+            nationality: request.body.nationality
+        };
+      const data = {
+        newArtist : newlyAdded
+      };
+      // response.send("we're done, you manage to add " + request.body.name);
+      response.render('createdNew', data);
+    }
+  });
+});
+
+
+/**
+ * ===================================
+.*.┌─┐┬ ┬┌─┐┬ ┬  ┌─┐┌─┐┌─┐┌┬┐┬ ┬┬─┐┌─┐
+.*.└─┐├─┤│ ││││  ├┤ ├┤ ├─┤ │ │ │├┬┘├┤
+.*.└─┘┴ ┴└─┘└┴┘  └  └─┘┴ ┴ ┴ └─┘┴└─└─┘
+ * ===================================
+ */
+
+// app.get('/pokemon/:id',(request, response)=>{
+
+//   // let tableName = request.params.table_name;
+//   // let tableName = "pokemon";
+//   // let query = "SELECT * FROM "+tableName;
+//   let query = "SELECT * FROM pokemon WHERE id="+request.params.id;
+
+//   pool.query(query, (err, result)=>{
+
+//     if(err){
+//       console.log("ERRRR", err);
+//       response.status(500).send("error")
+
+//     } else{
+
+//       console.log("RESULT")
+//       console.log( result.rows[0])
+
+//       response.send(result.rows);
+//     }
+//   })
+
+// });
+
+
+ /**********************************
+┌─┐┌─┐┌┬┐
+│ ┬├┤  │
+└─┘└─┘ ┴
+************************************/
+
+// app.get('/list', (req, res) => {
+// const queryString = 'SELECT * from artists';
+
+// pool.query(queryString, (err, result) => {
+
+//     if (err) {
+//         console.error('query error:', err.stack);
+//         res.send( 'query error' );
+//     } else {
+//         console.log('query result:', result);
+//     // redirect to home page
+//         res.render('home');
+    // res.send( result.rows );
+//         console.log(result.rows );
+//     }
+// });
+// });
+
 
 
 /**
@@ -69,13 +192,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
