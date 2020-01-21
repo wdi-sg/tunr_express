@@ -9,7 +9,7 @@ class Home extends React.Component {
 
     if (artists.length > 1) {
       artistElement = artists.map(artist => {
-        const artistPath = "artists/" + artist.id;
+        const artistPath = "/artists/" + artist.id;
         return (
           <div className="card mb-5">
             <div>
@@ -30,6 +30,7 @@ class Home extends React.Component {
       });
     } else {
       const artistPath = artists.id;
+      const deletePath = "/artists/" + artists.id + "?_method=delete";
       const songsPath = artistPath + "/songs";
       artistElement = (
         <div className="card">
@@ -46,6 +47,17 @@ class Home extends React.Component {
             <h6 className="text-center">
               <a href={songsPath}>See All Songs</a>
             </h6>
+            <form
+              className="d-flex justify-content-center"
+              action={deletePath}
+              method="POST"
+            >
+              <input
+                className="btn btn-danger"
+                type="submit"
+                value="Delete artist?"
+              />
+            </form>
           </div>
         </div>
       );

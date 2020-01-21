@@ -48,8 +48,8 @@ export class Layout extends React.Component {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Link
+                  <a className="nav-link" href="/artists/new">
+                    Add artist
                   </a>
                 </li>
                 <li className="nav-item dropdown">

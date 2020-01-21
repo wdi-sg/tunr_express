@@ -161,7 +161,6 @@ app.put("/artists/:id/", (request, response) => {
 });
 
 app.get("/artists/new", (request, response) => {
-  // respond with HTML page with form to create new pokemon
   response.render("new");
 });
 
@@ -185,6 +184,18 @@ app.post("/", (request, response) => {
         };
         response.render("home", data);
       });
+    }
+  });
+});
+
+app.delete("/artists/:id", (request, response) => {
+  const artistId = request.params.id;
+  const values = [artistId];
+  const query = "DELETE FROM artists where id = $1";
+  pool.query(query, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      response.redirect("/");
     }
   });
 });
