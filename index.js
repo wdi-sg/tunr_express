@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'AngelFerreros',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -26,15 +26,11 @@ pool.on('error', function (err) {
 
 // Init express app
 const app = express();
-
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
-
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -48,16 +44,37 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+  //Define a route with view defined at /. For now it should say Hello World when you visit that url.
+  // respond with HTML page
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+  // Build a feature that creates a new artist in the database.
+  // respond with HTML page with form to create new artist
+app.get('/artists/new', (request, response) => {
   response.render('new');
+});
+
+
+// accepts form request and process request to add data in DB
+app.post ('/artists', (request,response)=>{
+ let queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+    const values = [
+    request.body.name,
+    request.body.photo_url,
+    request.body.nationality];
+
+        pool.query(queryText, values, (err,result)=>{
+            console.log(`insert query`);
+            if(err){
+                console.log(err);
+                response.send('error',err);
+            } else {
+                console.log('insert new artist completed');
+                response.send(result.rows);
+            }
+        });
 });
 
 
@@ -69,13 +86,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
