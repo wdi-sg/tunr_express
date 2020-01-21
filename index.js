@@ -57,7 +57,6 @@ const home = (request,response) => {
             console.log("Error!", err);
             response.send("error");
         } else{
-            console.log("Show Rows:", result.rows)
             response.render('home',data);
         }
     });
@@ -77,19 +76,21 @@ const form = (request,response) => {
             console.log("Error!", err);
             response.send("error");
         } else{
-            console.log("DONE", result.rows)
             response.render("home");
         }
     });
 }
 
 const view = (request,response) => {
-    let insertQueryText = 'SELECT FROM ARTISTS WHERE id=' + request.params.id;
+    let values = [request.params.id];
+    let insertQueryText = 'SELECT * FROM ARTISTS WHERE id=$1';
 
-    pool.query(insertQueryText, (err,result) => {
+    pool.query(insertQueryText, values, (err,result) => {
         let data = {
-            recipes: obj.recipes[request.params.id],
-            id: request.params.id
+            id: result.rows[0].id,
+            name: result.rows[0].name,
+            img: result.rows[0].photo_url,
+            nationality: result.rows[0].nationality
         }
     response.render('view', data)
     })
