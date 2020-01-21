@@ -1,6 +1,6 @@
 var React = require("react");
 
-class New extends React.Component {
+class Edit extends React.Component {
   render() {
     const id = this.props.id
     const actionURL = "/artists/"+id+"?_method=put"
@@ -20,4 +20,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Edit;
