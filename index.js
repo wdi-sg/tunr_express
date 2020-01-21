@@ -90,7 +90,6 @@ app.get('/artists/:id/songs', (request, response) => {
             response.render('home', data);
             return;
         }
-        console.log(result.rows);
         const songs = result.rows;
 
         const data = {
