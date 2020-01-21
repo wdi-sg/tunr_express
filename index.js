@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'jasminelee',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,16 +49,67 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  response.send("HELLO WORLD!");
+  
+});
+// Define a route with view defined at /. For now it should say Hello World when you visit that url.
+
+const newArtist = (request,response) => {
+  response.render("new");
+}
+
+const addArtist = (request,response) => {
+  const insertQueryText = 'INSERT into artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
+  const values = [
+    request.body.name,
+    request.body.photo_url,
+    request.body.nationality
+    ]
+    
+    pool.query(insertQueryText, values, (err, result)=>{
+      console.log("INSERTED INTO DATABASE")
+
+      if(err){
+        console.log("ERRRRORRRR" , err);
+        response.send("error");
+      }
+      else{
+        console.log("DONE",result.rows);
+        response.redirect('/');
+      }
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+};
+app.get('/artists/new', newArtist);
+app.post('/artists' , addArtist);
+// Build a feature that creates a new artist in the database.
+
+
+
+
+
+const findArtist = (request,response) => {
+
+  let query = "SELECT * FROM artists WHERE id=" + request.params.id;
+  pool.query(query,(err,result)=>{
+    if(err){
+      console.log("ERROR",err);
+      response.status(500).send("error");
+    }
+    else{
+      console.log("RESULTS");
+      console.log(result.rows);
+      let data = result.rows[0];
+      response.render("artists", data);
+      
+    }
+  })
+
+}
+app.get('/artists/:id',findArtist);
+
+
 
 
 /**
