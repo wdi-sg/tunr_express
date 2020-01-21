@@ -3,8 +3,7 @@ var React = require("react");
 class Songs extends React.Component {
     render() {
       const songList = this.props.songs.map(song => {
-
-        return <li>{song.title} - {song.album}</li>
+        return <li><a href={song.preview_link}>{song.title}</a> - {song.album}</li>
       });
         return (<html>
             <head/>
