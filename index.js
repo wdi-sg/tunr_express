@@ -46,12 +46,60 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+app.get('/artists/:id/edit', (req,res) => {
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
-});
+  const id = req.params.id
+  const queryText = "SELECT * FROM artists WHERE id='"+id+"'"
+
+  pool.query(queryText, (err,result)=>{
+    if (err) {
+      console.log ("error", err.message)
+    } else {
+      const data = {
+        id: id,
+        artist: result.rows[0]
+      }
+      res.render('edit', data)
+    }
+  })
+})
+
+app.put('/artists/:id', (req,res) => {
+  const id = req.params.id
+  const values = [
+    req.body.name,
+    req.body.photo_url,
+    req.body.nationality
+  ]
+  // const id = req.params.id
+  const queryText = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id='"+id+"' RETURNING *"
+  
+    pool.query(queryText, values, (err, result) => {
+      if (err) {
+        console.log ("error", err.message)
+      } else {
+        console.log(result.rows)
+        res.render('show-artist', result.rows[0])
+    }
+  
+})
+})
+
+app.get('/artists/:id', (req,res) => {
+
+  const id = req.params.id
+  const queryText = "SELECT * FROM artists WHERE id='"+id+"'"
+
+  pool.query(queryText, (err,result) => {
+
+    if (err) {
+      console.log ("error", err.message)
+    } else {
+      res.render('show-artist', result.rows[0])
+
+    }
+  })
+})
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
@@ -81,23 +129,66 @@ app.post('/artists', (req,res) =>{
   //request end
 })
 
-app.get('/artists/:id', (req,res) => {
+app.get('/artists', (req,res) => {
+
+  const queryText = "SELECT * FROM artists"
+
+  pool.query(queryText, (err,result)=>{
+    if (err) {
+      console.log ("error", err.message)
+    } else {
+      const data = {
+        artists: result.rows
+      }
+      res.render('show-all-artists', data)
+    }
+  })
+})
+
+app.get('/artists/:id/songs', (req,res) => {
 
     const id = req.params.id
-    const queryText = "SELECT * FROM artists WHERE id='"+id+"'"
 
-    pool.query(queryText, (err,result) => {
+    const artistQuery = "SELECT * FROM artists WHERE id='"+id+"'"
+    const songQuery = "SELECT * FROM songs WHERE artist_id='"+id+"'"
+
+    pool.query(artistQuery, (err,result) => {
 
       if (err) {
         console.log ("error", err.message)
       } else {
-        res.render('show-artist', result.rows[0])
-  
-      }
-    })
+        
+        const artistName = result.rows[0]
+        console.log(artistName)
+        pool.query(songQuery, (error,songResult) => {
 
+          if (err) {
+            console.log ("error", err.message)
+          } else {
+
+            const data = {
+              artistName: artistName,
+              songs: songResult.rows
+            }
+            // NEXT: MAP songs in jsx file and generate LI HTML
+            res.render('show-songs', data)
+          }
+
+          //end query 2
+        })
+      
+      }
+      //end query 1
+})
+//end request
 })
 
+app.get('/', (request, response) => {
+  // query database for all pokemon
+
+  // respond with HTML page displaying all pokemon
+  response.render('home');
+});
 
 /**
  * ===================================
