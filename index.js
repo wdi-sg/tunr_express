@@ -6,16 +6,16 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+    user: 'stuartmyers',
+    host: '127.0.0.1',
+    database: 'tunr_db',
+    port: 5432,
 };
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+pool.on('error', function(err) {
+    console.log('idle client error', err.message, err.stack);
 });
 
 /**
@@ -30,7 +30,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+    extended: true
 }));
 
 app.use(methodOverride('_method'));
@@ -50,22 +50,39 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
 
-  // respond with HTML page displaying all
-  const message = "hello world";
-  data = { message: message };
-  response.render('home', data);
+    // respond with HTML page displaying all
+    const message = "hello world";
+    data = {
+        message: message
+    };
+    response.render('home', data);
 });
 
 app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new
-  response.render('new');
+    // respond with HTML page with form to create new
+    response.render('new');
 });
 
 app.post('/artists', (request, response) => {
-  // respond with HTML page with form to create new
-  const message = "form submitted";
-  const data = { message: message };
-  response.render('home', data);
+    // respond with HTML page with form to create new
+    const message = `${request.body.name} = ${request.body.photo_url} - ${request.body.nationality}`;
+    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3);"
+    const queryValues = [request.body.name, request.body.photo_url, request.body.nationality];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        }
+
+        const message = "artist added";
+        const data = {
+            message: message
+        };
+        response.render('home', data);
+    })
 });
 
 
@@ -76,16 +93,16 @@ app.post('/artists', (request, response) => {
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
+let onClose = function() {
 
-  console.log("closing");
+    console.log("closing");
 
-  server.close(() => {
+    server.close(() => {
 
-    console.log('Process terminated');
+        console.log('Process terminated');
 
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
+        pool.end(() => console.log('Shut down db connection pool'));
+    })
 };
 
 process.on('SIGTERM', onClose);
