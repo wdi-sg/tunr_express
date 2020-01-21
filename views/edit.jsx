@@ -14,7 +14,7 @@ class Edit extends React.Component {
                         <input type="text" name="photo_url" defaultValue={artist.photo_url}/><br/>
                         nationality:
                         <input type="text" name="nationality" defaultValue={artist.nationality}/><br/>
-                        <input type="submit"/>
+                        <input type="submit" className="btn btn-primary"/>
                     </form>
                 </DefaultLayout>);
     }

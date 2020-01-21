@@ -1,4 +1,5 @@
 var React = require("react");
+var NavBar = require("../component/navbar");
 
 class DefaultLayout extends React.Component{
   render () {
@@ -9,6 +10,7 @@ class DefaultLayout extends React.Component{
           <title>{this.props.title}</title>
         </head>
         <body>
+          <NavBar/>
           <div className="container">
             {this.props.children}
           </div>

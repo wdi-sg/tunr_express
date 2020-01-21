@@ -12,7 +12,7 @@ class New extends React.Component {
                     <input type="text" name="photo_url"/><br/>
                     nationality:
                     <input type="text" name="nationality"/><br/>
-                    <input type="submit"/>
+                    <input type="submit" className="btn btn-primary"/>
                 </DefaultLayout>);
     }
 }
