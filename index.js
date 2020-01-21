@@ -120,7 +120,36 @@ app.get('/artists/:id', (request,response) => {
   });
 });
 
+app.get('/artists/:id/edit', (request,response) => {
+  const queryString = 'SELECT * from artists WHERE id=$1;'
+  const values = [request.params.id];
+  pool.query(queryString, values, (err,result) => {
+    let currentArtist = result.rows[0];
+    console.log(currentArtist)
+    let data = {
+        artists: currentArtist
+    }
+    response.render('edit', data);
+  });
+});
 
+app.put('/artists/:id', (request,response) => {
+  const queryString = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3, WHERE id=$1;'
+  const values = [
+    request.params.id,
+    request.body.name,
+    request.body.url,
+    request.body.nationality
+  ];
+  pool.query(queryString, values, (err,result) => {
+    let currentArtist = result.rows[0];
+    console.log(currentArtist)
+    let data = {
+        artists: currentArtist
+    }
+    response.render('single', data);
+  });
+});
 
 app.get('/', (request,response) => {
   response.send("Hello World");
