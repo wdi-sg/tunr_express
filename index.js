@@ -197,6 +197,28 @@ app.get('/artists/:id', (request, response) => {
 })
 
 
+app.put('/artists/:id', (request, response) => {
+    const queryString = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4 RETURNING *;"
+    const queryValues = [request.body.name, request.body.photo_url, request.body.nationality, request.params.id];
+    pool.query(queryString, queryValues, (err, result) => {
+      if (err) {
+          console.log(err);
+          response.render('home', {
+              message: "Error!"
+          })
+          return;
+      }
+      const artist = result.rows[0];
+      const message = "This record has been updated";
+      const data = {
+        artist: artist,
+        message: message
+      }
+      response.render('artist', data);
+    })
+})
+
+
 app.post('/artists', (request, response) => {
     // respond with HTML page with form to create new
     const message = `${request.body.name} = ${request.body.photo_url} - ${request.body.nationality}`;
