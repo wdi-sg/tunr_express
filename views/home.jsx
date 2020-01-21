@@ -4,9 +4,17 @@ class Home extends React.Component {
   render() {
     return (
       <html>
-        <head />
+
+<head>
+<title>🎵Tunr</title>
+          <meta charset="utf-8" />
+</head>
+
+
+
         <body>
-          <h1>Welcome!</h1>
+  <h1>Hello World!</h1>
+          <h3>🎵Welcome to Tunr🎵</h3>
         </body>
       </html>
     );

@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'joycepaul',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -55,10 +55,48 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new artist
+
+
   response.render('new');
 });
+
+
+
+app.post('/artists',(request, response)=>{
+
+  let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+  const values = [
+    request.body.name,
+    request.body.photo_url,
+    request.body.nationality
+  ];
+
+  pool.query(insertQueryText, values, (err, result)=>{
+    console.log("INSERT query callback")
+
+    console.log( )
+
+    if( err ){
+      console.log("ERROR", err);
+      response.send("error")
+    }else{
+
+      console.log("DONE", result.rows)
+      response.send("You have added an artist" + request.body.name)
+    }
+  });
+
+  // response.send("heeeyyyyy");
+})
+
+
+
+
+
 
 
 /**
@@ -69,13 +107,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
