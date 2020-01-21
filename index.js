@@ -54,9 +54,44 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
+
+
+
+
+// Add new artist - form page
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+  
   response.render('new');
+});
+
+// Add new artist - submit
+app.post('/artists', (request,response) => {
+  console.log(request.body);
+
+  let values = [request.body.name, request.body.photo_url, request.body.nationality]
+  let query = `INSERT INTO artists (name,photo_url,nationality) VALUES ($1,$2,$3) RETURNING *`
+  pool.query(query,values,(err,result) =>{
+    
+    console.log(values)
+    response.send("done?")
+  });
+})
+
+
+// Get an artist
+app.get('/artists/:id', (request, response) => {
+  let id = request.params.id;
+  let query = `SELECT * from artists WHERE id=${id}`
+
+  pool.query(query,(err,result)=>{
+    console.log(result.rows)
+    const data = {
+      artist: result.rows[0]
+    }
+    
+    response.render('artist',data);
+  })
+
 });
 
 
