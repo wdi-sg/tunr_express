@@ -77,6 +77,25 @@ app.post ('/artists', (request,response)=>{
         });
 });
 
+//show page for a single artist
+app.get('/artists/:id',(request, response)=>{
+  let artistId = parseInt(request.params.id);
+  console.log(artistId);
+  let queryText = "SELECT * FROM artists WHERE id ="+artistId;
+    pool.query(queryText, (err,result)=>{
+      console.log("show info:",result.rows);
+      const data = {
+        name: result.rows[0].name,
+        photo_url: result.rows[0].photo_url,
+        nationality: result.rows[0].nationality };
+
+      response.render('info',data);
+    });
+
+
+});
+
+
 
 /**
  * ===================================
