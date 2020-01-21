@@ -8,7 +8,14 @@ img {
 }
 
 .card {
- background: #252524;
- width: 350px;
+  background: #252524;
+  width: 350px;
 }
 
+h6 a {
+  color: white;
+}
+
+h6 a:hover {
+  color: #88B800;
+}

@@ -50,10 +50,17 @@ app.engine("jsx", reactEngine);
  */
 
 app.get("/", (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render("home");
+  let query = "SELECT * from artists";
+  pool.query(query, (err, result) => {
+    if (err) {
+      response.send("error");
+    } else {
+      const data = {
+        artists: result.rows
+      };
+      response.render("home", data);
+    }
+  });
 });
 
 app.get("/artists", (request, response) => {
@@ -73,15 +80,82 @@ app.get("/artists", (request, response) => {
 app.get("/artists/:id", (request, response) => {
   const artistId = request.params.id;
   const values = [artistId];
-  const query = "SELECT * from artists where id =" + artistId;
-  pool.query(query, (err, result) => {
+  const query = "SELECT * from artists where id = $1";
+  pool.query(query, values, (err, result) => {
+    if (err) {
+      response.send(err);
+    } else {
+      if (result.rows.length === 0) {
+        response.render("404");
+      }
+      const data = {
+        artists: result.rows[0]
+      };
+      response.render("home", data);
+    }
+  });
+});
+
+app.get("/artists/:id/edit", (request, response) => {
+  const artistId = request.params.id;
+  const values = [artistId];
+  const query = "SELECT * from artists where id = $1";
+  pool.query(query, values, (err, result) => {
     if (err) {
       response.send(err);
     } else {
       const data = {
         artists: result.rows[0]
       };
-      response.render("home", data)
+      response.render("edit", data);
+    }
+  });
+});
+
+app.get("/artists/:id/songs", (request, response) => {
+  const artistId = request.params.id;
+  const values = [artistId];
+  const artistQuery = "SELECT * from artists where id = $1";
+  pool.query(artistQuery, values, (err, artistResult) => {
+    if (err) {
+      response.send(err);
+    } else {
+      const artist = artistResult.rows[0];
+      const artistId = artist.id;
+      const values = [artistId];
+      const songsQuery = "SELECT * from songs where artist_id = $1";
+      pool.query(songsQuery, values, (err, songsResult) => {
+        if (err) response.send(err);
+        else {
+          const songs = songsResult.rows;
+          const data = {
+            artist: artist,
+            songs: songs
+          };
+          response.render("songs", data);
+        }
+      });
+    }
+  });
+});
+
+app.put("/artists/:id/", (request, response) => {
+  const id = request.params.id;
+  const artistName = request.body.name;
+  const photoURL = request.body.photoURL;
+  const nationality = request.body.nationality;
+
+  const values = [artistName, photoURL, nationality, id];
+
+  const query = `UPDATE artists
+  SET name = $1, photo_url = $2, nationality = $3
+  WHERE id= $4`;
+
+  pool.query(query, values, (err, result) => {
+    if (err) {
+      response.render("404");
+    } else {
+      response.render("home");
     }
   });
 });
@@ -92,10 +166,10 @@ app.get("/artists/new", (request, response) => {
 });
 
 app.post("/", (request, response) => {
-  const name = request.body.name;
+  const artistName = request.body.name;
   const photoURL = request.body.photoURL;
   const nationality = request.body.nationality;
-  const values = [name, photoURL, nationality];
+  const values = [artistName, photoURL, nationality];
   const query =
     "INSERT into artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
   console.log(values);
@@ -113,6 +187,10 @@ app.post("/", (request, response) => {
       });
     }
   });
+});
+
+app.get("*", (request, response) => {
+  response.render("404");
 });
 
 /**
