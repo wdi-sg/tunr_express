@@ -63,10 +63,9 @@ const addArtist = (request,response) =>{
     });
 }
 const showArtist = (request, response)=>{
-    let queryText = "Select * FROM artists WHERE id=$1";
+    let queryText = "SELECT * FROM artists WHERE id=$1";
     let values = [request.params.id];
     pool.query(queryText,values,(err,res)=>{
-        console.log(res.rows[0]);
         if(err){
             console.log(err);
         }else{
@@ -74,6 +73,16 @@ const showArtist = (request, response)=>{
         }
     })
 }
+const showArtistSongs = (request,response)=>{
+            let queryText = 'SELECT * FROM songs WHERE artist_id=$1';
+            let values = [request.params.id];
+            pool.query(queryText, values, (err, res)=>{
+                const data = {
+                    songs: res.rows
+                }
+                response.render("artistSongs", data);
+            })
+};
 /**
  * ===================================
  * Routes
@@ -85,7 +94,8 @@ app.get('/', (request, response) => {
 
 app.get('/new', addArtistPage);
 app.post('/', addArtist);
-app.get('/artists/:id',showArtist)
+app.get('/artists/:id/songs',showArtistSongs);
+app.get('/artists/:id',showArtist);
 
 /**
  * ===================================
