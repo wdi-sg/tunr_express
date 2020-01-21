@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'weizheng1910',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -34,7 +34,6 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
