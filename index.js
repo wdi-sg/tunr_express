@@ -1,4 +1,4 @@
-console.log("Loggin in to tunr_db database...");
+console.log("Logging in to tunr_db database...");
 
 const express = require('express');
 const methodOverride = require('method-override');
@@ -6,16 +6,16 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-    user: 'samuelhuang',
-    host: '127.0.0.1',
-    database: 'tunr_db',
-    port: 5432,
+        user: 'samuelhuang',
+        host: '127.0.0.1',
+        database: 'tunr_db',
+        port: 5432,
 };
 
 const pool = new pg.Pool(configs);
 
 pool.on('error', function (err) {
-    console.log('idle client error', err.message, err.stack);
+        console.log('idle client error', err.message, err.stack);
 });
 
 /**
@@ -29,7 +29,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({
-    extended: true
+        extended: true
 }));
 
 app.use(methodOverride('_method'));
@@ -46,18 +46,68 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-    // query database for all pokemon
+const home = (request,response) => {
+    let insertQueryText = 'SELECT * FROM artists';
 
-    // respond with HTML page displaying all pokemon
-    response.render('home');
-});
+    pool.query(insertQueryText, (err, result)=>{
+        let data = {
+            artists: result.rows
+        }
+        if( err ){
+            console.log("Error!", err);
+            response.send("error");
+        } else{
+            console.log("Show Rows:", result.rows)
+            response.render('home',data);
+        }
+    });
+}
 
-app.get('/new', (request, response) => {
-    // respond with HTML page with form to create new pokemon
+const form = (request,response) => {
+    let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+    const values = [
+        request.body.name,
+        request.body.photo,
+        request.body.nationality,
+    ];
+
+    pool.query(insertQueryText, values, (err, result)=>{
+        if( err ){
+            console.log("Error!", err);
+            response.send("error");
+        } else{
+            console.log("DONE", result.rows)
+            response.render("home");
+        }
+    });
+}
+
+const view = (request,response) => {
+    let insertQueryText = 'SELECT FROM ARTISTS WHERE id=' + request.params.id;
+
+    pool.query(insertQueryText, (err,result) => {
+        let data = {
+            recipes: obj.recipes[request.params.id],
+            id: request.params.id
+        }
+    response.render('view', data)
+    })
+};
+
+app.get('/artists', home);
+
+app.get('/artists/new', (request, response) => {
     response.render('new');
 });
 
+app.get('/artists/:id', view);
+
+app.post('/artists', form);
+
+app.get('/', (request, response) => {
+    response.redirect('/artists');
+})
 
 /**
  * ===================================
@@ -68,14 +118,14 @@ const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of
 
 let onClose = function(){
 
-    console.log("closing");
+        console.log("closing");
 
-    server.close(() => {
+        server.close(() => {
 
-        console.log('Process terminated');
+                console.log('Process terminated');
 
-        pool.end( () => console.log('Shut down db connection pool'));
-    })
+                pool.end( () => console.log('Shut down db connection pool'));
+        })
 };
 
 process.on('SIGTERM', onClose);
