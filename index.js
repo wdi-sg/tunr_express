@@ -133,29 +133,32 @@ app.post('/artists', (request, response) => {
  * ===================================
  */
 
-// app.get('/pokemon/:id',(request, response)=>{
+//Build the show feature for an artist
+app.get('/artists/:id',(request, response)=>{
+  let query = "SELECT * FROM artists WHERE id=$1";
+  let value = [request.params.id];
+  pool.query(query,value, (err, result) => {
+    if(err){
+        console.log("ERRRR", err);
+        response.status(500).send("error")
+    } else {
+        console.log("RESULT")
+        console.log( result.rows);
+        let artist = result.rows;
+        const data = {
+            selectedArtist: artist[0]
+    };
+      // response.send(result.rows);
+      response.render('show', data);
+    }
+    })
+});
 
-//   // let tableName = request.params.table_name;
-//   // let tableName = "pokemon";
-//   // let query = "SELECT * FROM "+tableName;
-//   let query = "SELECT * FROM pokemon WHERE id="+request.params.id;
 
-//   pool.query(query, (err, result)=>{
 
-//     if(err){
-//       console.log("ERRRR", err);
-//       response.status(500).send("error")
 
-//     } else{
 
-//       console.log("RESULT")
-//       console.log( result.rows[0])
 
-//       response.send(result.rows);
-//     }
-//   })
-
-// });
 
 
  /**********************************
