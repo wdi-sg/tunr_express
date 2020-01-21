@@ -80,16 +80,6 @@ export class Layout extends React.Component {
                     </a>
                   </div>
                 </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link disabled"
-                    href="#"
-                    tabIndex="-1"
-                    aria-disabled="true"
-                  >
-                    Disabled
-                  </a>
-                </li>
               </ul>
               <form className="form-inline my-2 my-lg-0">
                 <input

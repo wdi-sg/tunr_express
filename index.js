@@ -49,6 +49,11 @@ app.engine("jsx", reactEngine);
  * ===================================
  */
 
+/**
+ * ===================================
+ * GET Routes
+ * ===================================
+ */
 app.get("/", (request, response) => {
   let query = "SELECT * from artists";
   pool.query(query, (err, result) => {
@@ -75,6 +80,10 @@ app.get("/artists", (request, response) => {
       response.render("home", data);
     }
   });
+});
+
+app.get("/artists/new", (request, response) => {
+  response.render("new");
 });
 
 app.get("/artists/:id", (request, response) => {
@@ -112,6 +121,14 @@ app.get("/artists/:id/edit", (request, response) => {
   });
 });
 
+app.get("/artists/:id/songs/new", (request, response) => {
+  const artistId = request.params.id;
+  const data = {
+    artistId: artistId
+  };
+  response.render("newSong", data);
+});
+
 app.get("/artists/:id/songs", (request, response) => {
   const artistId = request.params.id;
   const values = [artistId];
@@ -139,6 +156,12 @@ app.get("/artists/:id/songs", (request, response) => {
   });
 });
 
+/**
+ * ===================================
+ * PUT Routes
+ * ===================================
+ */
+
 app.put("/artists/:id/", (request, response) => {
   const id = request.params.id;
   const artistName = request.body.name;
@@ -160,10 +183,11 @@ app.put("/artists/:id/", (request, response) => {
   });
 });
 
-app.get("/artists/new", (request, response) => {
-  response.render("new");
-});
-
+/**
+ * ===================================
+ * POST Routes
+ * ===================================
+ */
 app.post("/", (request, response) => {
   const artistName = request.body.name;
   const photoURL = request.body.photoURL;
@@ -187,6 +211,30 @@ app.post("/", (request, response) => {
     }
   });
 });
+
+app.post("/artists/:id/songs/new", (request, response) => {
+  const artistId = request.params.id;
+  const title = request.body.title;
+  const album = request.body.album;
+  const previewLink = request.body.preview_link;
+  const artwork = request.body.artwork;
+  const values = [title, album, previewLink, artwork, artistId];
+  console.log(values);
+  const query =
+    "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)";
+  pool.query(query, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      response.redirect("home");
+    }
+  });
+});
+
+/**
+ * ===================================
+ * DELETE Routes
+ * ===================================
+ */
 
 app.delete("/artists/:id", (request, response) => {
   const artistId = request.params.id;
