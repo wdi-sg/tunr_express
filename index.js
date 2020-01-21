@@ -48,6 +48,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+
 app.get('/', (request, response) => {
 
     // respond with HTML page displaying all
@@ -58,10 +59,48 @@ app.get('/', (request, response) => {
     response.render('home', data);
 });
 
+
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new
     response.render('new');
 });
+
+
+app.get('/artists/:id/songs', (request, response) => {
+    if (isNaN(request.params.id)) {
+        response.render('home', {
+            message: 'Invalid Id No.'
+        });
+        return;
+    };
+    const queryString = "SELECT * FROM songs WHERE artist_id=$1";
+    const queryValues = [request.params.id];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            });
+            return;
+        }
+        if (!result.rows.length) {
+            const data = {
+                message: "Invalid Artist Id"
+            };
+            response.render('home', data);
+            return;
+        }
+        console.log(result.rows);
+        const songs = result.rows;
+
+        const data = {
+            songs: songs,
+        };
+        response.render('songs', data);
+
+    })
+})
+
 
 app.get('/artists/:id', (request, response) => {
     if (isNaN(request.params.id)) {
@@ -97,6 +136,7 @@ app.get('/artists/:id', (request, response) => {
 
     })
 })
+
 
 app.post('/artists', (request, response) => {
     // respond with HTML page with form to create new
