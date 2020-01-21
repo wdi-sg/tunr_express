@@ -62,7 +62,7 @@ const home = (request,response) => {
     });
 }
 
-const form = (request,response) => {
+const postForm = (request,response) => {
     let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
 
     const values = [
@@ -83,18 +83,46 @@ const form = (request,response) => {
 
 const view = (request,response) => {
     let values = [request.params.id];
-    let insertQueryText = 'SELECT * FROM ARTISTS WHERE id=$1';
+    let insertQueryText = 'SELECT * FROM artists WHERE id=$1';
 
     pool.query(insertQueryText, values, (err,result) => {
+        let results = result.rows[0];
+
         let data = {
-            id: result.rows[0].id,
-            name: result.rows[0].name,
-            img: result.rows[0].photo_url,
-            nationality: result.rows[0].nationality
+            id: results.id,
+            name: results.name,
+            img: results.photo_url,
+            nationality: results.nationality
         }
     response.render('view', data)
     })
 };
+
+const songs = (request,response) => {
+    let values = [request.params.id];
+    let insertQueryText = 'SELECT * FROM artists WHERE id=$1';
+
+    pool.query(insertQueryText, values, (err,result) => {
+        let artist_id = [result.rows[0].id];
+        let songQueryText = 'SELECT * FROM songs WHERE artist_id= $1 ';
+
+        pool.query(songQueryText, artist_id, (songErr, songResult) => {
+
+        let results = result.rows[0];
+        let songs = songResult.rows;
+
+            var data = {
+            id: results.id,
+            name: results.name,
+            img: results.photo_url,
+            nationality: results.nationality,
+            songs: songs
+            }
+
+            response.render('songs', data);
+        })
+    })
+}
 
 app.get('/artists', home);
 
@@ -104,7 +132,9 @@ app.get('/artists/new', (request, response) => {
 
 app.get('/artists/:id', view);
 
-app.post('/artists', form);
+app.get('/artists/:id/songs', songs);
+
+app.post('/artists', postForm);
 
 app.get('/', (request, response) => {
     response.redirect('/artists');
