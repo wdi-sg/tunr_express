@@ -48,29 +48,49 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+
+//home page/landing page
 app.get('/', (request, response) => {
     response.render('home');
 });
 
+
+//new artist form page
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new artist
     response.render('new');
 });
 
+//show artist's details
 app.get('/artists/:id', (request, response) => {
     let id = request.params.id;
-    let text = "SELECT * FROM artists WHERE id=$1"
-    let values = [id]
+    let text = "SELECT * FROM artists WHERE id=$1";
+    let values = [id];
     pool.query(text, values, (err, result) => {
         if (err) {
             console.log("Error :", err);
+            response.status(500).send("ERROR")
         }
     let data = result.rows[0];
-    response.render('artists', data)
+    response.render('artists', data);
     })
 })
 
-
+//show list of artists
+app.get('/artists', (request, response) => {
+    let text = "SELECT * FROM artists ORDER BY id ASC";
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+            response.status(500).send("You got an error")
+        }
+        console.log(result.rows);
+        let data = {
+            artists : result.rows
+        };
+        response.render('alist', data)
+    })
+})
 
 
 
