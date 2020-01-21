@@ -4,33 +4,35 @@ var Layout = require('./layout')
 
 class View extends React.Component {
   render() {
-    let id = "/recipes/"+this.props.id+"?_method=delete";
-    let editLink = "/recipes/"+this.props.id+"/edit";
+    let id = "/artists/"+this.props.id+"?_method=delete";
+    let editLink = "/artists/"+this.props.id+"/edit";
 
     return (
         <Layout>
           <div className="container">
-          <h1>This is {this.props.recipes.title}</h1>
-
-            <div className="form-group">
-            <h5>Title: </h5>
-            <p>{this.props.recipes.title}</p>
+          <h1>This is {this.props.name}</h1>
+          <div className="row d-flex">
+          <div className="col-md-4">
+            <img src={this.props.img} className="img-fluid" alt="photo"/>
+          </div>
+          <div className="col-md-8">
+            <div>
+            <h5>Name: </h5>
+            <p>{this.props.name}</p>
             </div>
 
-            <div className="form-group">
-            <h5> Ingredients: </h5>
-            <p>{this.props.recipes.ingredients}</p>
+            <div>
+            <h5>Nationality: </h5>
+            <p>{this.props.nationality}</p>
             </div>
-
-            <div className="form-group">
-            <h5>Instructions: </h5>
-            <p>{this.props.recipes.instructions}</p>
-            </div>
-
-            <a href="/recipes" className="btn btn-primary">Back</a>
+            <div>
+            <a href="/artists" className="btn btn-primary">Back</a>
             <a href={editLink} className="btn btn-warning ml-4">Edit</a>
             <a href="#myModal" className="trigger-btn btn btn-danger btn-customized ml-4" data-toggle="modal">Delete
             </a>
+            </div>
+            </div>
+          </div>
 
     <div id="myModal" className="modal fade">
         <div className="modal-dialog modal-confirm">

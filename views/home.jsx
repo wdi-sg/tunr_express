@@ -4,9 +4,9 @@ var Layout = require('./layout');
 
 class Home extends React.Component {
   render() {
-    let artistsList = this.props.artists.map((artists,index)=>{
-        let linkView = "/artists/"+index;
-        let linkEdit = "/artists/"+index+"/edit";
+    let artistsList = this.props.artists.map((artists)=>{
+        let linkView = "/artists/"+ artists.id;
+        let linkEdit = "/artists/"+artists.id+"/edit";
         let linkPhoto = artists.photo_url;
         return (
         <div className="col col-lg-3 col-md-6 col-sm-12 mb-4">
