@@ -9,8 +9,13 @@ class Artists extends React.Component {
             <html>
                 <Head />
                 <body>
-                    <Navbar />
-                    <h1>Welcome to Tunr Databass!</h1>
+                    <div className="container">
+                        <Navbar />
+                        <h1>Welcome to Tunr Databass!</h1>
+                        <h2>Name : {this.props.name}</h2>
+                        <img src={this.props.photo_url}/>
+                        <h2>Nationality : {this.props.nationality}</h2>
+                    </div>
                 </body>
             </html>
         );

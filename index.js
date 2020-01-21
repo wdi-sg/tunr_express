@@ -64,9 +64,9 @@ app.get('/artists/:id', (request, response) => {
     pool.query(text, values, (err, result) => {
         if (err) {
             console.log("Error :", err);
-        } else {
-
         }
+    let data = result.rows[0];
+    response.render('artists', data)
     })
 })
 
