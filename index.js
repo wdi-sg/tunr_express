@@ -52,11 +52,27 @@ app.engine('jsx', reactEngine);
 app.get('/', (request, response) => {
 
     // respond with HTML page displaying all
-    const message = "hello world";
-    data = {
-        message: message
-    };
-    response.render('home', data);
+    const queryString = "SELECT * FROM artists"
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            });
+            return;
+        }
+        if (!result.rows.length) {
+            const data = { message: "No artists in database " };
+            response.render('home', data);
+            return;
+        }
+
+        data = {
+            artists: result.rows
+        };
+        response.render('artists', data);
+    })
+
 });
 
 
