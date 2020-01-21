@@ -48,8 +48,17 @@ app.engine('jsx', reactEngine);
  */
 
 const addArtistPage = (request, response) => {
-
-    response.render('new');
+    response.render("new");
+}
+const addArtist = (request,response) =>{
+     let text = 'INSERT INTO artists (name, photo_url, nationality) values($1, $2, $3)';
+    let values = [request.body.name, request.body.photo_url, request.body.nationality];
+    pool.query(text, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        response.redirect('/');
+    });
 }
 /**
  * ===================================
@@ -65,7 +74,7 @@ response.send("hello world");
 });
 
 app.get('/new', addArtistPage);
-// app.get('/', addArtist)
+app.post('/', addArtist);
 
 /**
  * ===================================
