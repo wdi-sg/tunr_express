@@ -57,7 +57,18 @@ app.get('/artists/new', (request, response) => {
     response.render('new');
 });
 
+app.get('/artists/:id', (request, response) => {
+    let id = request.params.id;
+    let text = "SELECT * FROM artists WHERE id=$1"
+    let values = [id]
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+        } else {
 
+        }
+    })
+})
 
 
 
@@ -76,7 +87,21 @@ app.get('/artists/new', (request, response) => {
 
 
 app.post('/artists', (request, response) => {
-
+    let text = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id;";
+    let values = [
+    request.body.name, request.body.photo_url, request.body.nationality
+    ];
+    let data = {
+        values : values
+    };
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+            response.status(500).send(err);
+        } else {
+            response.render('home', data)
+        }
+    })
 })
 
 
