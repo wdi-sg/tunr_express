@@ -1,8 +1,8 @@
 console.log("starting up!!");
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const reactEngine = require('express-react-views').createEngine();
 
 // Initialise postgres client
 const configs = {
@@ -25,22 +25,22 @@ pool.on('error', function (err) {
  */
 
 // Init express app
+
 const app = express();
 
+app.use(methodOverride('_method'));
+app.engine('jsx', reactEngine);
 
+// Set react-views to be the default view engine
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jsx');
+
+app.use(express.static(__dirname + "/public/"));
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
-
-app.use(methodOverride('_method'));
-
-
-// Set react-views to be the default view engine
-const reactEngine = require('express-react-views').createEngine();
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jsx');
-app.engine('jsx', reactEngine);
 
 /**
  * ===================================
@@ -52,23 +52,13 @@ app.get('/artists', (request, response) => {
   // query database for all pokemon
   const queryString = 'SELECT * from artists'
   pool.query(queryString, (err, result) => {
-
     if (err) {
       console.error('query error:', err.stack);
       response.send( 'query error' );
     } else {
       console.log('query result:', result);
-      // redirect to home page
-      //response.send( result.rows );
-      let allArtists = [];
-      let listOfArtists = result.rows;
-      for (i = 0; i < listOfArtists.length; i++) {
-          let currentArtist = listOfArtists[i].name;
-          allArtists.push(currentArtist);
-          console.log(currentArtist);
-      }
       let data = {
-          artists: allArtists
+          artists: result.rows
       }
       response.render('home', data);
     }
@@ -81,6 +71,56 @@ app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
+
+app.post('/artists', (request,response) => {
+  let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
+
+  const values = [
+    request.body.name,
+    request.body.url,
+    request.body.nationality
+  ];
+
+  pool.query(insertQueryText, values, (err, result) => {
+    if (err) {
+      //console.error('query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      //console.log('query result:', result);
+      // redirect to home page
+      // response.send( result.rows );
+      let allArtistsName = [];
+      let listOfArtists = result.rows;
+      console.log(result.rows)
+      for (i = 0; i < listOfArtists.length; i++) {
+          let currentArtistName = listOfArtists[i].name;
+          allArtistsName.push(currentArtistName);
+          // console.log(currentArtist);
+          // console.log(currentArtistName);
+      }
+      let data = {
+          artists: allArtistsName,
+      }
+      response.render('home', data);
+      //console.log(data)
+    }
+  });
+});
+
+app.get('/artists/:id', (request,response) => {
+  const queryString = 'SELECT * from artists WHERE id=$1;'
+  const values = [request.params.id];
+  pool.query(queryString, values, (err,result) => {
+    let currentArtist = result.rows[0];
+    console.log(currentArtist)
+    let data = {
+        artists: currentArtist
+    }
+    response.render('single', data);
+  });
+});
+
+
 
 app.get('/', (request,response) => {
   response.send("Hello World");

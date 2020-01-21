@@ -1,18 +1,19 @@
 var React = require("react");
+const Layout = require("./layout");
 
 class Home extends React.Component {
   render() {
     let listOfArtists = this.props.artists.map(item => {
-      return <li>{item}</li>
+      let artistUrl = "/artists/"+ item.id;
+      return <a href={artistUrl}><li>{item.name}</li></a>
     });
     return (
-      <html>
-        <head />
-        <body>
-          <h1>Here is your list of artists:</h1>
-          <ul>{listOfArtists}</ul>
-        </body>
-      </html>
+      <Layout>
+          <h1 class={this.props.name}>Here is your list of artists:</h1>
+          <div class="artists">
+            <ul>{listOfArtists}</ul>
+          </div>
+      </Layout>
     );
   }
 }
