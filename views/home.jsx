@@ -30,6 +30,7 @@ class Home extends React.Component {
       });
     } else {
       const artistPath = artists.id;
+      const editPath = "/artists/" + artists.id + "/edit";
       const deletePath = "/artists/" + artists.id + "?_method=delete";
       const songsPath = artistPath + "/songs";
       artistElement = (
@@ -47,6 +48,17 @@ class Home extends React.Component {
             <h6 className="text-center">
               <a href={songsPath}>See All Songs</a>
             </h6>
+             <form
+              className="d-flex justify-content-center"
+              action={editPath}
+              method="GET"
+            >
+              <input
+                className="btn btn-warning mb-2"
+                type="submit"
+                value="Edit artist?"
+              />
+              </form>
             <form
               className="d-flex justify-content-center"
               action={deletePath}

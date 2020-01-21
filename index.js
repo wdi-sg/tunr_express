@@ -91,9 +91,13 @@ app.get("/artists/:id", (request, response) => {
   const values = [artistId];
   const query = "SELECT * from artists where id = $1";
   pool.query(query, values, (err, result) => {
+    // console.log(result.rows)
     if (err) {
-      response.send(err);
+      response.render("404");
     } else {
+      if (result.rows === undefined) {
+        response.render("404");
+      }
       if (result.rows.length === 0) {
         response.render("404");
       }
@@ -178,7 +182,7 @@ app.put("/artists/:id/", (request, response) => {
     if (err) {
       response.render("404");
     } else {
-      response.render("home");
+      response.redirect("/");
     }
   });
 });
