@@ -61,15 +61,15 @@ app.get('/artists', (request, response) => {
             // err below is a built-in function from express to check error
             console.log("ERRRRR", err);
             response.status(500).send("error");
-        } else {
+        }
+
+        else {
+
             console.log("WE GOT IT!");
             console.log(result.rows[0]);
             response.send(result.rows);
         }
-
     });
-    // respond with HTML page displaying all pokemon
-    // response.render('home');
 });
 
 
@@ -80,25 +80,24 @@ app.get('/artists/new', (request, response) => {
 
 
 
-// app.post('/artists', (req, res) => {
+app.post('/artists', (request, response) => {
 
-//   let querySelectPokemon = 'SELECT * FROM pokemon';
-//   pool.query(querySelectPokemon, (err, result) => {
+    let queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
 
-//     // result.rows.push(request.body);
-//   });
-//     res.send(result.rows);
-// });
+    let nameInput = request.body.name;
+    let photoInput = request.body.photo;
+    let nationalityInput = request.body.nationality;
+    const values = [nameInput, photoInput, nationalityInput];
 
+    // console.log(result.rows);
+    // console.log(request.body);
 
-
-
-
-
-app.get('/new', (request, response) => {
-    // respond with HTML page with form to create new pokemon
-    response.render('new');
+    pool.query(queryString, values, (err, result) => {
+        response.redirect('/artists');
+    });
 });
+
+
 
 
 /**

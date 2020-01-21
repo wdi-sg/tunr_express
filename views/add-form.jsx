@@ -8,10 +8,10 @@ class AddForm extends React.Component {
         <body>
           <div>
             <h1>Add New Artist!</h1>
-            <form action="/action_page.php" method="get">
+            <form action="/artists" method="POST">
             Name: <input type="text" name="name"></input>
             <br></br>
-            Image URL: <input type="text" name="photourl"></input>
+            Image URL: <input type="text" name="photo"></input>
             <br></br>
             Nationality: <input type="text" name="nationality"></input>
             <br></br>
