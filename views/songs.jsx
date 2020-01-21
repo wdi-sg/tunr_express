@@ -8,7 +8,7 @@ class Songs extends React.Component {
         return (<html>
             <head/>
             <body>
-                <h1>Songs:</h1>
+                <h1>{this.props.artist.name} Songs:</h1>
                 <ul>{songList}</ul>
             </body>
         </html>);

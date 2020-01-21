@@ -49,8 +49,8 @@ app.engine('jsx', reactEngine);
  */
 
 
+// Display all at root page
 app.get('/', (request, response) => {
-
     // respond with HTML page displaying all
     const queryString = "SELECT * FROM artists"
     pool.query(queryString, (err, result) => {
@@ -76,12 +76,14 @@ app.get('/', (request, response) => {
 });
 
 
+// Add a new artist page
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new
     response.render('new');
 });
 
 
+// List all songs for a given artist.
 app.get('/artists/:id/songs', (request, response) => {
     if (isNaN(request.params.id)) {
         response.render('home', {
@@ -89,30 +91,40 @@ app.get('/artists/:id/songs', (request, response) => {
         });
         return;
     };
-    const queryString = "SELECT * FROM songs WHERE artist_id=$1";
+    const queryString = "SELECT * FROM artists WHERE id=$1";
     const queryValues = [request.params.id];
-    pool.query(queryString, queryValues, (err, result) => {
-        if (err) {
-            console.log(err);
-            response.render('home', {
-                message: "Error!"
-            });
-            return;
+    pool.query(queryString, queryValues, (err, artistResult) => {
+        if (!artistResult.rows.length) {
+          const data = { message: "Invalid Artist Id." };
+          response.render('home', data);
+          return;
         }
-        if (!result.rows.length) {
+
+        const artist = artistResult.rows[0];
+        const queryString = "SELECT * FROM songs WHERE artist_id=$1";
+        pool.query(queryString, queryValues, (err, songResult) => {
+            if (err) {
+                console.log(err);
+                response.render('home', {
+                    message: "Error!"
+                });
+                return;
+            }
+            if (!songResult.rows.length) {
+                const data = {
+                    message: "Invalid Artist Id"
+                };
+                response.render('home', data);
+                return;
+            }
+            const songs = songResult.rows;
+
             const data = {
-                message: "Invalid Artist Id"
+                songs: songs,
+                artist: artist
             };
-            response.render('home', data);
-            return;
-        }
-        const songs = result.rows;
-
-        const data = {
-            songs: songs,
-        };
-        response.render('songs', data);
-
+            response.render('songs', data);
+        })
     })
 })
 
