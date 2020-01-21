@@ -51,14 +51,28 @@ const addArtistPage = (request, response) => {
     response.render("new");
 }
 const addArtist = (request,response) =>{
-     let text = 'INSERT INTO artists (name, photo_url, nationality) values($1, $2, $3)';
+     let text = 'INSERT INTO artists (name, photo_url, nationality) values($1, $2, $3) returning id';
     let values = [request.body.name, request.body.photo_url, request.body.nationality];
     pool.query(text, values, (err,res)=>{
         if(err){
             console.log(err);
         }
-        response.redirect('/');
+        let id = res.rows[0].id;
+        let path = '/artists/'+id;
+        response.redirect(path);
     });
+}
+const showArtist = (request, response)=>{
+    let queryText = "Select * FROM artists WHERE id=$1";
+    let values = [request.params.id];
+    pool.query(queryText,values,(err,res)=>{
+        console.log(res.rows[0]);
+        if(err){
+            console.log(err);
+        }else{
+        response.render("showArtist",res.rows[0]);
+        }
+    })
 }
 /**
  * ===================================
@@ -67,14 +81,11 @@ const addArtist = (request,response) =>{
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
-response.send("hello world");
-  // respond with HTML page displaying all pokemon
-//  response.render('home');
 });
 
 app.get('/new', addArtistPage);
 app.post('/', addArtist);
+app.get('/artists/:id',showArtist)
 
 /**
  * ===================================
