@@ -36,6 +36,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+
 app.post('/artists', (request, response) => {
   let text =`INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id`;
   let values = [request.body.name, request.body.photo_url, request.body.nationality];
@@ -44,9 +45,16 @@ app.post('/artists', (request, response) => {
 });
 
 app.get('/artists', (request, response) => {
-  // query database for all pokemon
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  let artistsList = [];
+  let text = "SELECT * FROM artists";
+  pool.query(text, (err,results) => {
+    for (i=0; i<results.rows.length;i++) {
+      artistsList.push(results.rows[i].name);
+    };
+    console.log(artistsList);
+    let data = {artists: artistsList};
+    response.render('home', data);
+  });  
 });
 
 app.get('/artists/new', (request, response) => {
