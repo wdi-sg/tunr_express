@@ -54,7 +54,23 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
+// Show all songs by an artist 
 
+app.get('/artists/:id/songs', (request,response)=>{
+  let id = request.params.id;
+
+  let query = `SELECT * FROM songs where artist_id=${id}`
+  pool.query(query,(err,result) =>{
+    if(err) {
+      console.log("There is an error")
+    } else {
+      const data = {
+        songs: result.rows
+      }
+      response.render('showSong',data)
+    }
+  })
+})
 
 
 
