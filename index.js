@@ -85,15 +85,49 @@ app.get('/artists/:id',(request, response)=>{
     pool.query(queryText, (err,result)=>{
       console.log("show info:",result.rows);
       const data = {
+        id: result.rows[0].id,
         name: result.rows[0].name,
         photo_url: result.rows[0].photo_url,
         nationality: result.rows[0].nationality };
 
       response.render('info',data);
     });
-
-
 });
+
+app.get('/artists/:id/songs', (request,response)=> {
+//get the artist_id
+  let artistId = parseInt(request.params.id);
+  let query = "SELECT * FROM artists WHERE id="+artistId;
+    pool.query(query, (err, result)=>{
+      if(err){
+        console.log("Error:", err);
+        response.status(500).send("error");
+      }
+      else {
+        // if result is not empty
+        let artist_id = result.rows[0].id;
+        //select title from songs where artist_id = (value above)
+        let songTitles = "SELECT title FROM songs WHERE artist_id="+artist_id;
+
+          pool.query(songTitles, (titleErr, titleResult)=>{
+          console.log(titleResult);
+          let titleArray = titleResult.rows;
+          for (var i = 0; i < titleArray.length; i++) {
+            var song = titleArray[i].title;
+            console.log(song);
+
+          }
+          // titleArray.forEach(titleObj => {
+          //   song = titleObj.title
+          //   console.log(song);
+          // });
+            response.render('', );
+        });
+      }
+    });
+});
+
+
 
 
 
