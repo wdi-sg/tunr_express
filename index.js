@@ -84,14 +84,31 @@ app.post('/artists',(request, response)=>{
       console.log("ERROR", err);
       response.send("error")
     }else{
-
       console.log("DONE", result.rows)
-      response.send("You have added an artist" + request.body.name)
+      response.send("You have added an artist : " + request.body.name)
     }
   });
-
   // response.send("heeeyyyyy");
 })
+
+
+
+app.get('/artists/:id',(request, response)=>{
+  let artistId = parseInt(request.params.id);
+  console.log(artistId);
+  let query = "SELECT * FROM artists WHERE id ="+ artistId;
+    pool.query(query, (err,result)=>{
+      const data = {
+        name: result.rows[0].name,
+        photo_url: result.rows[0].photo_url,
+        nationality: result.rows[0].nationality };
+
+      response.render('queryid', data);
+    });
+
+});
+
+
 
 
 
@@ -104,7 +121,7 @@ app.post('/artists',(request, response)=>{
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+const server = app.listen(3000, () => console.log('~~~ 🎹🎹🎹🎹🎹 Tuning in to the waves of port 3000 🎹🎹🎹🎹🎹 ~~~'));
 
 let onClose = function(){
 
