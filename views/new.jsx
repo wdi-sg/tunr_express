@@ -6,7 +6,7 @@ class New extends React.Component {
     return (
       <Layout>
         <div className="container">
-          <form action="/" method="POST">
+          <form action="/artists" method="POST">
             <div class="form-group">
               <label for="exampleInputEmail1">Artist Name</label>
               <input

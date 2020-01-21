@@ -188,7 +188,7 @@ app.put("/artists/:id/", (request, response) => {
  * POST Routes
  * ===================================
  */
-app.post("/", (request, response) => {
+app.post("/artists", (request, response) => {
   const artistName = request.body.name;
   const photoURL = request.body.photoURL;
   const nationality = request.body.nationality;
@@ -225,7 +225,7 @@ app.post("/artists/:id/songs/new", (request, response) => {
   pool.query(query, values, (err, result) => {
     if (err) console.log(err);
     else {
-      response.redirect("home");
+      response.redirect("/");
     }
   });
 });
