@@ -18,10 +18,11 @@ export class Layout extends React.Component {
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossOrigin="anonymous"
           />
+          <link rel="stylesheet" href="/styles.css" />
         </head>
         <body>
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="#">
+          <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+            <a className="navbar-brand" href="/">
               Tunr
             </a>
             <button
@@ -36,11 +37,14 @@ export class Layout extends React.Component {
               <span className="navbar-toggler-icon"></span>
             </button>
 
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <div
+              className="collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
               <ul className="navbar-nav mr-auto">
                 <li className="nav-item active">
-                  <a className="nav-link" href="#">
-                    Home <span className="sr-only">(current)</span>
+                  <a className="nav-link" href="/artists">
+                    Artists <span className="sr-only">(current)</span>
                   </a>
                 </li>
                 <li className="nav-item">
@@ -60,7 +64,10 @@ export class Layout extends React.Component {
                   >
                     Dropdown
                   </a>
-                  <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="navbarDropdown"
+                  >
                     <a className="dropdown-item" href="#">
                       Action
                     </a>
