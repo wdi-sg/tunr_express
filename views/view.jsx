@@ -6,6 +6,7 @@ class View extends React.Component {
   render() {
     let id = "/artists/"+this.props.id+"?_method=delete";
     let editLink = "/artists/"+this.props.id+"/edit";
+    let songLink = "/artists/"+this.props.id+"/songs";
 
     return (
         <Layout>
@@ -30,6 +31,10 @@ class View extends React.Component {
             <a href={editLink} className="btn btn-warning ml-4">Edit</a>
             <a href="#myModal" className="trigger-btn btn btn-danger btn-customized ml-4" data-toggle="modal">Delete
             </a>
+            <div></div>
+            <div>
+            <a href={songLink} className="btn btn-block btn-secondary">View Songs!</a>
+            </div>
             </div>
             </div>
           </div>
