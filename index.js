@@ -76,7 +76,13 @@ const postForm = (request,response) => {
             console.log("Error!", err);
             response.send("error");
         } else{
-            response.render("home");
+            let selectQueryAll = 'SELECT * FROM artists'
+            pool.query(selectQueryAll, (allErr, allResult)=>{
+                let data = {
+                    artists: allResult.rows
+                }
+                response.render("home", data);
+            });
         }
     });
 }
@@ -104,7 +110,7 @@ const songs = (request,response) => {
 
     pool.query(insertQueryText, values, (err,result) => {
         let artist_id = [result.rows[0].id];
-        let songQueryText = 'SELECT * FROM songs WHERE artist_id= $1 ';
+        let songQueryText = 'SELECT * FROM songs WHERE artist_id=$1';
 
         pool.query(songQueryText, artist_id, (songErr, songResult) => {
 
