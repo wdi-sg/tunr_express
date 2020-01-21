@@ -44,6 +44,7 @@ app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
 
+
 /**
  * ===================================
  * Routes
@@ -51,6 +52,7 @@ app.engine('jsx', reactEngine);
  */
 
 
+///////////////////////////////////////////// SHOW ALL ARTISTS /////////////////////////////////////////////
 app.get('/artists', (request, response) => {
 
     let querySelectorAllArtists = ('SELECT * FROM artists');
@@ -61,12 +63,8 @@ app.get('/artists', (request, response) => {
             // err below is a built-in function from express to check error
             console.log("ERRRRR", err);
             response.status(500).send("error");
-        }
+        } else {
 
-        else {
-
-            console.log("WE GOT IT!");
-            console.log(result.rows[0]);
             response.send(result.rows);
         }
     });
@@ -74,12 +72,14 @@ app.get('/artists', (request, response) => {
 
 
 
+///////////////////////////////////////////// FORM TO ADD ARTIST ////////////////////////////////////////////
 app.get('/artists/new', (request, response) => {
     response.render('add-form')
 });
 
 
 
+///////////////////////////////////////////// INSERT NEW ARTIST /////////////////////////////////////////////
 app.post('/artists', (request, response) => {
 
     let queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
@@ -89,13 +89,43 @@ app.post('/artists', (request, response) => {
     let nationalityInput = request.body.nationality;
     const values = [nameInput, photoInput, nationalityInput];
 
-    // console.log(result.rows);
-    // console.log(request.body);
+    // console.log(result.rows); - WORKED
+    // console.log(request.body); - WORKED
 
     pool.query(queryString, values, (err, result) => {
         response.redirect('/artists');
     });
 });
+
+
+
+///////////////////////////////////////////// DISPLAY CHOSEN ARTIST //////////////////////////////////////////
+app.get('/artists/:id', (request, response) => {
+
+    let querySelectorAllArtists = ('SELECT * FROM artists');
+    const index = parseInt(request.params.id);
+
+    pool.query(querySelectorAllArtists, (err, result) => {
+
+        // console.log(result.rows.length); - WORKED
+        // console.log(result.rows[0].id); - WORKED
+
+        for (let i = 0; i < result.rows.length; i++) {
+            let chosenIndex = result.rows[i].id;
+
+            if (index === chosenIndex) {
+                response.send(result.rows[i]);
+            }
+        }
+    });
+});
+
+
+
+
+
+
+
 
 
 
@@ -105,6 +135,7 @@ app.post('/artists', (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
+
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function() {
