@@ -49,32 +49,25 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-/**********************************
-┬┌┐┌┬┌┬┐┬┌─┐┬      ┬─┐┌─┐┬ ┬┌┬┐┌─┐
-│││││ │ │├─┤│      ├┬┘│ ││ │ │ ├┤
-┴┘└┘┴ ┴ ┴┴ ┴┴─┘    ┴└─└─┘└─┘ ┴ └─┘
-************************************/
-
+/**
+.*. =================================
+ * ┬┌┐┌┬┌┬┐┬┌─┐┬      ┬─┐┌─┐┬ ┬┌┬┐┌─┐
+ * │││││ │ │├─┤│      ├┬┘│ ││ │ │ ├┤
+ * ┴┘└┘┴ ┴ ┴┴ ┴┴─┘    ┴└─└─┘└─┘ ┴ └─┘
+.*. ==================================
+*/
 
 app.get('/', (request, response) => {
     response.render('home');
 });
 
-
-
-
-
-
 /**
- * =========================================
-.*.
-.*.┌─┐┌─┐┌┬┐  ┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐  ┌─┐┌─┐┬─┐┌┬┐
-.*.│ ┬├┤  │   │  ├┬┘├┤ ├─┤ │ ├┤   ├┤ │ │├┬┘│││
-.*.└─┘└─┘ ┴   └─┘┴└─└─┘┴ ┴ ┴ └─┘  └  └─┘┴└─┴ ┴
-.*.
- * ===========================================
+ * =================================================
+ * ┌─┐┌─┐┌┬┐       ┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐  ┌─┐┌─┐┬─┐┌┬┐
+ * │ ┬├┤  │   ───  │  ├┬┘├┤ ├─┤ │ ├┤   ├┤ │ │├┬┘│││
+ * └─┘└─┘ ┴        └─┘┴└─└─┘┴ ┴ ┴ └─┘  └  └─┘┴└─┴ ┴
+ * ==================================================
  */
-
 
 //Display the form for a single artist
 //Build a feature that creates a new artist in the database.
@@ -91,7 +84,8 @@ app.get('/artists/new', (request, response) => {
  * ===================================
  */
 
-//URL -> /recipes && HTTP Verb -> POST && Action -> create && Purpose -> Create a new recipe  && ensure that strings is in lowercase
+//Receives data from CREATE FORM and update into DB
+//path working
 app.post('/artists', (request, response) => {
 
   let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
@@ -134,9 +128,10 @@ app.post('/artists', (request, response) => {
  */
 
 //Build the show feature for an artist
+//path working
 app.get('/artists/:id',(request, response)=>{
   let query = "SELECT * FROM artists WHERE id=$1";
-  let value = [request.params.id];
+  let value = [parseInt(request.params.id)];
   pool.query(query,value, (err, result) => {
     if(err){
         console.log("ERRRR", err);
@@ -156,7 +151,48 @@ app.get('/artists/:id',(request, response)=>{
 
 
 
+/**
+ * =============================================================================
+.*. ┌┬┐┬┌─┐┌─┐┬  ┌─┐┬ ┬  ┌─┐┌─┐┌┐┌┌─┐┌─┐  ┌─┐┌─┐┬─┐  ┌┬┐┬ ┬┬┌─┐  ┌─┐┬─┐┌┬┐┬┌─┐┌┬┐
+.*.  │││└─┐├─┘│  ├─┤└┬┘  └─┐│ │││││ ┬└─┐  ├┤ │ │├┬┘   │ ├─┤│└─┐  ├─┤├┬┘ │ │└─┐ │
+.*. ─┴┘┴└─┘┴  ┴─┘┴ ┴ ┴   └─┘└─┘┘└┘└─┘└─┘  └  └─┘┴└─   ┴ ┴ ┴┴└─┘  ┴ ┴┴└─ ┴ ┴└─┘ ┴
+ * =============================================================================
+ */
 
+app.get('/artists/:id/songs',(request, response) => {
+  // let query = "SELECT * FROM "+tableName;
+    let query = "SELECT * FROM artists WHERE id=$1";
+    let value = [parseInt(request.params.id)];
+    pool.query(query, value, (err, result) => {
+        if (err) {
+            console.log("ERRRR", err);
+            response.status(500).send("error")
+        } else {
+      // if result is not empty
+                let artist_id = result.rows[0].id;
+                let songsQuery = "SELECT * FROM songs WHERE artist_id="+artist_id;
+                pool.query(songsQuery, (songsErr, songsResult) => {
+                    console.log( "SONGSSSSS",songsResult);
+                    console.log("RESULT")
+                    let songs = '';
+                    for ( let i = 0; i < songsResult.rows.length; i++) {
+                        let songName = songsResult.rows[i].title;
+                        console.log(songName + " hey this is songName!!!!!");
+                        songs = songs + " , " +  songName;
+                        console.log("hey is songs!!!!");
+                    }
+                    console.log(songsResult + " hey this is songsResultyeehaw");
+                    console.log(result.rows[0].name + " hey this is result dot rows dot name yo"); //returns the selected artist
+                    console.log(songs);
+                    let songList = songsResult.rows;
+                    const data = {
+                        song: songList
+                    }
+                    response.render('displaySongsForArtist', data);
+                });
+        }
+    })
+});
 
 
 

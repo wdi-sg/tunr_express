@@ -10,7 +10,7 @@ class New extends React.Component {
             <h1>Wana add a <span style={{ color: "#4D8EDD", fontWeight: "lighter"}}>NEW</span> artist? Do it here!</h1>
             <form method="POST" action="/artists">
                 <p>Name: <input type="text" name="name"/></p>
-                <p>Photo URL: <input type="text" name="photo_url"/></p>
+                <p>Photo URL: <textarea type="text" name="photo_url" rows="4" cols="50"></textarea></p>
                 <p>Nationality: <input type="text" name="nationality"/></p>
                 <input type="submit" value="Submit"/>
             </form>
