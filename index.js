@@ -1,12 +1,10 @@
-console.log("starting up!!");
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'robertkolsek',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -55,10 +53,50 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
+
+app.post('/artists', (req,res) =>{
+
+  const newArtist = [
+    req.body.name,
+    req.body.photo_url,
+    req.body.nationality]
+
+    const queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *'
+
+  pool.query(queryText, newArtist, (err, result) =>{
+
+    if (err) {
+      console.log ("error", err.message)
+    } else {
+      console.log(result.rows)
+      res.send("YAY")
+
+    }
+    //query end
+  })
+  //request end
+})
+
+app.get('/artists/:id', (req,res) => {
+
+    const id = req.params.id
+    const queryText = "SELECT * FROM artists WHERE id='"+id+"'"
+
+    pool.query(queryText, (err,result) => {
+
+      if (err) {
+        console.log ("error", err.message)
+      } else {
+        res.render('show-artist', result.rows[0])
+  
+      }
+    })
+
+})
 
 
 /**
