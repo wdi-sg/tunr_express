@@ -76,6 +76,11 @@ app.get('/', (request, response) => {
 });
 
 
+app.get('/artists/', (request, response) => {
+  response.status(300).redirect('/');
+})
+
+
 // Add a new artist page
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new

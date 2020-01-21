@@ -1,4 +1,5 @@
 var React = require("react");
+var DefaultLayout = require("./layouts/default");
 
 class Artists extends React.Component {
     render() {
@@ -6,13 +7,12 @@ class Artists extends React.Component {
         const artistLink = `/artists/${artist.id}`;
         return <li><a href={artistLink}>{artist.name}</a> - <img src={artist.photo_url} width="128"/> - {artist.nationality}</li>
       });
-        return (<html>
-            <head/>
-            <body>
-                <h1>Artists:</h1>
+        return (
+            <DefaultLayout title="Tunr">
+                <h1>Tunr Music</h1>
+                <h3>Artists:</h3>
                 <ul>{artistList}</ul>
-            </body>
-        </html>);
+            </DefaultLayout>);
     }
 }
 
