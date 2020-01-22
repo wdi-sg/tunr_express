@@ -45,6 +45,9 @@ class EditPlaylist extends React.Component {
             <form action={`/playlists/${this.props.info[0].id}/addSong`} method="GET">
               <button type="submit" className="btn btn-secondary m-2">Add Another Song</button>
             </form>
+            <form action={`/playlists/${this.props.info[0].id}/deleteSong?_method=delete`} method="POST">
+              <button type="submit" className="btn btn-secondary m-2">Delete Song</button>
+            </form>
           </body>
       </html>
     );

@@ -282,12 +282,22 @@ app.get('/playlists/:id/addSong', (request,response) =>{
   const values = [request.params.id];
 
   pool.query(query,values, (err,result)=>{
-    
     response.redirect(`/playlists/${request.params.id}/edit`);
-
-
   })
 })
+
+app.delete('/playlists/:id/deleteSong', (request,response) =>{
+  
+  let query1 = `DELETE FROM playlists_songs WHERE playlists_id=$1 AND songs_id IN (SELECT songs_id FROM playlists_songs WHERE playlists_id=$1 ORDER BY songs_id DESC LIMIT 1)
+  `
+  const values = [request.params.id];
+
+  pool.query(query1,values,(err,result) => {
+    response.redirect(`/playlists/${request.params.id}/edit`)
+  })
+})
+
+
 
 
 
