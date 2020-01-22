@@ -15,10 +15,10 @@ class Songs extends React.Component {
     });
     return (
       <Layout>
-        <div className="container d-flex justify-content-around">
-          <div className="row">
+        <div className="container d-flex flex-column justify-content-around">
+          
             <div
-              className="card col-xl-7 mx-auto mb-5"
+              className="card mx-auto mb-5"
               style={{ maxHeight: "450px" }}
             >
               <img
@@ -35,8 +35,10 @@ class Songs extends React.Component {
                 </button>
               </div>
             </div>
-            <div className="col-xl-5">{songElement}</div>
-          </div>
+            <div>
+            <h2 className="text-center">Songs</h2>
+            {songElement}</div>
+          
         </div>
       </Layout>
     );

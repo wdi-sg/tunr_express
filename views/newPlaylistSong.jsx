@@ -13,7 +13,7 @@ class newPlaylistSong extends React.Component {
       <Layout>
         <div className="container d-flex justify-content-center">
           <form action={actionPath} method="post" className="form-inline">
-            <select className="form-control" name="song_id">{songElement}</select>
+            <select className="form-control mr-3" name="song_id">{songElement}</select>
             <input className="btn btn-primary" type="submit" />
           </form>
         </div>
