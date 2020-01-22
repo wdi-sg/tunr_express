@@ -61,6 +61,8 @@ app.get('/artists/new', callback.newForm);
 app.post('/artists', callback.newArtist)
 app.get('/artists', callback.showArtists)
 app.get('/artists/:id/songs', callback.showSongs)
+app.get('/artists/:id/songs/new', callback.showArtistNewSong)
+app.post('/artists/:id/songs', callback.artistNewSong)
 app.get('/artists/:id', callback.showArtistByID)
 
 app.get('/', (request, response) => {

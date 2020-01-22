@@ -287,3 +287,48 @@ module.exports.playlistNewSong = (req, res) => {
 
     })
 }
+
+module.exports.showArtistNewSong = (req,res) =>{
+    const id = req.params.id
+
+    textQuery = 'SELECT * FROM artists WHERE id='+id
+
+    pool.query(textQuery, (err,result)=> {
+        const data = {
+            artist: result.rows[0]
+        }
+
+        res.render('new-song-artist', data)
+    })
+}
+
+module.exports.artistNewSong = (req,res) => {
+    const id = req.params.id
+
+    const values = [
+        req.body.title,
+        req.body.album,
+        req.body.preview_link,
+        req.body.artwork,
+        req.body.artist_id
+    ]
+
+    textQuery = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *"
+    
+    pool.query(textQuery, values, (err,result) =>{
+        console.log(result.rows)
+        artistQuery = 'SELECT * FROM artists WHERE id='+id
+
+    pool.query(artistQuery, (err,artistResult)=> {
+
+        const data = {
+            artist: artistResult.rows[0]
+        }
+
+        res.render('new-song-artist', data)
+    })
+
+
+    })
+
+}
