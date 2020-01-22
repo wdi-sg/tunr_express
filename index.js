@@ -112,6 +112,8 @@ app.get('/artists/:id', (request,response) => {
   const values = [request.params.id];
   pool.query(queryString, values, (err,result) => {
     let currentArtist = result.rows[0];
+    let artistId = result.rows[0].id;
+    let songsQuery = "SELECT * FROM songs WHERE artist_id="+artistId;
     console.log(currentArtist)
     let data = {
         artists: currentArtist
@@ -148,6 +150,20 @@ app.put('/artists/:id', (request,response) => {
         artists: currentArtist
     }
     response.render('single', data);
+  });
+});
+
+app.delete('/artists/:id', (request, response) => {
+  const queryString = 'DELETE from artists WHERE id=$1;'
+  const values = [request.params.id];
+
+  pool.query(queryString, values, (err,result) => {
+    let currentArtist = result.rows[0];
+    console.log(currentArtist)
+    let data = {
+        artists: currentArtist
+    }
+    response.render('home', data);
   });
 });
 
