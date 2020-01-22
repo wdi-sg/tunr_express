@@ -41,8 +41,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 app.get('/', (request, response) => {
-  // query database for all pokemon
-  // respond with HTML page displaying all pokemon
+
   response.render('home');
 });
 
@@ -96,6 +95,37 @@ app.get("/artists/:id", (request, response) => {
     response.render('artistsSearch', data);
   });
 });
+/**
+ * ===================================
+ * CREATE A NEW PLAYLIST
+ * ===================================
+ */
+app.get('/playlist/new', (request, response) => {
+  // respond with HTML page with form to create new artist
+  response.render('playlist_new');
+});
+app.post('/playlist', (request, response) => {
+  let insertQueryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+  const values = [
+    request.body.name
+  ];
+  pool.query(insertQueryText, values, (err, result) => {
+    console.log("INSERT query callback")
+    console.log()
+    if (err) {
+      console.log("ERROR", err);
+      response.send("error")
+    } else {
+      console.log("DONE", result.rows)
+      response.send("Added playlist" + request.body.name)
+    }
+  });
+})
+
+
+
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
