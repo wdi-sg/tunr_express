@@ -3,10 +3,9 @@ const Layout = require("./layout");
 
 class Home extends React.Component {
   render() {
+    console.log(this.props)
     let artistElement;
-    console.log(this.props.artists);
     const artists = this.props.artists;
-
     if (artists.length > 1) {
       artistElement = artists.map(artist => {
         const artistPath = "/artists/" + artist.id;
@@ -54,9 +53,9 @@ class Home extends React.Component {
               method="GET"
             >
               <input
-                className="btn btn-warning mb-2"
+                className="btn btn-warning text-light mb-2"
                 type="submit"
-                value="Edit artist?"
+                value="Edit artist"
               />
               </form>
             <form
@@ -67,7 +66,7 @@ class Home extends React.Component {
               <input
                 className="btn btn-danger"
                 type="submit"
-                value="Delete artist?"
+                value="Delete artist"
               />
             </form>
           </div>

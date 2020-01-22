@@ -3,7 +3,7 @@ const Layout = require("./layout");
 
 class newSong extends React.Component {
   render() {
-    const postPath = "/artists/" + this.props.artistId + "/songs/new";
+    const postPath = "/artists/" + this.props.artistId + "/songs/";
     return (
       <Layout>
         <div className="container">

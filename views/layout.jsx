@@ -81,11 +81,12 @@ export class Layout extends React.Component {
                   </div>
                 </li>
               </ul>
-              <form className="form-inline my-2 my-lg-0">
+              <form action="/search" className="form-inline my-2 my-lg-0">
                 <input
                   className="form-control mr-sm-2"
                   type="search"
-                  placeholder="Search"
+                  placeholder="Search artists"
+                  name="search"
                   aria-label="Search"
                 />
                 <button
