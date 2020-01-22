@@ -134,17 +134,12 @@ const songs = (request,response) => {
 }
 
 app.get('/artists', home);
-
 app.get('/artists/new', (request, response) => {
     response.render('new');
 });
-
 app.get('/artists/:id', view);
-
 app.get('/artists/:id/songs', songs);
-
 app.post('/artists', postForm);
-
 app.get('/', (request, response) => {
     response.redirect('/artists');
 })
