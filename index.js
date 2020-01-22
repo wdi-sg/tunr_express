@@ -120,10 +120,23 @@ const songs = (request,response) => {
             nationality: results.nationality,
             songs: songs
             }
-            response.render('home', data);
+            response.render('songs', data);
         });
     });
 }
+
+// ---- Routes for Artists ----
+
+app.get('/artists', home);
+app.get('/artists/new', (request, response) => {
+    response.render('new');
+});
+app.get('/artists/:id', view);
+app.get('/artists/:id/songs', songs);
+app.post('/artists', postForm);
+app.get('/', (request, response) => {
+    response.redirect('/artists');
+})
 
 // ---- Functions for Playlists ----
 
@@ -144,19 +157,6 @@ const postFormPlaylists = (request,response) => {
     });
 }
 
-// ---- Routes for Artists ----
-
-app.get('/artists', home);
-app.get('/artists/new', (request, response) => {
-    response.render('new');
-});
-app.get('/artists/:id', view);
-app.get('/artists/:id/songs', songs);
-app.post('/artists', postForm);
-app.get('/', (request, response) => {
-    response.redirect('/artists');
-})
-
 // ---- Routes for Playlists ----
 
 app.get('/playlists', (request,response) => {
@@ -174,10 +174,50 @@ app.get('/playlists', (request,response) => {
         }
     });
 });
+
 app.get('/playlists/new', (request, response) => {
     response.render('newplaylist');
 })
 app.post('/playlists', postFormPlaylists);
+
+app.get('/playlists/:id', (request, response) => {
+        let values = [request.params.id];
+    let insertQueryText = 'SELECT * FROM playlist WHERE id=$1';
+
+    pool.query(insertQueryText, values, (err,result) => {
+        let results = result.rows[0];
+
+        let data = {
+            id: results.id,
+            name: results.name
+        }
+    response.render('viewplaylist', data)
+    })
+})
+
+app.get('/playlists/:id/newsong', (request, response) => {
+    let values = [request.params.id];
+
+    let insertQueryText = 'SELECT * FROM playlist WHERE id=$1';
+
+    pool.query(insertQueryText, values, (err,result) =>{
+
+        let selectQueryText = 'SELECT * FROM songs'
+        pool.query(selectQueryText, (err,songResult) => {
+
+                let data = {
+                    id: request.params.id,
+                    playlist: result.rows[0],
+                    songs: songResult.rows
+                }
+            response.render('newsongsplaylist',data)
+        })
+    });
+})
+
+app.post('/playlists/:id', (request,response)=>{
+
+});
 
 /**
  * ===================================
