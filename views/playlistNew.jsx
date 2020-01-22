@@ -1,6 +1,6 @@
 var React = require("react");
 
-class New extends React.Component {
+class playlistNew extends React.Component {
   render() {
     return (
       <html lang="en">
@@ -11,7 +11,7 @@ class New extends React.Component {
             content="width=device-width, initial-scale=1.0"
           />
           <meta httpequiv="X-UA-Compatible" content="ie=edge" />
-          <title>Create Artist</title>
+          <title>Create Playlist</title>
           <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -28,24 +28,18 @@ class New extends React.Component {
           <div
             style={{ margin: `20px`, display: `flex`, flexDirection: `column` }}
           >
-            <h1>Create a new artist!</h1>
+            <h1>Create a new playlist!</h1>
             <div style={{ marginBottom: `10px` }}></div>
 
-            <form action="/artists" method="POST">
-              <div style={{ paddingBottom: `10px` }}>
-                <input type="text" placeholder="artist name" name="name" />
-              </div>
-
-              <div style={{ paddingBottom: `10px` }}>
-                <input type="text" placeholder="photo_url" name="photo_url" />
-              </div>
+            <form action="/playlist" method="POST">
               <div style={{ paddingBottom: `10px` }}>
                 <input
                   type="text"
-                  placeholder="nationality"
-                  name="nationality"
+                  placeholder="playlist name"
+                  name="playlist_name"
                 />
               </div>
+
               <div>
                 <input
                   type="submit"
@@ -61,4 +55,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = playlistNew;
