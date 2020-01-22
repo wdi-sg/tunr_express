@@ -199,3 +199,35 @@ module.exports.showArtistByID = (req, res) => {
         }
     })
 }
+
+module.exports.showNewPlaylist = (req,res) => {
+    res.render('new-playlist')
+}
+
+module.exports.newPlaylist = (req,res) => {
+    const newPlaylist = [req.body.name]
+
+    const queryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *'
+
+    pool.query(queryText, newPlaylist, (err,result) =>{
+
+        res.send("Success!")
+
+    })
+}
+
+module.exports.showPlaylistByID = (req, res) => {
+    const id = req.params.id
+    const queryText = "SELECT * FROM playlist WHERE id='" + id + "'"
+
+    pool.query(queryText, (err,result) => {
+
+        if (err) {
+            console.log("error", err.message)
+        } else {
+            res.render('show-playlist', result.rows[0])
+
+        }
+
+    })
+}

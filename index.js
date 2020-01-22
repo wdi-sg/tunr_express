@@ -47,6 +47,10 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+
+app.post('/playlist', callback.newPlaylist)
+app.get('/playlist/new', callback.showNewPlaylist)
+app.get('/playlist/:id', callback.showPlaylistByID)
 app.delete('/artists/:id', callback.deleteArtist)
 app.get('/artists/:id/delete', callback.deleteForm)
 app.get('/artists/:id/edit', callback.editForm)
