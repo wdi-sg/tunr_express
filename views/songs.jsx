@@ -4,7 +4,6 @@ var Layout = require('./layout')
 
 class Songs extends React.Component {
   render() {
-    console.log(this.props);
     let songLists = this.props.songs.map((song)=>{
 
         let linkTitle = song.title;

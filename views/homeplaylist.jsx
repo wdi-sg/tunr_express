@@ -2,19 +2,18 @@ var React = require("react");
 
 var Layout = require('./layout');
 
-class Home extends React.Component {
+class HomePlaylist extends React.Component {
   render() {
-    let artistsList = this.props.artists.map((artists)=>{
-        let linkView = "/artists/"+ artists.id;
-        let linkEdit = "/artists/"+ artists.id +"/edit";
-        let linkPhoto = artists.photo_url;
+    let artistsList = this.props.playlist.map((playlist)=>{
+        let linkView = "/playlists/" + playlist.id;
+        let linkEdit = "/playlists/" + playlist.id + "/edit";
+
         return (
         <div className="col col-lg-3 col-md-6 col-sm-12 mb-4">
             <div className="card" style={{width: "18rem"}}>
-                <img src={linkPhoto} className="img-fluid" alt="photo"/>
+            <img src="https://upload.wikimedia.org/wikipedia/en/2/23/PENTAGON_Demo_01.jpg" className="img-fluid" alt="photo"/>
                 <div className="card-body">
-                <h5 className="card-title">{artists.name}</h5>
-                <p className="card-text">Nationality: {artists.nationality}</p>
+                <h5 className="card-title">{playlist.name}</h5>
                 <a href={linkView} className="btn btn-primary">View</a>
                 </div>
             </div>
@@ -23,7 +22,7 @@ class Home extends React.Component {
     });
     return (
 <Layout>
-        <h1>Artists</h1>
+        <h1>Playlists</h1>
             <div className="row">
                 {artistsList}
             </div>
@@ -32,4 +31,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = HomePlaylist;
