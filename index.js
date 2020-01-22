@@ -152,11 +152,11 @@ app.get('/artists/:id', (request,response) => {
         if (err) {
           console.log("error", err.message)
         } else {
-          let songs = [];
-          for (var i = 0; i < songsResult.rows.length; i++) {
-            let songName = songsResult.rows[i].title;
-            songs = songs + "," + songName;
-          }
+          // let songs = [];
+          // for (var i = 0; i < songsResult.rows.length; i++) {
+          //   let songName = songsResult.rows[i].title;
+          //   songs = songs + "," + songName;
+          // }
           console.log(currentArtist)
           let data = {
               artists: currentArtist,
@@ -277,6 +277,23 @@ app.post('/playlist', (request,response) => {
       //console.log(data)
     }
   });
+});
+
+app.get('/playlist/:id', (request,response) => {
+  const queryString = 'SELECT * from playlist WHERE id=$1;'
+  const values = [request.params.id];
+  pool.query(queryString, values, (err,result) => {
+    if (err) {
+      console.log("error", err.message)
+    } else {
+      let currentArtist = result.rows[0];
+      let data = {
+        playlists: currentArtist
+      }
+      //console.log(songs);
+      response.render('playlist-single', data);
+    }
+  }); // end outer pool.query
 });
 
 /**

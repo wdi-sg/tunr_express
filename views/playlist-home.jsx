@@ -4,7 +4,7 @@ const Layout = require("./layout");
 class Home extends React.Component {
   render() {
       let listOfSongs = this.props.playlists.map(item => {
-      let artistUrl = "/playlists/"+ item.id;
+      let artistUrl = "/playlist/"+ item.id;
       return <a href={artistUrl}><li>{item.name}</li></a>
     });
     return (
