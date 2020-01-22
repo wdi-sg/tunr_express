@@ -1,5 +1,3 @@
-console.log("starting up!!");
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -122,6 +120,36 @@ const deleteArtist = (request,response)=>{
       response.redirect('/');
     });
   };
+/////////////////PART 2//////////////////
+const showPlayList = (request,response)=>{
+response.send("bdc");
+}
+const addPlayListPage = (request, response)=>{
+        response.render("newPlaylist");
+}
+const addPlayList = (request,response)=>{
+     let text = 'INSERT INTO playlist (name) values($1) return id';
+    let values = [request.body.name];
+    pool.query(text, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        let id = res.rows[0].id
+        let path = '/playlists/'+id;
+        response.redirect(path);
+    });
+}
+const showPlayList = (request, response)=>{
+    // let id = request.params.id;
+    // let text = 'SELECT * FROM playlists WHERE '
+    // pool.query(text, values, (err,res)=>{
+    //     if(err){
+    //         console.log(err);
+    //     }
+
+    // });
+    response.send("show playlists");
+}
 /**
  * ===================================
  * Routes
@@ -129,7 +157,6 @@ const deleteArtist = (request,response)=>{
  */
 
 app.get('/', showArtists);
-
 app.get('/new', addArtistPage);
 app.post('/', addArtist);
 app.get('/artists/:id/songs',showArtistSongs);
@@ -137,6 +164,11 @@ app.get('/artists/:id/edit',editArtist);
 app.put('/artists/:id',storeEditArtist);
 app.get('/artists/:id',showArtist);
 app.delete('/artists/:id', deleteArtist);
+//////////////////PLAYLIST/////////////////
+app.get('/playlists/:id', showPlayList)
+app.get('/playlists', showPlayLists)
+app.get('/playlists/new', addPlayListPage);
+app.post('/playlists', addPlayList );
 /**
  * ===================================
  * Listen to requests on port 3000
