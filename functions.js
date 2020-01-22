@@ -294,16 +294,26 @@ module.exports.showArtistNewSong = (req,res) =>{
     textQuery = 'SELECT * FROM artists WHERE id='+id
 
     pool.query(textQuery, (err,result)=> {
-        const data = {
-            artist: result.rows[0]
-        }
 
-        res.render('new-song-artist', data)
+
+        artistQuery = 'SELECT name, id FROM artists'
+
+        pool.query(artistQuery, (err,artistResult)=>{
+
+            const data = {
+                allArtists: artistResult.rows,
+                artist: result.rows[0]
+            }
+            console.log(data.allArtists)
+            res.render('new-song-artist', data)
+
+        })
+        
     })
 }
 
 module.exports.artistNewSong = (req,res) => {
-    const id = req.params.id
+    const id = req.body.artist_id
 
     const values = [
         req.body.title,
@@ -313,19 +323,23 @@ module.exports.artistNewSong = (req,res) => {
         req.body.artist_id
     ]
 
+    console.log(req.body)
+
     textQuery = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *"
     
     pool.query(textQuery, values, (err,result) =>{
         console.log(result.rows)
-        artistQuery = 'SELECT * FROM artists WHERE id='+id
 
-    pool.query(artistQuery, (err,artistResult)=> {
+    const queryText = "SELECT * FROM artists WHERE id='" + id + "'"
 
-        const data = {
-            artist: artistResult.rows[0]
+    pool.query(queryText, (err, result) => {
+
+        if (err) {
+            console.log("error", err.message)
+        } else {
+            res.render('show-artist', result.rows[0])
+
         }
-
-        res.render('new-song-artist', data)
     })
 
 
