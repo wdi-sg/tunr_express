@@ -15,3 +15,20 @@ CREATE TABLE IF NOT EXISTS songs (
     artwork TEXT,
     artist_id INT
 );
+
+
+CREATE TABLE IF NOT EXISTS playlist (
+    id SERIAL PRIMARY KEY,
+    name TEXT
+);
+
+
+CREATE TABLE IF NOT EXISTS songs_playlist (
+    id SERIAL PRIMARY KEY,
+    song_id INT,
+    playlist_id INT,
+    playlist_name TEXT,
+    song_title TEXT,
+    song_album TEXT,
+    artist_id INT
+);

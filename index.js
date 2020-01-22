@@ -122,10 +122,153 @@ app.get('/artists/:id', (request, response) => {
 
 
 
+///////////////////////////////////////////// DISPLAY PLAYLIST//////////////////////////////////////////
+app.get('/playlist', (request, response) => {
+
+    let querySelectorPlaylist = ('SELECT * FROM playlist');
+
+    pool.query(querySelectorPlaylist, (err, result) => {
+
+        if (err) {
+            // err below is a built-in function from express to check error
+            console.log("ERRRRR", err);
+            response.status(500).send("error");
+        } else {
+
+            response.send(result.rows);
+        }
+    });
+});
+
+
+
+///////////////////////////////////////////// SHOW ALL PLAYLISTS /////////////////////////////////////////////
+app.get('/playlist', (request, response) => {
+
+    let querySelectorAllPlaylists = ('SELECT name FROM playlist');
+
+    pool.query(querySelectorAllPlaylists, (err, result) => {
+
+        if (err) {
+            // err below is a built-in function from express to check error
+            console.log("ERRRRR", err);
+            response.status(500).send("error");
+        }
+
+        // if (this.props.name === null) {
+        //     response.send("No playlist, create one now!");
+        // }
+        else {
+            // console.log('I AM HEREEEEEE');
+            response.send(result.rows);
+        }
+    });
+});
+
+
+
+///////////////////////////////////////////// CREATE NEW PLAYLIST //////////////////////////////////////////
+app.get('/playlist/new', (request, response) => {
+    response.render('add-playlist');
+});
+
+
+
+///////////////////////////////// INSERT NEW PLAYLIST + VIEW ALL PLAYLIST //////////////////////////////////
+app.post('/playlist', (request, response) => {
+
+    let queryString = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+
+    let nameInput = request.body.playlist_name;
+    const values = [nameInput];
+
+    pool.query(queryString, values, (err, result) => {
+        response.redirect('/playlist');
+    });
+});
+
+
+
+/////////////////////////////////////// VIEW PLAYLISTS - based on name /////////////////////////////////////
+app.get('/playlists/name', (request, response) => {
+
+    let querySelectorAllPlaylist = ('SELECT * FROM playlist');
+
+    pool.query(querySelectorAllPlaylist, (err, result) => {
+
+        // if (err) {
+        //     // err below is a built-in function from express to check error
+        //     console.log("ERRRRR", err);
+        //     response.status(500).send("error");
+        // }
+
+
+            for (let i = 0; i < result.rows.length; i++) {
+                console.log(result.rows[i].name);
+                response.send(result.rows[i].name);
+        }
+    });
+});
+
+
+
+/////////////////////////////////////// VIEW ONE PLAYLISTS - based on ID /////////////////////////////////////
+app.get('/playlists/:id', (request, response) => {
+
+    let querySelectorAllPlaylist = ('SELECT * FROM playlist');
+    const index = parseInt(request.params.id);
+
+    pool.query(querySelectorAllPlaylist, (err, result) => {
+
+        // console.log(result.rows.length); - WORKED
+        // console.log(result.rows[0].id); - WORKED
+
+        for (let i = 0; i < result.rows.length; i++) {
+            let chosenIndex = result.rows[i].id;
+
+            if (index === chosenIndex) {
+                response.send(result.rows[i]);
+            }
+        }
+    });
+});
 
 
 
 
+
+
+
+///////////////////////////////// INSERT NEW SONG + VIEW ALL PLAYLIST //////////////////////////////////
+app.get('/playlist/new', (request, response) => {
+    response.render('add-playlist');
+});
+
+
+
+
+// ///////////////////////////////////////////// SHOW ALL SONGS //////////////////////////////////////////
+// app.get('/songs', (request, response) => {
+
+//     let querySelectorAllSongs = ('SELECT * FROM songs');
+
+//     pool.query(querySelectorAllSongs, (err, result) => {
+
+//         if (err) {
+//             // err below is a built-in function from express to check error
+//             console.log("ERRRRR", err);
+//             response.status(500).send("error");
+//         } else {
+
+//             const data = result.rows[1];
+
+//             response.render('display-songs', data);
+//             console.log(result.rows[1]);
+
+//             // response.send(result.rows);
+//         }
+//     });
+// });
 
 
 
