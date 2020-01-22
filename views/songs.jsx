@@ -18,7 +18,7 @@ class Songs extends React.Component {
         <div className="container d-flex justify-content-around">
           <div className="row">
             <div
-              className="card col-xl-6 mx-auto mb-5"
+              className="card col-xl-7 mx-auto mb-5"
               style={{ maxHeight: "450px" }}
             >
               <img
@@ -35,7 +35,7 @@ class Songs extends React.Component {
                 </button>
               </div>
             </div>
-            <div className="col-xl-6">{songElement}</div>
+            <div className="col-xl-5">{songElement}</div>
           </div>
         </div>
       </Layout>
