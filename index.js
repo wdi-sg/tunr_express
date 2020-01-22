@@ -114,6 +114,14 @@ app.get('/artists/:id', (request,response) => {
     let currentArtist = result.rows[0];
     let artistId = result.rows[0].id;
     let songsQuery = "SELECT * FROM songs WHERE artist_id="+artistId;
+    pool.query(songsQuery, (songsErr, songsResult) => {
+      let songs = [];
+      for (var i = 0; i < songsResult.rows.length; i++) {
+        let songName = songsResult.rows[i].title;
+        songs = songs + "," + songName;
+      }
+      //console.log(songs);
+    });
     console.log(currentArtist)
     let data = {
         artists: currentArtist
