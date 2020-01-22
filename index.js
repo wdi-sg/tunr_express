@@ -264,9 +264,55 @@ app.get('/playlist/new', (request, response) => {
 })
 
 
+app.get('/playlist/:id/newsong', (request, response) => {
+    const queryString = `SELECT * FROM songs;`;
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        }
+        if (!result.rows.length) {
+            const data = {
+                message: "No songs in database."
+            };
+            response.render('home', data);
+            return;
+        }
+        const songs = result.rows;
+        const data = {
+            playlistid: request.params.id,
+            songs: songs
+          }
+        response.render('addtoplaylist', data);
+    })
+})
+
+
+app.post(`/playlist/:id`, (request, response) => {
+  const queryString =  `INSERT INTO playlist_songs (playlist_id, song_id) VALUES ($1, $2);`;
+  const queryValues = [request.params.id, request.body.songindex];
+  pool.query(queryString, queryValues, (err, result) => {
+    if (err) {
+        console.log(err);
+        response.render('home', {
+            message: "Error!"
+        })
+        return;
+    }
+
+    const message = "Song added to playlist";
+    data = {message: message};
+    response.render('home', data);
+  })
+})
+
+
 app.post('/playlist', (request, response) => {
     const playListName = request.body.name;
-    const queryString = `INSERT INTO playlist (name) VALUES ($1) RETURNING *`;
+    const queryString = `INSERT INTO playlist (name) VALUES ($1) RETURNING *;`;
     const queryValues = [playListName];
     pool.query(queryString, queryValues, (err, result) => {
         if (err) {
@@ -317,7 +363,7 @@ app.get('/playlist/:id', (request, response) => {
 
         const playList = result.rows[0];
 
-        const songQueryString = `SELECT songs.artist_id, songs.title FROM songs INNER JOIN playlist_songs ON (playlist_songs.song_id = songs.id) WHERE playlist_songs.playlist_id = $1;`;
+        const songQueryString = `SELECT songs.artist_id, songs.title, songs.album, songs.preview_link FROM songs INNER JOIN playlist_songs ON (playlist_songs.song_id = songs.id) WHERE playlist_songs.playlist_id = $1;`;
         const songQueryValues = [request.params.id];
         pool.query(songQueryString, songQueryValues, (err, result) => {
             if (err) {
