@@ -163,45 +163,44 @@ app.post('/playlist',(request, response)=>{
 
 
 
+/*Create a show route /playlists/:id => /playlists/1*/
+app.get('/playlist/:id',(request, response)=>{
+
+  let playlistId = [parseInt(request.params.id)];
+  console.log(playlistId);
+
+  let query = "SELECT * FROM playlist WHERE id =$1";
+
+    pool.query(query, playlistId, (err,result)=>{
+        console.log(result.row);
+        let playlist = result.rows;
+        const data = {
+            chosenPlaylist: playlist[0]
+         };
+        response.render('playlistid', data);
+    });
+});
 
 
 
 
 
+/*
+app.get('/playlist/:id',(request, response)=>{
 
+  let playlistId = [parseInt(request.params.id)];
+  console.log(playlistId);
+  let query = "SELECT * FROM playlist WHERE id =$1";
+    pool.query(query, playlistId, (err,result)=>{
+      const data = {
+        id: result.rows[0].id,
+        song_id: result.rows[0].songid,
+        playlist_id: result.rows[0].playlistid };
 
+      response.render('Playlistid', data);
+    });
 
-
-/*app.get('/artists/:id/songs', (request,response)=>{
-      let artistidSongs = parseInt(request.params.id);
-        let query = "SELECT * FROM songs WHERE id=" + artistId';
-
-
-
-
-
-            let values = [request.params.id];
-            pool.query(queryText, values, (err, res)=>{
-                const data = {
-                    songs: res.rows
-                }
-                response.render("artistSongs", data);
-            })
-};
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-
+});*/
 
 
 
