@@ -121,12 +121,13 @@ app.get('/artists', (request, response) => {
     })
 })
 
+//List of all songs
 app.get('/songs', (request, response) => {
     let text = "SELECT title, id FROM songs ORDER BY id ASC";
     pool.query(text, (err, result) => {
         if (err) {
             console.log("Error :", err);
-            response.status(500).send("Error Finding songs")
+            response.status(500).send("Error Finding songs");
         }
         let data = {
             songs : result.rows
@@ -136,17 +137,44 @@ app.get('/songs', (request, response) => {
 })
 
 
+//display specific playlist
+app.get('/playlists/:id', (request, response) => {
+    let playId = request.params.id;
+    let text = "SELECT songs.id, songs.title, playlist.name FROM playlist INNER JOIN playlist_song ON (playlist_song.playlist_id = playlist.id) INNER JOIN songs ON (playlist_song.song_id = songs.id) WHERE playlist.id=$1"
+    let values = [playId];
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+            response.status(500).send("Error finding songs in playlist.");
+        }
+        let data = {
+            playlists : result.rows,
+            name : result.rows[0].name
+        };
+        response.render('playlist', data)
+    })
+})
+
+
+//show all playlists
+app.get('/playlists', (request, response) => {
+    let text = "SELECT * FROM playlist ORDER BY id ASC";
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.log("error :", err);
+            response.status(500).send("Error finding playlists");
+        }
+        let data = {
+            playlists : result.rows
+        };
+        response.render('playlists', data);
+    })
+})
 
 
 
 
-
-
-
-
-
-
-
+//post route for adding new artists
 app.post('/artists', (request, response) => {
     let text = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id;";
     let values = [
@@ -165,8 +193,18 @@ app.post('/artists', (request, response) => {
     })
 })
 
-
-
+//post route for adding new playlists
+app.post('/playlists', (request, response) => {
+    let text = "INSERT INTO playlist (name) VALUES ($1) RETURNING *;";
+    let values = [request.body.name];
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("ERror :", err);
+            response.status(500).send("Error")
+        }
+        response.render('home');
+    })
+});
 
 
 
