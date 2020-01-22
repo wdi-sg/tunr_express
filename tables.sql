@@ -2,7 +2,7 @@
 Be strict with the syntax,
 Remember to put datatype before stating key type I.E. primary or foreign
 
-psql -d tunr_db -U weizheng1910 -f tables.sql
+	
 */
 
 CREATE TABLE IF NOT EXISTS artists (
