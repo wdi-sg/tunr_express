@@ -90,6 +90,15 @@ app.get('/artists/:id/songs', (request, response) => {
     })
 })
 
+//add song to artist
+app.get('/artists/:id/addsong', (request, response) => {
+    let artistId = request.params.id;
+    let data = {
+        artistId : artistId
+    };
+    response.render('songadd', data)
+})
+
 
 //show artist's details
 app.get('/artists/:id', (request, response) => {
@@ -206,6 +215,20 @@ app.post('/artists', (request, response) => {
         }
     })
 })
+
+
+//post route for adding new song from artist
+app.post('/songs', (request, response) => {
+    let text = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5);";
+    let values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, request.body.artist_id];
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("YOU HAVE AN ERRORORROROROOR!!!");
+        }
+        response.redirect('/songs')
+    })
+})
+
 
 
 //post route for adding new songs to playlist
