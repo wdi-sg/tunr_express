@@ -135,11 +135,26 @@ app.get('/artists/' , showArtist);
 // Build the index feature for artists
 
 
-// const findAllSongsByArtists = (request,response) => {
+const findAllSongsByArtists = (request,response) => {
+  let query = "SELECT * FROM songs WHERE artist_id = '" +  request.params.artists_id + "'";
+  pool.query(query,(err,result)=>{
+    if (err){
+      console.log("ERROR",err);
+      response.status(500).send("error");
+    }
+    else {
+      let data = {
+        songs : result.rows
+      };
+      console.log(result.rows); 
+      response.render("songs" , data);
+    
+    }
+  })
   
-// }
+}
 
-// app.get('/artists/:artists_id/songs' , findAllSongsByArtists);
+app.get('/artists/:artists_id/songs' , findAllSongsByArtists);
 
 
 
