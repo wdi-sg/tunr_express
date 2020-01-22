@@ -17,7 +17,10 @@ class displaySongsForArtist extends React.Component {
         )
     })
     return (
-      <html>
+     <html>
+        <head>
+            <title>Songs</title>
+        </head>
         <body>
           <div>
             <h1>Hey there, below are the <span style={{ color: "#9C919C", fontWeight: "lighter" }}>songs</span> of your chosen <span style={{ color: "#9C919C", fontWeight: "lighter" }}>artist</span>!</h1>

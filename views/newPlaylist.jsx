@@ -1,18 +1,16 @@
 var React = require("react");
 
-class New extends React.Component {
+class NewPlaylist extends React.Component {
   render() {
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossOrigin="anonymous"/>
     return (
       <html>
         <head/>
-            <title>Create Form</title>
+            <title>Create Playlist Form</title>
         <body>
-            <h1>Wana add a <span style={{ color: "#4D8EDD", fontWeight: "lighter"}}>NEW</span> artist? Do it here!</h1>
-            <form method="POST" action="/artists">
+            <h1>Wana add a <span style={{ color: "#4D8EDD", fontWeight: "lighter"}}>NEW</span> Playlist? Do it here!</h1>
+            <form method="POST" action="/playlist">
                 <p>Name: <input type="text" name="name" required/></p>
-                <p>Photo URL: <textarea type="text" name="photo_url" rows="4" cols="50" required></textarea></p>
-                <p>Nationality: <input type="text" name="nationality" required/></p>
                 <input type="submit" value="Submit"/>
             </form>
         </body>
@@ -21,4 +19,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = NewPlaylist;
