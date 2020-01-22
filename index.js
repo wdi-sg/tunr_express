@@ -47,16 +47,36 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-//render home for app
-app.get('/tunr', (request, response) => {
-  response.render('home');
+
+
+
+
+
+
+
+//render home for app with all artists name
+app.get('/artists', (request, response) => {
+    const queryString = 'SELECT * FROM artists'
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log(result)
+            let data = {artistsData : result.rows}
+            console.log(data)
+            response.render('home',data);
+        }
+    });
 });
+
 //render form for adding new artists
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 //POST function for adding new artists
-app.post('/tunr', (request, response) => {
+app.post('/artists', (request, response) => {
     const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'
     console.log(request.body)
 
@@ -76,15 +96,32 @@ app.post('/tunr', (request, response) => {
             console.log('query result:', result);
 
             // redirect to home page
-            response.send("Song Added!");
+            response.redirect("/artists");
         }
     });
 });
 
-//for displaying list of all pokemon in table
+//for displaying details of 1 artist
 app.get('/artists/:id', (req, response) => {
-    // query database for all pokemon
-    const queryString = 'SELECT * from artists'
+    const queryString = 'SELECT * from artists WHERE id='+req.params.id;
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            // console.log(result.rows)
+            let data = {artistsData : result.rows}
+            response.render("artist", data)
+            // response.send(result.rows[req.params.id - 1]);
+        }
+    });
+});
+
+//for displaying all songs of 1 artist
+app.get('/artists/:id/songs', (req, response) => {
+    const queryString = "SELECT * FROM songs WHERE artist_id="+req.params.id;
 
     pool.query(queryString, (err, result) => {
 
@@ -93,10 +130,19 @@ app.get('/artists/:id', (req, response) => {
             response.send('query error');
         } else {
             console.log(req.params.id - 1)
-            response.send(result.rows[req.params.id - 1]);
+            response.send(result.rows);
         }
     });
 });
+
+
+
+
+
+
+
+
+
 
 /**
  * ===================================

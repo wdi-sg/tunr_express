@@ -7,7 +7,7 @@ class New extends React.Component {
         <head />
         <body>
             <h3>Add new artist!</h3>
-            <form action="/tunr" method="POST">
+            <form action="/artists" method="POST">
                 <div>Name</div><input name="name"/><br/>
                 <div>Photo URL</div><input name="photo_url"/><br/>
                 <div>Nationality</div><input name="nationality"/><br/>
