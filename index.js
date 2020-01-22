@@ -296,6 +296,32 @@ app.get('/playlist/:id', (request,response) => {
   }); // end outer pool.query
 });
 
+app.get('/playlist/:id/newsong', (request,response) => {
+  const queryString = 'SELECT * FROM playlist WHERE id=$1;'
+  const values = [request.params.id];
+  pool.query(queryString, values, (err,result) => {
+    if (err) {
+      console.log("error", err.message)
+    } else {
+      const queryString = 'SELECT * FROM songs;'
+      pool.query(queryString, (err,result) => {
+        if (err) {
+          console.log("error", err.message)
+        } else {
+          
+          let allSongs = result.rows;
+          let data = {
+            songs: allSongs
+          }
+          //console.log(songs);
+          response.render('playlist-new-song', data);
+            //console.log(songs);
+          }
+      }); // end inner pool.query
+      }
+  }); // end outer pool.query
+});
+
 /**
  * ===================================
  * Routes {CATCH}
