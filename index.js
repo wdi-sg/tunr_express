@@ -112,22 +112,25 @@ const songs = (request,response) => {
         let artist_id = [result.rows[0].id];
         let songQueryText = 'SELECT * FROM songs WHERE artist_id=$1';
 
-        pool.query(songQueryText, artist_id, (songErr, songResult) => {
 
-        let results = result.rows[0];
-        let songs = songResult.rows;
+        response.redirect('/artists');
 
-            var data = {
-            id: results.id,
-            name: results.name,
-            img: results.photo_url,
-            nationality: results.nationality,
-            songs: songs
-            }
+            // instead of redirect you can use this as well too
+    //     pool.query(songQueryText, artist_id, (songErr, songResult) => {
 
-            response.render('songs', data);
-        })
-    })
+    //     let results = result.rows[0];
+    //     let songs = songResult.rows;
+
+    //         var data = {
+    //         id: results.id,
+    //         name: results.name,
+    //         img: results.photo_url,
+    //         nationality: results.nationality,
+    //         songs: songs
+    //         }
+    //         response.render('home', data);
+    //     })
+    });
 }
 
 app.get('/artists', home);
