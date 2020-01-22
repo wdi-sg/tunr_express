@@ -75,10 +75,10 @@ export class Layout extends React.Component {
                     Sort
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="sort/name">
+                    <a class="dropdown-item" href="/sort/name">
                       Sort by alphabetical order
                     </a>
-                    <a class="dropdown-item" href="sort/dateCreated">
+                    <a class="dropdown-item" href="/sort/dateCreated">
                       Sort by date created
                     </a>
                     <div class="dropdown-divider"></div>
