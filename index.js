@@ -114,7 +114,6 @@ app.get('/artists', (request, response) => {
             console.log("Error :", err);
             response.status(500).send("You got an error")
         }
-        console.log(result.rows);
         let data = {
             artists : result.rows
         };
@@ -122,7 +121,19 @@ app.get('/artists', (request, response) => {
     })
 })
 
-
+app.get('/songs', (request, response) => {
+    let text = "SELECT title, id FROM songs ORDER BY id ASC";
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+            response.status(500).send("Error Finding songs")
+        }
+        let data = {
+            songs : result.rows
+        }
+        response.render('songs', data);
+    })
+})
 
 
 

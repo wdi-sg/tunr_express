@@ -3,11 +3,10 @@ var Head = require("./head");
 var Navbar = require("./navbar")
 
 
-class Songlist extends React.Component {
+class Songs extends React.Component {
     render() {
-        let ahref = "/artists/"+this.props.id
         let songEle = this.props.songs.map ( song => {
-            let hrefStr = "/artists/"+this.props.id+"/songs/"+song.id;
+            let hrefStr = "/songs/"+song.id;
             return (<div><a href={hrefStr}>{song.title}</a></div>);
         })
         return (
@@ -16,7 +15,7 @@ class Songlist extends React.Component {
                 <body>
                     <div className="container">
                         <Navbar />
-                        <h3>List of Songs by <a href={ahref}>{this.props.artist}</a></h3>
+                        <h3>List of Songs</h3>
                         {songEle}
                     </div>
                 </body>
@@ -25,4 +24,4 @@ class Songlist extends React.Component {
     }
 }
 
-module.exports = Songlist;
+module.exports = Songs;

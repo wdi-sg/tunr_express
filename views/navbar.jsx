@@ -27,10 +27,10 @@ class Navbar extends React.Component {
                                 <a className="nav-link" href="/songs/new">Add New Song</a>
                             </li>
                         </ul>
-                        <form className="form-inline my-2 my-lg-0" action="/">
+{/*                        <form className="form-inline my-2 my-lg-0" action="/">
                           <input className="form-control mr-sm-2" type="search" placeholder="Search Songs or Artists" aria-label="Search" name="search"/>
                           <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </form>
+                        </form>*/}
                       </div>
                 </nav>
         );
