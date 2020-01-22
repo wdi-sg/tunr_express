@@ -89,7 +89,6 @@ app.get('/artists/:id',(request, response)=>{
         name: result.rows[0].name,
         photo_url: result.rows[0].photo_url,
         nationality: result.rows[0].nationality };
-
       response.render('info',data);
     });
 });
@@ -106,20 +105,19 @@ app.get('/artists/:id/songs', (request,response)=> {
       else {
         // if result is not empty
         let artist_id = result.rows[0].id;
+        let artist_name = result.rows[0].name;
+        console.log(artist_name);
         //select title from songs where artist_id = (value above)
-        let songTitles = "SELECT title FROM songs WHERE artist_id="+artist_id;
+        let query = "SELECT title FROM songs WHERE artist_id="+artist_id;
         var responseArray =[];
-          pool.query(songTitles, (titleErr, titleResult)=>{
+          pool.query(query, (titleErr, titleResult)=>{
           console.log(titleResult);
           let titleArray = titleResult.rows;
-          for (var i = 0; i < titleArray.length; i++) {
-            song = titleArray[i].title;
-            console.log(song);
           const data = {
-              title: song
+              title: titleArray,
+              name: artist_name
             };
-          }
-          response.send(); //get all songs to print out
+          response.render('songs',data); //get all songs to print
         });
       }
     })
