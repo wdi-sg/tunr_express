@@ -69,7 +69,7 @@ app.post('/artists', (request, response) => {
       response.send("error")
     } else {
       console.log("DONE", result.rows)
-      response.send("Added artist" + request.body.name)
+      response.send("Added artist" + "" + request.body.name)
     }
   });
 })
@@ -102,27 +102,46 @@ app.get("/artists/:id", (request, response) => {
  */
 app.get('/playlist/new', (request, response) => {
   // respond with HTML page with form to create new artist
-  response.render('playlist_new');
+  response.render('playlistNew');
 });
 app.post('/playlist', (request, response) => {
   let insertQueryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
-  const values = [
-    request.body.name
-  ];
+
+  const values =
+    [request.body.name];
+  console.log(values)
+
   pool.query(insertQueryText, values, (err, result) => {
     console.log("INSERT query callback")
-    console.log()
     if (err) {
       console.log("ERROR", err);
       response.send("error")
     } else {
       console.log("DONE", result.rows)
-      response.send("Added playlist" + request.body.name)
+      response.send("Added playlist!" + "" + request.body.name)
     }
   });
 })
 
+/**
+ * ===================================
+ * SHOW A SPECIFIC PLAYLIST 
+ * ===================================
+ */
+app.get("playlist/:id", (request, response) => {
+  let playlistId = parseInt(request.params.id);
 
+  console.log(playlistId);
+  let query = "SELECT * from playlist where id =" + playlistId;
+
+  pool.query(query, (err, result) => {
+    const data = {
+      id: result.rows[0].id,
+      name: result.rows[0].name
+    };
+    response.render('playlistsSearch', data);
+  });
+});
 
 
 

@@ -10,7 +10,7 @@ class artistsSearch extends React.Component {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           />
-          <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+          <meta http-Equiv="X-UA-Compatible" content="ie=edge" />
           <title>Here is the artist you requested!</title>
           <link
             rel="stylesheet"
