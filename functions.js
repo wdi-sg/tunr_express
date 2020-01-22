@@ -217,15 +217,71 @@ module.exports.newPlaylist = (req,res) => {
 }
 
 module.exports.showPlaylistByID = (req, res) => {
+    const id = [req.params.id]
+
+    
+
+    const joinQuery = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_song.playlist_id=$1"
+
+    pool.query(joinQuery, id, (err,result) => {
+
+        if (err) {
+            console.log("error", err.message)
+        } else {
+            const data = {
+                songs: result.rows
+            }
+            console.log(data)
+            const queryText = "SELECT * FROM playlist WHERE id='" + id + "'"
+
+            pool.query(queryText, (err, playResult) => {
+
+                data.playlist = playResult.rows[0].name
+
+                res.render('show-playlist', data)
+            })
+            
+            
+
+        }
+
+    })
+}
+
+module.exports.showPlaylistNewSong = (req, res) => {
     const id = req.params.id
-    const queryText = "SELECT * FROM playlist WHERE id='" + id + "'"
+    const queryText = "SELECT title, id FROM songs"
 
     pool.query(queryText, (err,result) => {
 
         if (err) {
             console.log("error", err.message)
         } else {
-            res.render('show-playlist', result.rows[0])
+            
+            const data = {
+                id: id,
+                songs: result.rows
+            }
+            res.render('new-song', data)
+
+        }
+
+    })
+}
+
+module.exports.playlistNewSong = (req, res) => {
+    const plID = req.params.id
+    const values = [req.body.song, plID]
+
+    const queryText = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *"
+
+    pool.query(queryText, values, (err,result) => {
+
+        if (err) {
+            console.log("error", err.message)
+        } else {
+            
+           res.send(result.rows)
 
         }
 
