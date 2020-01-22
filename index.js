@@ -221,6 +221,33 @@ app.get('/playlists/:id', (request, response) => {
 
 })
 
+app.get('/playlists/:id/edit', (request, response) => {
+  let query = `
+  SELECT random.name, random.id, random.songs_id,songs.title,songs.album,songs.artwork FROM 
+  (SELECT playlists.id, playlists.name, playlists_songs.songs_id
+  FROM playlists
+  INNER JOIN playlists_songs
+  ON (playlists.id = playlists_songs.playlists_id)
+  WHERE playlists.id=$1 
+  ) AS random
+  INNER JOIN songs
+  ON (songs.id = random.songs_id)
+  `
+  let query2 = `SELECT * FROM songs`
+
+  const values = [request.params.id]
+
+  pool.query(query,values,(err,result) =>{
+    pool.query(query2, (err,result2) =>{
+      const data = {
+        info: result.rows,
+        allSongs: result2.rows
+      }
+      response.render('editPlaylist',data)
+    })
+  })
+})
+
 
 
 
