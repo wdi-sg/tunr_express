@@ -157,7 +157,9 @@ app.get('/artists/:id/edit', (request, response) => {
             return;
         }
         const artist = artistResult.rows[0];
-        const data = {artist: artist};
+        const data = {
+            artist: artist
+        };
         response.render('edit', data);
     })
 })
@@ -201,20 +203,20 @@ app.put('/artists/:id', (request, response) => {
     const queryString = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4 RETURNING *;"
     const queryValues = [request.body.name, request.body.photo_url, request.body.nationality, request.params.id];
     pool.query(queryString, queryValues, (err, result) => {
-      if (err) {
-          console.log(err);
-          response.render('home', {
-              message: "Error!"
-          })
-          return;
-      }
-      const artist = result.rows[0];
-      const message = "This record has been updated";
-      const data = {
-        artist: artist,
-        message: message
-      }
-      response.render('artist', data);
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        }
+        const artist = result.rows[0];
+        const message = "This record has been updated";
+        const data = {
+            artist: artist,
+            message: message
+        }
+        response.render('artist', data);
     })
 })
 
@@ -240,6 +242,104 @@ app.post('/artists', (request, response) => {
         response.render('home', data);
     })
 });
+
+
+/**
+ * ===================================
+ * PLaylist Functions
+ * ===================================
+ */
+
+app.get('/playlist', (request, response) => {
+    const message = "list playlists";
+    const data = {
+        message: message
+    };
+    response.render('home', data);
+})
+
+
+app.get('/playlist/new', (request, response) => {
+    response.render('newplaylist');
+})
+
+
+app.post('/playlist', (request, response) => {
+    const playListName = request.body.name;
+    const queryString = `INSERT INTO playlist (name) VALUES ($1) RETURNING *`;
+    const queryValues = [playListName];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        }
+
+        const playList = result.rows[0];
+
+        const message = `Playlist ${playListName} added`;
+        const data = {
+            message: message,
+            playList: playList
+        };
+        response.render('playlist', data);
+    })
+})
+
+
+app.get('/playlist/:id', (request, response) => {
+    if (isNaN(request.params.id)) {
+        response.render('home', {
+            message: 'Invalid Id No.'
+        });
+        return;
+    }
+    const queryString = `SELECT * FROM playlist WHERE id=$1`;
+    const queryValues = [request.params.id];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        }
+
+        if (result.rows.length === 0) {
+            console.log(err);
+            response.render('home', {
+                message: `Error: id ${request.params.id} not valid.`
+            })
+            return;
+        }
+
+        const playList = result.rows[0];
+
+        const songQueryString = `SELECT songs.artist_id, songs.title FROM songs INNER JOIN playlist_songs ON (playlist_songs.song_id = songs.id) WHERE playlist_songs.playlist_id = $1;`;
+        const songQueryValues = [request.params.id];
+        pool.query(songQueryString, songQueryValues, (err, result) => {
+            if (err) {
+                console.log(err);
+                response.render('home', {
+                    message: "Error!"
+                })
+                return;
+            }
+
+            const songs = result.rows;
+
+            const data = {
+                playList: playList,
+                songs: songs
+            };
+            response.render('playlist', data);
+        })
+
+
+    })
+})
 
 
 /**
