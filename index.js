@@ -185,6 +185,78 @@ app.get('/playlist/:id',(request, response)=>{
 
 
 
+
+/*Create a form to add a song to a playlist /playlist/1/newsong*/
+app.get('/playlist/:id/newsong', (request, response)=>{
+    let playlistId = [parseInt(request.params.id)];
+    let query = "SELECT * FROM songs";
+    console.log(playlistId);
+    pool.query(query, (err,result)=>{
+        if (err) {
+            console.log("error", err);
+            response.send("error")
+        } else {
+            console.log("result")
+            console.log(result.rows);
+            let playlist = result.rows;
+            const data = {
+                id: playlistId,
+                chosenSong: playlist
+        };
+        response.render ('newsong', data);
+         }
+    })
+});
+
+
+
+/*
+
+app.post('/playlist/:id',(request, response)=>{
+
+  let insertQueryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+
+  const values = [
+    request.body.name
+  ];
+
+  pool.query(insertQueryText, values, (err, result)=>{
+    console.log("INSERT query callback")
+
+    console.log( )
+
+    if( err ){
+      console.log("ERROR", err);
+      response.send("error")
+    }else{
+      console.log("DONE", result.rows)
+      response.send("You have added a new playlist : " + request.body.name)
+    }
+  });
+})
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 app.get('/playlist/:id',(request, response)=>{
 
@@ -199,12 +271,7 @@ app.get('/playlist/:id',(request, response)=>{
 
       response.render('Playlistid', data);
     });
-
 });*/
-
-
-
-
 
 
 
