@@ -7,11 +7,11 @@ class ShowPlaylist extends React.Component {
     return (
       <html>
         <head>
-            <title>{this.props.selectedArtist.name}</title>
+            <title>{this.props.selectedPlaylist.name}</title>
         </head>
         <body>
           <div>
-            <h1>This is <span style={{ color: "#4DDDD0", fontWeight: "lighter"}}> {this.props.selectedArtist.name} </span></h1>
+            <h1>This is <span style={{ color: "#4DDDD0", fontWeight: "lighter"}}> {this.props.selectedPlaylist.name} </span></h1>
           </div>
         </body>
       </html>

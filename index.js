@@ -236,32 +236,28 @@ app.get('/artists/:id/songs',(request, response) => {
  * ===================================================================================
  */
 
-//GET /playlist - list all the playlists
-app.get('/playlist',(request, response)=>{
-    let query = "SELECT * FROM playlist";
-  // let value = [parseInt(request.params.id)];
-    pool.query (query, (err, result) => {
-        if(err){
-            console.log("ERRRR", err);
-            response.status(500).send("error")
-        } else {
-            console.log("RESULT")
-            console.log( result.rows);
-            let artist = result.rows;
-            const data = {
-            selectedArtist: artist[0]
-        };
-      // response.send(result.rows);
-            response.render('showPlaylist', data);
-    }
-    })
-});
+/**
+ * ====================================================================================
+ * ┌─┐┌─┐┌┬┐       ┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐  ┌─┐┌─┐┬─┐┌┬┐
+ * │ ┬├┤  │   ───  │  ├┬┘├┤ ├─┤ │ ├┤   ├┤ │ │├┬┘│││
+ * └─┘└─┘ ┴        └─┘┴└─└─┘┴ ┴ ┴ └─┘  └  └─┘┴└─┴ ┴
+ * ====================================================================================
+ */
 
+//Create a form: /playlists/new
 //GET /playlist/new - render the form to create a new playlist
 app.get('/playlist/new', (request, response) => {
     response.render('newPlaylist');
 });
 
+/**
+ * =================================================================================
+.*.┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐
+.*.│  ├┬┘├┤ ├─┤ │ ├┤
+.*.└─┘┴└─└─┘┴ ┴ ┴ └─┘
+ * =================================================================================
+ */
+//Create an app.post to take in the POST and create a record of a playlist
 //POST /playlist - create a new playlist
 app.post('/playlist', (request, response) => {
 
@@ -289,6 +285,36 @@ app.post('/playlist', (request, response) => {
             response.render('createdNewPlaylist', data);
         }
     });
+});
+
+/**
+ * ================================================================================
+.*.┌─┐┬ ┬┌─┐┬ ┬  ┌─┐┌─┐┌─┐┌┬┐┬ ┬┬─┐┌─┐
+.*.└─┐├─┤│ ││││  ├┤ ├┤ ├─┤ │ │ │├┬┘├┤
+.*.└─┘┴ ┴└─┘└┴┘  └  └─┘┴ ┴ ┴ └─┘┴└─└─┘
+ * ================================================================================
+ */
+
+//Create a show route /playlists/:id => /playlists/1
+//Build the show feature for playlist
+app.get('/playlist/:id',(request, response)=>{
+  let query = "SELECT * FROM playlist WHERE id=$1";
+  let value = [parseInt(request.params.id)];
+  pool.query(query,value, (err, result) => {
+    if(err){
+        console.log("ERRRR", err);
+        response.status(500).send("error")
+    } else {
+        console.log("RESULT")
+        console.log( result.rows);
+        let playlist = result.rows;
+        const data = {
+            selectedPlaylist: playlist[0]
+    };
+      // response.send(result.rows);
+      response.render('showPlaylist', data);
+    }
+    })
 });
 
 //GET /playlist/:id/newsong - render the form to add a song to the playlist
