@@ -32,7 +32,7 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes
+ * Routes - Artists
  * ===================================
  */
 
@@ -45,7 +45,7 @@ app.post('/artists', (request, response) => {
 });
 
 app.get('/artists', (request, response) => {
-  let artistsList = [];
+  let artistsList = [];;
   let text = "SELECT * FROM artists";
   pool.query(text, (err,results) => {
     for (i=0; i<results.rows.length;i++) {
@@ -61,6 +61,45 @@ app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
+/**
+ * ===================================
+ * Routes - playlist & songs
+ * ===================================
+ */
+
+app.post('/playlist', (request, response) => {
+  let text =`INSERT INTO playlist (name) VALUES ($1) RETURNING id`;
+  let values = [request.body.name];
+  pool.query(text, values);
+  response.render('homeplaylist');
+});
+
+app.get('/playlist', (request, response) => {
+  let list = [];
+  let text = `SELECT * FROM playlist`;
+  pool.query(text, (err,results) => {
+    for (i=0; i<results.rows.length; i++) {
+      list.push(results.rows[i].name);
+    };
+    let data = {playlists: list};
+    console.log(data.playlists)
+    response.render('homeplaylist', data);
+  });  
+});
+
+app.get('/playlist/new', (request, response) => {
+  response.render('newplaylist');
+});
+
+app.get('/playlist/:id', (request, response) => {
+  let text = `SELECT * FROM playlist WHERE id=$1`;
+  let value= [parseInt(request.params.id)];
+  pool.query(text, value, (err,results) => {
+    console.log(results.rows[0]);
+    data = results.rows[0];
+    response.render('showplaylist',data);
+  });
+});
 
 /**
  * ===================================
