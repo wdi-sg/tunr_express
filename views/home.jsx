@@ -3,7 +3,7 @@ const Layout = require("./layout");
 
 class Home extends React.Component {
   render() {
-    console.log(this.props)
+    
     let artistElement;
     const artists = this.props.artists;
     if (artists.length > 1) {

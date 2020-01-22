@@ -175,3 +175,13 @@ module.exports.deleteArtist = (request, response) => {
     }
   });
 };
+
+module.exports.showPlaylists = (request, response) => {
+  const query = "SELECT * from playlist";
+  pool.query(query, (err, result) => {
+    const data = {
+      playlists: result.rows
+    };
+    response.render("playlist", data);
+  });
+};

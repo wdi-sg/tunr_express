@@ -44,25 +44,29 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "jsx");
 app.engine("jsx", reactEngine);
 
-// Show content
+// Artists
+app.get("/artists/new", functions.addArtistPage);
 app.get("/", functions.showArtists);
 app.get("/artists", functions.showArtists);
 app.get("/artists/:id", functions.showSingleArtist);
 app.get("/artists/:id/songs", functions.showArtistSongs);
-
-// Show add/edit pages
-app.get("/artists/new", functions.addArtistPage);
 app.get("/artists/:id/songs/new", functions.addSongPage);
 app.get("/artists/:id/edit", functions.artistEditPage);
-app.get("/playlist/new", (request, response) => {
-  const query = "SELECT * from songs";
-  const values = [query];
-  pool.query(query, (err, result) => {
-    const songs = result.rows;
+
+// Playlists
+app.get("/playlists", functions.showPlaylists);
+app.get("/playlists/new", (request, response) => {
+  response.render("newPlaylist");
+});
+app.get("/playlists/:id", (request, response) => {
+  const playlistID = request.params.id;
+  const values = [playlistID];
+  const query = "SELECT * from playlist where id = $1";
+  pool.query(query, values, (err, result) => {
     const data = {
-      songs: songs
+      playlists: result.rows[0]
     };
-    response.render("newPlaylist", data);
+    response.render("playlist", data);
   });
 });
 
@@ -72,14 +76,14 @@ app.put("/artists/:id/", functions.editArtist);
 // Add to database
 app.post("/artists", functions.addArtist);
 app.post("/artists/:id/songs/", functions.addSong);
-app.post("/playlist", (request, response) => {
-  const song = request.body.song;
-  const values = [song];
-  const query = "INSERT INTO playlist (name) VALUES ($1);";
+app.post("/playlists", (request, response) => {
+  const playlistName = request.body.playlist_name;
+  const values = [playlistName];
+  const query = "INSERT into playlist (name) VALUES($1)";
   pool.query(query, values, (err, result) => {
     if (err) console.log(err);
     else {
-      console.log(result.rows);
+      response.redirect("/playlists");
     }
   });
 });
