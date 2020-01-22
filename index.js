@@ -46,6 +46,8 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// ---- Functions for Artists ----
+
 const home = (request,response) => {
     let insertQueryText = 'SELECT * FROM artists';
 
@@ -76,13 +78,7 @@ const postForm = (request,response) => {
             console.log("Error!", err);
             response.send("error");
         } else{
-            let selectQueryAll = 'SELECT * FROM artists'
-            pool.query(selectQueryAll, (allErr, allResult)=>{
-                let data = {
-                    artists: allResult.rows
-                }
-                response.render("home", data);
-            });
+            response.redirect('/artists');
         }
     });
 }
@@ -112,26 +108,43 @@ const songs = (request,response) => {
         let artist_id = [result.rows[0].id];
         let songQueryText = 'SELECT * FROM songs WHERE artist_id=$1';
 
+        pool.query(songQueryText, artist_id, (songErr, songResult) => {
 
-        response.redirect('/artists');
+        let results = result.rows[0];
+        let songs = songResult.rows;
 
-            // instead of redirect you can use this as well too
-    //     pool.query(songQueryText, artist_id, (songErr, songResult) => {
-
-    //     let results = result.rows[0];
-    //     let songs = songResult.rows;
-
-    //         var data = {
-    //         id: results.id,
-    //         name: results.name,
-    //         img: results.photo_url,
-    //         nationality: results.nationality,
-    //         songs: songs
-    //         }
-    //         response.render('home', data);
-    //     })
+            var data = {
+            id: results.id,
+            name: results.name,
+            img: results.photo_url,
+            nationality: results.nationality,
+            songs: songs
+            }
+            response.render('home', data);
+        });
     });
 }
+
+// ---- Functions for Playlists ----
+
+const postFormPlaylists = (request,response) => {
+    let insertQueryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+
+    const values = [
+        request.body.name
+    ];
+
+    pool.query(insertQueryText, values, (err, result)=>{
+        if( err ){
+            console.log("Error!", err);
+            response.send("error");
+        } else{
+            response.redirect('/artists');
+        }
+    });
+}
+
+// ---- Routes for Artists ----
 
 app.get('/artists', home);
 app.get('/artists/new', (request, response) => {
@@ -143,6 +156,28 @@ app.post('/artists', postForm);
 app.get('/', (request, response) => {
     response.redirect('/artists');
 })
+
+// ---- Routes for Playlists ----
+
+app.get('/playlists', (request,response) => {
+    let insertQueryText = 'SELECT * FROM playlist';
+
+    pool.query(insertQueryText, (err, result)=>{
+        let data = {
+            playlist: result.rows
+        }
+        if( err ){
+            console.log("Error!", err);
+            response.send("error");
+        } else{
+            response.render('homeplaylist',data);
+        }
+    });
+});
+app.get('/playlists/new', (request, response) => {
+    response.render('newplaylist');
+})
+app.post('/playlists', postFormPlaylists);
 
 /**
  * ===================================
