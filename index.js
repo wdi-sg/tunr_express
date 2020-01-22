@@ -179,12 +179,30 @@ app.post('/playlist',(request, response) => {
         });
 });
 
+// show all the song titles inside this playlist
+app.get ('/playlist/:id',(request,response)=>{
+  let playlistId = parseInt(request.params.id);
 
-//add song to playlist
-  //SELECT title from songs
+
+  response.render()
+});
+
+
+
+// render the form to add a song to the playlist
+app.get ('/playlist/:id/newsong',(request,response)=>{
+  let playlistId = parseInt(request.params.id);
+
+  let query = 'SELECT id, title from songs';
+    pool.query(query, (err,result)=>{
+
+      const values = [ ];
+    });
     //results.row = array of title objects for ALL artists
     //render page with dropdown for all songs and all playlists
     //button to create new playlist
+  response.render('songlist',data);
+});
 
 
 
