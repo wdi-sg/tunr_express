@@ -6,14 +6,14 @@ class ChooseSong extends React.Component {
 
     let songOptions = this.props.songOptions.map(song =>{
       if(song.title == this.props.title){
-        return <option selected>{song.title} </option>
+        return <option value={song.id} selected>{song.title} </option>
       } else {
-        return <option>{song.title}</option>
+        return <option value={song.id}>{song.title}</option>
       }
     })
 
     return(
-      <select name="ingreArray" className="form-control">
+      <select name="songs" className="form-control">
         {songOptions}
       </select>
       )
@@ -28,7 +28,7 @@ class EditPlaylist extends React.Component {
     let playlistName = this.props.info[0].name
 
     let list = this.props.info.map(song => {
-      return <ChooseSong title={song.title} album={song.album} artwork={song.artwork} songOptions={this.props.allSongs}/>
+      return <ChooseSong id={song.id} title={song.title} album={song.album} artwork={song.artwork} songOptions={this.props.allSongs}/>
     })
 
     return (
@@ -38,9 +38,13 @@ class EditPlaylist extends React.Component {
         </head>
           <body>
           <h1>{playlistName}</h1>
-            <ul>
+            <form action={`/playlists/${this.props.info[0].id}/?_method=put`} method="POST">
               {list}
-            </ul>
+            <button type="submit" className="btn btn-secondary m-2">Submit</button>
+            </form>
+            <form action={`/playlists/${this.props.info[0].id}/addSong`} method="GET">
+              <button type="submit" className="btn btn-secondary m-2">Add Another Song</button>
+            </form>
           </body>
       </html>
     );

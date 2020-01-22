@@ -248,7 +248,46 @@ app.get('/playlists/:id/edit', (request, response) => {
   })
 })
 
+app.put('/playlists/:id',(request,response) =>{
+  let playlistID = request.params.id
+  let songArray = request.body.songs
 
+  let query1 = `DELETE FROM playlists_songs WHERE playlists_id=$1`
+  const values1 = [playlistID];
+
+  let string = "";
+
+  songArray.unshift(playlistID);
+
+  for(let i = 1; i < songArray.length; i++){
+    if (i == songArray.length - 1){
+      string += `(${songArray[0]},${songArray[i]})`
+    } else {
+      string += `(${songArray[0]},${songArray[i]}),`
+    }
+  }
+
+  let query2 = "INSERT INTO playlists_songs (playlists_id,songs_id) VALUES "+string
+
+  pool.query(query1,values1,(err,result)=>{
+    pool.query(query2,(err,result2) =>{
+      response.redirect('/playlists/' + playlistID)
+    })
+  })
+})
+
+app.get('/playlists/:id/addSong', (request,response) =>{
+  console.log("asfjowi")
+  let query = `INSERT INTO playlists_songs (playlists_id,songs_id) VALUES ($1,1)`
+  const values = [request.params.id];
+
+  pool.query(query,values, (err,result)=>{
+    
+    response.redirect(`/playlists/${request.params.id}/edit`);
+
+
+  })
+})
 
 
 
