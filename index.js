@@ -251,11 +251,31 @@ app.post('/artists', (request, response) => {
  */
 
 app.get('/playlist', (request, response) => {
-    const message = "list playlists";
-    const data = {
-        message: message
-    };
-    response.render('home', data);
+    const queryString = `SELECT * FROM playlist;`;
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        }
+        if (!result.rows.length) {
+            const data = {
+                message: "Playlist does not exist."
+            };
+            response.render('home', data);
+            return;
+        }
+
+        const playlists = result.rows;
+        const message = "Playlists";
+        const data = {
+            message: message,
+            playlists: playlists
+        };
+        response.render('playlists', data);
+    })
 })
 
 
@@ -285,28 +305,30 @@ app.get('/playlist/:id/newsong', (request, response) => {
         const data = {
             playlistid: request.params.id,
             songs: songs
-          }
+        }
         response.render('addtoplaylist', data);
     })
 })
 
 
 app.post(`/playlist/:id`, (request, response) => {
-  const queryString =  `INSERT INTO playlist_songs (playlist_id, song_id) VALUES ($1, $2);`;
-  const queryValues = [request.params.id, request.body.songindex];
-  pool.query(queryString, queryValues, (err, result) => {
-    if (err) {
-        console.log(err);
-        response.render('home', {
-            message: "Error!"
-        })
-        return;
-    }
+    const queryString = `INSERT INTO playlist_songs (playlist_id, song_id) VALUES ($1, $2);`;
+    const queryValues = [request.params.id, request.body.songindex];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        }
 
-    const message = "Song added to playlist";
-    data = {message: message};
-    response.render('home', data);
-  })
+        const message = "Song added to playlist";
+        data = {
+            message: message
+        };
+        response.render('home', data);
+    })
 })
 
 

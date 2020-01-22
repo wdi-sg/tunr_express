@@ -5,7 +5,13 @@ class NavBar extends React.Component {
         return (<nav>
             <ul className="nav">
                 <li className="nav-item">
-                    <a className="nav-link active" href="/">Tunr Express</a>
+                    <a className="nav-link active" href="/"><strong>Tunr Express</strong></a>
+                </li>
+                <li className="nav-item">
+                    <a className="nav-link" href="/artists/">Artists</a>
+                </li>
+                <li className="nav-item">
+                    <a className="nav-link" href="/playlist/">Playlists</a>
                 </li>
             </ul>
         </nav>)
