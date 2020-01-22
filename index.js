@@ -171,7 +171,6 @@ app.delete('/artists/:id',(request,response) => {
   let query2 = 
   `SELECT * FROM artists`
 
-
   const values = [id]
 
   pool.query(query,values,(err,result)=>{
@@ -183,6 +182,41 @@ app.delete('/artists/:id',(request,response) => {
       response.redirect('/artists/')
 
     })
+  })
+})
+
+// GET - index - See all playlists
+app.get('/playlists/', (request, response) => {
+  let query = `SELECT * FROM playlists`
+
+  pool.query(query,(err,result)=>{
+    const data = {
+      allPlaylists: result.rows
+    }
+    response.render('allPlaylists',data);
+  })
+});
+
+app.get('/playlists/:id', (request, response) => {
+  let query = `
+  SELECT random.name, random.id, random.songs_id,songs.title,songs.album,songs.artwork FROM 
+  (SELECT playlists.id, playlists.name, playlists_songs.songs_id
+  FROM playlists
+  INNER JOIN playlists_songs
+  ON (playlists.id = playlists_songs.playlists_id)
+  WHERE playlists.id=$1 
+  ) AS random
+  INNER JOIN songs
+  ON (songs.id = random.songs_id)
+  `
+
+  const values = [request.params.id]
+
+  pool.query(query,values,(err,result) =>{
+    const data = {
+      info: result.rows
+    }
+    response.render('playlistSongs',data)
   })
 
 })
