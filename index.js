@@ -124,7 +124,39 @@ app.get('/artists/:id/songs', (request,response)=> {
 });
 
 
+//get the index page for artists
+app.get('/artists', (request,response)=> {
 
+let query = 'SELECT name, photo_url, nationality from artists';
+    pool.query(query, (err, result)=>{
+      console.log(result);
+      let
+
+
+    });
+
+response.render('ArtistIndex',); //render page to show ALL artist photos, name and nationality
+
+});
+
+
+//list all the playlists
+app.get('/playlist', (request, response) => {
+  let query = 'SELECT name from playlist';
+    pool.query(query, (err,result)=>{
+        if(err){
+          console.log(err);
+          response.status(500).send("error");
+        }
+        else{
+        console.log("show info:",result.rows);
+        const data = {
+          name: result.rows
+        };
+        response.render('playlist',data);
+        }
+    });
+});
 
 
 /**
