@@ -139,7 +139,6 @@ response.render('ArtistIndex',); //render page to show ALL artist photos, name a
 
 });
 
-
 //list all the playlists
 app.get('/playlist', (request, response) => {
   let query = 'SELECT name from playlist';
@@ -157,6 +156,37 @@ app.get('/playlist', (request, response) => {
         }
     });
 });
+
+// GET /playlist/new - render the form to create a new playlist
+app.get('/playlist/new',(request, response) => {
+  response.render('PlaylistForm');
+});
+
+app.post('/playlist',(request, response) => {
+
+  let queryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+    const values = [request.body.playlist_name];
+
+        pool.query(queryText, values, (err,result)=>{
+            console.log(`insert query`);
+            if(err){
+                console.log(err);
+                response.send('error',err);
+            } else {
+                console.log('insert new playlist completed');
+                response.redirect('/playlist');
+            }
+        });
+});
+
+
+//add song to playlist
+  //SELECT title from songs
+    //results.row = array of title objects for ALL artists
+    //render page with dropdown for all songs and all playlists
+    //button to create new playlist
+
+
 
 
 /**
