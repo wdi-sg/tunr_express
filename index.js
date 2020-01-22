@@ -108,6 +108,38 @@ const findArtist = (request,response) => {
 
 }
 app.get('/artists/:id',findArtist);
+// Build the show feature for an artist
+
+
+const showArtist = (request,response) => {
+
+  let query = "SELECT * FROM artists";
+  pool.query(query,(err,result)=>{ 
+    if(err){
+      console.log("ERROR",err);
+      response.statuts(500).send("error");
+    }
+    else{
+      console.log("RESULTS");
+      console.log(result.rows);
+      let data = {
+        artists : result.rows
+      };
+      response.render("allartists",data);
+    }
+
+  })
+}
+
+app.get('/artists/' , showArtist);
+// Build the index feature for artists
+
+
+// const findAllSongsByArtists = (request,response) => {
+  
+// }
+
+// app.get('/artists/:artists_id/songs' , findAllSongsByArtists);
 
 
 
