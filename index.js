@@ -62,6 +62,30 @@ app.get("/playlists/:id", functions.showPlaylist);
 
 app.get("/playlists/:id/newsong", functions.showSongFormForPlaylist);
 
+//Sort
+app.get("/sort/:type", (request, response) => {
+  const type = request.params.type;
+  if (type === "name") {
+    const query = `SELECT * from artists
+    ORDER BY name`;
+    pool.query(query, (err, result) => {
+      const data = {
+        artists: result.rows
+      };
+      response.render("home", data);
+    });
+  } else if (type ==="dateCreated") {
+    const query = `SELECT * from artists
+    ORDER BY id`;
+    pool.query(query, (err, result) => {
+      const data = {
+        artists: result.rows
+      };
+      response.render("home", data);
+    });
+  }
+});
+
 // Edit database
 app.put("/artists/:id/", functions.editArtist);
 

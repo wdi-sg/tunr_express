@@ -62,6 +62,31 @@ export class Layout extends React.Component {
                     Add playlist
                   </a>
                 </li>
+                <li class="nav-item dropdown">
+                  <a
+                    class="nav-link dropdown-toggle"
+                    href="#"
+                    id="navbarDropdown"
+                    role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    Sort
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="sort/name">
+                      Sort by alphabetical order
+                    </a>
+                    <a class="dropdown-item" href="sort/dateCreated">
+                      Sort by date created
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">
+                      Nothing here either
+                    </a>
+                  </div>
+                </li>
               </ul>
               <form action="/search" className="form-inline my-2 my-lg-0">
                 <input
