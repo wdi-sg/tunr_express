@@ -5,8 +5,9 @@ class Error extends React.Component {
   render() {
     return (
       <Layout>
-        <div className="container">
-          <h1 className="text-center mb-10">Error: page not found!</h1>
+        <div className="container d-flex flex-column justify-content-center align-items-center">
+        <h1>Error!</h1>
+        <p>{this.props.errorMessage}</p>
         </div>
       </Layout>
     );

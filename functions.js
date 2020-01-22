@@ -149,7 +149,6 @@ module.exports.addArtist = (request, response) => {
 };
 
 module.exports.addSong = (request, response) => {
-  
   const artistId = request.body.id;
   const title = request.body.title;
   const album = request.body.album;
@@ -199,6 +198,7 @@ module.exports.showPlaylist = (request, response) => {
                  WHERE playlist_song.playlist_id = $1`;
   const playlistNameQuery = "SELECT * from playlist where id = $1";
   pool.query(playlistNameQuery, values, (err, result) => {
+    console.log(result.rows);
     const playlistName = result.rows[0];
     pool.query(query, values, (err, result) => {
       const data = {
@@ -235,14 +235,33 @@ module.exports.makeNewPlaylist = (request, response) => {
 
 module.exports.addSongIntoPlaylistSong = (request, response) => {
   const playlistID = request.params.id;
-  const songID = request.body.song_id;
+  const songID = parseInt(request.body.song_id);
   const values = [songID, playlistID];
-  const query =
-    "INSERT into playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
-  pool.query(query, values, (err, result) => {
-    if (err) console.log(err);
-    else {
-      response.redirect("/playlists/" + playlistID);
+  const query = "SELECT * from playlist_song";
+  let duplicate;
+  pool.query(query, (err, result) => {
+    for (let i = 0; i < result.rows.length; i++) {
+      console.log("HELLLLO", result.rows[i]);
+      const innerSongID = parseInt(result.rows[i].song_id);
+      if (songID === innerSongID) {
+        duplicate = true;
+      }
+    }
+    if (duplicate) {
+      const data = {
+        errorMessage: "Data already exists!"
+      };
+      response.render("404", data);
+    }
+    if (!duplicate) {
+      const addSongQuery =
+        "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)";
+      pool.query(addSongQuery, values, (err, result) => {
+        if (err) console.log("err");
+        else {
+          response.redirect("/playlists/" + playlistID);
+        }
+      });
     }
   });
 };
