@@ -29,9 +29,6 @@ class Navbar extends React.Component {
                             <li className="nav-item">
                                 <a className="nav-link" href="/playlists">Playlists</a>
                             </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="/playlists/new">Add New Playlist</a>
-                            </li>
                         </ul>
 {/*                        <form className="form-inline my-2 my-lg-0" action="/">
                           <input className="form-control mr-sm-2" type="search" placeholder="Search Songs or Artists" aria-label="Search" name="search"/>

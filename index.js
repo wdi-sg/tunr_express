@@ -136,11 +136,24 @@ app.get('/songs', (request, response) => {
     })
 })
 
+//form for adding new songs to playlist
+app.get('/playlists/:id/new', (request, response) => {
+    let playId = request.params.id;
+    let text = "SELECT songs.id, songs.title FROM songs ORDER BY id ASC";
+    pool.query(text, (err, result) => {
+        let data = {
+            songs : result.rows,
+            playId : playId
+        };
+        response.render('playadd', data)
+    })
+})
+
 
 //display specific playlist
 app.get('/playlists/:id', (request, response) => {
     let playId = request.params.id;
-    let text = "SELECT songs.id, songs.title, playlist.name FROM playlist INNER JOIN playlist_song ON (playlist_song.playlist_id = playlist.id) INNER JOIN songs ON (playlist_song.song_id = songs.id) WHERE playlist.id=$1"
+    let text = "SELECT songs.id, songs.title, playlist.name, playlist.id AS playlist_id FROM playlist INNER JOIN playlist_song ON (playlist_song.playlist_id = playlist.id) INNER JOIN songs ON (playlist_song.song_id = songs.id) WHERE playlist.id=$1"
     let values = [playId];
     pool.query(text, values, (err, result) => {
         if (err) {
@@ -149,7 +162,8 @@ app.get('/playlists/:id', (request, response) => {
         }
         let data = {
             playlists : result.rows,
-            name : result.rows[0].name
+            name : result.rows[0].name,
+            play_id : result.rows[0].playlist_id
         };
         response.render('playlist', data)
     })
@@ -192,6 +206,22 @@ app.post('/artists', (request, response) => {
         }
     })
 })
+
+
+//post route for adding new songs to playlist
+app.post('/playlists/:id', (request, response) => {
+    let playId = request.params.id;
+    let text = "INSERT INTO playlist_song (playlist_id, song_id) VALUES ($1, $2) RETURNING *;";
+    let values = [playId, request.body.song_id];
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+            response.statu(500).send("Error adding song to playlist");
+        }
+        response.redirect('/playlists/'+playId);
+    })
+})
+
 
 //post route for adding new playlists
 app.post('/playlists', (request, response) => {
