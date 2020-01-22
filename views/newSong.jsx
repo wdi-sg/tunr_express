@@ -3,11 +3,21 @@ const Layout = require("./layout");
 
 class newSong extends React.Component {
   render() {
-    const postPath = "/artists/" + this.props.artistId + "/songs/";
+    let postPath;
+    const artists = this.props.artists;
+    const artistElement = artists.map(artist => {
+      postPath = "/artists/" + artist.id + "/songs/";
+      return <option value={artist.id}>{artist.name}</option>;
+    });
+    
     return (
       <Layout>
         <div className="container">
           <form action={postPath} method="POST">
+            <label>Artist</label>
+            <select className="form-control form-group" name="id">
+              {artistElement}
+            </select>
             <div class="form-group">
               <label for="exampleInputEmail1">Title</label>
               <input
@@ -49,6 +59,7 @@ class newSong extends React.Component {
                 required
               />
             </div>
+
             <button type="submit" class="btn btn-primary">
               Submit
             </button>

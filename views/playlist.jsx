@@ -3,34 +3,21 @@ const Layout = require("./layout");
 
 class Playlist extends React.Component {
   render() {
-    console.log(this.props.playlists);
-    let playlistElement;
-    if (Array.isArray(this.props.playlists)) {
-      const playlists = this.props.playlists;
-      playlistElement = playlists.map(playlist => {
-        const playListPath = "/playlists/" + playlist.id;
-        return (
-          <h6 className="mb-5">
-            <a href={playListPath}>{playlist.name}</a>
-          </h6>
-        );
-      });
-    } else {
-      const newSongPath = "/playlists/" + this.props.playlists.id + "/newsong";
-      playlistElement = (
-        <div className="d-flex flex-column justify-content-center ">
-          <h1>{this.props.playlists.name}</h1>
-          <a className="btn btn-primary" href={newSongPath}>
-            New Song
-          </a>
-        </div>
-      );
-    }
+    console.log(this.props);
+    const playlistName = this.props.playlistName.name;
+    const playlistSongs = this.props.playlistSongs;
+
+    const songElement = playlistSongs.map(song => {
+      return <h6><a className="text-light" href={song.preview_link}>{song.title}</a></h6>;
+    });
+
+    console.log(playlistName, playlistSongs);
 
     return (
       <Layout>
-        <div className="container d-flex flex-column align-items-center playlist">
-          {playlistElement}
+        <div className="container text-center">
+          <h1>{playlistName}</h1>
+          {songElement}
         </div>
       </Layout>
     );

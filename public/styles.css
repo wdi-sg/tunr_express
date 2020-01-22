@@ -10,6 +10,7 @@ img {
 .card {
   background: #252524;
   width: 350px;
+  max-height: 600px !important;
 }
 
 h6 a {
@@ -17,9 +18,10 @@ h6 a {
 }
 
 h6 a:hover {
-  color: #88B800;
+  color: #88b800;
 }
 
-.playlist{
-  margin-top: 250px;
+.new-playlist {
+  margin-top: 300px;
 }
+

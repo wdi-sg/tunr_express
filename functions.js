@@ -67,11 +67,13 @@ module.exports.artistEditPage = (request, response) => {
 };
 
 module.exports.addSongPage = (request, response) => {
-  const artistId = request.params.id;
-  const data = {
-    artistId: artistId
-  };
-  response.render("newSong", data);
+  const query = "SELECT * FROM ARTISTS";
+  pool.query(query, (err, result) => {
+    const data = {
+      artists: result.rows
+    };
+    response.render("newSong", data);
+  });
 };
 
 module.exports.showArtistSongs = (request, response) => {
@@ -147,7 +149,8 @@ module.exports.addArtist = (request, response) => {
 };
 
 module.exports.addSong = (request, response) => {
-  const artistId = request.params.id;
+  
+  const artistId = request.body.id;
   const title = request.body.title;
   const album = request.body.album;
   const previewLink = request.body.preview_link;
@@ -182,6 +185,64 @@ module.exports.showPlaylists = (request, response) => {
     const data = {
       playlists: result.rows
     };
-    response.render("playlist", data);
+    response.render("playlists", data);
+  });
+};
+
+module.exports.showPlaylist = (request, response) => {
+  const playlistID = request.params.id;
+  const values = [playlistID];
+  const query = `SELECT songs.id, songs.title, songs.preview_link
+                 FROM songs
+                 INNER JOIN playlist_song
+                 on (songs.id = playlist_song.song_id)
+                 WHERE playlist_song.playlist_id = $1`;
+  const playlistNameQuery = "SELECT * from playlist where id = $1";
+  pool.query(playlistNameQuery, values, (err, result) => {
+    const playlistName = result.rows[0];
+    pool.query(query, values, (err, result) => {
+      const data = {
+        playlistName: playlistName,
+        playlistSongs: result.rows
+      };
+      response.render("playlist", data);
+    });
+  });
+};
+
+module.exports.showSongFormForPlaylist = (request, response) => {
+  const query = "SELECT * from songs";
+  pool.query(query, (err, result) => {
+    const data = {
+      songs: result.rows,
+      playlistID: request.params.id
+    };
+    response.render("newPlaylistSong", data);
+  });
+};
+
+module.exports.makeNewPlaylist = (request, response) => {
+  const playlistName = request.body.playlist_name;
+  const values = [playlistName];
+  const query = "INSERT into playlist (name) VALUES($1)";
+  pool.query(query, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      response.redirect("/playlists");
+    }
+  });
+};
+
+module.exports.addSongIntoPlaylistSong = (request, response) => {
+  const playlistID = request.params.id;
+  const songID = request.body.song_id;
+  const values = [songID, playlistID];
+  const query =
+    "INSERT into playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
+  pool.query(query, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      response.redirect("/playlists/" + playlistID);
+    }
   });
 };
