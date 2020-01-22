@@ -47,7 +47,6 @@ h1 {
 }
 
 .artists ul li:hover {
-    background: rgb(109,208,126, 1);
     color: #ffffff;
 }
 
@@ -106,6 +105,44 @@ input[type="text"] {
 }
 
 .button-submit:hover {
+    background: #000000;
+    cursor: pointer;
+}
+
+.button-edit,
+.button-delete {
+    width: 37%;
+    margin: 0;
+    display: inline-block;
+}
+
+.button-edit {
+    background: rgb(109,208,126, 1);
+    padding: 10px 20px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
+}
+
+.button-edit:hover {
+    background: #000000;
+    cursor: pointer;
+}
+
+.button-delete {
+    background: #555555;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
+}
+
+.button-delete:hover {
     background: #000000;
     cursor: pointer;
 }

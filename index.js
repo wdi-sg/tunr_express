@@ -3,6 +3,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const reactEngine = require('express-react-views').createEngine();
+const cookieParser = require('cookie-parser')
 
 // Initialise postgres client
 const configs = {
@@ -31,6 +32,8 @@ const app = express();
 app.use(methodOverride('_method'));
 app.engine('jsx', reactEngine);
 
+app.use(cookieParser());
+
 // Set react-views to be the default view engine
 
 app.set('views', __dirname + '/views');
@@ -48,8 +51,36 @@ app.use(express.urlencoded({
  * ===================================
  */
 
+app.get('/home', (request, response) => {
+  let myResponse = "visits: "+request.cookies.visits;
+  response.send(myResponse);
+});
+
+/**
+ * ===================================
+ * Routes {ARTISTS}
+ * ===================================
+ */
+
 app.get('/artists', (request, response) => {
+  
+  // get the currently set cookie
+  var visits = request.cookies['visits'];
+
+  // see if there is a cookie
+  if( visits === undefined ){
+    // set a default value if it doesn't exist
+    visits = 1;
+  }else{
+    // if a cookie exists, make a value thats 1 bigger
+    visits = parseInt( visits ) + 1;
+  }
+  var date = new Date();
+  date.setTime(date.getTime() + (10 * 1000));
+  response.cookie('visits', visits, { expires: date });
+
   // query database for all pokemon
+  
   const queryString = 'SELECT * from artists'
   pool.query(queryString, (err, result) => {
     if (err) {
@@ -111,23 +142,32 @@ app.get('/artists/:id', (request,response) => {
   const queryString = 'SELECT * from artists WHERE id=$1;'
   const values = [request.params.id];
   pool.query(queryString, values, (err,result) => {
-    let currentArtist = result.rows[0];
-    let artistId = result.rows[0].id;
-    let songsQuery = "SELECT * FROM songs WHERE artist_id="+artistId;
-    pool.query(songsQuery, (songsErr, songsResult) => {
-      let songs = [];
-      for (var i = 0; i < songsResult.rows.length; i++) {
-        let songName = songsResult.rows[i].title;
-        songs = songs + "," + songName;
-      }
-      //console.log(songs);
-    });
-    console.log(currentArtist)
-    let data = {
-        artists: currentArtist
+    if (err) {
+      console.log("error", err.message)
+    } else {
+      let currentArtist = result.rows[0];
+      let artistId = result.rows[0].id;
+      let songsQuery = "SELECT * FROM songs WHERE artist_id="+artistId;
+      pool.query(songsQuery, (songsErr, songsResult) => {
+        if (err) {
+          console.log("error", err.message)
+        } else {
+          let songs = [];
+          for (var i = 0; i < songsResult.rows.length; i++) {
+            let songName = songsResult.rows[i].title;
+            songs = songs + "," + songName;
+          }
+          console.log(currentArtist)
+          let data = {
+              artists: currentArtist,
+              songs: songsResult.rows
+          }
+          //console.log(songs);
+          response.render('single', data);
+        }
+      });
     }
-    response.render('single', data);
-  });
+  }); // end outer pool.query
 });
 
 app.get('/artists/:id/edit', (request,response) => {
@@ -144,7 +184,7 @@ app.get('/artists/:id/edit', (request,response) => {
 });
 
 app.put('/artists/:id', (request,response) => {
-  const queryString = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3, WHERE id=$1;'
+  const queryString = 'UPDATE artists SET name=$2, photo_url=$3, nationality=$4 WHERE id=$1;'
   const values = [
     request.params.id,
     request.body.name,
@@ -152,28 +192,98 @@ app.put('/artists/:id', (request,response) => {
     request.body.nationality
   ];
   pool.query(queryString, values, (err,result) => {
-    let currentArtist = result.rows[0];
-    console.log(currentArtist)
-    let data = {
-        artists: currentArtist
+    if (err) {
+      console.log("error", err.message)
+    } else {
+      let currentArtist = result.rows[0];
+      console.log(currentArtist)
+      let data = {
+          artists: currentArtist
+      }
+      response.render('single', data);
     }
-    response.render('single', data);
   });
 });
 
 app.delete('/artists/:id', (request, response) => {
-  const queryString = 'DELETE from artists WHERE id=$1;'
-  const values = [request.params.id];
-
-  pool.query(queryString, values, (err,result) => {
-    let currentArtist = result.rows[0];
-    console.log(currentArtist)
-    let data = {
-        artists: currentArtist
+  const queryId = request.params.id;
+  const queryString = 'DELETE from artists WHERE id='+queryId;
+  pool.query(queryString, (err,result) => {
+    if (err) {
+      console.log("error", err.message)
+    } else {
+      const queryArtistString = 'SELECT * from artists;'
+      pool.query(queryArtistString, (artistErr, artistResult) => {
+        if (artistErr) {
+          console.log("error", err.message)
+        } else {
+          let currentArtist = result.rows;
+          console.log(currentArtist)
+          let data = {
+              artists: currentArtist
+          }
+          response.render('home', data);
+        }
+      });
     }
-    response.render('home', data);
   });
 });
+
+/**
+ * ===================================
+ * Routes {PLAYLISTS}
+ * ===================================
+ */
+
+app.get('/playlist/new', (request, response) => {
+  response.render('playlist-new');
+});
+
+app.get('/playlist', (request, response) => {
+  
+  const queryString = 'SELECT * from playlist'
+  pool.query(queryString, (err, result) => {
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      console.log('query result:', result);
+      let data = {
+          playlists: result.rows
+      }
+      response.render('playlist-home', data);
+    }
+  });
+  // respond with HTML page displaying all pokemon
+  //response.render('home');
+});
+
+app.post('/playlist', (request,response) => {
+  let insertQueryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING id';
+
+  const values = [
+    request.body.name,
+  ];
+
+  pool.query(insertQueryText, values, (err, result) => {
+    if (err) {
+      //console.error('query error:', err.stack);
+      response.send( 'query error' );
+    } else {
+      let data = {
+          playlists: result.rows[0],
+      }
+      response.render('playlist-home', data);
+      //console.log(data)
+    }
+  });
+});
+
+/**
+ * ===================================
+ * Routes {CATCH}
+ * ===================================
+ */
 
 app.get('/', (request,response) => {
   response.send("Hello World");

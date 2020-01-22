@@ -3,11 +3,11 @@ const Layout = require("./layout");
 
 class Home extends React.Component {
   render() {
-    let listOfArtists = this.props.artists.map(item => {
-      let artistUrl = "/artists/"+ item.id;
-      return <a href={artistUrl}><li>{item.name}</li></a>
-    });
-    let listOfSongs = this.props.artists.map(item => {
+      let listOfArtists = this.props.artists.map(item => {
+        let artistUrl = "/artists/"+ item.id;
+        return <a href={artistUrl}><li>{item.name}</li></a>
+      });
+      let listOfSongs = this.props.artists.map(item => {
       let artistUrl = "/artists/"+ item.id;
       return <a href={artistUrl}><li>{item.name}</li></a>
     });
