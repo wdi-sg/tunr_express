@@ -69,6 +69,16 @@ app.get("/playlists/:id", (request, response) => {
     response.render("playlist", data);
   });
 });
+app.get("/playlists/:id/newsong", (request, response) => {
+  const query = "SELECT * from songs";
+  pool.query(query, (err, result) => {
+    const data = {
+      songs: result.rows,
+      playlistID: request.params.id
+    };
+    response.render("newPlaylistSong", data);
+  });
+});
 
 // Edit database
 app.put("/artists/:id/", functions.editArtist);
@@ -84,6 +94,19 @@ app.post("/playlists", (request, response) => {
     if (err) console.log(err);
     else {
       response.redirect("/playlists");
+    }
+  });
+});
+app.post("/playlists/:id/", (request, response) => {
+  const playlistID = request.params.id;
+  const songID = request.body.song_id;
+  const values = [songID, playlistID];
+  const query =
+    "INSERT into playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
+  pool.query(query, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      response.redirect("/playlists/" + playlistID);
     }
   });
 });
