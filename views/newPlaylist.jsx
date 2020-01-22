@@ -7,7 +7,7 @@ class NewPlaylist extends React.Component {
         <div className="container h-100">
     <div className="row h-100 justify-content-center align-items-center">
         <div className="col-10 col-md-8 col-lg-6">
-<form className="mt-5" method="POST" action="/playlists">
+<form className="mt-5" method="POST" action="/">
   <div className="form-group">
   <h1>New Playlist</h1>
     <label htmlFor="name">Playlist name</label>

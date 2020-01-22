@@ -11,7 +11,7 @@ class editArtist extends React.Component {
         <div className="col-10 col-md-8 col-lg-6">
 <form className="mt-5" method="POST" action={formUrl}>
   <div className="form-group">
-  <h1>New Artists</h1>
+  <h1>Edit Artists</h1>
     <label htmlFor="name">Name</label>
     <input type="text" className="form-control" name="name" value={this.props.name}/>
     </div>

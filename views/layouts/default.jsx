@@ -22,8 +22,11 @@ class DefaultLayout extends React.Component {
           <li className="nav-item">
         <a className="nav-link mt-4" href="/">Artists</a>
       </li>
+                         <li className="nav-item">
+      <a className="nav-link mt-4" href="/playlists">Playlist</a>
+      </li>
        <li className="nav-item">
-      <a className="nav-link mt-4" href="/new">Add</a>
+      <a className="nav-link mt-4" href="/new">Add Artists</a>
       </li>
              <li className="nav-item">
       <a className="nav-link mt-4" href="/playlists/new">Add Playlist</a>

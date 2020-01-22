@@ -121,9 +121,6 @@ const deleteArtist = (request,response)=>{
     });
   };
 /////////////////PART 2//////////////////
-const showPlayList = (request,response)=>{
-response.send("bdc");
-}
 const addPlayListPage = (request, response)=>{
         response.render("newPlaylist");
 }
@@ -140,15 +137,71 @@ const addPlayList = (request,response)=>{
     });
 }
 const showPlayList = (request, response)=>{
-    // let id = request.params.id;
-    // let text = 'SELECT * FROM playlists WHERE '
-    // pool.query(text, values, (err,res)=>{
-    //     if(err){
-    //         console.log(err);
-    //     }
 
-    // });
-    response.send("show playlists");
+    let text = 'SELECT * FROM playlist WHERE id=$1';
+    let values = [request.params.id];
+    pool.query(text, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        let text2 = `SELECT * FROM songs INNER JOIN playlist_songs ON(songs.id =playlist_songs.song_id ) WHERE playlist_songs.playlist_id=$1`;
+            pool.query(text2, values, (error,result)=>{
+        if(error){
+            console.log(error);
+        }
+        const data = {
+            name : res.rows[0].name,
+            id : request.params.id,
+            songs: result.rows
+        }
+        response.render('playlistPage', data);
+    });
+    });
+}
+const showPlayLists = (request, response)=>{
+ let text = 'SELECT * FROM playlist';
+    pool.query(text,(err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        const data ={
+            playlists:res.rows
+        };
+        response.render('listPlaylist', data);
+    });
+}
+const newPlaylistSongPage = (request,response)=>{
+    let text = 'SELECT * FROM songs';
+
+    pool.query(text, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        const data = {
+            songs:res.rows,
+            id: request.params.id
+        }
+        response.render("newPlaylistSongPage",data);
+    });
+}
+//GET PLAYLIST ID AND SONG ID AND PUT IN THE PLAYLIST SONG TABLE
+const addPlayListSongs = (request, response)=>{
+         let text = 'INSERT INTO playlist_songs ( song_id, playlist_id) values($1, $2)';
+    let values = [request.body.songs, request.params.id];
+    console.log(request.body.songs);
+    pool.query(text, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        let path = '/playlists/'+request.params.id;
+        response.redirect(path);
+    });
+}
+const displaySongsToAddArtist = (request,response)=>{
+    response.render('addSongs');
+}
+const addSongsToArtist = (request,response)=>{
+
 }
 /**
  * ===================================
@@ -159,16 +212,22 @@ const showPlayList = (request, response)=>{
 app.get('/', showArtists);
 app.get('/new', addArtistPage);
 app.post('/', addArtist);
+app.get('/artist/:id/songs/new', displaySongsToAddArtist);
+app.post('/artist/:id/songs', addSongsToArtist);
 app.get('/artists/:id/songs',showArtistSongs);
 app.get('/artists/:id/edit',editArtist);
 app.put('/artists/:id',storeEditArtist);
 app.get('/artists/:id',showArtist);
 app.delete('/artists/:id', deleteArtist);
 //////////////////PLAYLIST/////////////////
+app.get('/playlists/new', addPlayListPage);
 app.get('/playlists/:id', showPlayList)
 app.get('/playlists', showPlayLists)
-app.get('/playlists/new', addPlayListPage);
 app.post('/playlists', addPlayList );
+app.get('/playlists/:id/newsong', newPlaylistSongPage);
+app.get('/playlists/:id/newsong', newPlaylistSongPage);
+app.post('/playlists/:id', addPlayListSongs);
+
 /**
  * ===================================
  * Listen to requests on port 3000

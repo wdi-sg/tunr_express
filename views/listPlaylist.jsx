@@ -1,26 +1,25 @@
 var React = require("react");
 var DefaultLayout = require('./layouts/default');
-class artistSongs extends React.Component {
+class listPlaylist extends React.Component {
   render() {
-    let songs = this.props.songs;
-    const listSongs = songs.map((song)=>{
-    return(<div className="card m-5" style={{width: "20rem"}}>
+    let playlists = this.props.playlists;
+    const listPlaylist = playlists.map((playlist)=>{
+        let link  = "/playlists/"+playlist.id;
+       return (<div className="card m-5" style={{width: "20rem"}}>
   <div className="card-body d-flex flex-column justify-content-between">
-    <h4 className="card-title">{song.title}</h4>
+    <h4 className="card-title"><a href={link}>{playlist.name}</a></h4>
   </div></div>);
-    });
+    })
     return (
         <DefaultLayout>
       <div className="container h-100">
     <div className="row h-100 justify-content-center align-items-center">
         <div className="col-10 col-md-8 col-lg-6 text-center">
-        <span style={{display: "inline"}}>
-        <h1>List Of Songs</h1><form method='POST'action='/artists'><button type="submit" className="btn btn-primary btn-customized">Add</button></form>
-        </span>
+        <h1>Playlist</h1>
         </div>
         </div>
  <div className="row">
-          {listSongs}
+          {listPlaylist}
                   </div>
         </div>
         </DefaultLayout>
@@ -28,4 +27,4 @@ class artistSongs extends React.Component {
   }
 }
 
-module.exports = artistSongs;
+module.exports = listPlaylist;
