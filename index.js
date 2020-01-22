@@ -181,17 +181,20 @@ app.get('/playlists/new', (request, response) => {
 app.post('/playlists', postFormPlaylists);
 
 app.get('/playlists/:id', (request, response) => {
-        let values = [request.params.id];
+    let values = [request.params.id];
     let insertQueryText = 'SELECT * FROM playlist WHERE id=$1';
 
     pool.query(insertQueryText, values, (err,result) => {
         let results = result.rows[0];
-
-        let data = {
+        let selectQueryText = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id = $1";
+        pool.query(selectQueryText, values, (error,res) =>{
+            let data = {
             id: results.id,
-            name: results.name
-        }
-    response.render('viewplaylist', data)
+            name: results.name,
+            songs: res.rows
+            }
+        response.render('viewplaylist', data)
+        })
     })
 })
 
@@ -210,13 +213,28 @@ app.get('/playlists/:id/newsong', (request, response) => {
                     playlist: result.rows[0],
                     songs: songResult.rows
                 }
+
             response.render('newsongsplaylist',data)
         })
     });
 })
 
 app.post('/playlists/:id', (request,response)=>{
+    let insertQueryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
 
+    const values = [
+        request.body.song_id,
+        request.params.id
+    ];
+
+    pool.query(insertQueryText, values, (err, result)=>{
+        if( err ){
+            console.log("Error!", err);
+            response.send("error");
+        } else{
+            response.redirect('/playlists/');
+        }
+    });
 });
 
 /**
