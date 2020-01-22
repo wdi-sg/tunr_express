@@ -49,16 +49,15 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
+  // query database for all artists
 
-  // respond with HTML page displaying all pokemon
+  // respond with HTML page displaying all artists
   response.render('home');
 });
 
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new artist
-
 
   response.render('new');
 });
@@ -107,6 +106,102 @@ app.get('/artists/:id',(request, response)=>{
     });
 
 });
+
+
+
+
+
+
+// GET /playlist
+// app.get('/playlist', (request, response) => {
+//   // respond with HTML page with form to create new playylist
+//       let playlist = obj.playlist;
+//       const data = {
+//         playlist: lists
+
+//   response.render('playlist');
+// }
+// });
+
+
+
+
+
+
+// Create a form: /playlists/new
+app.get('/playlist/new', (request, response) => {
+  // respond with HTML page with form to create new playylist
+  response.render('newplaylist');
+});
+
+
+
+app.post('/playlist',(request, response)=>{
+
+  let insertQueryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+
+  const values = [
+    request.body.name
+  ];
+
+  pool.query(insertQueryText, values, (err, result)=>{
+    console.log("INSERT query callback")
+
+    console.log( )
+
+    if( err ){
+      console.log("ERROR", err);
+      response.send("error")
+    }else{
+      console.log("DONE", result.rows)
+      response.send("You have added a new playlist : " + request.body.name)
+    }
+  });
+  // response.send("heeeyyyyy");
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*app.get('/artists/:id/songs', (request,response)=>{
+      let artistidSongs = parseInt(request.params.id);
+        let query = "SELECT * FROM songs WHERE id=" + artistId';
+
+
+
+
+
+            let values = [request.params.id];
+            pool.query(queryText, values, (err, res)=>{
+                const data = {
+                    songs: res.rows
+                }
+                response.render("artistSongs", data);
+            })
+};
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
 
 
 
