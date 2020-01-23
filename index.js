@@ -539,6 +539,14 @@ app.post('/signin/', (request, response) => {
     })
 })
 
+
+app.get('/logout', (request, response) => {
+    response.clearCookie('logged_in');
+    response.clearCookie('user_id');
+    response.clearCookie('session');
+    response.redirect('/');
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000

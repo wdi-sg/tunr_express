@@ -6,7 +6,7 @@ class NavBar extends React.Component {
         let logInDisplay;
         if (this.props.loggedIn) { logInDisplay =  <a className="nav-item btn btn-outline-primary" href="/logout/">Log Out</a>
         } else {
-          logInDisplay = <a className="nav-item btn btn-outline-primary" href="/signin/">Sign-In</a>
+          logInDisplay = <span><a className="nav-item btn btn-primary" href="/register">Register</a> <a className="nav-item btn btn-outline-primary" href="/signin/">Sign-In</a></span>
         }
         return (<nav className="navbar navbar-light">
             <ul className="nav">
