@@ -26,5 +26,11 @@ CREATE TABLE IF NOT EXISTS playlist_songs(
 CREATE TABLE IF NOT EXISTS users(
 	id SERIAL PRIMARY KEY,
 	username TEXT,
-	password TEXT
+	password TEXT,
+	UNIQUE(username)
+);
+CREATE TABLE IF NOT EXISTS favorites(
+	id SERIAL PRIMARY KEY,
+	user_id INTEGER,
+	song_id INTEGER
 );

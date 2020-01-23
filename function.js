@@ -1,5 +1,10 @@
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
+const express = require('express');
+const app = express();
 
+const SALT = "saltcookie";
 // Initialise postgres client
 const configs = {
   user: 'jessica',
@@ -7,7 +12,7 @@ const configs = {
   database: 'tunr_db',
   port: 5432,
 };
-
+app.use(cookieParser());
 const pool = new pg.Pool(configs);
 
 /**
@@ -182,5 +187,44 @@ module.exports.registerUserPage = (request,response)=>{
     response.render("registerUserPage");
 }
 module.exports.registerUser = (request,response)=>{
+    let insertQueryText = `INSERT INTO users(username, password) VALUES($1,$2) RETURNING id`;
+    let hashPWD = sha256(request.body.password+SALT);
+    let values = [request.body.username,hashPWD];
+    pool.query(insertQueryText, values, (err,res)=>{
+        if( err ){
+      console.log(err);
+    }else{
+    let user_id = res.rows[0].id;
+    let hashedCookie = sha256(SALT+user_id);
+    response.cookie("username", request.body.username);
+    response.cookie("loggedIn", hashedCookie);
+    response.cookie("userId", user_id);
     response.redirect('/');
+    }
+    });
+}
+module.exports.loginPage = (request,response)=>{
+    response.render("loginPage");
+}
+module.exports.loginUser = (request,response)=>{
+    let queryText = `SELECT * FROM users WHERE username=$1`;
+    let values = [request.body.username];
+    pool.query(queryText, values, (err,res)=>{
+        if( err ){
+      console.log(err);
+    }else{
+    let hashPWD = sha256(request.body.password+SALT);
+    if(hashPWD===res.rows[0].password){
+        let user_id = res.rows[0].id;
+        let hashedCookie = sha256(SALT+user_id);
+        response.cookie("username", request.body.username);
+        response.cookie("loggedIn", hashedCookie);
+        response.cookie("userId", user_id);
+        response.redirect('/');
+    }
+    else{
+        response.send("Wrong password");
+    }
+    }
+    });
 }

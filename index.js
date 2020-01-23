@@ -1,9 +1,8 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const sha256 = require('js-sha256');
 const methodOverride = require('method-override');
 const pg = require('pg');
-const func = require('./function')
+const func = require('./function');
 // Initialise postgres client
 const configs = {
   user: 'jessica',
@@ -48,6 +47,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 //Artist
+app.get('/', func.showArtists);
 app.get('/new', func.addArtistPage);
 app.post('/', func.addArtist);
 app.get('/artist/:id/songs/new', func.displaySongsToAddArtist);
@@ -65,10 +65,11 @@ app.post('/playlists', func.addPlayList );
 app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
 app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
 app.post('/playlists/:id', func.addPlayListSongs);
-
+//////////////////USER/////////////////
 app.get('/register', func.registerUserPage);
 app.post('/register', func.registerUser);
-app.get('/', func.showArtists);
+app.get('/login', func.loginPage);
+app.post('/login', func.loginUser);
 /**
  * ===================================
  * Listen to requests on port 3000
