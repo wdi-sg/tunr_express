@@ -26,9 +26,5 @@ CREATE TABLE IF NOT EXISTS playlist (
 CREATE TABLE IF NOT EXISTS songs_playlist (
     id SERIAL PRIMARY KEY,
     song_id INT,
-    playlist_id INT,
-    playlist_name TEXT,
-    song_title TEXT,
-    song_album TEXT,
-    artist_id INT
+    playlist_id INT
 );

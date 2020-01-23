@@ -7,7 +7,7 @@ class AddSongToPlaylist extends React.Component {
             <html>
         <body>
           <div>
-            <h1>Add Song to Playlistt</h1>
+            <h1>Add Song to Playlist</h1>
             <h2>Insert either ID or Song Title</h2>
             <form action="/playlist" method="POST">
             ID:<input name="song_id"/>

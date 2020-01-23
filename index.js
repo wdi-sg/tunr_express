@@ -188,32 +188,31 @@ app.post('/playlist', (request, response) => {
 });
 
 
-
+/* TRY LATER */
 /////////////////////////////////////// VIEW PLAYLISTS - based on name /////////////////////////////////////
-app.get('/playlists/name', (request, response) => {
+// app.get('/playlists/name', (request, response) => {
 
-    let querySelectorAllPlaylist = ('SELECT * FROM playlist');
+//     let querySelectorAllPlaylist = ('SELECT * FROM playlist');
 
-    pool.query(querySelectorAllPlaylist, (err, result) => {
+//     pool.query(querySelectorAllPlaylist, (err, result) => {
 
-        // if (err) {
-        //     // err below is a built-in function from express to check error
-        //     console.log("ERRRRR", err);
-        //     response.status(500).send("error");
-        // }
+//         // if (err) {
+//         //     // err below is a built-in function from express to check error
+//         //     console.log("ERRRRR", err);
+//         //     response.status(500).send("error");
+//         // }
 
 
-            for (let i = 0; i < result.rows.length; i++) {
-                console.log(result.rows[i].name);
-                response.send(result.rows[i].name);
-        }
-    });
-});
-
+//             for (let i = 0; i < result.rows.length; i++) {
+//                 console.log(result.rows[i].name);
+//                 response.send(result.rows[i].name);
+//         }
+//     });
+// });
 
 
 /////////////////////////////////////// VIEW ONE PLAYLISTS - based on ID /////////////////////////////////////
-app.get('/playlists/:id', (request, response) => {
+app.get('/playlist/:id', (request, response) => {
 
     let querySelectorAllPlaylist = ('SELECT * FROM playlist');
     const index = parseInt(request.params.id);
@@ -236,14 +235,36 @@ app.get('/playlists/:id', (request, response) => {
 
 
 
-
-
-
 ///////////////////////////////// INSERT NEW SONG + VIEW ALL PLAYLIST //////////////////////////////////
 app.get('/playlist/new', (request, response) => {
     response.render('add-playlist');
 });
 
+
+
+//////////////////////////////////////// FORM TO ADD SONG INTO PLAYLIST /////////////////////////////////
+app.get('/playlist/:id/newsong', (request, response) => {
+    response.render('add-song-playlist');
+});
+
+
+////////////////////////////////////// INSERT NEW SONG INTO PLAYLIST ////////////////////////////////////
+app.post('/playlist', (request, response) => {
+
+    let queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+    let nameInput = request.body.name;
+    let photoInput = request.body.photo;
+    let nationalityInput = request.body.nationality;
+    const values = [nameInput, photoInput, nationalityInput];
+
+    // console.log(result.rows); - WORKED
+    // console.log(request.body); - WORKED
+
+    pool.query(queryString, values, (err, result) => {
+        response.redirect('/artists');
+    });
+});
 
 
 
@@ -295,3 +316,7 @@ let onClose = function() {
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+
+
+
