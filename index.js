@@ -66,6 +66,21 @@ app.get('/users/new', (request,response) => {
     response.render('register');
 });
 
+//add new songs to database
+app.get('/songs/new', (request, response) => {
+    let text = "SELECT id, name FROM artists ORDER BY id ASC"
+    pool.query(text, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+                response.status(500).send("ERROR");
+        }
+        let data = {
+            artists : result.rows
+        }
+        response.render('songadd', data)
+    })
+})
+
 
 //new artist form page
 app.get('/artists/new', (request, response) => {
@@ -102,13 +117,13 @@ app.get('/artists/:id/songs', (request, response) => {
     })
 })
 
-//add song to artist
+//add song to artist from artist
 app.get('/artists/:id/addsong', (request, response) => {
     let artistId = request.params.id;
     let data = {
         artistId : artistId
     };
-    response.render('songadd', data)
+    response.render('songadda', data)
 })
 
 
