@@ -412,6 +412,18 @@ app.get('/playlist/:id', (request, response) => {
 
 /**
  * ===================================
+ * Registration and log in
+ * ===================================
+ */
+
+app.get('/register', (request, response) => {
+    console.log("HEEEEELLLLLPPPPPP");
+    response.render('register');
+})
+
+
+/**
+ * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
