@@ -3,6 +3,8 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser')
 
 // Initialise postgres client
 const configs = {
@@ -38,6 +40,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+app.use(cookieParser());
 /**
  * ===================================
  * Routes
@@ -183,28 +186,77 @@ app.post('/playlist',(request, response) => {
 app.get ('/playlist/:id',(request,response)=>{
   let playlistId = parseInt(request.params.id);
 
-
   response.render()
 });
-
 
 
 // render the form to add a song to the playlist
 app.get ('/playlist/:id/newsong',(request,response)=>{
   let playlistId = parseInt(request.params.id);
+  console.log(playlistId);
 
-  let query = 'SELECT id, title from songs';
-    pool.query(query, (err,result)=>{
+  let songQuery = "SELECT * FROM songs";
+    pool.query(songQuery, (err,result) => {
+      let songs = result.rows;
+      console.log('SONGS:', songs);
 
-      const values = [ ];
+    let playlistQuery = 'SELECT * from playlist';
+      pool.query(playlistQuery, (listErr,listResult)=>{
+        let playlistArray = listResult.rows;
+        console.log(playlistArray);
+
+        let data = {
+          songs: songs,
+          playlist_id: playlistId,
+          playlist: playlistArray};
+        response.render('songlist',data);
+      });
     });
-    //results.row = array of title objects for ALL artists
-    //render page with dropdown for all songs and all playlists
-    //button to create new playlist
-  response.render('songlist',data);
 });
 
+// for this playlist, put a single song on the playlist
+app.post('/playlist/:id', (request,response)=>{
+  response.send('added song in playlist')
+  // "INSERT INTO songs_playlist (playlist_id,songs_id) VALUES ($1, $2)";
+  //   let values = [ playlistId, ];
+});
 
+//render register pg
+app.get('/register', (request, response) => {
+  response.render('register');
+
+});
+
+// Create a route that accepts the POST request from the form.
+// After the user has been put in the DB, set cookies to set them as logged in:
+
+app.post('/register', (request,response)=>{
+  let insertQueryText = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
+  console.log(request.body.pw);
+  let hashedPw = sha256(request.body.pw);
+  console.log(hashedPw);
+  const values = [
+    request.body.username,
+    hashedPw
+  ];
+
+  pool.query(insertQueryText, values, (err, result)=>{
+    if(err){
+      console.log("ERROR:", err);
+      response.send("ERROR")
+    }else{
+      console.log("DONE", result.rows)
+      let user_id = result.rows[0].id.toString();
+      let hashedCookie = sha256(user_id);
+      let hashedUn = sha256(request.body.username);
+
+      response.cookie('logged_in', true);
+      response.cookie('username', hashedUn);
+      response.cookie('loggedIn', hashedCookie);
+      response.send("we're done")
+    }
+  });
+});
 
 
 /**
