@@ -176,3 +176,11 @@ module.exports.displaySongsToAddArtist = (request,response)=>{
 module.exports.addSongsToArtist = (request,response)=>{
 
 }
+
+
+module.exports.registerUserPage = (request,response)=>{
+    response.render("registerUserPage");
+}
+module.exports.registerUser = (request,response)=>{
+    response.redirect('/');
+}
