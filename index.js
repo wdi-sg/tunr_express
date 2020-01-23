@@ -149,13 +149,14 @@ app.get('/favs', (request, response) => {
     let text2 = "SELECT title, id FROM songs ORDER BY id ASC;";
     pool.query(text1, values1, (err1, result1) => {
         pool.query(text2, (err2, result2) => {
+            let data;
             if (result1.rows.length == 0) {
                 data = {
                     songs : result2.rows,
                     fSongs : []
-                }
+                };
             } else {
-                let data = {
+                data = {
                     songs : result2.rows,
                     fSongs : result1.rows
                 };
@@ -364,7 +365,15 @@ app.post('/', (request, response) => {
 
 //post for adding songs to fav
 app.post('/favs', (request, response) => {
-
+    let text = "INSERT INTO favs (song_id, users_id) VALUES ($1, $2);";
+    let values = [request.body.song_id, request.cookies.userId];
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("Error :", err);
+            response.status(500).send("YOU GOT ERROR MATE IN YOUR FAVS");
+        }
+        response.redirect('/');
+    })
 })
 
 

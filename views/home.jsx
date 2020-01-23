@@ -16,6 +16,7 @@ class Home extends React.Component {
                             <li><a href="/artists">Artists</a></li>
                             <li><a href="/songs">Songs</a></li>
                             <li><a href="/playlists">Playlists</a></li>
+                            <li><a href="/favs">Favorites</a></li>
                         </ul>
                         <form action="/users/logout?_method=delete" method="POST">
                             <button>
