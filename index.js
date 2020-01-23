@@ -4,6 +4,8 @@ const express = require("express");
 const methodOverride = require("method-override");
 const pg = require("pg");
 const functions = require("./functions");
+const cookieParser = require("cookie-parser");
+const sha256 = require("js-sha256");
 
 // Initialise postgres client
 const configs = {
@@ -35,8 +37,8 @@ app.use(
     extended: true
   })
 );
-
 app.use(methodOverride("_method"));
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require("express-react-views").createEngine();
@@ -52,6 +54,15 @@ app.get("/artists/:id", functions.showSingleArtist);
 app.get("/artists/:id/songs", functions.showArtistSongs);
 app.get("/artists/:id/songs/new", functions.addSongPage);
 app.get("/artists/:id/edit", functions.artistEditPage);
+app.get("/register", (request, response) => {
+  let username = "";
+  let userID = "";
+  let loggedIn = false;
+  response.cookie("username", username);
+  response.cookie("userID", userID);
+  response.cookie("loggedIn", loggedIn);
+  response.render("register");
+});
 
 // Playlists
 app.get("/playlists", functions.showPlaylists);
@@ -63,28 +74,7 @@ app.get("/playlists/:id", functions.showPlaylist);
 app.get("/playlists/:id/newsong", functions.showSongFormForPlaylist);
 
 //Sort
-app.get("/sort/:type", (request, response) => {
-  const type = request.params.type;
-  if (type === "name") {
-    const query = `SELECT * from artists
-    ORDER BY name`;
-    pool.query(query, (err, result) => {
-      const data = {
-        artists: result.rows
-      };
-      response.render("home", data);
-    });
-  } else if (type ==="dateCreated") {
-    const query = `SELECT * from artists
-    ORDER BY id`;
-    pool.query(query, (err, result) => {
-      const data = {
-        artists: result.rows
-      };
-      response.render("home", data);
-    });
-  }
-});
+app.get("/sort/:type", functions.sortArtists);
 
 // Edit database
 app.put("/artists/:id/", functions.editArtist);
@@ -94,6 +84,45 @@ app.post("/artists", functions.addArtist);
 app.post("/artists/:id/songs/", functions.addSong);
 app.post("/playlists", functions.makeNewPlaylist);
 app.post("/playlists/:id/", functions.addSongIntoPlaylistSong);
+app.post("/register", (request, response) => {
+  let userExists;
+  const username = request.body.username;
+  const hashedPassword = sha256(request.body.password);
+
+  const query = "SELECT * from users";
+
+  pool.query(query, (err, result) => {
+    if (err) console.log(err);
+    else {
+      for (let i = 0; i < result.rows.length; i++) {
+        if (username === result.rows[i].name) {
+          userExists = true;
+        }
+      }
+      if (userExists) {
+        response.send("CANNOT, ALREADY REGISTERED");
+      }
+      if (!userExists) {
+        const values = [username, hashedPassword];
+        const registerQuery =
+          "INSERT into users (name, password) VALUES ($1, $2) RETURNING id";
+        pool.query(registerQuery, values, (err, result) => {
+          if (err) console.log(err);
+          else {
+            const userID = result.rows[0].id;
+            response.cookie("username", username);
+            response.cookie("loggedIn", "true");
+            response.cookie("userID", userID);
+            response.redirect("/");
+          }
+        });
+      }
+    }
+  });
+
+  // response.cookie("loggedIn");
+  // response.cookie("userID");
+});
 
 // Delete from database
 app.delete("/artists/:id", functions.deleteArtist);

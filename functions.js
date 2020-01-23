@@ -234,25 +234,36 @@ module.exports.makeNewPlaylist = (request, response) => {
 };
 
 module.exports.addSongIntoPlaylistSong = (request, response) => {
-  const playlistID = request.params.id;
+  const playlistID = parseInt(request.params.id);
   const songID = parseInt(request.body.song_id);
   const values = [songID, playlistID];
   const query = "SELECT * from playlist_song";
   let duplicate;
   pool.query(query, (err, result) => {
     for (let i = 0; i < result.rows.length; i++) {
-      console.log("HELLLLO", result.rows[i]);
       const innerSongID = parseInt(result.rows[i].song_id);
-      if (songID === innerSongID) {
+      const innerPlaylistID = parseInt(result.rows[i].playlist_id);
+      if (songID === innerSongID && playlistID === innerPlaylistID) {
         duplicate = true;
+      } else {
+        const nameQuery = "SELECT * from songs";
+        pool.query(nameQuery, (err, result) => {
+          for (let i = 0; i < result.rows.length; i++) {
+            if (result.rows[i].title === result.rows[songID - 1].title) {
+              duplicate = true;
+            }
+          }
+        });
       }
     }
+
     if (duplicate) {
       const data = {
         errorMessage: "Data already exists!"
       };
       response.render("404", data);
     }
+
     if (!duplicate) {
       const addSongQuery =
         "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)";
@@ -264,4 +275,27 @@ module.exports.addSongIntoPlaylistSong = (request, response) => {
       });
     }
   });
+};
+
+module.exports.sortArtists = (request, response) => {
+  const type = request.params.type;
+  if (type === "name") {
+    const query = `SELECT * from artists
+    ORDER BY name`;
+    pool.query(query, (err, result) => {
+      const data = {
+        artists: result.rows
+      };
+      response.render("home", data);
+    });
+  } else if (type === "dateCreated") {
+    const query = `SELECT * from artists
+    ORDER BY id`;
+    pool.query(query, (err, result) => {
+      const data = {
+        artists: result.rows
+      };
+      response.render("home", data);
+    });
+  }
 };
