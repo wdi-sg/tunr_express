@@ -26,13 +26,13 @@ class Login extends React.Component {
         </head>
         <body>
           <div>
-            <h2>Login</h2>
+            <h2>Log into Tunr!</h2>
             <form action="/login" method="POST">
               <p>
-                name <input name="name" />
+                Name <input name="name" required />
               </p>
               <p>
-                password <input name="password" />
+                Password <input type="password" name="password" required />
               </p>
 
               <div>

@@ -40,3 +40,4 @@ IF NOT EXISTS users
     name TEXT UNIQUE, 
     password TEXT
 );
+
