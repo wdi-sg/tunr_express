@@ -84,45 +84,7 @@ app.post("/artists", functions.addArtist);
 app.post("/artists/:id/songs/", functions.addSong);
 app.post("/playlists", functions.makeNewPlaylist);
 app.post("/playlists/:id/", functions.addSongIntoPlaylistSong);
-app.post("/register", (request, response) => {
-  let userExists;
-  const username = request.body.username;
-  const hashedPassword = sha256(request.body.password);
-
-  const query = "SELECT * from users";
-
-  pool.query(query, (err, result) => {
-    if (err) console.log(err);
-    else {
-      for (let i = 0; i < result.rows.length; i++) {
-        if (username === result.rows[i].name) {
-          userExists = true;
-        }
-      }
-      if (userExists) {
-        response.send("CANNOT, ALREADY REGISTERED");
-      }
-      if (!userExists) {
-        const values = [username, hashedPassword];
-        const registerQuery =
-          "INSERT into users (name, password) VALUES ($1, $2) RETURNING id";
-        pool.query(registerQuery, values, (err, result) => {
-          if (err) console.log(err);
-          else {
-            const userID = result.rows[0].id;
-            response.cookie("username", username);
-            response.cookie("loggedIn", "true");
-            response.cookie("userID", userID);
-            response.redirect("/");
-          }
-        });
-      }
-    }
-  });
-
-  // response.cookie("loggedIn");
-  // response.cookie("userID");
-});
+app.post("/register", functions.registerUser);
 
 // Delete from database
 app.delete("/artists/:id", functions.deleteArtist);

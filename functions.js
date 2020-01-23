@@ -7,7 +7,9 @@ const configs = {
   port: 5432
 };
 
+const sha256 = require("js-sha256");
 const pool = new pg.Pool(configs);
+const SALT = "HAHA";
 
 module.exports.showArtists = (request, response) => {
   let query = "SELECT * from artists";
@@ -298,4 +300,46 @@ module.exports.sortArtists = (request, response) => {
       response.render("home", data);
     });
   }
+};
+
+module.exports.registerUser = (request, response) => {
+  let userExists;
+  const username = request.body.username;
+  const hashedPassword = sha256(request.body.password);
+
+  const query = "SELECT * from users";
+
+  pool.query(query, (err, result) => {
+    if (err) console.log(err);
+    else {
+      for (let i = 0; i < result.rows.length; i++) {
+        if (username === result.rows[i].name) {
+          userExists = true;
+        }
+      }
+      if (userExists) {
+        const data = {
+          errorMessage:
+            "User already exists in database! Please choose a different username."
+        };
+        response.render("404", data);
+      }
+      if (!userExists) {
+        const values = [username, hashedPassword];
+        const registerQuery =
+          "INSERT into users (name, password) VALUES ($1, $2) RETURNING id";
+        pool.query(registerQuery, values, (err, result) => {
+          if (err) console.log(err);
+          else {
+            const userID = result.rows[0].id;
+            const hashedCookie = sha256(SALT + userID)
+            response.cookie("username", username);
+            response.cookie("loggedIn", hashedCookie);
+            response.cookie("userID", userID);
+            response.redirect("/");
+          }
+        });
+      }
+    }
+  });
 };
