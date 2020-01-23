@@ -142,6 +142,31 @@ app.get('/artists', (request, response) => {
     })
 })
 
+//get for songs in favs
+app.get('/favs', (request, response) => {
+    let text1 = "SELECT songs.title, songs.id FROM songs INNER JOIN favs ON (songs.id = favs.song_id) WHERE favs.users_id=$1 ORDER BY songs.id ASC;";
+    let values1 = [request.cookies.userId]
+    let text2 = "SELECT title, id FROM songs ORDER BY id ASC;";
+    pool.query(text1, values1, (err1, result1) => {
+        pool.query(text2, (err2, result2) => {
+            if (result1.rows.length == 0) {
+                data = {
+                    songs : result2.rows,
+                    fSongs : []
+                }
+            } else {
+                let data = {
+                    songs : result2.rows,
+                    fSongs : result1.rows
+                };
+            }
+            response.render('fav', data)
+        })
+    })
+})
+
+
+
 //List of all songs
 app.get('/songs', (request, response) => {
     let text = "SELECT title, id FROM songs ORDER BY id ASC";
@@ -286,21 +311,29 @@ app.delete('/users/logout', (request, response) => {
 
 //post route for adding users
 app.post('/users', (request,response) => {
-    console.log(request.body.password)
-    let passhash = sha256(request.body.password+salt);
-    console.log(passhash)
-    let text = "INSERT INTO users (name, passhash) VALUES ($1, $2) RETURNING id;";
-    let values = [request.body.name, passhash];
-    pool.query(text, values, (err, result) => {
-        if (err) {
-            console.log("Error :", err)
-            response.status(500).send("Error")
+    let text1 = "SELECT name FROM users WHERE name=$1;";
+    let values1 = [request.body.name];
+    pool.query(text1, values1, (err1, result1) => {
+        if (result1.rows.length === 0) {
+            let passhash = sha256(request.body.password+salt);
+            let text2 = "INSERT INTO users (name, passhash) VALUES ($1, $2) RETURNING id;";
+            let values2 = [request.body.name, passhash];
+            pool.query(text2, values2, (err2, result2) => {
+                if (err2) {
+                    console.log("Error :", err2)
+                    response.status(500).send("Error")
+                }
+                let session = sha256(result2.rows[0].id + "logged" + salt);
+                response.cookie('logSess', session);
+                response.cookie('userId', result2.rows[0].id)
+                response.redirect('/')
+            })
+        } else {
+            let data = {invalid : "Username Already In Use"}
+            response.render('register', data)
         }
-        let session = sha256(result.rows[0].id + "logged" + salt);
-        response.cookie('logSess', session);
-        response.cookie('userId', result.rows[0].id)
-        response.redirect('/')
     })
+
 })
 
 //post route for logging in
@@ -315,21 +348,24 @@ app.post('/', (request, response) => {
         }
         if (result.rows.length === 0) {
             response.send("No such user found.")
-        }
-        console.log(result.rows[0].passhash)
-        console.log(password)
-        if (result.rows[0].passhash == password) {
-            let session = sha256(result.rows[0].id + "logged" + salt);
-            response.cookie('userId', result.rows[0].id)
-            response.cookie('logSess', session);
-            response.redirect('/')
         } else {
-            response.send("Password Invalid!!");
+            if (result.rows[0].passhash == password) {
+                let session = sha256(result.rows[0].id + "logged" + salt);
+                response.cookie('userId', result.rows[0].id)
+                response.cookie('logSess', session);
+                response.redirect('/')
+            } else {
+                response.send("Password Invalid!!");
+            }
         }
     })
 })
 
 
+//post for adding songs to fav
+app.post('/favs', (request, response) => {
+
+})
 
 
 

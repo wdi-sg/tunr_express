@@ -16,6 +16,7 @@ class Register extends React.Component {
                                 <div className="form-group">
                                     <label>Name :</label>
                                     <input type="text" className="form-control" placeholder="Username" name="name"/>
+                                    <label type="text" className="font-red">{this.props.invalid}</label>
                                 </div>
                                 <div className="form-group">
                                     <label>Photo URL :</label>
