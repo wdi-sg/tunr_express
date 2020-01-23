@@ -445,6 +445,42 @@ app.post('/register', (request, response) => {
     })
 })
 
+
+app.get('/signin/', (request, response) => {
+    response.render('signin');
+});
+
+
+app.post('/signin/', (request, response) => {
+    const hashedpassword = sha256(request.body.password);
+    const username = request.body.username;
+    const queryString = `SELECT * FROM users WHERE username=$1 AND hashedpassword=$2 ;`;
+    const queryValues = [username, hashedpassword];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        } else {
+            if (result.rows.length) {
+                data = {
+                    message: `Signed in successfully!`
+                };
+                response.render('home', data);
+                return;
+            } else {
+                data = {
+                    message: `Wrong username and/or password! Boo.`
+                };
+                response.render('home', data);
+                return;
+            }
+        }
+    })
+})
+
 /**
  * ===================================
  * Listen to requests on port 3000

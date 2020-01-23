@@ -2,7 +2,7 @@ var React = require("react");
 
 class NavBar extends React.Component {
     render() {
-        return (<nav>
+        return (<nav className="navbar navbar-light">
             <ul className="nav">
                 <li className="nav-item">
                     <a className="nav-link active" href="/"><strong>Tunr Express</strong></a>
@@ -13,10 +13,8 @@ class NavBar extends React.Component {
                 <li className="nav-item">
                     <a className="nav-link" href="/playlist/">Playlists</a>
                 </li>
-                <li className="nav-item">
-                    <a className="nav-link" href="/signin/">Sign-In</a>
-                </li>
-            </ul>
+                </ul>
+                <a className="nav-item btn btn-outline-primary" href="/signin/">Sign-In</a>
         </nav>)
     }
 }
