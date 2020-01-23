@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const sha256 = require('js-sha256');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -12,6 +13,8 @@ const configs = {
     database: 'tunr_db',
     port: 5432,
 };
+
+const SALT = "bananas are delicious";
 
 const pool = new pg.Pool(configs);
 
@@ -43,6 +46,21 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+app.use(cookieParser());
+
+/**
+ * ===================================
+ * Some helper functions
+ * ===================================
+ */
+
+
+const displayLoggedIn = (request) => {
+    console.log(request.cookies);
+    if (request.cookies["logged_in"]) return true;
+}
+
+
 /**
  * ===================================
  * Routes
@@ -58,20 +76,23 @@ app.get('/', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             });
             return;
         }
         if (!result.rows.length) {
             const data = {
-                message: "No artists in database "
+                message: "No artists in database ",
+                loggedIn: displayLoggedIn(request)
             };
             response.render('home', data);
             return;
         }
 
         data = {
-            artists: result.rows
+            artists: result.rows,
+            loggedIn: displayLoggedIn(request)
         };
         response.render('artists', data);
     })
@@ -95,7 +116,8 @@ app.get('/artists/new', (request, response) => {
 app.get('/artists/:id/songs', (request, response) => {
     if (isNaN(request.params.id)) {
         response.render('home', {
-            message: 'Invalid Id No.'
+            message: 'Invalid Id No.',
+            loggedIn: displayLoggedIn(request)
         });
         return;
     };
@@ -104,7 +126,8 @@ app.get('/artists/:id/songs', (request, response) => {
     pool.query(queryString, queryValues, (err, artistResult) => {
         if (!artistResult.rows.length) {
             const data = {
-                message: "Invalid Artist Id."
+                message: "Invalid Artist Id.",
+                loggedIn: displayLoggedIn(request)
             };
             response.render('home', data);
             return;
@@ -116,13 +139,15 @@ app.get('/artists/:id/songs', (request, response) => {
             if (err) {
                 console.log(err);
                 response.render('home', {
-                    message: "Error!"
+                    message: "Error!",
+                    loggedIn: displayLoggedIn(request)
                 });
                 return;
             }
             if (!songResult.rows.length) {
                 const data = {
-                    message: "Invalid Artist Id"
+                    message: "Invalid Artist Id",
+                    loggedIn: displayLoggedIn(request)
                 };
                 response.render('home', data);
                 return;
@@ -131,7 +156,8 @@ app.get('/artists/:id/songs', (request, response) => {
 
             const data = {
                 songs: songs,
-                artist: artist
+                artist: artist,
+                loggedIn: displayLoggedIn(request)
             };
             response.render('songs', data);
         })
@@ -143,7 +169,8 @@ app.get('/artists/:id/songs', (request, response) => {
 app.get('/artists/:id/edit', (request, response) => {
     if (isNaN(request.params.id)) {
         response.render('home', {
-            message: 'Invalid Id No.'
+            message: 'Invalid Id No.',
+            loggedIn: displayLoggedIn(request)
         });
         return;
     };
@@ -152,14 +179,16 @@ app.get('/artists/:id/edit', (request, response) => {
     pool.query(queryString, queryValues, (err, artistResult) => {
         if (!artistResult.rows.length) {
             const data = {
-                message: "Invalid Artist Id."
+                message: "Invalid Artist Id.",
+                loggedIn: displayLoggedIn(request)
             };
             response.render('home', data);
             return;
         }
         const artist = artistResult.rows[0];
         const data = {
-            artist: artist
+            artist: artist,
+            loggedIn: displayLoggedIn(request)
         };
         response.render('edit', data);
     })
@@ -169,7 +198,8 @@ app.get('/artists/:id/edit', (request, response) => {
 app.get('/artists/:id', (request, response) => {
     if (isNaN(request.params.id)) {
         response.render('home', {
-            message: 'Invalid Id No.'
+            message: 'Invalid Id No.',
+            loggedIn: displayLoggedIn(request)
         });
         return;
     };
@@ -179,20 +209,23 @@ app.get('/artists/:id', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             });
             return;
         }
         if (!result.rows.length) {
             const data = {
-                message: "Invalid Artist Id"
+                message: "Invalid Artist Id",
+                loggedIn: displayLoggedIn(request)
             };
             response.render('home', data);
             return;
         }
         const artist = result.rows[0];
         const data = {
-            artist: artist
+            artist: artist,
+            loggedIn: displayLoggedIn(request)
         };
         response.render('artist', data);
 
@@ -207,7 +240,8 @@ app.put('/artists/:id', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
@@ -215,7 +249,8 @@ app.put('/artists/:id', (request, response) => {
         const message = "This record has been updated";
         const data = {
             artist: artist,
-            message: message
+            message: message,
+            loggedIn: displayLoggedIn(request)
         }
         response.render('artist', data);
     })
@@ -231,14 +266,16 @@ app.post('/artists', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
 
         const message = "artist added";
         const data = {
-            message: message
+            message: message,
+            loggedIn: displayLoggedIn(request)
         };
         response.render('home', data);
     })
@@ -257,13 +294,15 @@ app.get('/playlist', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
         if (!result.rows.length) {
             const data = {
-                message: "Playlist does not exist."
+                message: "Playlist does not exist.",
+                loggedIn: displayLoggedIn(request)
             };
             response.render('home', data);
             return;
@@ -273,7 +312,8 @@ app.get('/playlist', (request, response) => {
         const message = "Playlists";
         const data = {
             message: message,
-            playlists: playlists
+            playlists: playlists,
+            loggedIn: displayLoggedIn(request)
         };
         response.render('playlists', data);
     })
@@ -291,13 +331,15 @@ app.get('/playlist/:id/newsong', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
         if (!result.rows.length) {
             const data = {
-                message: "No songs in database."
+                message: "No songs in database.",
+                loggedIn: displayLoggedIn(request)
             };
             response.render('home', data);
             return;
@@ -305,7 +347,8 @@ app.get('/playlist/:id/newsong', (request, response) => {
         const songs = result.rows;
         const data = {
             playlistid: request.params.id,
-            songs: songs
+            songs: songs,
+            loggedIn: displayLoggedIn(request)
         }
         response.render('addtoplaylist', data);
     })
@@ -319,14 +362,16 @@ app.post(`/playlist/:id`, (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
 
         const message = "Song added to playlist";
         data = {
-            message: message
+            message: message,
+            loggedIn: displayLoggedIn(request)
         };
         response.render('home', data);
     })
@@ -341,7 +386,8 @@ app.post('/playlist', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
@@ -361,7 +407,8 @@ app.post('/playlist', (request, response) => {
 app.get('/playlist/:id', (request, response) => {
     if (isNaN(request.params.id)) {
         response.render('home', {
-            message: 'Invalid Id No.'
+            message: 'Invalid Id No.',
+            loggedIn: displayLoggedIn(request)
         });
         return;
     }
@@ -371,7 +418,8 @@ app.get('/playlist/:id', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
@@ -379,7 +427,8 @@ app.get('/playlist/:id', (request, response) => {
         if (result.rows.length === 0) {
             console.log(err);
             response.render('home', {
-                message: `Error: id ${request.params.id} not valid.`
+                message: `Error: id ${request.params.id} not valid.`,
+                loggedIn: displayLoggedIn(request)
             })
             return;
         }
@@ -392,7 +441,8 @@ app.get('/playlist/:id', (request, response) => {
             if (err) {
                 console.log(err);
                 response.render('home', {
-                    message: "Error!"
+                    message: "Error!",
+                    loggedIn: displayLoggedIn(request)
                 })
                 return;
             }
@@ -401,7 +451,8 @@ app.get('/playlist/:id', (request, response) => {
 
             const data = {
                 playList: playList,
-                songs: songs
+                songs: songs,
+                loggedIn: displayLoggedIn(request)
             };
             response.render('playlist', data);
         })
@@ -418,7 +469,6 @@ app.get('/playlist/:id', (request, response) => {
  */
 
 app.get('/register', (request, response) => {
-    console.log("HEEEEELLLLLPPPPPP");
     response.render('register');
 })
 
@@ -432,13 +482,15 @@ app.post('/register', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         } else {
             const message = `Account created with username ${username}`;
             data = {
-                message: message
+                message: message,
+                loggedIn: displayLoggedIn(request)
             };
             response.render(`home`, data);
         }
@@ -460,13 +512,19 @@ app.post('/signin/', (request, response) => {
         if (err) {
             console.log(err);
             response.render('home', {
-                message: "Error!"
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
             })
             return;
         } else {
             if (result.rows.length) {
+                let currentSessionCookie = sha256( result.rows[0].id + 'logged' + SALT );
+                response.cookie('logged_in', "true", { expires: new Date(Date.now() + 9000000) });
+                response.cookie('user_id', result.rows[0].id);
+                response.cookie('session', currentSessionCookie);
                 data = {
-                    message: `Signed in successfully!`
+                    message: `Signed in successfully!`,
+                    loggedIn: displayLoggedIn(request)
                 };
                 response.render('home', data);
                 return;

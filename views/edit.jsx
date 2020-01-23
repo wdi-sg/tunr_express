@@ -5,7 +5,7 @@ class Edit extends React.Component {
     render() {
       const artist = this.props.artist;
       const putsURL = `/artists/${artist.id}?_method=PUT`;
-        return (<DefaultLayout>
+        return (<DefaultLayout loggedIn={this.props.loggedIn} title="EDIT">
                     <h1>Edit entry for {artist.name}</h1>
                     <form action={putsURL} method="POST">
                         name:

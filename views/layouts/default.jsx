@@ -3,6 +3,7 @@ var NavBar = require("../component/navbar");
 
 class DefaultLayout extends React.Component{
   render () {
+    console.log(this.props.loggedIn)
     return (
       <html>
         <head>
@@ -10,7 +11,7 @@ class DefaultLayout extends React.Component{
           <title>{this.props.title}</title>
         </head>
         <body>
-          <NavBar/>
+          <NavBar loggedIn={this.props.loggedIn}/>
           <div className="container">
             {this.props.children}
           </div>

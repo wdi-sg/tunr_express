@@ -15,7 +15,7 @@ class Artists extends React.Component {
                 </div>) });
 
               return (
-                <DefaultLayout title="Tunr">
+                <DefaultLayout title="Tunr" loggedIn={this.props.loggedIn}>
                     <h1>Tunr Music</h1>
                     <h3>Artists:</h3>
                     <ul>{artistList}</ul>

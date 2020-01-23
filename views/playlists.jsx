@@ -7,7 +7,7 @@ class Playlists extends React.Component {
         const playlistLink = `/playlist/${playlist.id}`;
         return <li><a href={playlistLink}>{playlist.name}</a></li>
       });
-        return (<DefaultLayout>
+        return (<DefaultLayout loggedIn={this.props.loggedIn} title="Playlists">
                 <h1>Playlists:</h1>
                 <ul>{playListList}</ul>
             </DefaultLayout>);

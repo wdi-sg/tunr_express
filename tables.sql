@@ -30,3 +30,9 @@ CREATE TABLE IF NOT EXISTS users (
   username TEXT NOT NULL UNIQUE,
   hashedpassword TEXT
 )
+
+CREATE TABLE IF NOT EXISTS favorites (
+  id SERIAL PRIMARY KEY,
+  song_id INT,
+  user_id INT
+)

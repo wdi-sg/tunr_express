@@ -10,7 +10,7 @@ class AddToPlayList extends React.Component {
 
       const playlistIndex = `/playlist/${this.props.playlistid}`;
 
-        return (<DefaultLayout>
+        return (<DefaultLayout loggedIn={this.props.loggedIn}>
                     <h1>Add song to playlist</h1>
                     <form action={playlistIndex} method="POST">
                         <p>name:

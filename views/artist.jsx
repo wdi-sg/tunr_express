@@ -8,7 +8,7 @@ class Artist extends React.Component {
         const editLink = `/artists/${artist.id}/edit`;
         const songLink = `/artists/${artist.id}/songs/`;
         return (
-          <DefaultLayout title={artist.name}>
+          <DefaultLayout title={artist.name} loggedIn={this.props.loggedIn}>
             <h1>{artist.name}</h1>
             <h3>{this.props.message}</h3>
             <img src={artist.photo_url} width="250px"/>

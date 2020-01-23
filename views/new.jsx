@@ -3,7 +3,7 @@ var DefaultLayout = require("./layouts/default");
 
 class New extends React.Component {
     render() {
-        return (<DefaultLayout>
+        return (<DefaultLayout loggedIn={this.props.loggedIn} title="Add new artist">
                 <h1>Add new artist</h1>
                 <form action="/artists" method="POST">
                     name:

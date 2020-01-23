@@ -4,7 +4,7 @@ var DefaultLayout = require("./layouts/default");
 class SignIn extends React.Component {
   render() {
     return (
-        <DefaultLayout title={this.props.message}>
+        <DefaultLayout title="Sign In" loggedIn={this.props.loggedIn}>
             <h1>Sign In:</h1>
               <form action="/signin" method="POST">
                 <p>name:

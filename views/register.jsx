@@ -4,7 +4,7 @@ var DefaultLayout = require("./layouts/default");
 class Register extends React.Component {
   render() {
     return (
-        <DefaultLayout title={this.props.message}>
+        <DefaultLayout title="Register new account" loggedIn={this.props.loggedIn}>
             <h1>Register new account:</h1>
               <form action="/register" method="POST">
                 <p>name:

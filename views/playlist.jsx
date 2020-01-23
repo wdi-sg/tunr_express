@@ -13,7 +13,7 @@ class Songs extends React.Component {
           songList = `This playlist appears to be empty, why not add some songs?`;
         }
 
-        return (<DefaultLayout>
+        return (<DefaultLayout loggedIn={this.props.loggedIn} title={playList.name}>
             <h1>{playList.name}</h1>
             <ul>{songList}</ul>
         </DefaultLayout>);

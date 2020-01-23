@@ -7,7 +7,7 @@ class Songs extends React.Component {
         return <li><a href={song.preview_link}>{song.title}</a> - {song.album}</li>
       });
       const artistLink = `/artists/${this.props.artist.id}`;
-        return (<DefaultLayout>
+        return (<DefaultLayout loggedIn={this.props.loggedIn} title={this.props.artist.name}>
                 <h1><a href={artistLink}>{this.props.artist.name}</a> Songs:</h1>
                 <ul>{songList}</ul>
             </DefaultLayout>);
