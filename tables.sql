@@ -32,6 +32,15 @@ CREATE TABLE IF NOT EXISTS playlists_songs(
 	songs_id INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS login_data(
+		id SERIAL PRIMARY KEY,
+		email TEXT,
+		password TEXT
+);
+
+INSERT INTO login_data (email,password) VALUES ('weizheng','1234');
+INSERT INTO login_data (email,password) VALUES ('weiwei','5678');
+
 /*
 	// Query 
 

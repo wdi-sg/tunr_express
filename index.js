@@ -1,4 +1,4 @@
-/* 
+  /* 
 THE ORDER OF YOUR APP GET IS VERY IMPORTANT.
 GET THEN POST THEN PUT THEN DELETE.  
 
@@ -6,7 +6,7 @@ Modularize callback functions into another file.
 */ 
 
 console.log("starting up!!");
-
+var sha256 = require('js-sha256');
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -33,7 +33,8 @@ pool.on('error', function (err) {
 
 // Init express app
 const app = express();
-
+const cookieParser = require('cookie-parser')
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -52,6 +53,30 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
+
+// GET - Register
+app.get('/register/', (request, response) => {
+    response.render('login');
+});
+
+// POST - Register
+app.post('/register/', (request, response) => {
+    const email = request.body.emailaddress;
+    const password = sha256(request.body.password);
+
+    const values = [email,password]
+
+    let query = `INSERT INTO login_data(email,password) VALUES ($1,$2)`
+
+    response.cookie('isLoggedIn',"yes")
+    response.cookie('userName',email)
+    
+
+    pool.query(query,values,(err,result) =>{
+
+      response.render('home')
+    })
+});
 
 // GET - index - See all artists
 app.get('/artists/', (request, response) => {
