@@ -4,7 +4,6 @@ class NavBar extends React.Component {
     render() {
 
         let logInDisplay;
-        console.log(this.props.loggedIn)
         if (this.props.loggedIn) { logInDisplay =  <a className="nav-item btn btn-outline-primary" href="/logout/">Log Out</a>
         } else {
           logInDisplay = <a className="nav-item btn btn-outline-primary" href="/signin/">Sign-In</a>
