@@ -1,17 +1,17 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Login extends React.Component {
   render() {
     return (
       <html>
         <head>
-          <meta charSet="UTF-8" />
+          <meta charset="UTF-8" />
           <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           />
           <meta http-Equiv="X-UA-Compatible" content="ie=edge" />
-          <title>Here is the artist you requested!</title>
+          <title>Login</title>
           <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -25,11 +25,29 @@ class Home extends React.Component {
           ></script>
         </head>
         <body>
-          <h1>Welcome to Tunr!</h1>
+          <div>
+            <h2>Login</h2>
+            <form action="/login" method="POST">
+              <p>
+                name <input name="name" />
+              </p>
+              <p>
+                password <input name="password" />
+              </p>
+
+              <div>
+                <input
+                  type="submit"
+                  value="Login!"
+                  style={{ borderRadius: `5px`, marginRight: `10px` }}
+                />
+              </div>
+            </form>
+          </div>
         </body>
       </html>
     );
   }
 }
 
-module.exports = Home;
+module.exports = Login;

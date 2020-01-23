@@ -2,6 +2,10 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+const SALT = "banana";
+const sha256 = require('js-sha256');
+
 // Initialise postgres client
 const configs = {
   user: 'joyce',
@@ -30,6 +34,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(cookieParser());
 /**
  * ===================================
  * Routes
@@ -168,24 +173,24 @@ app.get('/playlist/:id/newsong', (request, response) => {
   });
 });
 
-app.post('/playlist/:id', (request, response) => {
-  let insertQueryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
-  const values = [
-    request.body.song_id,
-    request.params.id
-  ];
-  pool.query(insertQueryText, values, (err, result) => {
-    console.log("INSERT query callback")
-    console.log()
-    if (err) {
-      console.log("ERROR", err);
-      response.send("error")
-    } else {
-      console.log("DONE", result.rows)
-      response.send("Added song!")
-    }
-  });
-})
+// app.post('/playlist/:id', (request, response) => {
+//   let insertQueryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
+//   const values = [
+//     request.body.song_id,
+//     request.params.id
+//   ];
+//   pool.query(insertQueryText, values, (err, result) => {
+//     console.log("INSERT query callback")
+//     console.log()
+//     if (err) {
+//       console.log("ERROR", err);
+//       response.send("error")
+//     } else {
+//       console.log("DONE", result.rows)
+//       response.send("Added song!")
+//     }
+//   });
+// })
 
 /**
  * ===================================
@@ -211,6 +216,108 @@ app.get('/playlist/:id', (request, response) => {
     response.render('playsong', data);
   });
 });
+
+/**
+ * ===================================
+ * REGISTER AND LOGIN
+ * ===================================
+ */
+app.get('/register', (request, response) => {
+  response.render('Register');
+});
+
+app.post('/register', (request, response) => {
+
+  // if they are, insert the record
+
+  let insertQueryText = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
+
+  let hashedPw = sha256(request.body.password + SALT);
+
+  const values = [
+    request.body.name,
+    hashedPw
+  ];
+
+  pool.query(insertQueryText, values, (err, result) => {
+    console.log("INSERT query callback")
+
+    if (err) {
+      console.log("ERROR", err);
+      response.send("Username taken. Please choose another one.")
+    } else {
+
+      let user_id = result.rows[0].id;
+      let hashedCookie = sha256(SALT + user_id);
+      response.cookie('username', request.body.name);
+      response.cookie('registered', hashedCookie);
+      response.cookie('userId', user_id);
+      response.redirect('/');
+    }
+  });
+});
+
+
+// app.get('/login', (request, response) => {
+//   response.render('Login');
+// });
+
+
+// app.post('/login', (request, response) => {
+
+
+//   let query = "SELECT * FROM users WHERE name='" + request.body.name + "'";
+
+//   console.log("LOGIN: " + query)
+
+//   pool.query(query, (err, result) => {
+
+//     if (err) {
+//       console.log("Login error", err);
+//       response.status(500).send("error")
+
+//     } else {
+
+//       if (result.rows.length === 0) {
+//         response.send("NO RESULT");
+//       } else {
+
+//         // hash the request, if its the same as db
+//         let hashedRequestPw = sha256(request.body.password + SALT);
+
+//         // if the password in the db matches the one in the login form
+//         if (result.rows[0].password === hashedRequestPw) {
+
+//           let user_id = result.rows[0].id;
+//           let hashedCookie = sha256(SALT + user_id);
+//           response.cookie('username', request.body.name);
+//           response.cookie('registered', hashedCookie);
+//           response.cookie('userId', user_id);
+//           response.redirect('/');
+//         }
+//       };
+//     };
+
+app.get('/papaya', (request, response) => {
+
+  // check to see if a user is logged in
+
+  let user_id = request.cookies.userId;
+  let hashedCookie = sha256(SALT + user_id);
+
+  if (request.cookies.loggedIn === hashedCookie) {
+
+    response.send('papaya');
+  } else {
+
+    response.send('secret! go away');
+  }
+
+  // response.send(request.cookies);
+});
+
+
+
 
 /**
  * ===================================
