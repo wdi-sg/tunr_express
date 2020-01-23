@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -421,6 +422,28 @@ app.get('/register', (request, response) => {
     response.render('register');
 })
 
+app.post('/register', (request, response) => {
+    console.log('received registration');
+    const hashedpassword = sha256(request.body.password);
+    const username = request.body.username;
+    const queryString = `INSERT INTO users (username, hashedpassword) VALUES ($1, $2);`;
+    const queryValues = [username, hashedpassword];
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!"
+            })
+            return;
+        } else {
+            const message = `Account created with username ${username}`;
+            data = {
+                message: message
+            };
+            response.render(`home`, data);
+        }
+    })
+})
 
 /**
  * ===================================
