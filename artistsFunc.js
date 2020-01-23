@@ -1,5 +1,3 @@
-const express = require('express');
-const methodOverride = require('method-override');
 const pg = require('pg');
 
 // Initialise postgres client
@@ -12,43 +10,16 @@ const configs = {
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
-});
-
-/**
- * ===================================
- * Configurations and set up
- * ===================================
- */
-
-// Init express app
-const app = express();
-
-
-app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
-
-app.use(methodOverride('_method'));
-
-
-// Set react-views to be the default view engine
-const module.exports.reactEngine = require('express-react-views').createEngine();
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jsx');
-app.engine('jsx', reactEngine);
 /**
  * ===================================
  * Functions
  * ===================================
  */
 
-const addArtistPage = (request, response) => {
+module.exports.addArtistPage = (request, response) => {
     response.render("new");
 }
-const addArtist = (request,response) =>{
+module.exports.addArtist = (request,response) =>{
      let text = 'INSERT INTO artists (name, photo_url, nationality) values($1, $2, $3) returning id';
     let values = [request.body.name, request.body.photo_url, request.body.nationality];
     pool.query(text, values, (err,res)=>{
@@ -60,7 +31,7 @@ const addArtist = (request,response) =>{
         response.redirect(path);
     });
 }
-const showArtist = (request, response)=>{
+module.exports.showArtist = (request, response)=>{
     let queryText = "SELECT * FROM artists WHERE id=$1";
     let values = [request.params.id];
     pool.query(queryText,values,(err,res)=>{
@@ -71,7 +42,7 @@ const showArtist = (request, response)=>{
         }
     })
 }
-const showArtistSongs = (request,response)=>{
+module.exports.showArtistSongs = (request,response)=>{
             let queryText = 'SELECT * FROM songs WHERE artist_id=$1';
             let values = [request.params.id];
             pool.query(queryText, values, (err, res)=>{
@@ -81,7 +52,7 @@ const showArtistSongs = (request,response)=>{
                 response.render("artistSongs", data);
             })
 };
-const showArtists = (request,response)=>{
+module.exports.showArtists = (request,response)=>{
             let queryText = 'SELECT * FROM artists ORDER BY id asc';
             pool.query(queryText, (err, res)=>{
                 const data = {
@@ -90,14 +61,14 @@ const showArtists = (request,response)=>{
                 response.render("home", data);
             })
 }
-const editArtist = (request,response)=>{
+module.exports.editArtist = (request,response)=>{
     let queryText = 'SELECT * FROM artists WHERE id=$1';
     let values = [request.params.id];
     pool.query(queryText,values, (err,res)=>{
         response.render("editArtist",res.rows[0]);
     })
 }
-const storeEditArtist = (request,response)=>{
+module.exports.storeEditArtist = (request,response)=>{
      let queryText = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4';
      let values = [request.body.name, request.body.photo_url, request.body.nationality, request.params.id];
      console.log("Here");
@@ -109,7 +80,7 @@ const storeEditArtist = (request,response)=>{
         response.redirect(path);
      });
 }
-const deleteArtist = (request,response)=>{
+module.exports.deleteArtist = (request,response)=>{
      let queryText = `DELETE FROM artists WHERE id=$1`;
      let values=[request.params.id];
      pool.query(queryText,values, (err,res)=>{
@@ -120,3 +91,88 @@ const deleteArtist = (request,response)=>{
       response.redirect('/');
     });
   };
+
+
+module.exports.addPlayListPage = (request, response)=>{
+        response.render("newPlaylist");
+}
+module.exports.addPlayList = (request,response)=>{
+     let text = 'INSERT INTO playlist (name) values($1) returning id';
+    let values = [request.body.name];
+    pool.query(text, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        let id = res.rows[0].id
+        let path = '/playlists/'+id;
+        response.redirect(path);
+    });
+}
+module.exports.showPlayList = (request, response)=>{
+
+    let text = 'SELECT * FROM playlist WHERE id=$1';
+    let values = [request.params.id];
+    pool.query(text, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        let text2 = `SELECT * FROM songs INNER JOIN playlist_songs ON(songs.id =playlist_songs.song_id ) WHERE playlist_songs.playlist_id=$1`;
+            pool.query(text2, values, (error,result)=>{
+        if(error){
+            console.log(error);
+        }
+        const data = {
+            name : res.rows[0].name,
+            id : request.params.id,
+            songs: result.rows
+        }
+        response.render('playlistPage', data);
+    });
+    });
+}
+module.exports.showPlayLists = (request, response)=>{
+ let text = 'SELECT * FROM playlist';
+    pool.query(text,(err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        const data ={
+            playlists:res.rows
+        };
+        response.render('listPlaylist', data);
+    });
+}
+module.exports.newPlaylistSongPage = (request,response)=>{
+    let text = 'SELECT * FROM songs';
+
+    pool.query(text, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+        const data = {
+            songs:res.rows,
+            id: request.params.id
+        }
+        response.render("newPlaylistSongPage",data);
+    });
+}
+//GET PLAYLIST ID AND SONG ID AND PUT IN THE PLAYLIST SONG TABLE
+module.exports.addPlayListSongs = (request, response)=>{
+         let text = 'INSERT INTO playlist_songs ( song_id, playlist_id) values($1, $2)';
+    let values = [request.body.songs, request.params.id];
+    console.log(request.body.songs);
+    pool.query(text, values, (err,res)=>{
+        if(err){
+            console.log(err);
+        }
+
+        let path = '/playlists/'+request.params.id;
+        response.redirect(path);
+    });
+}
+module.exports.displaySongsToAddArtist = (request,response)=>{
+    response.render('addSongs');
+}
+module.exports.addSongsToArtist = (request,response)=>{
+
+}
