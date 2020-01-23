@@ -1,12 +1,13 @@
-console.log("starting up!!");
-
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const callback = require('./functions')
+const cookieParser = require('cookie-parser')
+
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'robertkolsek',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -28,6 +29,7 @@ pool.on('error', function (err) {
 const app = express();
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -35,6 +37,8 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+//INIT COOKIER PARSER
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -48,18 +52,31 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
+app.get('/favorites', callback.showFavorites)
+app.get('/register', callback.registerForm)
+app.post('/register', callback.registerUser)
+app.get('/login', callback.loginForm)
+app.post('/login', callback.loginUser)
+app.post('/playlist', callback.newPlaylist)
+app.post('/playlist/:id', callback.playlistNewSong)
+app.get('/playlist/new', callback.showNewPlaylist)
+app.get('/playlist/:id', callback.showPlaylistByID)
+app.get('/playlist/:id/newsong', callback.showPlaylistNewSong)
+app.delete('/artists/:id', callback.deleteArtist)
+app.get('/artists/:id/delete', callback.deleteForm)
+app.get('/artists/:id/edit', callback.editForm)
+app.put('/artists/:id', callback.editArtist)
+app.get('/artists/new', callback.newForm);
+app.post('/artists', callback.newArtist)
+app.get('/artists', callback.showArtists)
+app.get('/artists/:id/songs', callback.showSongs)
+app.get('/artists/:id/songs/new', callback.showArtistNewSong)
+app.post('/artists/:id/songs', callback.artistNewSong)
+app.get('/artists/:id', callback.showArtistByID)
 
-  // respond with HTML page displaying all pokemon
+app.get('/', (request, response) => {
   response.render('home');
 });
-
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
-
 
 /**
  * ===================================
@@ -68,15 +85,15 @@ app.get('/new', (request, response) => {
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
-  
+let onClose = function () {
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
-    pool.end( () => console.log('Shut down db connection pool'));
+
+    pool.end(() => console.log('Shut down db connection pool'));
   })
 };
 

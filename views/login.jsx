@@ -1,15 +1,15 @@
 var React = require("react");
 
-class New extends React.Component {
+class Login extends React.Component {
   render() {
     return (
       <html>
         <head />
         <body>
-        <form action="/artists" method="POST">
+            <h1>{this.props.success}</h1>
+        <form action="/login" method="POST">
             <input type="text" name="name" placeholder="name"/>
-            <input type="text" name="photo_url" placeholder="photo url"/>
-            <input type="text" name="nationality" placeholder="nationality"/>
+            <input type="text" name="password" placeholder="password"/>
             <input type="submit"/>
           </form>
         </body>
@@ -18,4 +18,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Login;

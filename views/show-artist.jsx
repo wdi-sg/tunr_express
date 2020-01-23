@@ -1,16 +1,16 @@
 var React = require("react");
 
-class Home extends React.Component {
+class ShowArtist extends React.Component {
   render() {
     return (
       <html>
         <head />
         <body>
-          <h1>Hello!</h1>
+          <h1>{this.props.name}</h1>
         </body>
       </html>
     );
   }
 }
 
-module.exports = Home;
+module.exports = ShowArtist;
