@@ -12,8 +12,8 @@ class Single extends React.Component {
           </div>
           <div class="artist">
             <h1>Playlist: {this.props.playlists.name} </h1>
-            <a href={editUrl}><div class="button-edit">Edit</div></a>
-            <a href={deleteUrl}><div class="button-delete">Delete</div></a>
+            {/* <a href={editUrl}><div class="button-edit">Edit</div></a>
+            <a href={deleteUrl}><div class="button-delete">Delete</div></a> */}
             Current songs:<br />
             <div class="button-new">Add New Songs</div>
           </div>

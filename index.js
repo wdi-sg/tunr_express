@@ -304,6 +304,13 @@ app.get('/playlist/:id/newsong', (request,response) => {
       console.log("error", err.message)
     } else {
       const queryString = 'SELECT * FROM songs;'
+      // figure out the bloody select query
+      // const queryString = 'SELECT * FROM playlist_song INNER JOIN songs ON playlist_song.song_id = songs.id WHERE playlist_song.playlist_id=$1'
+      // SELECT songs.song_id, playlist.playlist_id
+      // FROM playlist_song 
+      // INNER JOIN shop_products 
+      // ON (shop_products.product_id = products.id) 
+      // WHERE shop_products.shop_id = 2;
       pool.query(queryString, (err,result) => {
         if (err) {
           console.log("error", err.message)
@@ -319,6 +326,24 @@ app.get('/playlist/:id/newsong', (request,response) => {
           }
       }); // end inner pool.query
       }
+  }); // end outer pool.query
+});
+
+app.post('/playlist/:id', (request,response) => {
+  let insertQueryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($2, $1) WHERE id=$1';
+  const values = [request.params.id, request.body.id];
+  // const values = [];
+  pool.query(insertQueryText, values, (err,result) => {
+    if (err) {
+      console.log("error", err.message)
+    } else {
+      let currentArtist = result.rows[0];
+      let data = {
+        playlists: currentArtist
+      }
+      //console.log(songs);
+      response.render('playlist-single', data);
+    }
   }); // end outer pool.query
 });
 
