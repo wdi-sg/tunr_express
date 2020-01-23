@@ -187,24 +187,30 @@ app.post('/playlist/:id', (request, response) => {
   });
 })
 
-// app.get('/playlist/:id', (request, response) => {
-//   // show all the song titles inside this playlist
-//   let queryText1 = 'SELECT * FROM playlist_song INNER JOIN songs ON playlist_song.song_id = songs.id WHERE playlist_song.playlist_id =' + playlistId;
+/**
+ * ===================================
+ * SHOW A SPECIFIC PLAYLIST WITH SONGS
+ * ===================================
+ */
 
-//   pool.query(queryText1, (err, result) => {
-//     const data = {
-//       songs: result.rows,
-//       playlistId: request.params.id
-//     };
-//     console.log("INSERT query callback")
-//     if (err) {
-//       console.log("ERROR", err);
-//       response.send("error")
-//     }
-//     console.log(data)
-//     response.render('playsong', data);
-//   });
-// });
+app.get('/playlist/:id', (request, response) => {
+  // show all the song titles inside this playlist
+  let queryText1 = 'SELECT * FROM playlist_song INNER JOIN songs ON playlist_song.song_id = songs.id WHERE playlist_song.playlist_id =' + playlistId;
+
+  pool.query(queryText1, (err, result) => {
+    const data = {
+      songs: result.rows,
+      playlistId: request.params.id
+    };
+    console.log("INSERT query callback")
+    if (err) {
+      console.log("ERROR", err);
+      response.send("error")
+    }
+    console.log(data)
+    response.render('playsong', data);
+  });
+});
 
 /**
  * ===================================
