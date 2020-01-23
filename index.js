@@ -4,7 +4,10 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 
+// ==============================
 // Initialise postgres client
+// ==============================
+
 const configs = {
   user: 'jasminelee',
   host: '127.0.0.1',
@@ -18,15 +21,12 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
-/**
- * ===================================
- * Configurations and set up
- * ===================================
- */
 
-// Init express app
+// ===================================
+//  Configurations and set up
+// ===================================
+
 const app = express();
-
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -35,25 +35,27 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
-
+// =============================================
 // Set react-views to be the default view engine
+// =============================================
 const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-/**
- * ===================================
- * Routes
- * ===================================
- */
+
+// ===================================
+// Routes
+// =================================== 
 
 app.get('/', (request, response) => {
 
-  response.send("HELLO WORLD!");
+  response.send("TEST WORKS!");
   
 });
-// Define a route with view defined at /. For now it should say Hello World when you visit that url.
+// ================================================================================================
+// Define a route with view defined at /. For now it should say TEST WORKS when you visit that url.
+// ================================================================================================
 
 const newArtist = (request,response) => {
   response.render("new");
@@ -83,10 +85,9 @@ const addArtist = (request,response) => {
 };
 app.get('/artists/new', newArtist);
 app.post('/artists' , addArtist);
+// ===============================================================
 // Build a feature that creates a new artist in the database.
-
-
-
+// ===============================================================
 
 
 const findArtist = (request,response) => {
@@ -108,8 +109,9 @@ const findArtist = (request,response) => {
 
 }
 app.get('/artists/:id',findArtist);
+// =========================================
 // Build the show feature for an artist
-
+// =========================================
 
 const showArtist = (request,response) => {
 
@@ -132,8 +134,9 @@ const showArtist = (request,response) => {
 }
 
 app.get('/artists/' , showArtist);
+// ======================================
 // Build the index feature for artists
-
+// ======================================
 
 const findAllSongsByArtists = (request,response) => {
   let query = "SELECT * FROM songs WHERE artist_id = '" +  request.params.artists_id + "'";
@@ -155,6 +158,194 @@ const findAllSongsByArtists = (request,response) => {
 }
 
 app.get('/artists/:artists_id/songs' , findAllSongsByArtists);
+// ================================================
+// Able to show all the songs by a single artist
+// ================================================
+
+app.get('/artists/:artists_id/edit')
+
+// ================================================
+// REMEMBER TO COME BACK AND COMPLETE THIS PART!
+// ================================================
+
+
+
+
+ 
+ // =================================================================
+ // Anything below this portion is for Part 2 of tunr_express
+ // =================================================================
+
+const createNewPlaylist = (request,response) => {
+  response.render("newplaylist");
+}
+
+const addNewPlaylist = (request,response) => {
+  const insertQueryText = 'INSERT into playlists (name) VALUES ($1) RETURNING id';
+  const values = [
+    request.body.name
+  ]
+
+  pool.query(insertQueryText, values, (err,result)=>{
+    console.log("ABOUT TO INSERT INTO DATABASE!")
+
+    if(err){
+      console.log("ERRRORRRR" , err);
+      response.send("ERROR!");
+      }
+    else{
+      console.log("INSERTED!", result.rows);
+      response.redirect('/playlists/');
+    }
+  })
+}
+
+app.get('/playlists/new', createNewPlaylist);
+app.post('/playlists' , addNewPlaylist);
+// ==============================================
+// CREATE NEW PLAYLISTS AND ADD TABLE 
+// ==============================================
+const showAllPlaylist = (request,response) => {
+
+  let query = "SELECT * FROM playlists";
+  pool.query(query,(err,result)=>{
+    if(err){
+      console.log("ERROR",err);
+      response.status(500).send("error");
+      }
+    else{
+      console.log("RESULTS");
+      console.log(result.rows);
+      let data = {
+        playlists : result.rows
+      };
+      response.render("allplaylists",data);
+    }
+  })
+}
+
+app.get('/playlists/' , showAllPlaylist);
+// =============================================
+// SHOW ALL PLAYLISTS
+// =============================================
+
+// const findPlayList = (request,response) => {
+//   let query = "SELECT * FROM playlists WHERE id=" + request.params.index;
+//   pool.query(query,(err,result)=>{
+//     if(err){
+//       console.log("ERROR",err);
+//       response.status(500).send("error");
+//     }
+//     else{
+//       console.log("RESULTS");
+//       console.log(result.rows);
+//       let data =  result.rows[0];
+//       response.render("playlists" , data);
+//     }
+//   })
+// }
+
+// app.get('/playlists/:index', findPlayList);
+
+// ==================================================
+// DISPLAY SELECTED PLAYLISTS
+// ==================================================
+
+
+const selectSongsToAddToSelectedPlaylist = (request,response) => {
+  let query = "SELECT * FROM playlists WHERE id=" + request.params.index;
+  pool.query(query,(err,result)=>{
+    if(err){
+      console.log("ERROR",err);
+      response.status(500).send("error");
+    }
+    else{
+      let selectSongs = "SELECT * FROM songs"
+      pool.query(selectSongs,(error,allsongs) =>{
+
+        const object = { 
+                         hello : request.params.index,
+                         playlists : result.rows,
+                         songs : allsongs.rows 
+        }
+            console.log("RESULTS");
+      response.render("addsongstoplaylist", object );
+  
+      })
+      
+    }
+  })
+}
+
+const addSongsToSelectedPlaylist = (request,response) => {
+  let query = "INSERT INTO playlists_songs (song_id, playlist_id) VALUES ($1,$2) RETURNING * ;"
+  let VALUES = [request.body.selectedSongs,request.params.index];
+  pool.query(query,VALUES,(err,result) =>{
+    if(err){
+      console.log("ERROR",err);
+      response.status(500).send("error");
+    }
+    else{
+      let queryAllSongs = "SELECT * FROM songs"
+      pool.query(queryAllSongs,(errors,songResults)=>{
+            console.log("HELLO");
+      console.log(result.rows);
+      const object = { 
+                      hello : request.params.index,
+                      playlists : result.rows,
+                      songs : songResults.rows 
+      }
+      response.render("allsongsinplaylist" , object);  
+      })
+
+    }
+  })
+  
+}
+
+
+
+
+
+app.get('/playlists/:index/newsong' , selectSongsToAddToSelectedPlaylist);
+app.post('/playlists/:index' , addSongsToSelectedPlaylist);
+
+// =============================================================
+// Add Songs into the selected Playlist
+// =============================================================
+
+const showAllSongsInThisPlaylist = (request,response) => {
+  
+  
+  let query = "SELECT songs.id,songs.title FROM songs INNER JOIN playlists_songs ON (songs.id = playlists_songs.song_id) WHERE playlists_songs.playlist_id = " + request.params.index;
+  pool.query(query,(err,result) =>{
+    if(err){
+      console.log("ERROR!",err);
+      response.status(500).send("error");
+    }
+    else{
+      console.log("HELLO");
+      console.log(results.rows);
+      
+      response.render("allsongsinplaylist");
+    }
+  })
+}
+
+
+
+
+app.get('playlists/:index' ,showAllSongsInThisPlaylist);
+
+
+
+
+
+
+
+
+
+
 
 
 
