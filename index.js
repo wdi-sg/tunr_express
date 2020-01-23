@@ -40,7 +40,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
-
+app.use(cookieParser());
 /**
  * ===================================
  * Routes
@@ -70,6 +70,9 @@ app.get('/register', func.registerUserPage);
 app.post('/register', func.registerUser);
 app.get('/login', func.loginPage);
 app.post('/login', func.loginUser);
+app.get('/favorites/new', func.newFavorites);
+app.post('/favorites', func.addFavorites);
+app.get('/favorites', func.favoriteSongs);
 /**
  * ===================================
  * Listen to requests on port 3000
