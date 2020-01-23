@@ -1,7 +1,7 @@
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
-const func = require('./artistsFunc')
+const func = require('./function')
 // Initialise postgres client
 const configs = {
   user: 'jessica',
@@ -64,8 +64,8 @@ app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
 app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
 app.post('/playlists/:id', func.addPlayListSongs);
 //
-app.get('/register', func.registerUserPage);
-app.post('/register', func.registerUser);
+// app.get('/register', func.registerUserPage);
+// app.post('/register', func.registerUser);
 app.get('/', func.showArtists);
 /**
  * ===================================
