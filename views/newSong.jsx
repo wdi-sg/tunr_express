@@ -11,7 +11,7 @@ class newSong extends React.Component {
     });
     
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container">
           <form action={postPath} method="POST">
             <label>Artist</label>

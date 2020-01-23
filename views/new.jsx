@@ -3,8 +3,9 @@ const Layout = require("./layout");
 
 class New extends React.Component {
   render() {
+    console.log(this.props);
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container">
           <form action="/artists" method="POST">
             <div class="form-group">

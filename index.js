@@ -55,19 +55,52 @@ app.get("/artists/:id/songs", functions.showArtistSongs);
 app.get("/artists/:id/songs/new", functions.addSongPage);
 app.get("/artists/:id/edit", functions.artistEditPage);
 app.get("/register", (request, response) => {
-  let username = "";
-  let userID = "";
-  let loggedIn = false;
-  response.cookie("username", username);
-  response.cookie("userID", userID);
-  response.cookie("loggedIn", loggedIn);
-  response.render("register");
+  if (request.cookies.loggedIn !== undefined) {
+    const data = {
+      errorMessage: "You're already logged in!",
+      username: request.cookies.username
+    };
+    response.render("404", data);
+  } else {
+    const data = {
+      route: "/register",
+      header: "Register"
+    };
+    response.render("register", data);
+  }
 });
+app.get("/login", (request, response) => {
+  if (request.cookies.loggedIn !== undefined) {
+    const data = {
+      errorMessage: "You're already logged in!",
+      username: request.cookies.username
+    };
+    response.render("404", data);
+  } else {
+    const data = {
+      route: "/login",
+      header: "Log In"
+    };
+    response.render("register", data);
+  }
+});
+app.get("/favorites/new", functions.showFavoritesForm);
+app.get("/favorites", functions.showFavorites);
+
+// app.get("/songs/:id", (request, response) => {
+//   const songID = request.params.id;
+//   console.log(songID);
+// });
+
+app.get("/logout", functions.clearCookies);
 
 // Playlists
 app.get("/playlists", functions.showPlaylists);
 app.get("/playlists/new", (request, response) => {
-  response.render("newPlaylist");
+  const data = {
+    username: request.cookies.username
+  };
+  response.render("newPlaylist", data);
 });
 app.get("/playlists/:id", functions.showPlaylist);
 
@@ -85,12 +118,21 @@ app.post("/artists/:id/songs/", functions.addSong);
 app.post("/playlists", functions.makeNewPlaylist);
 app.post("/playlists/:id/", functions.addSongIntoPlaylistSong);
 app.post("/register", functions.registerUser);
+app.post("/login", functions.loginUser);
+app.post("/favorites", functions.addFavorites);
 
 // Delete from database
 app.delete("/artists/:id", functions.deleteArtist);
 
 app.get("*", (request, response) => {
-  response.render("404");
+  let data;
+  if (request.cookies.loggedIn !== undefined) {
+    data = {
+      username: request.cookies.username
+    };
+  }
+
+  response.render("404", data);
 });
 
 // Listen

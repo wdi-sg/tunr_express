@@ -3,7 +3,9 @@ const Layout = require("./layout");
 
 class Home extends React.Component {
   render() {
-    
+    console.log(this.props)
+    const welcomeMessage = this.props.welcomeMessage;
+    console.log(welcomeMessage);
     let artistElement;
     const artists = this.props.artists;
     if (artists.length > 1) {
@@ -47,7 +49,7 @@ class Home extends React.Component {
             <h6 className="text-center">
               <a href={songsPath}>See All Songs</a>
             </h6>
-             <form
+            <form
               className="d-flex justify-content-center"
               action={editPath}
               method="GET"
@@ -57,7 +59,7 @@ class Home extends React.Component {
                 type="submit"
                 value="Edit artist"
               />
-              </form>
+            </form>
             <form
               className="d-flex justify-content-center"
               action={deletePath}
@@ -75,7 +77,7 @@ class Home extends React.Component {
     }
 
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container">
           <div className="row d-flex justify-content-around">
             {artistElement}

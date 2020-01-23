@@ -4,7 +4,7 @@ const Layout = require("./layout");
 class Error extends React.Component {
   render() {
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container d-flex flex-column justify-content-center align-items-center">
         <h1>Error!</h1>
         <p>{this.props.errorMessage}</p>

@@ -6,7 +6,7 @@ class Edit extends React.Component {
     const artist = this.props.artists;
     const editPath = "/artists/" + artist.id + "?_method=put";
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container">
           <form action={editPath} method="POST">
             <div class="form-group">

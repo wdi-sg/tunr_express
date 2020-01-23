@@ -3,10 +3,13 @@ const Layout = require("./layout");
 
 class Register extends React.Component {
   render() {
+    const route = this.props.route;
+    const header = this.props.header
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container">
-          <form action="/register" method="POST">
+        <h1 className="display-1 text-center">{header}</h1>
+          <form action={route} method="POST">
             <div class="form-group">
               <label for="exampleInputEmail1">Username</label>
               <input
@@ -22,7 +25,7 @@ class Register extends React.Component {
             <div class="form-group">
               <label for="exampleInputPassword1">Password</label>
               <input
-                type="text"
+                type="password"
                 class="form-control"
                 id="exampleInputPassword1"
                 name="password"

@@ -9,7 +9,7 @@ class newPlaylist extends React.Component {
     // });
 
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container d-flex justify-content-center new-playlist">
           <form action="/playlists" method="POST" class="form-inline">
             <div class="form-group mx-sm-3 mb-2">

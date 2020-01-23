@@ -3,6 +3,7 @@ const Layout = require("./layout");
 
 class Playlist extends React.Component {
   render() {
+    console.log(this.props);
     let playlistElement;
     const playlistName = this.props.playlistName;
 
@@ -18,7 +19,7 @@ class Playlist extends React.Component {
     });
 
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container d-flex flex-column align-items-center ">
           <h1 className="mb-4">All Playlists</h1>
           {playlistElement}

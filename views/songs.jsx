@@ -14,7 +14,7 @@ class Songs extends React.Component {
       );
     });
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container d-flex flex-column justify-content-around">
           
             <div

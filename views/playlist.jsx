@@ -20,7 +20,7 @@ class Playlist extends React.Component {
     const addSongPath = "/playlists/" + playlistID + "/newsong";
 
     return (
-      <Layout>
+      <Layout username={this.props.username}>
         <div className="container text-center d-flex justify-content-center align-items-center">
           <h1 className="mr-3">{playlistName}</h1>{" "}
           <a href={addSongPath}>

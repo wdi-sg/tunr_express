@@ -13,12 +13,14 @@ const SALT = "HAHA";
 
 module.exports.showArtists = (request, response) => {
   let query = "SELECT * from artists";
+  let userName = request.cookies.username;
   pool.query(query, (err, result) => {
     if (err) {
       response.send("error");
     } else {
       const data = {
-        artists: result.rows
+        artists: result.rows,
+        username: request.cookies.username
       };
       response.render("home", data);
     }
@@ -41,7 +43,8 @@ module.exports.showSingleArtist = (request, response) => {
         response.render("404");
       }
       const data = {
-        artists: result.rows[0]
+        artists: result.rows[0],
+        username: request.cookies.username
       };
       response.render("home", data);
     }
@@ -49,7 +52,10 @@ module.exports.showSingleArtist = (request, response) => {
 };
 
 module.exports.addArtistPage = (request, response) => {
-  response.render("new");
+  const data = {
+    username: request.cookies.username
+  };
+  response.render("new", data);
 };
 
 module.exports.artistEditPage = (request, response) => {
@@ -61,7 +67,8 @@ module.exports.artistEditPage = (request, response) => {
       response.send(err);
     } else {
       const data = {
-        artists: result.rows[0]
+        artists: result.rows[0],
+        username: request.cookies.username
       };
       response.render("edit", data);
     }
@@ -72,7 +79,8 @@ module.exports.addSongPage = (request, response) => {
   const query = "SELECT * FROM ARTISTS";
   pool.query(query, (err, result) => {
     const data = {
-      artists: result.rows
+      artists: result.rows,
+      username: request.cookies.username
     };
     response.render("newSong", data);
   });
@@ -96,7 +104,8 @@ module.exports.showArtistSongs = (request, response) => {
           const songs = songsResult.rows;
           const data = {
             artist: artist,
-            songs: songs
+            songs: songs,
+            username: request.cookies.username
           };
           response.render("songs", data);
         }
@@ -184,7 +193,8 @@ module.exports.showPlaylists = (request, response) => {
   const query = "SELECT * from playlist";
   pool.query(query, (err, result) => {
     const data = {
-      playlists: result.rows
+      playlists: result.rows,
+      username: request.cookies.username
     };
     response.render("playlists", data);
   });
@@ -205,7 +215,8 @@ module.exports.showPlaylist = (request, response) => {
     pool.query(query, values, (err, result) => {
       const data = {
         playlistName: playlistName,
-        playlistSongs: result.rows
+        playlistSongs: result.rows,
+        username: request.cookies.username
       };
       response.render("playlist", data);
     });
@@ -217,7 +228,8 @@ module.exports.showSongFormForPlaylist = (request, response) => {
   pool.query(query, (err, result) => {
     const data = {
       songs: result.rows,
-      playlistID: request.params.id
+      playlistID: request.params.id,
+      username: request.cookies.username
     };
     response.render("newPlaylistSong", data);
   });
@@ -286,7 +298,8 @@ module.exports.sortArtists = (request, response) => {
     ORDER BY name`;
     pool.query(query, (err, result) => {
       const data = {
-        artists: result.rows
+        artists: result.rows,
+        username: request.cookies.username
       };
       response.render("home", data);
     });
@@ -295,7 +308,8 @@ module.exports.sortArtists = (request, response) => {
     ORDER BY id`;
     pool.query(query, (err, result) => {
       const data = {
-        artists: result.rows
+        artists: result.rows,
+        username: request.cookies.username
       };
       response.render("home", data);
     });
@@ -332,7 +346,7 @@ module.exports.registerUser = (request, response) => {
           if (err) console.log(err);
           else {
             const userID = result.rows[0].id;
-            const hashedCookie = sha256(SALT + userID)
+            const hashedCookie = sha256(SALT + userID);
             response.cookie("username", username);
             response.cookie("loggedIn", hashedCookie);
             response.cookie("userID", userID);
@@ -340,6 +354,101 @@ module.exports.registerUser = (request, response) => {
           }
         });
       }
+    }
+  });
+};
+
+module.exports.loginUser = (request, response) => {
+  console.log(request.body);
+  const username = request.body.username;
+  const password = request.body.password;
+  const values = [username];
+  const loginQuery = "SELECT * from users where name = $1";
+  pool.query(loginQuery, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      if (result.rows.length !== 0) {
+        const user = result.rows[0];
+        if (sha256(password) === user.password) {
+          const hashedCookie = sha256(SALT + user.id);
+          response.cookie("username", user.name);
+          response.cookie("loggedIn", hashedCookie);
+          response.cookie("userID", user.id);
+          response.redirect("/");
+        } else {
+          const data = {
+            errorMessage: "Wrong password?"
+          };
+          response.render("404", data);
+        }
+      } else {
+        const data = {
+          errorMessage: "There's no such user!"
+        };
+        response.render("404", data);
+      }
+    }
+  });
+};
+
+module.exports.clearCookies = (request, response) => {
+  response.clearCookie("loggedIn");
+  response.clearCookie("userID");
+  response.clearCookie("username");
+  response.redirect("/");
+};
+
+module.exports.showFavoritesForm = (request, response) => {
+  if (request.cookies.loggedIn !== undefined) {
+    const query = "SELECT * from songs";
+    pool.query(query, (err, result) => {
+      const data = {
+        songs: result.rows
+      };
+      response.render("favoritesform", data);
+    });
+  } else {
+    const data = {
+      errorMessage: "You need to be logged in to add favorites!"
+    };
+    response.render("404", data);
+  }
+};
+
+module.exports.showFavorites = (request, response) => {
+  if (request.cookies.loggedIn === undefined) {
+    const data = {
+      errorMessage: "You need to be logged in to view favorites!"
+    };
+    response.render("404", data);
+  }
+  const userID = request.cookies.userID;
+  const values = [userID];
+  const query = `
+      SELECT songs.id, songs.title, songs.preview_link
+      FROM SONGS
+      INNER JOIN favorites
+      on (songs.id = favorites.song_id)
+      WHERE favorites.user_id = $1;`;
+  pool.query(query, values, (err, result) => {
+    const favorites = result.rows;
+    const data = {
+      favorites: favorites,
+      username: request.cookies.username
+    };
+    response.render("favorites", data);
+  });
+};
+
+module.exports.addFavorites = (request, response) => {
+  const songID = request.body.song_id;
+  const userID = request.cookies.userID;
+  const values = [songID, userID];
+  const query = "INSERT into favorites (song_id, user_id) VALUES ($1, $2)";
+  pool.query(query, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      response.redirect("/");
     }
   });
 };

@@ -2,6 +2,23 @@ const React = require("react");
 
 export class Layout extends React.Component {
   render() {
+    let loginOrLogoutRoute;
+    let loginOrLogoutName;
+    let favorites;
+    if (this.props.username === undefined) {
+      loginOrLogoutRoute = "/login";
+      loginOrLogoutName = "Log In";
+    } else {
+      loginOrLogoutRoute = "/logout";
+      loginOrLogoutName = "Log Out";
+      favorites = (
+        <li className="nav-item">
+          <a className="nav-link" href="/favorites">
+            Favorites
+          </a>
+        </li>
+      );
+    }
     return (
       <html lang="en">
         <head>
@@ -87,22 +104,14 @@ export class Layout extends React.Component {
                     </a>
                   </div>
                 </li>
+                {favorites}
               </ul>
-              <form action="/search" className="form-inline my-2 my-lg-0">
-                <input
-                  className="form-control mr-sm-2"
-                  type="search"
-                  placeholder="Search artists"
-                  name="search"
-                  aria-label="Search"
-                />
-                <button
-                  className="btn btn-outline-success my-2 my-sm-0"
-                  type="submit"
-                >
-                  Search
-                </button>
-              </form>
+              <span class="navbar-text">
+                <span className="mr-2">{this.props.username}</span>
+                <a className="" href={loginOrLogoutRoute}>
+                  {loginOrLogoutName}
+                </a>
+              </span>
             </div>
           </nav>
           {this.props.children}
