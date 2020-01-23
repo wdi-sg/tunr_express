@@ -228,3 +228,40 @@ module.exports.loginUser = (request,response)=>{
     }
     });
 }
+module.exports.newFavorites = (request,response)=>{
+    let queryText= "SELECT * FROM songs";
+        pool.query(queryText, (err,res)=>{
+        if( err ){
+      console.log(err);
+    }else{
+    if(res.rows[0].length === 0){
+        response.send("currently no songs");
+    }
+    const data = {
+        songs:res.rows
+    }
+    response.render("newFavorites", data);
+       }
+   });
+}
+ module.exports.addFavorites = (request,response)=>{
+
+  let user_Id = request.cookies.userId;
+   let hashedCookie = sha256(SALT+user_Id);
+  if( request.cookies.loggedIn === hashedCookie){
+    let queryText = `INSERT INTO favorites(user_id, song_id) VALUES($1,$2)`;
+    let values = [request.cookies.userId,request.body.id];
+      pool.query(queryText, values, (err,res)=>{
+        if( err ){
+      console.log(err);
+    }else{
+       response.redirect('/favorites');
+    }
+    });
+   }else{
+    response.send("Not Logged In");
+   }
+}
+ module.exports.favoriteSongs = (request,response)=>{
+    response.send("Song favorites");
+ }

@@ -13,7 +13,7 @@ class RegisterUser extends React.Component {
     <label htmlFor="name">Username</label>
     <input type="text" className="form-control" name="username"/>
     <label htmlFor="name">Password</label>
-    <input type="text" className="form-control" name="password"/>
+    <input type="password" className="form-control" name="password"/>
     </div>
      <div className="d-flex flex-row-reverse">
     <button type="submit" className="btn btn-primary btn-customized">Sign Up</button>
