@@ -122,8 +122,8 @@ app.get('/artists/:id', (request, response) => {
             console.log("Error :", err);
             response.status(500).send("ERROR")
         }
-    let data = result.rows[0];
-    response.render('artists', data);
+        let data = result.rows[0];
+        response.render('artists', data);
     })
 })
 
@@ -279,15 +279,18 @@ app.post('/playlists', (request, response) => {
 //post route for logging off
 app.delete('/users/logout', (request, response) => {
     response.clearCookie("logSess");
+    response.clearCookie("userId")
     response.redirect('/');
 });
 
 
 //post route for adding users
 app.post('/users', (request,response) => {
-    let passHash = sha256(request.body.password+salt);
-    let text = "INSERT INTO users (name, passHash) VALUES ($1, $2) RETURNING id;";
-    let values = [request.body.name, passHash];
+    console.log(request.body.password)
+    let passhash = sha256(request.body.password+salt);
+    console.log(passhash)
+    let text = "INSERT INTO users (name, passhash) VALUES ($1, $2) RETURNING id;";
+    let values = [request.body.name, passhash];
     pool.query(text, values, (err, result) => {
         if (err) {
             console.log("Error :", err)
@@ -295,6 +298,7 @@ app.post('/users', (request,response) => {
         }
         let session = sha256(result.rows[0].id + "logged" + salt);
         response.cookie('logSess', session);
+        response.cookie('userId', result.rows[0].id)
         response.redirect('/')
     })
 })
@@ -302,23 +306,25 @@ app.post('/users', (request,response) => {
 //post route for logging in
 app.post('/', (request, response) => {
     let password = sha256(request.body.password+salt);
-    let text = "SELECT * FROM users WHEN name=$1"
+    let text = "SELECT * FROM users WHERE name=$1;";
     let values = [request.body.user];
     pool.query(text, values, (err, result) => {
         if (err) {
-            console.log("Error :", err)
-            response.status(500).send("Error Logging in.");
+            console.log("Err : ", err);
+            response.status(500).send("Error Logging")
         }
         if (result.rows.length === 0) {
             response.send("No such user found.")
+        }
+        console.log(result.rows[0].passhash)
+        console.log(password)
+        if (result.rows[0].passhash == password) {
+            let session = sha256(result.rows[0].id + "logged" + salt);
+            response.cookie('userId', result.rows[0].id)
+            response.cookie('logSess', session);
+            response.redirect('/')
         } else {
-            if (result.rows[0].passHash === password) {
-                let session = sha256(result.rows[0].id + "logged" + salt);
-                response.cookie('logSess', session);
-                response.redirect('/')
-            } else {
-                response.send("Password Invalid!!");
-            }
+            response.send("Password Invalid!!");
         }
     })
 })
@@ -332,9 +338,9 @@ app.post('/', (request, response) => {
  * Listen to requests on port 3000
  * ===================================
  */
-const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+ const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
+ let onClose = function(){
 
     console.log("closing");
 
