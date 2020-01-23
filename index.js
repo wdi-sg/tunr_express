@@ -1,8 +1,13 @@
 console.log("starting up!!");
+const cookieParser = require('cookie-parser');
 
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+
+var sha256 = require('js-sha256');
+
+const SALT = "saltprotector";
 
 // Initialise postgres client
 const configs = {
@@ -27,8 +32,6 @@ pool.on('error', function (err) {
 
 // Init express app
 const app = express();
-
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -43,6 +46,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+app.use(cookieParser());
+
 
 /**
  * ===================================
@@ -50,6 +55,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//21-1-2020
 /**
 .*. ===================================================================================
  * ┬┌┐┌┬┌┬┐┬┌─┐┬      ┬─┐┌─┐┬ ┬┌┬┐┌─┐
@@ -89,32 +95,32 @@ app.get('/artists/new', (request, response) => {
 //path working
 app.post('/artists', (request, response) => {
 
-  let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
+    let insertQueryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id';
 
-  const values = [
+    const values = [
     request.body.name,
     request.body.photo_url,
     request.body.nationality
-  ];
+    ];
 
-  pool.query(insertQueryText, values, (err, result)=> {
-    console.log("INSERT query callback");
+    pool.query(insertQueryText, values, (err, result)=> {
+        console.log("INSERT query callback");
 
-    if( err ) {
-      console.log("ERREEERRRRRR", err);
-      response.send("errorr")
-    } else {
-        console.log("DONE", result.rows, 'You have added ' + request.body.name);
-        const newlyAdded = {
+        if( err ) {
+            console.log("ERREEERRRRRR", err);
+            response.send("errorr")
+        } else {
+            console.log("DONE", result.rows, 'You have added ' + request.body.name);
+            const newlyAdded = {
             name: request.body.name,
             photo_url: request.body.photo_url,
             nationality: request.body.nationality
         };
-      const data = {
-        newArtist : newlyAdded
-      };
+            const data = {
+            newArtist : newlyAdded
+            };
       // response.send("we're done, you manage to add " + request.body.name);
-      response.render('createdNew', data);
+            response.render('createdNew', data);
     }
   });
 });
@@ -131,22 +137,22 @@ app.post('/artists', (request, response) => {
 //Build the show feature for an artist
 //path working
 app.get('/artists/:id',(request, response)=>{
-  let query = "SELECT * FROM artists WHERE id=$1";
-  let value = [parseInt(request.params.id)];
-  pool.query(query,value, (err, result) => {
-    if(err){
-        console.log("ERRRR", err);
-        response.status(500).send("error")
-    } else {
-        console.log("RESULT")
-        console.log( result.rows);
-        let artist = result.rows;
-        const data = {
+    let query = "SELECT * FROM artists WHERE id=$1";
+    let value = [parseInt(request.params.id)];
+    pool.query (query, value, (err, result) => {
+        if (err) {
+            console.log("ERRRR", err);
+            response.status(500).send("error")
+        } else {
+            console.log("RESULT")
+            console.log( result.rows);
+            let artist = result.rows;
+            const data = {
             selectedArtist: artist[0]
-    };
+            };
       // response.send(result.rows);
-      response.render('show', data);
-    }
+            response.render('show', data);
+        }
     })
 });
 
@@ -236,13 +242,7 @@ app.get('/artists/:id/songs',(request, response) => {
  * ===================================================================================
  */
 
-/**
- * ====================================================================================
- * ┌─┐┌─┐┌┬┐       ┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐  ┌─┐┌─┐┬─┐┌┬┐
- * │ ┬├┤  │   ───  │  ├┬┘├┤ ├─┤ │ ├┤   ├┤ │ │├┬┘│││
- * └─┘└─┘ ┴        └─┘┴└─└─┘┴ ┴ ┴ └─┘  └  └─┘┴└─┴ ┴
- * ====================================================================================
- */
+//22-1-2020
 
 //Create a form: /playlists/new
 //GET /playlist/new - render the form to create a new playlist
@@ -250,13 +250,6 @@ app.get('/playlist/new', (request, response) => {
     response.render('newPlaylist');
 });
 
-/**
- * =================================================================================
-.*.┌─┐┬─┐┌─┐┌─┐┌┬┐┌─┐
-.*.│  ├┬┘├┤ ├─┤ │ ├┤
-.*.└─┘┴└─└─┘┴ ┴ ┴ └─┘
- * =================================================================================
- */
 //Create an app.post to take in the POST and create a record of a playlist
 //POST /playlist - create a new playlist
 app.post('/playlist', (request, response) => {
@@ -287,42 +280,186 @@ app.post('/playlist', (request, response) => {
     });
 });
 
-/**
- * ================================================================================
-.*.┌─┐┬ ┬┌─┐┬ ┬  ┌─┐┌─┐┌─┐┌┬┐┬ ┬┬─┐┌─┐
-.*.└─┐├─┤│ ││││  ├┤ ├┤ ├─┤ │ │ │├┬┘├┤
-.*.└─┘┴ ┴└─┘└┴┘  └  └─┘┴ ┴ ┴ └─┘┴└─└─┘
- * ================================================================================
- */
-
 //Create a show route /playlists/:id => /playlists/1
 //Build the show feature for playlist
 app.get('/playlist/:id',(request, response)=>{
-  let query = "SELECT * FROM playlist WHERE id=$1";
-  let value = [parseInt(request.params.id)];
-  pool.query(query,value, (err, result) => {
-    if(err){
+    let query = "SELECT * FROM playlist WHERE id=$1";
+    let value = [parseInt(request.params.id)];
+    pool.query(query,value, (err, result) => {
+        if(err){
         console.log("ERRRR", err);
         response.status(500).send("error")
-    } else {
+        } else {
         console.log("RESULT")
-        console.log( result.rows);
+        console.log( result.rows + " hey this is result dot rows");
         let playlist = result.rows;
         const data = {
             selectedPlaylist: playlist[0]
-    };
-      // response.send(result.rows);
+        };
       response.render('showPlaylist', data);
     }
     })
 });
 
+//Create a form to add a song to a playlist /playlist/1/newsong
 //GET /playlist/:id/newsong - render the form to add a song to the playlist
+app.get('/playlist/:id/newsong', (request, response) => {
+    let index = parseInt[request.params.id];
+    let text = 'SELECT * FROM songs';
+    pool.query(text, (err, result) => {
+        console.log('this is adding new song to selected playlist de query');
+        if (err) {
+            console.log('ERREEERRRRRR', err);
+            response.send("error")
+        } else {
+            console.log("RESULT")
+            console.log(result.rows);
+            let playlist = result.rows;
+            const data = {
+                id: index,
+                selectedPlaylist: playlist
+        };
+            response.render('addSongToPlaylist', data);
+        }
+    })
+});
+
+//TODO: Create an app.post to take in the POST request and add a song to the selected playlist.
+// app.post('/playlist/:id', (request, response) => {
+//     //how to get the playlist_id? smth needs to be done before hand?
+//     let insertQueryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING id';
+//     //the request.params.id de id is playlist de id
+//     const values = [request.body.id,request.params.id];
+//     //need to add
+//     pool.query(insertQueryText, values, (err, result)=> {
+//         console.log("INSERT query callback");
+//         if( err ) {
+//             console.log("ERREEERRRRRR", err);
+//             response.send("errorr")
+//         } else {
+//             console.log("DONE", result.rows, 'You have added ' + request.body.title);
+//             const newlyAdded = {
+//             title: request.body.title,
+//             };
+//             const data = {
+//             newArtist : newlyAdded
+//             };
+//             response.render('createdNewPlaylist', data);
+//         }
+//     });
+// });
+
 
 //GET /playlist/:id - show all the song titles inside this playlist
 
 //POST /playlist/:id - for this playlist, put a single song on the playlist
 
+
+/**
+ * ===================================================================================
+.* ┌─┐┌─┐┬─┐┌┬┐  ┬┬┬
+.* ├─┘├─┤├┬┘ │   │││
+ * ┴  ┴ ┴┴└─ ┴   ┴┴┴
+ * ===================================================================================
+ */
+
+//23-1-2020
+app.get('/register', (request, response) => {
+    response.render('register');
+});
+
+app.post('/register', (request, response) => {
+// check if the username is unique in the system
+// if they are, insert the record
+    let insertQueryText = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
+    //hashing the password
+    let hashedPw = sha256(request.body.password + SALT);
+    const values = [request.body.name, hashedPw];
+
+    pool.query(insertQueryText, values, (err,result) => {
+        console.log("insert query callback")
+
+        if (err) {
+            console.log("Error", err);
+            response.send("error");
+        } else {
+            console.log("Done", result.rows)
+            // response.send("You have successfully created an account!");
+            let user_id = result.rows[0].id;
+            let hashedUser = sha256(user_id+SALT);
+            response.cookie('username', request.body.name);
+            response.cookie('loggedIn', hashedUser);
+            response.cookie('userId', user_id);
+            response.redirect('/');
+        }
+    })
+});
+
+app.get('/login', (request, response) => {
+    response.render('login');
+});
+
+
+app.post('/login',(request, response)=>{
+    let query = "SELECT * FROM users WHERE name='"+request.body.name+"'";
+    console.log("MY QUERY: "+query)
+    pool.query(query, (err, result)=>{
+        if (err) {
+            console.log("ERRRR", err);
+            response.status(500).send("error")
+        } else {
+            if( result.rows.length === 0 ){
+                response.send("EMPTYU RESULT");
+            } else{
+                // hash the request, if its the same as db
+                let hashedRequestPw = sha256( request.body.password + SALT);
+                // if the password in the db matches the one in the login form
+                    if( result.rows[0].password === hashedRequestPw ){
+
+                        let user_id = result.rows[0].id;
+                        let hashedCookie = sha256(SALT+user_id);
+
+
+                        // response.cookie('loggedIn', true);
+                        response.cookie('loggedIn', hashedCookie);
+                        response.cookie('userId', user_id);
+                        // response.send( result.rows[0] );
+                        response.redirect('/');
+                    } else {
+                        response.send( "INCORRECT PW")
+                    }
+            }
+        }
+    });
+});
+
+app.get('/papaya', (request, response) => {
+
+  // check to see if a user is logged in
+
+  let user_id = request.cookies.userId;
+  let hashedCookie = sha256(SALT+user_id);
+
+  if( request.cookies.loggedIn === hashedCookie){
+
+
+    // SELECT about user based on id
+
+    response.send('papaya');
+  }else{
+
+    response.send('secret! go away');
+  }
+
+  // response.send(request.cookies);
+});
+
+app.get('/logout', (request, response) => {
+  response.clearCookie("loggedIn");
+  response.clearCookie("userId");
+
+  response.send('we logged you out')
+});
 
 
 

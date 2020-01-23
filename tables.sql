@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS artists (
 );
 
 
-CREATE TABLE songs (
+CREATE TABLE IF NOT EXISTS songs (
     id SERIAL PRIMARY KEY,
     title TEXT,
     album TEXT,
@@ -25,4 +25,11 @@ CREATE TABLE IF NOT EXISTS playlist_song (
     id SERIAL PRIMARY KEY,
     song_id INTEGER,
     playlist_id INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS users (
+	id SERIAL PRIMARY KEY,
+	name TEXT,
+	password TEXT,
+	UNIQUE (name)
 );
