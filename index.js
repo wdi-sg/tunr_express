@@ -1,4 +1,6 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
+// const sha256 = require('js-sha256');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const func = require('./function')
