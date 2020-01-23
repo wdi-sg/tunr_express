@@ -9,13 +9,20 @@ class Home extends React.Component {
             <html>
                 <Head />
                 <body>
-                    <Navbar />
-                    <h1>Welcome to Tunr Databass!</h1>
-                    <ul>
-                        <li><a href="/artists">Artists</a></li>
-                        <li><a href="/songs">Songs</a></li>
-                        <li><a href="/playlists">Playlists</a></li>
-                    </ul>
+                    <div className="container">
+                        <Navbar />
+                        <h1>Welcome to Tunr Databass!</h1>
+                        <ul>
+                            <li><a href="/artists">Artists</a></li>
+                            <li><a href="/songs">Songs</a></li>
+                            <li><a href="/playlists">Playlists</a></li>
+                        </ul>
+                        <form action="/users/logout?_method=delete" method="POST">
+                            <button>
+                                logout
+                            </button>
+                        </form>
+                    </div>
                 </body>
             </html>
         );

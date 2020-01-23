@@ -3,6 +3,10 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser')
+var sha256 = require('js-sha256');
+const salt = "the world is not enough"
+
 
 // Initialise postgres client
 const configs = {
@@ -35,6 +39,9 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+app.use(cookieParser());
+
+
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -52,6 +59,11 @@ app.engine('jsx', reactEngine);
 //home page/landing page
 app.get('/', (request, response) => {
     response.render('home');
+});
+
+//new user reg form
+app.get('/users/new', (request,response) => {
+    response.render('register');
 });
 
 
@@ -169,12 +181,16 @@ app.get('/playlists/:id', (request, response) => {
             console.log("Error :", err);
             response.status(500).send("Error finding songs in playlist.");
         }
-        let data = {
-            playlists : result.rows,
-            name : result.rows[0].name,
-            play_id : result.rows[0].playlist_id
-        };
-        response.render('playlist', data)
+        if (result.rows.length > 0) {
+            let data = {
+                playlists : result.rows,
+                name : result.rows[0].name,
+                play_id : result.rows[0].playlist_id
+            };
+            response.render('playlist', data)
+        } else {
+
+        }//else statement
     })
 })
 
@@ -260,6 +276,52 @@ app.post('/playlists', (request, response) => {
 });
 
 
+//post route for logging off
+app.delete('/users/logout', (request, response) => {
+    response.clearCookie("logSess");
+    response.redirect('/');
+});
+
+
+//post route for adding users
+app.post('/users', (request,response) => {
+    let passHash = sha256(request.body.password+salt);
+    let text = "INSERT INTO users (name, passHash) VALUES ($1, $2) RETURNING id;";
+    let values = [request.body.name, passHash];
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("Error :", err)
+            response.status(500).send("Error")
+        }
+        let session = sha256(result.rows[0].id + "logged" + salt);
+        response.cookie('logSess', session);
+        response.redirect('/')
+    })
+})
+
+//post route for logging in
+app.post('/', (request, response) => {
+    let password = sha256(request.body.password+salt);
+    let text = "SELECT * FROM users WHEN name=$1"
+    let values = [request.body.user];
+    pool.query(text, values, (err, result) => {
+        if (err) {
+            console.log("Error :", err)
+            response.status(500).send("Error Logging in.");
+        }
+        if (result.rows.length === 0) {
+            response.send("No such user found.")
+        } else {
+            if (result.rows[0].passHash === password) {
+                let session = sha256(result.rows[0].id + "logged" + salt);
+                response.cookie('logSess', session);
+                response.redirect('/')
+            } else {
+                response.send("Password Invalid!!");
+            }
+        }
+    })
+})
 
 
 

@@ -29,11 +29,15 @@ class Navbar extends React.Component {
                             <li className="nav-item">
                                 <a className="nav-link" href="/playlists">Playlists</a>
                             </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="/users/new">Register Acc</a>
+                            </li>
                         </ul>
-{/*                        <form className="form-inline my-2 my-lg-0" action="/">
-                          <input className="form-control mr-sm-2" type="search" placeholder="Search Songs or Artists" aria-label="Search" name="search"/>
-                          <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </form>*/}
+                        <form className="form-inline my-2 my-lg-0" method="POST" action="/">
+                          <input className="form-control mr-sm-2" type="text" placeholder="Username" aria-label="User" name="user"/>
+                          <input className="form-control mr-sm-2" type="text" placeholder="Password" aria-label="Password" name="password"/>
+                          <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Log In</button>
+                        </form>
                       </div>
                 </nav>
         );
