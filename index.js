@@ -86,6 +86,51 @@ app.get('/login', (request, response) => {
   response.render('login');
 });
 
+app.post('/login',(request, response)=>{
+  let query = "SELECT * FROM users WHERE name='"+request.body.name+"'";
+
+  console.log("MY QUERY: "+query)
+
+  pool.query(query, (err, result)=>{
+
+    if(err){
+      console.log("ERRRR", err);
+      response.status(500).send("error")
+
+    } else {
+
+      if ( result.rows.length === 0 ) {
+        response.send("EMPTY RESULT");
+      } else {
+
+        // hash the request, if its the same as db
+        let hashedRequestPw = sha256( request.body.password + SALT);
+
+        // if the password in the db matches the one in the login form
+        if ( result.rows[0].password === hashedRequestPw ) {
+          let user_id = result.rows[0].id;
+          let hashedCookie = sha256(SALT+user_id);
+
+          // response.cookie('loggedIn', true);
+          response.cookie('username, request.body.name')
+          response.cookie('loggedIn', hashedCookie);
+          response.cookie('userId', user_id);
+          // response.send( result.rows[0] );
+          response.redirect('/');
+        }else{
+          response.send("Your password is wrong! Try again! 🤓")
+        }
+      }
+    }
+  });
+});
+
+
+
+
+
+
+
 
 
 
@@ -286,8 +331,6 @@ app.get('/playlist/:id/newsong', (request, response)=>{
 })
 
 */
-
-
 
 
 

@@ -13,9 +13,10 @@ class Newsong extends React.Component {
 
     return (
       <html>
+
         <head>
-        <title></title>
-               <meta charset="utf-8" />
+      <title>🎵Add Song to Playlist</title>
+          <meta charset="utf-8" />
         </head>
 
         <body>

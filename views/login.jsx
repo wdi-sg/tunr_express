@@ -1,13 +1,13 @@
 var React = require('react');
 
-class Register extends React.Component {
+class Login extends React.Component {
   render() {
     return (
       <html>
         <body>
           <div>
-            <h2>Register here</h2>
-            <form action="/register" method="POST">
+            <h2>Login</h2>
+            <form action="/login" method="POST">
                 <p>
                     Name <input name="name" required/>
                 </p>
@@ -28,4 +28,4 @@ class Register extends React.Component {
   }
 }
 
-module.exports = Register;
+module.exports = Login;
