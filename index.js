@@ -1,3 +1,7 @@
+var sha256 = require('js-sha256');
+const SALT = "salt256";
+const cookieParser = require('cookie-parser')
+
 console.log("starting up!!");
 
 const express = require('express');
@@ -27,7 +31,6 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -48,9 +51,56 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// CREATE ROUTE AND JSX FILE THAT RENDERS FORM FOR USER TO REGISTER
+app.get('/register', (request, response) => {
+  response.render('register');
+});
+
+app.post('/register', (request, response) => {
+
+  let insertQueryText = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
+
+  let hashedPw = sha256( request.body.password + SALT );
+
+  const values = [ request.body.name, hashedPw ];
+
+  pool.query(insertQueryText, values, (err, result)=> {
+    if (err) {
+      console.log("Sorry, you have an error", err);
+      response.send("Sorry, you have an error")
+    } else {
+
+          let user_id = result.rows[0].id;
+          let hashedCookie = sha256(SALT+user_id);
+
+          response.cookie('username', request.body.name);
+          response.cookie('registered', hashedCookie);
+          response.cookie('userId', user_id);
+          response.redirect('/register');
+    }
+    });
+});
+
+
+app.get('/login', (request, response) => {
+  response.render('login');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.get('/', (request, response) => {
   // query database for all artists
-
   // respond with HTML page displaying all artists
   response.render('home');
 });
@@ -106,8 +156,6 @@ app.get('/artists/:id',(request, response)=>{
     });
 
 });
-
-
 
 
 
@@ -210,14 +258,15 @@ app.get('/playlist/:id/newsong', (request, response)=>{
 
 
 
-/*
 
-app.post('/playlist/:id',(request, response)=>{
 
-  let insertQueryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+/*app.post('/playlist/:id/',(request, response)=>{
+
+  let insertQueryText = 'INSERT INTO artists (id, chosen_song) VALUES ($1, $2) RETURNING *';
 
   const values = [
-    request.body.name
+    request.body.id,
+    request.body.chosen_song
   ];
 
   pool.query(insertQueryText, values, (err, result)=>{
@@ -230,48 +279,13 @@ app.post('/playlist/:id',(request, response)=>{
       response.send("error")
     }else{
       console.log("DONE", result.rows)
-      response.send("You have added a new playlist : " + request.body.name)
+      response.send("You have added an song in your playlist : " + request.body.id)
     }
   });
+  // response.send("heeeyyyyy");
 })
 
-
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-app.get('/playlist/:id',(request, response)=>{
-
-  let playlistId = [parseInt(request.params.id)];
-  console.log(playlistId);
-  let query = "SELECT * FROM playlist WHERE id =$1";
-    pool.query(query, playlistId, (err,result)=>{
-      const data = {
-        id: result.rows[0].id,
-        song_id: result.rows[0].songid,
-        playlist_id: result.rows[0].playlistid };
-
-      response.render('Playlistid', data);
-    });
-});*/
 
 
 
