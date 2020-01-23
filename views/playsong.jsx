@@ -3,7 +3,7 @@ const React = require("react");
 class playsong extends React.Component {
   render() {
     console.log(this.props.id);
-    const filePath = "/playlist/" + this.props.playlistId + "?_method=put"
+    const filePath = "/playlist/" + this.props.playlistId;
       
       return (
         <li>

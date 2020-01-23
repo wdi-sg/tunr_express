@@ -41,3 +41,10 @@ IF NOT EXISTS users
     password TEXT
 );
 
+CREATE TABLE
+IF NOT EXISTS favorites
+(
+	id SERIAL PRIMARY KEY,
+	user_id INTEGER,
+	song_id INTEGER
+);

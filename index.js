@@ -172,24 +172,24 @@ app.get('/playlist/:id/newsong', (request, response) => {
   });
 });
 
-// app.post('/playlist/:id', (request, response) => {
-//   let insertQueryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
-//   const values = [
-//     request.body.song_id,
-//     request.params.id
-//   ];
-//   pool.query(insertQueryText, values, (err, result) => {
-//     console.log("INSERT query callback")
-//     console.log()
-//     if (err) {
-//       console.log("ERROR", err);
-//       response.send("error")
-//     } else {
-//       console.log("DONE", result.rows)
-//       response.send("Added song!")
-//     }
-//   });
-// })
+app.post('/playlist/:id', (request, response) => {
+  let insertQueryText = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *';
+  const values = [
+    request.body.song_id,
+    request.params.id
+  ];
+  pool.query(insertQueryText, values, (err, result) => {
+    console.log("INSERT query callback")
+    console.log()
+    if (err) {
+      console.log("ERROR", err);
+      response.send("error")
+    } else {
+      console.log("DONE", result.rows)
+      response.send("Added song!")
+    }
+  });
+})
 
 /**
  * ===================================
@@ -313,7 +313,60 @@ app.post('/login', (request, response) => {
 
 });
 
+/**
+ * ===================================
+ * FAVORITES NOTE - WIP Can't see Userid now
+ * ===================================
+ */
 
+app.get("/favorites/new", (request, response) => {
+  if (request.cookies.loggedIn !== undefined) {
+    let query = "SELECT * from songs";
+    pool.query(query, (err, result) => {
+      const data = {
+        songs: result.rows
+      };
+      response.render("Faveform", data);
+    });
+  } else {
+    response.send("Please log in first!")
+  }
+});
+
+app.get("/favorites", (request, response) => {
+  if (request.cookies.loggedIn === undefined) {
+    response.send("Please log in to view your favorites")
+  }
+  const userID = request.cookies.userID;
+  const values = [userID];
+  const query = `
+      SELECT songs.id, songs.title, songs.preview_link
+      FROM SONGS
+      INNER JOIN favorites
+      on (songs.id = favorites.song_id)
+      WHERE favorites.user_id = $1;`;
+  pool.query(query, values, (err, result) => {
+    const favorites = result.rows;
+    const data = {
+      favorites: favorites,
+      username: request.cookies.username
+    };
+    response.render("Faves", data);
+  });
+})
+
+app.post("/favorites", (request, response) => {
+  const songId = request.body.song_id;
+  const userId = request.cookies.userID;
+  const values = [songId, userId];
+  const query = "INSERT into favorites (song_id, user_id) VALUES ($1, $2)";
+  pool.query(query, values, (err, result) => {
+    if (err) console.log(err);
+    else {
+      response.redirect("/");
+    }
+  });
+});
 
 /**
  * ===================================
