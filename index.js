@@ -1,8 +1,10 @@
 console.log("starting up!!");
 
 const express = require('express');
+const cookieParser = require('cookie-parser')
 const methodOverride = require('method-override');
 const pg = require('pg');
+var sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -28,7 +30,7 @@ pool.on('error', function(err) {
 // Init express app
 const app = express();
 
-
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -50,6 +52,44 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
+
+
+///////////////////////////////////////////// FORM TO REGISTER /////////////////////////////////////////////
+app.get('/register', (request, response) => {
+    response.render('register');
+});
+
+
+
+/////////////////////////////////////////// INSERT USER DETAILS ///////////////////////////////////////////
+app.post('/login', (request, response) => {
+
+    let querySelectUserDetails = ('INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *');
+
+    let loginNameInput = request.body.name;
+    let loginPasswordInput = request.body.password;
+    const values = [loginNameInput, loginPasswordInput];
+
+    pool.query(querySelectUserDetails, values, (err, result) => {
+
+        if (err) {
+            // err below is a built-in function from express to check error
+            console.log("ERRRRR", err);
+            response.status(500).send("error");
+        } else {
+
+            response.redirect('/login');
+        }
+    });
+});
+
+
+
+///////////////////////////////////////////// FORM TO ADD LOGIN /////////////////////////////////////////////
+app.get('/login', (request, response) => {
+    response.render('login');
+});
+
 
 
 ///////////////////////////////////////////// SHOW ALL ARTISTS /////////////////////////////////////////////
@@ -248,6 +288,7 @@ app.get('/playlist/:id/newsong', (request, response) => {
 });
 
 
+
 ////////////////////////////////////// INSERT NEW SONG INTO PLAYLIST ////////////////////////////////////
 app.post('/playlist', (request, response) => {
 
@@ -265,6 +306,7 @@ app.post('/playlist', (request, response) => {
         response.redirect('/artists');
     });
 });
+
 
 
 
@@ -316,7 +358,3 @@ let onClose = function() {
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
-
-
-
-
