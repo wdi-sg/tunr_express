@@ -17,7 +17,7 @@ return(
                                 <a class="nav-link" href="#">SORT</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Link</a>
+                                <a class="nav-link" href="/playlist">PLAYLIST</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Link</a>
