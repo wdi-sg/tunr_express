@@ -15,7 +15,7 @@ class Register extends React.Component {
                     Name <input name="name" required/>
                 </p>
                 <p>
-                    Password <input name="password" required/>
+                    Password <input type="password" name="password" required/>
                 </p>
 
                 <p>

@@ -400,37 +400,37 @@ app.get('/login', (request, response) => {
 });
 
 
-app.post('/login',(request, response)=>{
-    let query = "SELECT * FROM users WHERE name='"+request.body.name+"'";
-    console.log("MY QUERY: "+query)
-    pool.query(query, (err, result)=>{
-        if (err) {
-            console.log("ERRRR", err);
-            response.status(500).send("error")
+app.post('/login', (request, response) => {
+    let query = 'SELECT * FROM users WHERE name=$1'
+    let values = [request.body.name];
+    console.log('My Query: ' + query)
+    pool.query(query, values, (error, result) => {
+        if (error) {
+            console.log('Errr', err);
+            response.status(500).send('error')
         } else {
-            if( result.rows.length === 0 ){
-                response.send("EMPTYU RESULT");
-            } else{
-                // hash the request, if its the same as db
-                let hashedRequestPw = sha256( request.body.password + SALT);
-                // if the password in the db matches the one in the login form
-                    if( result.rows[0].password === hashedRequestPw ){
-
-                        let user_id = result.rows[0].id;
-                        let hashedCookie = sha256(SALT+user_id);
-
-
-                        // response.cookie('loggedIn', true);
-                        response.cookie('loggedIn', hashedCookie);
-                        response.cookie('userId', user_id);
-                        // response.send( result.rows[0] );
-                        response.redirect('/');
-                    } else {
-                        response.send( "INCORRECT PW")
-                    }
+            if (result.rows.length === 0) {
+                response.send('Empty Result');
+            } else {
+                let hashedRequestPw = sha256(request.body.password + SALT);
+                if (result.rows[0] === 0) {
+                    response.send('Empty Result');
+                } else {
+                    // let hashedRequestPw = sha256(request.body.password + SALT);
+                        if (result.rows[0].password === hashedRequestPw) {
+                            let user_id = result.rows[0].id;
+                            let hashedUser = sha256(user_id+SALT);
+                            response.cookie('username', request.body.name);
+                            response.cookie('loggedIn', hashedUser);
+                            response.cookie('userId', user_id);
+                            response.redirect('/');
+                        } else {
+                            response.send("Incorrect Password!")
+                        }
+                }
             }
         }
-    });
+    })
 });
 
 app.get('/papaya', (request, response) => {
