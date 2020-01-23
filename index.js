@@ -63,9 +63,9 @@ app.post('/playlists', func.addPlayList );
 app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
 app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
 app.post('/playlists/:id', func.addPlayListSongs);
-//
-// app.get('/register', func.registerUserPage);
-// app.post('/register', func.registerUser);
+
+app.get('/register', func.registerUserPage);
+app.post('/register', func.registerUser);
 app.get('/', func.showArtists);
 /**
  * ===================================
