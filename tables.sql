@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL UNIQUE,
   hashedpassword TEXT
-)
+);
 
 CREATE TABLE IF NOT EXISTS favorites (
   id SERIAL PRIMARY KEY,

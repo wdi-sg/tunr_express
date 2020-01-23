@@ -518,8 +518,10 @@ app.post('/signin/', (request, response) => {
             return;
         } else {
             if (result.rows.length) {
-                let currentSessionCookie = sha256( result.rows[0].id + 'logged' + SALT );
-                response.cookie('logged_in', "true", { expires: new Date(Date.now() + 9000000) });
+                let currentSessionCookie = sha256(result.rows[0].id + 'logged' + SALT);
+                response.cookie('logged_in', "true", {
+                    expires: new Date(Date.now() + 9000000)
+                });
                 response.cookie('user_id', result.rows[0].id);
                 response.cookie('session', currentSessionCookie);
                 data = {
@@ -546,6 +548,103 @@ app.get('/logout', (request, response) => {
     response.clearCookie('session');
     response.redirect('/');
 });
+
+
+app.get('/favorites/new', (request, response) => {
+    let currentSessionCookie = sha256(request.cookies["user_id"] + 'logged' + SALT);
+    if (request.cookies["logged_in"] && currentSessionCookie === request.cookies["session"]) {
+        const queryString = `SELECT * FROM songs;`;
+        pool.query(queryString, (err, result) => {
+            if (err) {
+                console.log(err);
+                response.render('home', {
+                    message: "Error!",
+                    loggedIn: displayLoggedIn(request)
+                })
+                return;
+            }
+            if (!result.rows.length) {
+                const data = {
+                    message: "No songs in database.",
+                    loggedIn: displayLoggedIn(request)
+                };
+                response.render('home', data);
+                return;
+            }
+            const songs = result.rows;
+            const data = {
+                loggedIn: true,
+                songs: songs,
+                userId: request.cookies["user_id"]
+            }
+            response.render('addtofavorites', data);
+        })
+    } else {
+        response.clearCookie('logged_in');
+        response.clearCookie('user_id');
+        response.clearCookie('session');
+        response.render('home', {
+            message: "Please log in to continue.",
+            loggedIn: displayLoggedIn(request)
+        })
+        return;
+    }
+})
+
+
+app.post('/favorites/', (request, response) => {
+    const queryString = `INSERT INTO favorites (song_id, user_id) VALUES ($1, $2);`;
+    const queryValues = [request.body.songindex, request.body.userId];
+    console.log(queryValues);
+    pool.query(queryString, queryValues, (err, result) => {
+        if (err) {
+            console.log(err);
+            response.render('home', {
+                message: "Error!",
+                loggedIn: displayLoggedIn(request)
+            })
+            return;
+        }
+        response.redirect('/favorites/');
+    })
+})
+
+
+app.get('/favorites', (request, response) => {
+    let currentSessionCookie = sha256(request.cookies["user_id"] + 'logged' + SALT);
+    if (request.cookies["logged_in"] && currentSessionCookie === request.cookies["session"]) {
+        const queryString = `SELECT songs.artist_id, songs.title, songs.album, songs.preview_link FROM songs INNER JOIN favorites ON (favorites.song_id = songs.id) WHERE favorites.user_id = $1`;
+        const queryValues = [request.cookies["user_id"]];
+        pool.query(queryString, queryValues, (err, result) => {
+            if (err) {
+                console.log(err);
+                response.render('home', {
+                    message: "Error!",
+                    loggedIn: displayLoggedIn(request)
+                })
+                return;
+            }
+
+            const songs = result.rows;
+
+            const data = {
+                songs: songs,
+                loggedIn: displayLoggedIn(request)
+            };
+            response.render('favorites', data);
+        })
+    } else {
+        response.clearCookie('logged_in');
+        response.clearCookie('user_id');
+        response.clearCookie('session');
+        response.render('home', {
+            message: "Please log in to continue.",
+            loggedIn: displayLoggedIn(request)
+        })
+        return;
+    }
+})
+
 
 /**
  * ===================================
