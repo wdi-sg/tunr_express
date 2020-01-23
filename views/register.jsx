@@ -2,7 +2,7 @@ var React = require("react");
 
 //Using string and literals in react.
 
-class Login extends React.Component {
+class Register extends React.Component {
 	render() {
 
 		
@@ -13,8 +13,8 @@ class Login extends React.Component {
 				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossOrigin="anonymous"></link>
 				</head>
 					<body>
-						<h1> Login Here </h1>
-						 <form action = "/login/" method="POST">
+						<h1> Register Here </h1>
+						 <form action = "/register/" method="POST">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Email address</label>
 										<input name="emailaddress" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"/>
@@ -36,4 +36,4 @@ class Login extends React.Component {
 	}
 }
 
-module.exports = Login;
+module.exports = Register;

@@ -56,27 +56,74 @@ app.engine('jsx', reactEngine);
 
 // GET - Register
 app.get('/register/', (request, response) => {
+    response.render('register');
+});
+
+// GET - Login
+app.get('/login/', (request, response) => {
     response.render('login');
 });
 
+// POST - Login
+app.post('/login/', (request, response) => {
+
+   let query = "SELECT * FROM login_data WHERE email='"+request.body.email+"'";
+   pool.query(query, (err, result)=>{
+    if(err){
+      response.status(500).send("error")
+    } else {
+      // If query does not return anything it means email is not found
+      if( result.rows.length === 0 ){
+        response.send("NOT FOUND");
+      } else {
+
+        // hash the request, if its the same as db
+        const SALT = "bananas are delicious";
+        let hashedRequestPw = sha256( request.body.password + SALT);
+
+        // if the password in the db matches the one in the login form
+        if( result.rows[0].password === hashedRequestPw ){
+
+          let user_id = result.rows[0].id;
+          let hashedCookie = sha256(user_id + 'logged' + SALT );
+
+          // response.cookie('loggedIn', true);
+          response.cookie('loggedIn', hashedCookie);
+          response.cookie('userId', user_id);
+          // response.send( result.rows[0] );
+          response.send( "LOGGGEDDD IN")
+        }else{
+          response.send( "INCORRECT PW")
+        }
+}
+
 // POST - Register
 app.post('/register/', (request, response) => {
-    const email = request.body.emailaddress;
-    const password = sha256(request.body.password);
+  const email = request.body.emailaddress;
+  const password = sha256(request.body.password);
+  const values = [email,password] 
+  let query = `INSERT INTO login_data(email,password) VALUES ($1,$2) RETURNING *`
 
-    const values = [email,password]
+  pool.query(query,values,(err,result) =>{
+    //Find user_id
+    let user_id = result.rows[0].id;
 
-    let query = `INSERT INTO login_data(email,password) VALUES ($1,$2)`
-
+    //Setting cookies
     response.cookie('isLoggedIn',"yes")
     response.cookie('userName',email)
-    
 
-    pool.query(query,values,(err,result) =>{
+    //Creating Hashed Cookie
+    const SALT = "bananas are delicious";
+    let currentSessionCookie = sha256( user_id + 'logged' + SALT );
+    response.cookie('logged_in', currentSessionCookie);
 
-      response.render('home')
-    })
+    //Render page
+    response.render('home')
+  })
 });
+
+
+
 
 // GET - index - See all artists
 app.get('/artists/', (request, response) => {
