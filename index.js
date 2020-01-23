@@ -2,6 +2,8 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const callback = require('./functions')
+const cookieParser = require('cookie-parser')
+
 
 // Initialise postgres client
 const configs = {
@@ -27,6 +29,7 @@ pool.on('error', function (err) {
 const app = express();
 
 
+
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -34,6 +37,8 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+//INIT COOKIER PARSER
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -47,7 +52,11 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-
+app.get('/favorites', callback.showFavorites)
+app.get('/register', callback.registerForm)
+app.post('/register', callback.registerUser)
+app.get('/login', callback.loginForm)
+app.post('/login', callback.loginUser)
 app.post('/playlist', callback.newPlaylist)
 app.post('/playlist/:id', callback.playlistNewSong)
 app.get('/playlist/new', callback.showNewPlaylist)

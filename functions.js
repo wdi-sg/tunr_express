@@ -1,4 +1,11 @@
 const pg = require('pg');
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const app = express();
+const sha256 = require('js-sha256')
+const SALT = 'mr poopy butthole'
+//INIT COOKIER PARSER
+app.use(cookieParser());
 
 const configs = {
     user: 'robertkolsek',
@@ -200,16 +207,16 @@ module.exports.showArtistByID = (req, res) => {
     })
 }
 
-module.exports.showNewPlaylist = (req,res) => {
+module.exports.showNewPlaylist = (req, res) => {
     res.render('new-playlist')
 }
 
-module.exports.newPlaylist = (req,res) => {
+module.exports.newPlaylist = (req, res) => {
     const newPlaylist = [req.body.name]
 
     const queryText = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *'
 
-    pool.query(queryText, newPlaylist, (err,result) =>{
+    pool.query(queryText, newPlaylist, (err, result) => {
 
         res.send("Success!")
 
@@ -219,11 +226,11 @@ module.exports.newPlaylist = (req,res) => {
 module.exports.showPlaylistByID = (req, res) => {
     const id = [req.params.id]
 
-    
+
 
     const joinQuery = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_song.playlist_id=$1"
 
-    pool.query(joinQuery, id, (err,result) => {
+    pool.query(joinQuery, id, (err, result) => {
 
         if (err) {
             console.log("error", err.message)
@@ -240,8 +247,8 @@ module.exports.showPlaylistByID = (req, res) => {
 
                 res.render('show-playlist', data)
             })
-            
-            
+
+
 
         }
 
@@ -252,12 +259,12 @@ module.exports.showPlaylistNewSong = (req, res) => {
     const id = req.params.id
     const queryText = "SELECT title, id FROM songs"
 
-    pool.query(queryText, (err,result) => {
+    pool.query(queryText, (err, result) => {
 
         if (err) {
             console.log("error", err.message)
         } else {
-            
+
             const data = {
                 id: id,
                 songs: result.rows
@@ -275,30 +282,30 @@ module.exports.playlistNewSong = (req, res) => {
 
     const queryText = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *"
 
-    pool.query(queryText, values, (err,result) => {
+    pool.query(queryText, values, (err, result) => {
 
         if (err) {
             console.log("error", err.message)
         } else {
-            
-           res.send(result.rows)
+
+            res.send(result.rows)
 
         }
 
     })
 }
 
-module.exports.showArtistNewSong = (req,res) =>{
+module.exports.showArtistNewSong = (req, res) => {
     const id = req.params.id
 
-    textQuery = 'SELECT * FROM artists WHERE id='+id
+    textQuery = 'SELECT * FROM artists WHERE id=' + id
 
-    pool.query(textQuery, (err,result)=> {
+    pool.query(textQuery, (err, result) => {
 
 
         artistQuery = 'SELECT name, id FROM artists'
 
-        pool.query(artistQuery, (err,artistResult)=>{
+        pool.query(artistQuery, (err, artistResult) => {
 
             const data = {
                 allArtists: artistResult.rows,
@@ -308,11 +315,11 @@ module.exports.showArtistNewSong = (req,res) =>{
             res.render('new-song-artist', data)
 
         })
-        
+
     })
 }
 
-module.exports.artistNewSong = (req,res) => {
+module.exports.artistNewSong = (req, res) => {
     const id = req.body.artist_id
 
     const values = [
@@ -326,23 +333,93 @@ module.exports.artistNewSong = (req,res) => {
     console.log(req.body)
 
     textQuery = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *"
-    
-    pool.query(textQuery, values, (err,result) =>{
+
+    pool.query(textQuery, values, (err, result) => {
         console.log(result.rows)
 
-    const queryText = "SELECT * FROM artists WHERE id='" + id + "'"
+        const queryText = "SELECT * FROM artists WHERE id='" + id + "'"
 
-    pool.query(queryText, (err, result) => {
+        pool.query(queryText, (err, result) => {
 
+            if (err) {
+                console.log("error", err.message)
+            } else {
+                res.render('show-artist', result.rows[0])
+
+            }
+        })
+
+
+    })
+
+}
+
+module.exports.registerForm = (req, res) => {
+    res.render('register')
+}
+
+module.exports.registerUser = (req, res) => {
+    const hashedPassword = sha256(req.body.password)
+    const values = [req.body.name, hashedPassword]
+
+    const queryText = 'INSERT INTO users (name, password) VALUES ($1, $2)'
+
+    pool.query(queryText, values, (err, result) => {
         if (err) {
             console.log("error", err.message)
         } else {
-            res.render('show-artist', result.rows[0])
-
+            const data = {
+                success: "Successfully registered! Please log in."
+            }
+            res.render('login', data)
         }
     })
+}
+
+module.exports.loginForm = (req, res) => {
+    res.render('login')
+}
+
+module.exports.loginUser = (req, res) => {
+
+    const values = [req.body.name]
+    const enteredPassword = sha256(req.body.password)
+
+    queryText = 'SELECT * FROM users WHERE name=$1'
+
+    pool.query(queryText, values, (err, result) => {
+
+        if (result.rows.length === 0) {
+            res.send("No such account!")
+        } else {
+
+            if (enteredPassword === result.rows[0].password) {
+
+                const userId = result.rows[0].id
+                const hashedCookie = sha256(SALT + userId)
+
+                res.cookie("userId", userId)
+                res.cookie('loggedIn', hashedCookie)
+
+                res.send("Logged in!")
+            } else {
+                res.send("NO MATCH!")
+            }
+
+        }
 
 
     })
+}
 
+module.exports.showFavorites = (req, res) => {
+
+    const hashedCookie = sha256(SALT + req.cookies.userId)
+
+    if (hashedCookie === req.cookies.loggedIn) {
+        res.send("papaya!")
+
+    } else {
+        res.send("Not logged in!")
+    }
 }
