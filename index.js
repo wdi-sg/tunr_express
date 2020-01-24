@@ -103,6 +103,27 @@ app.get('/playlist/:id', (request, response) => {
 
 /**
  * ===================================
+ * Routes - Login
+ * ===================================
+ */
+app.get('/register', (request, response) => {
+  response.render('register');
+});
+
+app.post('/register', (request, response) => {
+  let text =`INSERT INTO playlist (username, password) VALUES ($1, $2) RETURNING id`;
+  let values = [request.body.username, password];
+  pool.query(text, values);
+  response.render('home');
+});
+
+
+
+
+
+
+/**
+ * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
