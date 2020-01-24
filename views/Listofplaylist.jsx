@@ -1,5 +1,6 @@
 var React = require("react");
 var Layout = require('./layout');
+
 class Home extends React.Component {
   render() {
     console.log("THIS IS MY HOME PAGE");

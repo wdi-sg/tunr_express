@@ -3,7 +3,7 @@ var Layout = require('./layout');
 class Home extends React.Component {
   render() {
     console.log("THIS IS MY HOME PAGE");
-    console.log(this.props.artist);
+    // console.log(this.props);
     var artistArr = this.props.artist;
 
     var cards = artistArr.map((item)=>{
@@ -13,7 +13,7 @@ class Home extends React.Component {
           <div class="card-body">
             <h5 class="card-title">{item.name}</h5>
             <p class="card-text">{item.nationality}</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <a href="#" class="btn btn-primary">See Songs</a>
           </div>
         </div>
         )
@@ -21,7 +21,7 @@ class Home extends React.Component {
 
 
     return (
-        <Layout>
+        <Layout username={this.props.username}>
           <h1>Welcome!</h1>
           <div class = "container-fluid">
            <div class = "row">

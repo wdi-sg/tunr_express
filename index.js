@@ -1,8 +1,12 @@
 console.log("starting up!!");
 
+var sha256 = require('js-sha256');
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser')
+
+const SALT = "HAHAHAH";
 
 // Initialise postgres client
 const configs = {
@@ -32,6 +36,7 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+app.use(cookieParser())
 
 app.use(methodOverride('_method'));
 
@@ -51,8 +56,13 @@ app.engine('jsx', reactEngine);
 //------ HOME PAGE-------------------
 app.get('/', (request, response) => {
   let allquery = "SELECT * FROM artists";
+  let user = request.cookies.user_name
+  console.log("COOOOOSAOEOSODAOSDOASODOSDOSADOSAODSAOD" ,user);
   pool.query(allquery, (err,result)=>{
-    var data = {artist:result.rows};
+
+    var data = {artist:result.rows,
+        username:user
+    };
     response.render('home', data)
   })
 });
@@ -211,6 +221,105 @@ app.post('/artists/:id/songs', (request,response)=>{
     pool.query(query,values,(err,result)=>{
         response.redirect("/artists/"+ request.body.artist_id +"/songs")
     })
+})
+
+
+//----------- LOGIN -------------------
+app.get('/register', (request,response)=>{
+    var data = {
+        route:"/register",
+        header: "Register"
+    }
+    response.render("login",data)
+})
+
+app.post('/register', (request,response)=>{
+    var query = 'INSERT into users (username, password) VALUES ($1,$2) RETURNING id, username';
+
+    let hashedPw = sha256( request.body.password + SALT );
+
+    const values = [
+    request.body.username,
+    hashedPw
+  ];
+  pool.query(query, values, (err, result)=>{
+    if(err){
+        console.log(err);
+    } else {
+        console.log(result)
+//-----SETTING COOKIES---------------------
+        let hashedCookie = sha256(SALT+request.body.username);
+        let user_name = result.rows[0].username;
+        let user_id = result.rows[0].id;
+
+        response.cookie('loggedIn', hashedCookie);
+        response.cookie('userId', user_id);
+        response.cookie('user_name', user_name);
+         console.log("DONE", result.rows)
+         response.redirect('/');
+    }
+  })
+})
+
+
+app.get('/login', (request,response)=>{
+    var data = {
+        route:"/login",
+        header: "LOGIN"
+    }
+    response.render("login", data)
+})
+
+app.post('/login',(request,response)=>{
+    console.log("LOGGIGIGNAINGIASNGIASGNSAIG INNNNNN")
+    let query = "SELECT * FROM users WHERE username = $1"
+    values = [request.body.username];
+    console.log("ADSAD USERERERERERERERERERER" + values);
+pool.query(query,values, (err, res)=>{
+    console.log("REREARARAEREARAEREARAERE" ,res);
+    if(err){
+      console.log("ERRRR", err);
+      response.status(500).send("error");
+
+    }else{
+
+      if( res.rows.length === 0 ){
+            response.redirect('/register');
+
+        }else{
+
+        let hashedRequestPw = sha256(request.body.password + SALT);
+            console.log("asdhasdhsadhsdas PASssssssss " +hashedRequestPw);
+            console.log("THIS IS MY PASSWORD " + res.rows[0].password)
+            if( res.rows[0].password === hashedRequestPw ){
+            console.log("TRUE OR NOT DITCH" + res.rows[0].password === hashedRequestPw )
+            let hashedCookie = sha256(SALT+request.body.username);
+            let user_name = res.rows[0].username;
+            let user_id = res.rows[0].id;
+
+            response.cookie('loggedIn', hashedCookie);
+            response.cookie('userId', user_id);
+            response.cookie('user_name', user_name);
+
+            response.redirect('/');
+
+            }else{
+
+            response.redirect('/login')
+            }
+        }
+    }
+})
+})
+
+
+
+app.get('/logout',(request,response)=>{
+    response.clearCookie("loggedIn");
+    response.clearCookie("userId");
+    response.clearCookie("user_name");
+
+response.redirect('/');
 })
 /**
  * ===================================
