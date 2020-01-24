@@ -82,6 +82,8 @@ app.post('/register', (request, response) => {
 });
 
 
+
+// LOGIN FUNCTIONALITY
 app.get('/login', (request, response) => {
   response.render('login');
 });
@@ -128,9 +130,10 @@ app.post('/login',(request, response)=>{
 
 
 
-
-
-
+/* Create a route that renders a form for the user to enter the song they want to favorite. This form can just be a normal input where the user enters the id of a song they want to favorite.*/
+app.get('/favorites/new', (request, response) => {
+  response.render('favnew');
+});
 
 
 

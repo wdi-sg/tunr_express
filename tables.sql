@@ -5,17 +5,6 @@ CREATE TABLE IF NOT EXISTS artists (
     nationality TEXT
 );
 
-
-CREATE TABLE IF NOT EXISTS songs (
-    id SERIAL PRIMARY KEY,
-    title TEXT,
-    album TEXT,
-    preview_link TEXT,
-    artwork TEXT,
-    artist_id INTEGER
-);
-
-
 CREATE TABLE IF NOT EXISTS playlist (
     id SERIAL PRIMARY KEY,
     name TEXT
@@ -27,6 +16,15 @@ CREATE TABLE IF NOT EXISTS playlist_song (
     playlist_id integer
 );
 
+CREATE TABLE IF NOT EXISTS songs (
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    album TEXT,
+    preview_link TEXT,
+    artwork TEXT,
+    artist_id INTEGER
+);
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT,
@@ -34,4 +32,8 @@ CREATE TABLE users (
     UNIQUE (name)
 );
 
-
+CREATE TABLE favourites (
+    id SERIAL PRIMARY KEY,
+    song_id INTEGER,
+    user_id INTEGER
+);

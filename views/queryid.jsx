@@ -6,7 +6,7 @@ class Queryid extends React.Component {
       <html>
         <head>
         <title>{this.props.name}</title>
-               <meta charset="utf-8" />
+               <meta charSet="utf-8" />
         </head>
 
         <body>

@@ -6,7 +6,7 @@ class New extends React.Component {
       <html>
 <head>
 <title>🎵Add Artist</title>
-          <meta charset="utf-8" />
+          <meta charSet="utf-8" />
 </head>
 
 
