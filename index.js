@@ -6,16 +6,16 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'leowzhenkang',
-  host: '127.0.0.1',
-  database: 'tunr_db',
-  port: 5432,
+    user: 'leowzhenkang',
+    host: '127.0.0.1',
+    database: 'tunr_db',
+    port: 5432,
 };
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+pool.on('error', function(err) {
+    console.log('idle client error', err.message, err.stack);
 });
 
 /**
@@ -30,11 +30,10 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+    extended: true
 }));
 
 app.use(methodOverride('_method'));
-
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -54,6 +53,8 @@ app.engine('jsx', reactEngine);
 
 
 
+
+
 //render home for app with all artists name
 app.get('/artists', (request, response) => {
     const queryString = 'SELECT * FROM artists'
@@ -64,16 +65,18 @@ app.get('/artists', (request, response) => {
             response.send('query error');
         } else {
             console.log(result)
-            let data = {artistsData : result.rows}
+            let data = {
+                artistsData: result.rows
+            }
             console.log(data)
-            response.render('home',data);
+            response.render('home', data);
         }
     });
 });
 
 //render form for adding new artists
 app.get('/artists/new', (request, response) => {
-  response.render('new');
+    response.render('new');
 });
 //POST function for adding new artists
 app.post('/artists', (request, response) => {
@@ -103,7 +106,7 @@ app.post('/artists', (request, response) => {
 
 //for displaying details of 1 artist
 app.get('/artists/:id', (req, response) => {
-    const queryString = 'SELECT * from artists WHERE id='+req.params.id;
+    const queryString = 'SELECT * from artists WHERE id=' + req.params.id;
 
     pool.query(queryString, (err, result) => {
 
@@ -112,16 +115,18 @@ app.get('/artists/:id', (req, response) => {
             response.send('query error');
         } else {
             // console.log(result.rows)
-            let data = {artistsData : result.rows}
+            let data = {
+                artistsData: result.rows
+            }
             response.render("artist", data)
-            // response.send(result.rows[req.params.id - 1]);
+                // response.send(result.rows[req.params.id - 1]);
         }
     });
 });
 
 //for displaying all songs of 1 artist
 app.get('/artists/:id/songs', (req, response) => {
-    const queryString = "SELECT * FROM songs WHERE artist_id="+req.params.id;
+    const queryString = "SELECT * FROM songs WHERE artist_id=" + req.params.id;
 
     pool.query(queryString, (err, result) => {
 
@@ -134,14 +139,106 @@ app.get('/artists/:id/songs', (req, response) => {
         }
     });
 });
+//render form for adding new play list
+app.get('/playlist/new', (request, response) => {
+    response.render('playlistNew')
+})
+
+//POST function for adding new playlist
+app.post('/playlist', (request, response) => {
+    const queryString = 'INSERT INTO playlist (playlist) VALUES ($1)'
+
+    const values = [
+        request.body.playlist,
+    ];
+
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result:', result);
+
+            // redirect to home page
+            response.send("added!");
+        }
+    });
+});
 
 
+app.get('/playlist/:id/newsong', (request, response) => {
+    console.log("adding new song");
+    const queryString = "SELECT * FROM songs";
+    const queryString2 = "SELECT * FROM playlist";
+
+    pool.query(queryString, (err, result) => {
+         console.log("this result is from songs"+result);
+
+        if (err) {
+            console.error('query error:', err);
+            response.send('query erssssror');
+
+        }else{
+
+            pool.query(queryString2, (err2, result2) => {
+                console.log("this result is from playlist"+ result2);
+                if (err2) {
+                    console.error('query error:', err2);
+                    response.send('query error2');
+                }else{
+                    let allData = {
+                        playlistData : result2,
+                        songData : result
+                    }
+                    console.log("sending data" , allData);
+                    response.render("playlistAddSong", allData)
+                }
+            })
+        }
+    });
+})
 
 
+//app.get to display a single playlist
+app.get('/playlist/:id', (request, response) => {
+        const queryString = "SELECT * FROM playlist WHERE id=" + request.params.id;
 
+        pool.query(queryString, (err, result) => {
+            if (err) {
+                console.error('query error:', err.stack);
+                response.send('query error');
+            } else {
+                console.log(request.params.id - 1)
+                response.send(result.rows);
+            }
+        });
+    })
+    //get request to render form to add song to playlist
 
+//POST function for adding new song to playlist
+app.post('/playlist/newsong', (request, response) => {
+    const queryString = 'INSERT INTO playlist_song (song_id) VALUES ($1)'
 
+    const values = [
+        request.body.songId,
+    ];
+    console.log(values)
 
+    pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result:', result);
+
+            // redirect to home page
+            console.log(request.body)
+            response.send("added new song t00000o playlist!");
+        }
+    });
+});
 
 
 /**
@@ -151,16 +248,16 @@ app.get('/artists/:id/songs', (req, response) => {
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
+let onClose = function() {
 
-  console.log("closing");
+    console.log("closing");
 
-  server.close(() => {
+    server.close(() => {
 
-    console.log('Process terminated');
+        console.log('Process terminated');
 
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
+        pool.end(() => console.log('Shut down db connection pool'));
+    })
 };
 
 process.on('SIGTERM', onClose);
