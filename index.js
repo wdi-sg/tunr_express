@@ -91,6 +91,49 @@ app.get('/login', (request, response) => {
 });
 
 
+//////////////////////////////////////////// VERIFY LOGIN DETAILS ///////////////////////////////////////////
+app.post('/login', (request, response) => {
+
+    let loginNameInput = request.body.name;
+    let query = "SELECT * FROM users WHERE name='" + loginNameInput + "'";
+    console.log("MY QUERY: " + query)
+
+    pool.query(query, (err, result) => {
+
+        if (err) {
+            console.log("ERRRR", err);
+            response.status(500).send("error")
+
+        } else {
+
+            if (result.rows.length === 0) {
+                response.send("EMPTY RESULT");
+            } else {
+
+                // hash the request, if its the same as db
+                let hashedRequestPw = sha256(request.body.password + SALT);
+
+                // if the password in the db matches the one in the login form
+                if (result.rows[0].password === hashedRequestPw) {
+
+                    let username = result.rows[0].name;
+                    let hashedCookie = sha256(SALT + username);
+
+
+                    // response.cookie('loggedIn', true);
+                    response.cookie('loggedIn', hashedCookie);
+                    response.cookie('userId', username);
+                    // response.send( result.rows[0] );
+                    response.send('SUCCESSSSSSSSSSSSSS')
+
+                } else {
+                    response.send("INCORRECT PW")
+                }
+            }
+        }
+    });
+});
+
 
 ///////////////////////////////////////////// SHOW ALL ARTISTS /////////////////////////////////////////////
 app.get('/artists', (request, response) => {
