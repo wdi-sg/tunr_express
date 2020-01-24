@@ -20,8 +20,8 @@ const configs = {
 const pool = new pg.Pool(configs);
 
 //starting up for index.js?
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+pool.on('error', function (error) {
+  console.log('idle client error', error.message, error.stack);
 });
 
 /**
@@ -103,11 +103,11 @@ app.post('/artists', (request, response) => {
     request.body.nationality
     ];
 
-    pool.query(insertQueryText, values, (err, result)=> {
+    pool.query(insertQueryText, values, (error, result)=> {
         console.log("INSERT query callback");
 
-        if( err ) {
-            console.log("ERREEERRRRRR", err);
+        if( error ) {
+            console.log("ERREEERRRRRR", error);
             response.send("errorr")
         } else {
             console.log("DONE", result.rows, 'You have added ' + request.body.name);
@@ -139,9 +139,9 @@ app.post('/artists', (request, response) => {
 app.get('/artists/:id',(request, response)=>{
     let query = "SELECT * FROM artists WHERE id=$1";
     let value = [parseInt(request.params.id)];
-    pool.query (query, value, (err, result) => {
-        if (err) {
-            console.log("ERRRR", err);
+    pool.query (query, value, (error, result) => {
+        if (error) {
+            console.log("ERRRR", error);
             response.status(500).send("error")
         } else {
             console.log("RESULT")
@@ -170,9 +170,9 @@ app.get('/artists/:id/songs',(request, response) => {
   // let query = "SELECT * FROM "+tableName;
     let query = "SELECT * FROM artists WHERE id=$1";
     let value = [parseInt(request.params.id)];
-    pool.query(query, value, (err, result) => {
-        if (err) {
-            console.log("ERRRR", err);
+    pool.query(query, value, (error, result) => {
+        if (error) {
+            console.log("ERRRR", error);
             response.status(500).send("error")
         } else {
       // if result is not empty
@@ -260,11 +260,11 @@ app.post('/playlist', (request, response) => {
         request.body.name
     ];
 
-    pool.query(insertQueryText, values, (err, result)=> {
+    pool.query(insertQueryText, values, (error, result)=> {
         console.log("INSERT query callback");
 
-        if( err ) {
-            console.log("ERREEERRRRRR", err);
+        if( error ) {
+            console.log("ERREEERRRRRR", error);
             response.send("errorr")
         } else {
             console.log("DONE", result.rows, 'You have added ' + request.body.name);
@@ -285,9 +285,9 @@ app.post('/playlist', (request, response) => {
 app.get('/playlist/:id',(request, response)=>{
     let query = "SELECT * FROM playlist WHERE id=$1";
     let value = [parseInt(request.params.id)];
-    pool.query(query,value, (err, result) => {
-        if(err){
-        console.log("ERRRR", err);
+    pool.query(query,value, (error, result) => {
+        if(error){
+        console.log("ERRRR", error);
         response.status(500).send("error")
         } else {
         console.log("RESULT")
@@ -306,10 +306,10 @@ app.get('/playlist/:id',(request, response)=>{
 app.get('/playlist/:id/newsong', (request, response) => {
     let index = parseInt[request.params.id];
     let text = 'SELECT * FROM songs';
-    pool.query(text, (err, result) => {
+    pool.query(text, (error, result) => {
         console.log('this is adding new song to selected playlist de query');
-        if (err) {
-            console.log('ERREEERRRRRR', err);
+        if (error) {
+            console.log('ERREEERRRRRR', error);
             response.send("error")
         } else {
             console.log("RESULT")
@@ -331,10 +331,10 @@ app.get('/playlist/:id/newsong', (request, response) => {
 //     //the request.params.id de id is playlist de id
 //     const values = [request.body.id,request.params.id];
 //     //need to add
-//     pool.query(insertQueryText, values, (err, result)=> {
+//     pool.query(insertQueryText, values, (error, result)=> {
 //         console.log("INSERT query callback");
-//         if( err ) {
-//             console.log("ERREEERRRRRR", err);
+//         if( error ) {
+//             console.log("ERREEERRRRRR", error);
 //             response.send("errorr")
 //         } else {
 //             console.log("DONE", result.rows, 'You have added ' + request.body.title);
@@ -364,10 +364,13 @@ app.get('/playlist/:id/newsong', (request, response) => {
  */
 
 //23-1-2020
+
+//CREATE A REGISTER PAGE
 app.get('/register', (request, response) => {
     response.render('register');
 });
 
+//ENSURE DATA IS BEING ADDED INTO THE USER TABLE
 app.post('/register', (request, response) => {
 // check if the username is unique in the system
 // if they are, insert the record
@@ -376,11 +379,11 @@ app.post('/register', (request, response) => {
     let hashedPw = sha256(request.body.password + SALT);
     const values = [request.body.name, hashedPw];
 
-    pool.query(insertQueryText, values, (err,result) => {
+    pool.query(insertQueryText, values, (error,result) => {
         console.log("insert query callback")
 
-        if (err) {
-            console.log("Error", err);
+        if (error) {
+            console.log("Error", error);
             response.send("error");
         } else {
             console.log("Done", result.rows)
@@ -395,18 +398,20 @@ app.post('/register', (request, response) => {
     })
 });
 
+//CREATE A USER'S LOGIN PAGE
 app.get('/login', (request, response) => {
     response.render('login');
 });
 
 
+//TO VALIDATE A USER'S LOGIN INFO BEFORE ALLOWING THEM TO LOGIN
 app.post('/login', (request, response) => {
     let query = 'SELECT * FROM users WHERE name=$1'
     let values = [request.body.name];
     console.log('My Query: ' + query)
     pool.query(query, values, (error, result) => {
         if (error) {
-            console.log('Errr', err);
+            console.log('Errr', error);
             response.status(500).send('error')
         } else {
             if (result.rows.length === 0) {
@@ -433,33 +438,93 @@ app.post('/login', (request, response) => {
     })
 });
 
-app.get('/papaya', (request, response) => {
-
-  // check to see if a user is logged in
-
-  let user_id = request.cookies.userId;
-  let hashedCookie = sha256(SALT+user_id);
-
-  if( request.cookies.loggedIn === hashedCookie){
-
-
-    // SELECT about user based on id
-
-    response.send('papaya');
-  }else{
-
-    response.send('secret! go away');
-  }
-
-  // response.send(request.cookies);
+//create a route that renders a form for the user to enter the song they want to favorite. This form can just be a normal input where the user enters the id of a song they want to favorite.
+//GET /favorites/new
+app.get('/favorites/new', (request, response) => {
+    let insertQueryText = "SELECT * FROM songs";
+    pool.query(insertQueryText, (error, result) => {
+        if (error) {
+            console.log(error);
+        } else {
+            if (result.rows[0].length === 0 ) {
+                response.send("currently no songs");
+            }
+            // console.log(result.rows);
+            const data = {
+                selectedPlaylist: result.rows
+            }
+            response.render('addSongToFav', data);
+        }
+    })
 });
 
-app.get('/logout', (request, response) => {
-  response.clearCookie("loggedIn");
-  response.clearCookie("userId");
 
-  response.send('we logged you out')
+
+
+//use the user id cookie mentioned above and the request.body to create the record in the DB
+app.post('/favorites', (request, response) => {
+    let user_Id = request.cookies.userId;
+    let hashedCookie = sha256(user_Id + SALT);
+    console.log(request.body.song_id); //EMPTY OBJECT
+
+    if (request.cookies.loggedIn === hashedCookie) {
+        let insertQueryText = 'INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *';
+        let values = [request.body.song_id, request.cookies.userId];
+        pool.query(insertQueryText, values, (error, result)=> {
+            console.log("INSERT query callback");
+            if (error) {
+                console.log("Errorrr", error)
+            } else {
+                response.redirect('/favorites');
+            }
+        });
+    } else {
+        response.send("Not logged in");
+    }
 });
+
+app.get('/favorites', (request, response) => {
+    response.send("Song favorites");
+});
+
+
+
+// app.get('/logout', (request, response) => {
+//   response.clearCookie("loggedIn");
+//   response.clearCookie("userId");
+
+//   response.send('we logged you out')
+// });
+
+// app.get('/favorites/new', (request, response) => {
+//   // check to see if a user is logged in
+//     let user_id = request.cookies.userId;
+//     let hashedCookie = sha256(user_id+SALT);
+//     if( request.cookies.loggedIn === hashedCookie) {
+//     // SELECT about user based on id
+//         let text = 'SELECT * FROM songs';
+//         pool.query(text, (error, result) => {
+//         console.log('this is adding new song to selected playlist de query');
+//         if (error) {
+//             console.log('ERREEERRRRRR', error);
+//             response.send("error")
+//         } else {
+//             if(result.rows[0].length === 0) {
+//                 response.send("currently no songs");
+//             }
+//             console.log("RESULT")
+//             console.log(result.rows);
+//             let playlist = result.rows;
+//             const data = {
+//                 selectedPlaylist: playlist
+//             }
+//             response.render('addSongToFav', data);
+//         }
+//     })
+//     } else {
+//         response.send('You are not logged in!');
+//   }
+// });
 
 
 
