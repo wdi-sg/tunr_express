@@ -49,17 +49,33 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
+  // query database for all artists
 
-  // respond with HTML page displaying all pokemon
+  // respond with HTML page displaying all artists
   response.render('home');
 });
 
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   response.render('new');
 });
 
+app.get('/artists/:id', (req, res) => {
+    res.send("page under construction")
+})
+
+app.post('/artists', (req, res) => {
+    const values = [req.body.name, req.body.photo_url, req.body.nationality];
+    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.send('query error');
+        } else {
+            res.redirect('/artists/' + result.rows[0].id)
+        }
+    })
+})
 
 /**
  * ===================================
