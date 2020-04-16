@@ -36,6 +36,17 @@ app.get("/", (request, response) => {
   response.render("home");
 });
 
+//VIEW ALL ARTISTS
+app.get("/artists/", (request, response) => {
+  let queryText = "SELECT * from artists ORDER BY id ASC";
+  pool.query(queryText, (err, result) => {
+    let obj = {
+      artists: result.rows
+    };
+    response.render("display-all-artists", obj);
+  });
+});
+
 //VIEW CREATE NEW ARTIST PAGE
 app.get("/artists/new", (request, response) => {
   response.render("new-artist");
@@ -62,6 +73,7 @@ app.get("/artists/:id", (request, response) => {
   });
 });
 
+//VIEW ALL SONGS BY ARTIST
 app.get("/artists/:id/songs", (request, response) => {
   let artist_id = request.params.id;
   let artistName;
