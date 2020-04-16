@@ -253,7 +253,7 @@ app.get(`/songs/:id`, (req, res) => {
 app.put(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
 
-    let command = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body.preview_link}', artwork = '${req.body.artwork}', artist_id = ${req.body.artistId} WHERE id=${query} RETURNING *`;
+    let command = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body.preview_link}', artwork = '${req.body.artwork}', artist_id = ${req.body.artistId} WHERE id=${query} RETURNING`;
 
     pool.query(command, (err, result) => {
         if (err) {
@@ -265,7 +265,7 @@ app.put(`/songs/:id`, (req, res) => {
 
 });
 
-
+// DELETE SONGS
 app.delete(`/songs/:id`, (req, res) => {
   const query = parseInt(req.params.id);
 
