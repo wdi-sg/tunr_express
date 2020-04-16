@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'shane',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -42,6 +42,11 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
+    // code to view table
+
+
+
 /**
  * ===================================
  * Routes
@@ -50,9 +55,22 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
   // query database for all pokemon
+    let text = "SELECT * FROM artists";
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+    pool.query(text,viewArtists = (err, result) => {
+        if(err){
+            console.log("there is an err");
+            console.log(err);
+        }else{
+        console.log("viewing list...");
+        let data = {
+            artists: result.rows
+        }
+        // respond with HTML page displaying all artists
+        response.render('home', data);
+        }
+    })
+
 });
 
 app.get('/new', (request, response) => {
@@ -69,13 +87,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
