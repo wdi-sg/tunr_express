@@ -65,6 +65,24 @@ app.get('/artists/:id/edit', (request, response) => {
 });
 
 
+app.get('/artists/:id/songs', (request, response) => {
+  let id = request.params.id;
+  let queryString = "SELECT * FROM songs WHERE artist_id = " + id;
+  pool.query(queryString, (error, result) => {
+    if(error) {
+      console.log('Query error:', error.stack);
+      response.send('query error');
+    }else {
+      console.log(result.rows);
+      let data = {
+        "songs": result.rows
+      };
+      response.render('songs', data);
+    }
+  });
+});
+
+
 app.get('/artists/:id', (request, response) => {
   let id = request.params.id;
   let queryString = "SELECT * FROM artists WHERE id = " + id;

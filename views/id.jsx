@@ -2,6 +2,7 @@ var React = require('react');
 class Id extends React.Component {
   render() {
     let editLink = "/artists/" + String(this.props.artist[0].id) + "/edit";
+    let songLink = "/artists/" + String(this.props.artist[0].id) + "/songs";
     return (
       <html>
       <head>
@@ -14,7 +15,8 @@ class Id extends React.Component {
             <div>
               <p>Artist name: { this.props.artist[0].name }</p>
               <p>Nationality: { this.props.artist[0].nationality}</p>
-              <a href={editLink}>Edit Artist Details</a>
+              <div><a href={songLink}>All songs by artist</a></div>
+              <div><a href={editLink}>Edit Artist Details</a></div>
             </div>
           </div>
         </body>
