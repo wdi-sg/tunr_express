@@ -50,24 +50,65 @@ app.engine('jsx', reactEngine);
 
 app.get('/', (request, response) => {
   // query database for all artists
-  const queryString = 'SELECT * from artists'
+  const allArtists = 'SELECT * from artists';
 
-  pool.query(queryString, (err, result) => {
+  pool.query(allArtists, (err, allResult) => {
       if (err) {
           console.error('query error:', err.stack);
           response.send( 'query error' );
       } else {
-          console.log('query result:', result);
+          // console.log('query result:', allResult);
 
           // respond with HTML page displaying all artists
-          response.render( 'home', result );
+          response.render( 'home', allResult);
       };
   });
 });
 
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new artists
+  response.render('new')
+});
 
+app.get('/artists/:id', (request, response) => {
+    const id = parseInt(request.params.id);
+    const artist = 'SELECT * from artists where id ='+id;
+
+    pool.query(artist, (err, artistResult) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            // console.log('query result:', artistResult);
+            // respond with HTML page displaying all artists
+
+
+            response.render('show', artistResult.rows[0]);
+        };
+    });
+});
+
+app.post('/artists', (request, response) => {
+
+    // console.log(request.body);
+
+    const whenQueryDone = (queryError, result) => {
+        if (queryError) {
+            response.status(500);
+            response.send('db error');
+        } else {
+            // console.log(request.body);
+            // console.log(result.rows[0])
+
+            response.redirect('/');
+        };
+    };
+
+    const newArtist = 'INSERT INTO artists (name, photo_url, nationality) values ($1, $2, $3)';
+
+    const newArtistValues = [request.body.name, request.body.photo_url, request.body.nationality];
+
+    pool.query(newArtist, newArtistValues, whenQueryDone);
 });
 
 
@@ -79,13 +120,9 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-
   console.log("closing");
-
   server.close(() => {
-
     console.log('Process terminated');
-
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };

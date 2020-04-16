@@ -4,19 +4,17 @@ class NewArtist extends React.Component {
   render() {
         console.log("new.jsxxxxxxxxxxxxx");
 
-        const artistsKeys = ['Id', 'Name', 'Photo_url', 'Nationality'];
+        const artistsKeys = ['Name', 'Photo_url', 'Nationality'];
         const formInput = artistsKeys.map((artistsKey) => {
             return <p>{artistsKey}: <input name= {artistsKey.toLowerCase()} /></p>;
         });
-        console.log(formInput);
-        // var inputElement = <input name = "name"/>
 
     return (
       <html>
         <head />
         <body>
           <h3>Add New Artist</h3>
-          <form action="./artists" method="POST">
+          <form action="/artists" method="POST">
             {formInput}
 
             <button type="submit" value="submit">Add</button>
@@ -25,6 +23,6 @@ class NewArtist extends React.Component {
       </html>
     );
   }
-}
+};
 
 module.exports = NewArtist;
