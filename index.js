@@ -87,6 +87,24 @@ app.get(`/artists/:id/edit`, (req, res) => {
     });
 });
 
+app.get(`/artists/:id/songs`, (req, res) => {
+    const query = parseInt(req.params.id);
+
+    let command = `SELECT songs.id, songs.title, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE artists.id = ${query}`;
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            const foundSongs = result.rows;
+            const data = {
+              songs: foundSongs
+            }
+            res.render("artists-songs", data);
+        }
+    });
+});
+
 app.put(`/artists/:id`, (req, res) => {
 
     const query = parseInt(req.params.id);
@@ -165,15 +183,30 @@ app.get(`/artists`, (req, res) => {
 })
 
 
+app.get(`/songs`, (req,res)=> {
+
+        let command = `SELECT * FROM songs`;
+
+        pool.query(command, (err, result) => {
+          if (err) {
+            console.log(`There was an error.`);
+            console.log(err.message);
+          } else {
+            const songData = result.rows;
+            const data = {
+              songs: songData,
+            };
+
+            res.render("all-songs", data);
+          }
+        });
+
+})
+
+
 app.get('/', (request, response) => {
     response.render('home');
 });
-
-app.get('/new', (request, response) => {
-    response.render('new');
-});
-
-
 /**
  * ===================================
  * Listen to requests on port 3000

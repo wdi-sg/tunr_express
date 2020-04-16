@@ -24,6 +24,8 @@ class Artist extends React.Component {
             <img src={artist.photo_url}></img>
             <p>Nationality: {artist.nationality}</p>
 
+            <p><a href={`/artists/${artist.id}/songs`}>View All Songs</a></p>
+
             <a href={`/artists/${artist.id}/edit`}>
               <button className="btn btn-warning">Edit Artist</button>
             </a>
