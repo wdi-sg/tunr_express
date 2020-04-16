@@ -73,6 +73,17 @@ app.post('/artists/new', async function (req, res) {
   let newArtistId = await makeQuery(insertArtist, newArtistValues);
   res.redirect(`/artists/${newArtistId[0].id}`);
 });
+
+app.get('/artists/:id', async function (req, res) {
+  let artistId = [req.params.id];
+  let getArtist =
+      "SELECT * FROM artists " +
+      "WHERE id = $1";
+  let artistResult = await makeQuery(getArtist, artistId);
+
+  res.render('artistview', {artist: artistResult[0]});
+});
+
 // start server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT);
