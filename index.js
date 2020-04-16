@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'marcustan',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -55,11 +55,65 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+// Show all artists 
+
+//
+
+app.get('/artists/', (request, response) => {
+  // query database for all artists
+  pool.query('SELECT * FROM artists', (error, result) => {
+    if (error) {
+      console.log('query error');
+    } else {
+      const artists = result.rows;
+      // respond with HTML page displaying all artist
+      response.render('artists', {"artists": artists});
+    }
+  })
+});
+
+
+// Form for a single artist 
+
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new artist
   response.render('new');
 });
 
+// Create a new artist
+
+app.post('/artists', (request, response) => {
+  const name = request.body.name;
+  const photo_url = request.body.photo_url;
+  const nationality = request.body.nationality;
+
+  const values = [name, photo_url, nationality];
+
+  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
+
+  pool.query(queryString, values, (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      response.render('success');
+    }
+  });
+})
+
+// See a single artist 
+
+app.get('/artists/:id', (request, response) => {
+  const artistId = request.params.id;
+
+  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const artist = result.rows[0];
+      response.render('single', {'artist': artist});
+    }
+  });
+});
 
 /**
  * ===================================
