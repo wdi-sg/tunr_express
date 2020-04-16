@@ -39,6 +39,26 @@ app.get("/artists/new", (request, response) => {
   response.render("new-artist");
 });
 
+app.post("/artists/new", (request, response) => {
+  let queryText = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${request.body.name}', '${request.body.photo_url}', '${request.body.nationality}') RETURNING *`;
+
+  pool.query(queryText, (err, result) => {
+    // console.log(result.rows[0]);
+    let artistObj = result.rows[0];
+    console.log(artistObj);
+    response.render("display-one-artist", artistObj);
+  });
+});
+
+app.get("/artists/:id", (request, response) => {
+  let id = request.params.id; 
+  let queryText = `SELECT * FROM artists WHERE id=${id}`;
+  pool.query(queryText, (err, result) => {
+    let artistObj = result.rows[0];
+    response.render("display-one-artist", artistObj);
+  });
+});
+
 //------------------------------
 //-----LISTEN ON PORT 3000------
 //------------------------------
