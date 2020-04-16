@@ -48,43 +48,50 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all ....
+//Unused boilerplate
+// app.get('/', (request, response) => {
+//   // query database for all ....
 
-  // respond with HTML page displaying all ....
-  response.send("Hello World");
-  // response.render('home');
-});
+//   // respond with HTML page displaying all ....
+//   response.send("Hello World");
+//   // response.render('home');
+// });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new ....
-  response.render('new');
-});
+// app.get('/new', (request, response) => {
+//   // respond with HTML page with form to create new ....
+//   response.render('new');
+// });
 
+// View list of artists
 app.get('/artists', (request, response) => {
   // respond with HTML page with form to create new ....
-const queryString = 'SELECT * from artists'
+  const queryString = 'SELECT * from artists'
 
-pool.query(queryString, (err, result) => {
+  pool.query(queryString, (err, result) => {
 
-  if (err) {
-    console.error('query error:', err.stack);
-    response.send( 'query error' );
-  } else {
-    console.log('query result:', result);
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      console.log('query result:', result);
 
-    // redirect to home page
-    var output = {
-      'artists': result.rows,
+      // redirect to home page
+      var output = {
+        'artists': result.rows,
+      }
+      response.render('artists', output);
+      // response.send( output);
     }
-    response.render('artists',output);
-    // response.send( output);
-  }
-});
-  
+  });
 });
 
+// View new artist form page
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new ....
+  response.render('new-artist');
+});
 
+// app.post()
 
 /**
  * ===================================
@@ -93,15 +100,15 @@ pool.query(queryString, (err, result) => {
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
-  
+let onClose = function () {
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
-    pool.end( () => console.log('Shut down db connection pool'));
+
+    pool.end(() => console.log('Shut down db connection pool'));
   })
 };
 
