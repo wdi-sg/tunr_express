@@ -34,7 +34,7 @@ const pg = require('pg');
 const configs = {
   user: 'dwu',
   host: '127.0.0.1',
-  database: 'DATABASE',
+  database: 'tunr_db',
   port: 5432,
 };
 
