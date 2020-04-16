@@ -42,86 +42,127 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+ /**
+ * =========================================================
+ * =========================================================
+ * |###########          ROUTES - ARTISTS        ##########|
+ * =========================================================
+ * =========================================================
+ */
+
 /**
- * ===================================
- * Routes
- * ===================================
+ * -------------------
+ * CREATE A NEW ARTIST
+ * -------------------
+ */
+
+app.get(`/artists/new`, (req, res) => {
+  res.render("new-artist");
+});
+
+/**
+ * -------------------
+ * DISPLAY FORM FOR EDITING A SINGLE ARTIST
+ * -------------------
+ */
+
+app.get(`/artists/:id/edit`, (req, res) => {
+  const query = parseInt(req.params.id);
+
+  let command = `SELECT * FROM artists WHERE id = ${query}`;
+
+  pool.query(command, (err, result) => {
+    if (err) {
+      console.log(`Error in query!!!`, err);
+    } else {
+      const foundArtist = result.rows[0];
+      const data = {
+        artistData: foundArtist,
+      };
+      res.render("edit-artist", data);
+    }
+  });
+});
+
+/**
+ * -------------------
+ * DISPLAY A SINGLE ARTIST
+ * -------------------
+ */
+
+app.get(`/artists/:id`, (req, res) => {
+  const query = parseInt(req.params.id);
+
+  let command = `SELECT * FROM artists WHERE id = ${query}`;
+
+  pool.query(command, (err, result) => {
+    if (err) {
+      console.log(`Error in query!!!`, err);
+    } else {
+      const foundArtist = result.rows[0];
+
+      const data = {
+        artistData: foundArtist,
+      };
+
+      res.render("artist", data);
+    }
+  });
+});
+
+
+/**
+ * -------------------
+ * GET ALL SONGS FROM ONE ARTIST
+ * -------------------
+ */
+
+app.get(`/artists/:id/songs`, (req, res) => {
+  const query = parseInt(req.params.id);
+
+  let command = `SELECT songs.id, songs.title, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE artists.id = ${query}`;
+
+  pool.query(command, (err, result) => {
+    if (err) {
+      console.log(`Error in query!!!`, err);
+    } else {
+      const foundSongs = result.rows;
+      const data = {
+        songs: foundSongs,
+      };
+      res.render("artists-songs", data);
+    }
+  });
+});
+
+
+/**
+ * -------------------
+ * UPDATE AN ARTIST
+ * -------------------
  */
 
 
-app.get(`/artists/new`, (req, res) => {
-
-    res.render("new-artist");
-});
-
-
-
-app.post(`/artists`, (req, res) => {
-
-    let values = [req.body.name, req.body.photo_url, req.body.nationality]
-
-    let command = `INSERT INTO Artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
-
-    pool.query(command, values, (err, result) => {
-
-        if (err) {
-            console.log(`Error in query!!!`, err)
-        } else {
-            res.redirect(`/artists/${result.rows[0].id}`);
-        }
-    })
-})
-
-app.get(`/artists/:id/edit`, (req, res) => {
-    const query = parseInt(req.params.id);
-
-    let command = `SELECT * FROM artists WHERE id = ${query}`;
-
-    pool.query(command, (err, result) => {
-        if (err) {
-            console.log(`Error in query!!!`, err);
-        } else {
-            const foundArtist = result.rows[0];
-            const data = {
-                artistData: foundArtist,
-            };
-            res.render("edit-artist", data);
-        }
-    });
-});
-
-app.get(`/artists/:id/songs`, (req, res) => {
-    const query = parseInt(req.params.id);
-
-    let command = `SELECT songs.id, songs.title, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE artists.id = ${query}`;
-
-    pool.query(command, (err, result) => {
-        if (err) {
-            console.log(`Error in query!!!`, err);
-        } else {
-            const foundSongs = result.rows;
-            const data = {
-                songs: foundSongs
-            }
-            res.render("artists-songs", data);
-        }
-    });
-});
-
 app.put(`/artists/:id`, (req, res) => {
+  const query = parseInt(req.params.id);
 
-    const query = parseInt(req.params.id);
+  let command = `UPDATE Artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE id = ${query} RETURNING *`;
 
-    let command = `UPDATE Artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE id = ${query} RETURNING *`
+  pool.query(command, (err, result) => {
+    if (err) {
+      console.log(`Error in query!!!`, err);
+    } else {
+      res.redirect(`/artists/${query}`);
+    }
+  });
+});
 
-    pool.query(command, (err, result) => {
-        if (err) {
-            console.log(`Error in query!!!`, err);
-        } else {
-            res.redirect(`/artists/${query}`)
-        }
-    })
-})
+
+/**
+ * -------------------
+ * DELETE AN ARTIST
+ * -------------------
+ */
 
 app.delete(`/artists/:id`, (req, res) => {
 
@@ -141,27 +182,31 @@ app.delete(`/artists/:id`, (req, res) => {
 
 })
 
-app.get(`/artists/:id`, (req, res) => {
+/**
+ * -------------------
+ * CREATE AN ARTIST
+ * -------------------
+ */
 
-    const query = parseInt(req.params.id);
+app.post(`/artists`, (req, res) => {
+  let values = [req.body.name, req.body.photo_url, req.body.nationality];
 
-    let command = `SELECT * FROM artists WHERE id = ${query}`;
+  let command = `INSERT INTO Artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
 
-    pool.query(command, (err, result) => {
-        if (err) {
-            console.log(`Error in query!!!`, err);
-        } else {
+  pool.query(command, values, (err, result) => {
+    if (err) {
+      console.log(`Error in query!!!`, err);
+    } else {
+      res.redirect(`/artists/${result.rows[0].id}`);
+    }
+  });
+});
 
-            const foundArtist = result.rows[0];
-
-            const data = {
-                artistData: foundArtist,
-            };
-
-            res.render('artist', data);
-        }
-    });
-})
+/**
+ * -------------------
+ * DISPLAY ALL ARTISTS
+ * -------------------
+ */
 
 
 app.get(`/artists`, (req, res) => {
@@ -185,6 +230,21 @@ app.get(`/artists`, (req, res) => {
     })
 })
 
+
+ /**
+ * =========================================================
+ * =========================================================
+ * |###########          ROUTES - SONGS        ############|
+ * =========================================================
+ * =========================================================
+ */
+
+/**
+ * -------------------
+ * DISPLAY FORM FOR ADDING A NEW SONG.
+ * -------------------
+ */
+
 app.get(`/songs/new`, (req, res) => {
     let command = `SELECT id, name FROM artists`;
 
@@ -200,7 +260,11 @@ app.get(`/songs/new`, (req, res) => {
     });
 });
 
-
+/**
+ * -------------------
+ * DISPLAY FORM FOR EDITING A SONG.
+ * -------------------
+ */
 app.get(`/songs/:id/edit`, (req, res) => {
     const query = parseInt(req.params.id);
 
@@ -230,6 +294,11 @@ app.get(`/songs/:id/edit`, (req, res) => {
       });
 });
 
+/**
+ * -------------------
+ * DISPLAY A SONG.
+ * -------------------
+ */
 app.get(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
     let command = `SELECT * FROM songs WHERE id=${query}`;
@@ -249,6 +318,11 @@ app.get(`/songs/:id`, (req, res) => {
     });
 });
 
+/**
+ * -------------------
+ * UPDATE A SONG.
+ * -------------------
+ */
 
 app.put(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
@@ -265,7 +339,11 @@ app.put(`/songs/:id`, (req, res) => {
 
 });
 
-// DELETE SONGS
+/**
+ * -------------------
+ * DELETE A SONG.
+ * -------------------
+ */
 app.delete(`/songs/:id`, (req, res) => {
   const query = parseInt(req.params.id);
 
@@ -280,9 +358,11 @@ app.delete(`/songs/:id`, (req, res) => {
   });
 });
 
-
-
-
+/**
+ * -------------------
+ * DISPLAY ALL SONGS.
+ * -------------------
+ */
 app.get(`/songs`, (req, res) => {
     let command = `SELECT * FROM songs`;
 
@@ -301,6 +381,12 @@ app.get(`/songs`, (req, res) => {
     });
 });
 
+
+/**
+ * -------------------
+ * CREATE A SONG.
+ * -------------------
+ */
 app.post(`/songs`, (req, res) => {
 
     const values = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artistId];
@@ -317,6 +403,11 @@ app.post(`/songs`, (req, res) => {
 
 })
 
+/**
+ * ===================================
+ * |||||||||| HOME ROUTE |||||||||||||
+ * ===================================
+ */
 
 app.get('/', (request, response) => {
     response.render('home');
