@@ -253,7 +253,7 @@ app.get(`/songs/:id`, (req, res) => {
 app.put(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
 
-    let command = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body.preview_link}', artwork = '${req.body.artwork}', artist_id = ${req.body.artistId} WHERE id=${query}`;
+    let command = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body.preview_link}', artwork = '${req.body.artwork}', artist_id = ${req.body.artistId} WHERE id=${query} RETURNING *`;
 
     pool.query(command, (err, result) => {
         if (err) {
@@ -264,6 +264,22 @@ app.put(`/songs/:id`, (req, res) => {
     });
 
 });
+
+
+app.delete(`/songs/:id`, (req, res) => {
+  const query = parseInt(req.params.id);
+
+  let command = `DELETE FROM songs WHERE id = ${query}`;
+
+  pool.query(command, (err, result) => {
+      if (err) {
+          console.log(`Error in query!!!`, err);
+      } else {
+          res.redirect(`/songs`);
+      }
+  });
+});
+
 
 
 

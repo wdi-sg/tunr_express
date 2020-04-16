@@ -29,7 +29,7 @@ class NewSong extends React.Component {
             <button className="btn btn-primary">Back To Home</button>
           </a>
           <h3>Creating A New Song</h3>
-          <form action="/songs" method="post">
+          <form action={`/songs/${song.id}?_method=put`} method="post">
             <input value={song.title} name="title" placeholder="Song Title" />
             <input value={song.album} name="album" placeholder="Album" />
             <input
