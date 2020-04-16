@@ -96,6 +96,32 @@ app.post('/artists', (request, response) => {
     })
 });
 
+//Display songs for an artist
+app.get('/artists/:id/songs', (request, response) => {
+
+    let id = request.params.id;
+    let querySongString = 'SELECT * FROM songs WHERE artist_id=' + id;
+
+    pool.query(querySongString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send('An error occurred 😢');
+        } else {
+            let songs = result.rows;
+            let queryArtistString = 'SELECT * FROM artists WHERE id=' + songs[0].artist_id;
+
+            pool.query(queryArtistString, (err, result) => {
+                const data = {
+                    songs: songs,
+                    artist: result.rows
+                }
+
+            response.render('songs', data);
+            });
+        }
+    });
+})
+
 //Show Individual Artist
 app.get('/artists/:id', (request, response) => {
     const queryString = 'SELECT * FROM artists ORDER BY id ASC';
@@ -117,6 +143,7 @@ app.get('/artists/:id', (request, response) => {
         }
     });
 })
+
 
 /**
  * ===================================

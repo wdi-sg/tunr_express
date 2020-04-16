@@ -2,14 +2,18 @@ const React = require('react');
 class List extends React.Component {
     render () {
         const artists = this.props.list;
-
         const displayArtist = artists.map(artist => {
+            let idPage = '/artists/' + artist.id + '/songs';
             return (
                 <div className="card" style={{width: "15rem"}}>
                     <img className="card-img-top" src={artist.photo_url} alt={artist.name} style={{height: "12rem"}}/>
                     <div className="card-body">
                         <h4 className="card-title text-center">{artist.name}</h4>
                         <p className="card-text text-center">{artist.nationality}</p>
+                        <br/>
+                        <div className='row justify-content-center'>
+                            <button className='btn btn-info'><a href={idPage} className='text-white text-decoration-none'>Songs</a></button>
+                        </div>
                     </div>
                 </div>
             )

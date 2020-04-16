@@ -2,9 +2,12 @@ const React = require('react');
 class Show extends React.Component {
     render () {
 
+        const id = this.props.id;
         const name = this.props.name;
         const photoUrl = this.props.photo_url;
         const nationality = this.props.nationality;
+
+        const idPage = '/artists/' + id + '/songs';
 
         return (
              <html>
@@ -20,6 +23,9 @@ class Show extends React.Component {
                             <div className="card-body">
                                 <h4 className="card-title text-center">{name}</h4>
                                 <p className="card-text text-center">{nationality}</p>
+                                <div className='row justify-content-center'>
+                                    <button className='btn btn-info'><a href={idPage} className='text-white text-decoration-none'>Songs</a></button>
+                                </div>
                             </div>
                         </div>
                     </div>

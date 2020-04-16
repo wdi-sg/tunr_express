@@ -11,7 +11,7 @@ class Home extends React.Component {
             <br/>
             <div className='container'>
                 <h1 className='text-center'>Tunr</h1>
-                <h5 className='text-center'>The world's #1 music catalog</h5>
+                <h5 className='text-center'>The world's #1 music catalog/ player</h5>
                 <br/>
                 <div className='row justify-content-center'>
                     <button className='btn btn-primary'><a href='/artists/new' className='text-white text-decoration-none'>New Artist</a></button>
