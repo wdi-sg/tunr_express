@@ -69,9 +69,36 @@ app.get('/artists', (request, response) => {
   })
 });
 
+
+/*
+====================
+Creating a new Artist
+=======================
+*/
+
 app.get('/artists/new', (request, response) => {
 
     response.render('newartist');
+})
+
+app.post('/artists', (request, response) => {
+    // query database for all artists
+    let queryString = 'insert into artists (name, photo_url, nationality) values ($1, $2, $3) returning id';
+
+    const artist = request.body;
+
+    const values = [artist.name, artist.photo_url, artist.nationality];
+
+    pool.query(queryString, values, (err, result) => {
+        if(err) {
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        }
+        else{
+            response.send(result.rows);
+        }
+    })
+
 })
 
 /**
