@@ -223,6 +223,91 @@ app.delete('/artists/:id', (request,response)=>{
     })
 
 
+////Show all Artists
+app.get('/songs',(request,response)=>{
+    const queryString = 'SELECT * from songs';
+
+pool.query(queryString, (err, result) => {
+
+  if (err) {
+    console.error('query error:', err.stack);
+    response.send( 'query error' );
+  } else {
+    //console.log('query result:', result);
+    const data={};
+
+    data.songs=result.rows;
+    // redirect to home page
+
+    response.render("songhome",data);
+    //response.send( data );
+  }
+});
+    //response.render('home');
+});
+
+//////This goes to the form
+
+app.get('/songs/new', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  response.render('newSong');
+});
+
+app.post('/songs',(request,response)=>{
+    const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("EERRRRRRRROR");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      // if the query ran wiothout errors
+      console.log(result.rows[0]);
+      // response.send('HEY NEW DOOOGGGG::: '+ result.rows[0].id);
+
+      let new_id = result.rows[0].id;
+      let url= "/songs/"+new_id;
+      response.redirect(url);
+    }
+  };
+
+    const queryString = "INSERT INTO songs (title, album, preview_link, artwork) VALUES ($1, $2, $3, $4) RETURNING id";
+
+    const input=[request.body.title, request.body.album, request.body.img, request.body.preview_link];
+    console.log(input);
+
+
+    pool.query(queryString, input, whenQueryDone);
+
+});
+
+app.get('/songs/:id', (request, response) =>
+    {
+        // respond with HTML page with form to create new pokemon
+        console.log(typeof request.params.id);
+        const queryString = 'SELECT * from songs WHERE id = ($1)';
+        const input = [request.params.id]
+        pool.query(queryString, input, (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+
+                        const data={};
+                        data.song=result.rows;
+                        response.render("song",data);
+                        //response.send( data );
+                    }
+            });
+    });
+
+
+
 
 //////For artist songs
 
