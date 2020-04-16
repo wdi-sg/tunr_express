@@ -6,11 +6,6 @@ class EditArtistForm extends React.Component {
 
     render() {
 
-        const invalidMessage = () => {
-            if (this.props.invalidMsg)
-                return (<p className="edit-form__invalid-msg">{this.props.singleArtist.invalidMsg}</p>)
-        }
-
         return (
             <html>
             <Head />
@@ -21,7 +16,6 @@ class EditArtistForm extends React.Component {
                 <input type="text" name="nationality" placeholder="Nationality" defaultValue={this.props.singleArtist.nationality} />
                 <input type="text" name="image link" placeholder="Image Link" defaultValue={this.props.singleArtist["photo_url"]} />
 
-                {invalidMessage()}
                 <button className="edit-form__submit-btn" type="submit">Edit</button>
             </form>
             </body>

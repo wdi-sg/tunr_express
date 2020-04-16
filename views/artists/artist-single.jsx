@@ -3,6 +3,7 @@ const React = require("react");
 class SingleArtist extends React.Component {
 
     render() {
+
         return (
             <html>
             <head />
@@ -13,6 +14,10 @@ class SingleArtist extends React.Component {
                     </div>
                     <p className="single-artist__name">{this.props.singleArtist.name}</p>
                     <p className="single-artist__nationality">{this.props.singleArtist.nationality}</p>
+                    <div className ="artist__edit-delete-links">
+                        <a href="./edit" className="recipe__edit-link">Edit Artist</a>
+                        <a href="./delete" className="recipe__delete-link">Delete Artist</a>
+                    </div>
                 </div>
             </body>
             </html>

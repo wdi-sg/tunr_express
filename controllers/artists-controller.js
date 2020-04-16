@@ -18,10 +18,17 @@ module.exports.getAllArtists = async (req, res) => {
 
 }
 
+module.exports.getAddArtist = async (req, res) => {
+    res.render('./artists/add-artist');
+}
+
 module.exports.postAddArtist = async (req, res) => {
 
-    console.log(req);
-    res.send('Add New Artist!');
+    const queryT = `INSERT INTO artists(name, nationality, photo_url) VALUES($1, $2, $3) RETURNING *`;
+    const queryV = [req.body.name, req.body.nationality, req.body['image link']];
+    const { rows } = await db.query(queryT, queryV);
+
+    res.redirect(`./${rows[0].id}`);
 
 }
 
@@ -32,25 +39,27 @@ module.exports.getEditArtistById = async (req, res) => {
     const { rows } = await db.query(queryT);
 
     res.render('./artists/edit-artist', {
-        'singleArtist': rows[0],
-        invalidMsg: ""
+        'singleArtist': rows[0]
     });
 
 }
 
 module.exports.putArtistById = async (req, res) => {
 
-    let invalidMsg = [];
 
-    //Check if fields are empty
-    Object.keys(req.body).forEach(k => {
-        if (!k) invalidMsg.push[`Please enter the artist's ${k}'`]
-    })
+    const { id } = req.params;
+    const queryT = `UPDATE artists SET name = '${req.body.name}', nationality = '${req.body.nationality}', photo_url = '${req.body['image link']}' WHERE id=${id}`
+    const { rows } = await db.query(queryT);
 
-    res.send('Artist Edited!');
+    res.redirect(`./${id}`);
+
 }
 
 module.exports.deleteArtistById = async (req, res) => {
-    console.log('Delete Artist Form By Id!');
-    res.send('Delete Artist Form By Id!');
+
+    const { id } = req.params;
+    const queryT = `DELETE from artists WHERE id=${id}`
+    const { rows } = await db.query(queryT);
+    res.render('./artists/artist-deleted');
+
 }

@@ -21,10 +21,15 @@ module.exports = {
 
     query: async (queryText, queryValues) => {
 
-        await pool.connect(() => {
-            console.log('connected');
-        });
+        try {
 
-        return await pool.query(queryText, queryValues);
+            await pool.connect(() => {
+                console.log('connected');
+            });
+
+            return await pool.query(queryText, queryValues);
+        } catch (e) {
+            console.log(`Error\n` + e.message, e.stack);
+        }
     },
 }

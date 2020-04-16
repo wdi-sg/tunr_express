@@ -13,7 +13,9 @@ router.use('/:id/songs', songsRoutes);
 
 router.get('/:id/edit', artistsController.getEditArtistById);
 
-router.delete('/:id/delete', artistsController.deleteArtistById);
+router.get('/:id/delete', artistsController.deleteArtistById);
+
+router.get('/new', artistsController.getAddArtist);
 
 router.get('/:id', artistsController.getArtistById);
 

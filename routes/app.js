@@ -35,8 +35,6 @@ const artistsRoutes = require('./artists-routes.js');
 
 const errorController = require('../controllers/404-controller.js');
 
-const db = require('../util/database.js');
-
 app.use(express.static(path.join(__dirname, '../public/')));
 
 app.get('/', (req, res) => {
@@ -57,6 +55,8 @@ app.use(errorController.get404Page);
  * ===================================
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
+
+const db = require('../util/database.js');
 
 let onClose = function() {
 
