@@ -71,6 +71,19 @@ app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
+app.post('/artists', (request, response) => {
+  let queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+  let values = [request.body.name, request.body.photourl, request.body.nationality];
+  pool.query(queryString, values, (error, result) => {
+    if(error) {
+      console.log('Query error:', error.stack);
+      response.send('query error');
+    }else {
+      response.redirect('/artists');
+    }
+  });
+});
+
 
 /**
  * ===================================

@@ -14,6 +14,7 @@ class Home extends React.Component {
           <ul>
             {allArtist}
           </ul>
+          <a href="/artists/new">Add a new Artist</a>
         </body>
       </html>
     );
