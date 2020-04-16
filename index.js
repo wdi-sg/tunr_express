@@ -365,6 +365,30 @@ app.put('/songs/:id', (request,response)=>{
             });
 })
 
+
+///delete artist
+//Accepts a request to delete
+app.delete('/songs/:id', (request,response)=>{
+
+     const queryString= "DELETE FROM songs WHERE id = ($1)";
+     const id=request.params.id;
+        const input = [request.params.id];
+        pool.query(queryString, input, (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+                        response.redirect('/songs')
+                    }
+            });
+    })
+
+
 //////For artist songs
 
 app.get('/artists/:id/songs', (request, response) =>
