@@ -1,15 +1,14 @@
-TRUNCATE TABLE IF EXISTS artists;
+DROP TABLE IF EXISTS songs;
+DROP TABLE IF EXISTS artists;
 
-CREATE TABLE IF NOT EXISTS artists (
+CREATE TABLE artists (
   id SERIAL PRIMARY KEY,
   name TEXT,
   photo_url TEXT,
   nationality TEXT
   );
 
-TRUNCATE TABLE IF EXISTS songs;
-
-CREATE TABLE IF NOT EXISTS songs (
+CREATE TABLE songs (
   id SERIAL PRIMARY KEY,
   title TEXT,
   album TEXT,
