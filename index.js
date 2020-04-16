@@ -120,9 +120,31 @@ app.post('/artists', (request, response) => {
       });
     }
   });
+});
 
+app.get('/artists/:id', (request, response) => {
+  // respond with HTML page with form to create new ....
+  var artistId = request.params.id;
+  const queryString = `SELECT * FROM artists WHERE id = ${artistId}`
 
-})
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      console.log('query result:', result);
+
+      // redirect to home page
+      var output = {
+        'artists': result.rows,
+      }
+      response.render('artists', output);
+      // response.send(output);
+    }
+  });
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
