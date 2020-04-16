@@ -5,18 +5,6 @@ const methodOverride = require('method-override');
 const pg = require('pg');
 
 // Initialise postgres client
-const configs = {
-    user: 'YOURUSERNAME',
-    host: '127.0.0.1',
-    database: 'tunr_db',
-    port: 5432,
-};
-
-const pool = new pg.Pool(configs);
-
-pool.on('error', function(err) {
-    console.log('idle client error', err.message, err.stack);
-});
 
 /**
  * ===================================
@@ -38,19 +26,18 @@ app.use(methodOverride('_method'));
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
 const path = require('path');
+
 app.set('views', path.join(__dirname, '..', '/views'));
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
-/**
- * ===================================
- * Routes
- * ===================================
- */
-
 const artistsRoutes = require('./artists-routes.js');
 
 const errorController = require('../controllers/404-controller.js');
+
+const db = require('../util/database.js');
+
+app.use(express.static(path.join(__dirname, '../public/')));
 
 app.get('/', (req, res) => {
     // query database for all pokemon
@@ -73,13 +60,13 @@ const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of
 
 let onClose = function() {
 
-    console.log("closing");
+    console.log("\nclosing");
 
     server.close(() => {
 
         console.log('Process terminated');
 
-        pool.end(() => console.log('Shut down db connection pool'));
+        db.poolEnd();
     })
 };
 

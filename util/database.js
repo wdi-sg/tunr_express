@@ -15,6 +15,10 @@ pool.on('error', function(err) {
 
 
 module.exports = {
+    poolEnd: async () => {
+        await pool.end(() => console.log('Shut down db connection pool'));
+    },
+
     query: async (queryText, queryValues) => {
 
         await pool.connect(() => {

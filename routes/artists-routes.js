@@ -1,10 +1,13 @@
+const express = require('express');
 const Router = require('express-promise-router');
-
 const router = new Router();
+const path = require('path');
 
 const artistsController = require('../controllers/artists-controller');
-
 const songsRoutes = require('./songs-routes.js');
+
+router.use('/', express.static(path.join(__dirname, '..', '/public/')));
+router.use('/:id', express.static(path.join(__dirname, '..', '/public/')));
 
 router.use('/:id/songs', songsRoutes);
 

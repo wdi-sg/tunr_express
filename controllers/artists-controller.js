@@ -1,29 +1,52 @@
 const db = require('../util/database.js');
 
 module.exports.getArtistById = async (req, res) => {
+
     const { id } = req.params;
-    const { rows } = await db.query('SELECT * FROM artists where id = $1', [id]);
-    // const result = await db.query('SELECT * FROM artists where id=$1', [id]);
+    const queryT = `SELECT * FROM artists WHERE id=${id}`
+    const { rows } = await db.query(queryT);
+
     res.render('./artists/artist-single', { 'singleArtist': rows[0] });
+
 }
 
 module.exports.getAllArtists = async (req, res) => {
-    console.log('Get All Artist!');
-    res.send('Get All Artists!');
+
+    const { rows } = await db.query('SELECT * FROM artists');
+
+    res.render('./artists/artist-all', { 'allArtists': rows });
+
 }
 
 module.exports.postAddArtist = async (req, res) => {
-    console.log('Add New Artist!');
+
+    console.log(req);
     res.send('Add New Artist!');
+
 }
 
 module.exports.getEditArtistById = async (req, res) => {
-    console.log('Get Edit Artist Form By Id!');
-    res.send('Get Edit Artist Form By Id!');
+
+    const { id } = req.params;
+    const queryT = `SELECT * FROM artists WHERE id=${id}`
+    const { rows } = await db.query(queryT);
+
+    res.render('./artists/edit-artist', {
+        'singleArtist': rows[0],
+        invalidMsg: ""
+    });
+
 }
 
 module.exports.putArtistById = async (req, res) => {
-    console.log('Artist Edited!');
+
+    let invalidMsg = [];
+
+    //Check if fields are empty
+    Object.keys(req.body).forEach(k => {
+        if (!k) invalidMsg.push[`Please enter the artist's ${k}'`]
+    })
+
     res.send('Artist Edited!');
 }
 
