@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'Azhar',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,14 +49,15 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
+  // query database for all ....
 
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  // respond with HTML page displaying all ....
+  response.send("Hello World");
+  // response.render('home');
 });
 
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+  // respond with HTML page with form to create new ....
   response.render('new');
 });
 
