@@ -98,7 +98,7 @@ app.get(`/artists/:id/songs`, (req, res) => {
         } else {
             const foundSongs = result.rows;
             const data = {
-              songs: foundSongs
+                songs: foundSongs
             }
             res.render("artists-songs", data);
         }
@@ -183,25 +183,45 @@ app.get(`/artists`, (req, res) => {
 })
 
 
-app.get(`/songs`, (req,res)=> {
+app.get(`/songs`, (req, res) => {
 
-        let command = `SELECT * FROM songs`;
+    let command = `SELECT * FROM songs`;
 
-        pool.query(command, (err, result) => {
-          if (err) {
+    pool.query(command, (err, result) => {
+        if (err) {
             console.log(`There was an error.`);
             console.log(err.message);
-          } else {
+        } else {
             const songData = result.rows;
             const data = {
-              songs: songData,
+                songs: songData,
             };
 
             res.render("all-songs", data);
-          }
-        });
+        }
+    });
 
 })
+
+app.get(`/songs/:id`, (req, res) => {
+    const query = parseInt(req.params.id);
+    let command = `SELECT * FROM songs WHERE id=${query}`;
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`There was an error.`);
+            console.log(err.message);
+        } else {
+            const foundSong = result.rows[0];
+            const data = {
+              songData: foundSong,
+            };
+
+            res.render("song", data);
+        }
+    });
+});
+
 
 
 app.get('/', (request, response) => {
