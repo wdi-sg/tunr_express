@@ -47,29 +47,23 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-
-app.get('/artists', (request, response) => {
-  // query database for all artist
-  let queryString = "SELECT * FROM artists";
-  pool.query(queryString, (err, res) => {
-    if(err){
-      console.log("Query error!: ", err.message);
+app.get('/artists/:id/edit', (request, response) => {
+  let id = request.params.id;
+  let queryString = "SELECT * FROM artists WHERE id = " + id;
+  pool.query(queryString, (error, result) => {
+    if(error) {
+      console.log('Query error:', error.stack);
+      response.send('query error');
     }else {
-      console.log(res.rows);
+      console.log(result.rows);
       let data = {
-        "artists": res.rows
-      };
-      response.render('home', data);
+        "artist": result.rows
+      }
+      response.render('edit', data);
     }
   });
-  // respond with HTML page displaying all artist
-
 });
 
-app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new artist
-  response.render('new');
-});
 
 app.get('/artists/:id', (request, response) => {
   let id = request.params.id;
@@ -87,6 +81,30 @@ app.get('/artists/:id', (request, response) => {
     }
   });
 });
+
+
+app.get('/artists', (request, response) => {
+  // query database for all artist
+  let queryString = "SELECT * FROM artists";
+  pool.query(queryString, (err, res) => {
+    if(err){
+      console.log("Query error!: ", err.message);
+    }else {
+      console.log(res.rows);
+      let data = {
+        "artists": res.rows
+      };
+      response.render('home', data);
+    }
+  });
+});
+
+
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new artist
+  response.render('new');
+});
+
 
 app.post('/artists', (request, response) => {
   let queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
