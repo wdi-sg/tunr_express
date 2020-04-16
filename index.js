@@ -54,6 +54,25 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
+app.get('/artists/new', (req, res) => {
+  res.render('artistform');
+});
+
+app.post('/artists/new', async function (req, res) {
+  let newArtistValues = [
+    req.body.name,
+    req.body.photo_url,
+    req.body.nationality
+  ];
+
+  let insertArtist =
+      "INSERT INTO artists (name, photo_url, nationality) " +
+      "VALUES ($1, $2, $3) " +
+      "RETURNING id";
+
+  let newArtistId = await makeQuery(insertArtist, newArtistValues);
+  res.redirect(`/artists/${newArtistId[0].id}`);
+});
 // start server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT);
