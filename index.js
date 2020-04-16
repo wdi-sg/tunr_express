@@ -68,6 +68,7 @@ app.get('/artists/:id/songs', (req, res) => {
     pool.query(firstQueryString, firstValues, (err, result) => {
         if (err){
             console.error('query error', err.stack);
+            res.status(500);
             res.send('query error');
         } else {
             artistInfo = result.rows[0];
@@ -83,6 +84,7 @@ app.get('/artists/:id/songs', (req, res) => {
     pool.query(secondQueryString, secondValues, (err, result) => {
         if (err){
             console.error('query error', err.stack);
+            res.status(500);
             res.send('query error');
         } else {
             const songArray = []
@@ -102,6 +104,7 @@ app.get('/artists/:id', (req, res) => {
     pool.query(queryString, values, (err, result) => {
         if (err){
             console.error('query error', err.stack);
+            res.status(500);
             res.send('query error');
         } else {
             const data = result.rows[0];
@@ -117,6 +120,7 @@ app.post('/artists', (req, res) => {
     pool.query(queryString, values, (err, result) => {
         if (err){
             console.error('query error', err.stack);
+            res.status(500);
             res.send('query error');
         } else {
             res.redirect('/artists/' + result.rows[0].id)

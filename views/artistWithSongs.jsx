@@ -2,9 +2,15 @@ var React = require('react');
 
 class Artist extends React.Component {
   render() {
-    const songListElements = this.props.songArray.map(song => {
-        return <li>{song}</li>
-    })
+    let songListElements;
+    if (this.props.songArray.length){
+        songListElements = this.props.songArray.map(song => {
+            return <li>{song}</li>
+        })
+    } else {
+        songListElements = "None"
+    }
+
     const name = this.props.artistInfo.name;
     const photo_url = this.props.artistInfo.photo_url;
     const nationality = this.props.artistInfo.nationality;
