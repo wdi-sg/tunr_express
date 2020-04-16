@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'lekhweemeng',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -55,11 +55,60 @@ app.get('/', (request, response) => {
   response.render('main');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new tune
   response.render('new');
 });
 
+app.post('/artists', (request, response) => {
+    let queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1,$2,$3)'
+    const values = [request.body.artistName, request.body.photo, request.body.nationality];
+    pool.query(queryString, values, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result: ', result);
+            response.redirect('/');
+        }
+    })
+});
+
+app.get('/artists/:id', (request, response) => {
+    let artistId = parseInt(request.params.id);
+    let queryString = 'SELECT name FROM artists WHERE id =$1';
+    const values=[artistId];
+    pool.query(queryString, values, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            var data = {
+                name: result.rows[0].name
+            }
+            console.log('query result: ', result.rows[0].name);
+            response.render('oneArtist', data);
+        };
+    });
+});
+
+app.get('/artists/:id/songs', (request, response) => {
+    let artistId = parseInt(request.params.id);
+    let queryString = 'SELECT title FROM songs WHERE artist_id =$1';
+    const values=[artistId];
+    pool.query(queryString, values, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            var data = {
+                songs: result.rows
+            }
+            console.log('query result: ', result.rows);
+            response.render('artistSongs', data);
+        };
+    });
+});
 
 /**
  * ===================================

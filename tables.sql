@@ -11,5 +11,5 @@ title TEXT,
 album TEXT,
 preview_link TEXT,
 artwork TEXT,
-rtist_id INTEGER
+artist_id INTEGER
 );
