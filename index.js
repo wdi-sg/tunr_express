@@ -53,6 +53,7 @@ app.get('/', (request, response) => {
   response.render('home');
 });
 
+// Show all artists
 app.get('/artists', (request, response) => {
   // query database for all artists
   const queryString = 'select * from artists'
@@ -65,6 +66,26 @@ app.get('/artists', (request, response) => {
     else{
         const data = {"result" : result.rows};
         response.render('allartists', data);
+    }
+  })
+});
+
+// Show single artist
+app.get('/artists/:id', (request, response) => {
+    // Get ID of artist
+    const id = request.params.id;
+
+    const queryString = `select * from artists where id=${id}`
+
+    pool.query(queryString, (err, result) => {
+    if(err) {
+        console.error('query error: ', err.stack);
+        response.send('query error');
+    }
+    else{
+
+        const data = {"result" : result.rows};
+        response.render('singleartist', data);
     }
   })
 });
@@ -83,7 +104,7 @@ app.get('/artists/new', (request, response) => {
 
 app.post('/artists', (request, response) => {
     // query database for all artists
-    let queryString = 'insert into artists (name, photo_url, nationality) values ($1, $2, $3) returning id';
+    let queryString = 'insert into artists (name, photo_url, nationality) values ($1, $2, $3) returning *';
 
     const artist = request.body;
 
@@ -98,7 +119,6 @@ app.post('/artists', (request, response) => {
             response.send(result.rows);
         }
     })
-
 })
 
 /**
