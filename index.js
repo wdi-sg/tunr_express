@@ -54,21 +54,7 @@ app.get(`/artists/new`, (req, res) => {
     res.render("new-artist");
 });
 
-app.get(`/songs/new`, (req, res) => {
 
-    let command = `SELECT id, name FROM artists`;
-
-    pool.query(command, (err, result) => {
-        if (err) {
-            console.log(`Error in query!!!`, err);
-        } else {
-            const data = {
-                artistData: result.rows
-            }
-            res.render("new-song", data);
-        }
-    });
-});
 
 app.post(`/artists`, (req, res) => {
 
@@ -81,7 +67,7 @@ app.post(`/artists`, (req, res) => {
         if (err) {
             console.log(`Error in query!!!`, err)
         } else {
-            res.redirect(`/artists`)
+            res.redirect(`/artists/${result.rows[0].id}`);
         }
     })
 })
@@ -199,47 +185,50 @@ app.get(`/artists`, (req, res) => {
     })
 })
 
-
-app.get(`/songs`, (req, res) => {
-
-    let command = `SELECT * FROM songs`;
-
-    pool.query(command, (err, result) => {
-        if (err) {
-            console.log(`There was an error.`);
-            console.log(err.message);
-        } else {
-            const songData = result.rows;
-            const data = {
-                songs: songData,
-            };
-
-            res.render("all-songs", data);
-        }
-    });
-
-})
-
 app.get(`/songs/new`, (req, res) => {
-    const query = parseInt(req.params.id);
-    let command = `SELECT * FROM songs WHERE id=${query}`;
+    let command = `SELECT id, name FROM artists`;
 
     pool.query(command, (err, result) => {
         if (err) {
-            console.log(`There was an error.`);
-            console.log(err.message);
+            console.log(`Error in query!!!`, err);
         } else {
-            const foundSong = result.rows[0];
             const data = {
-                songData: foundSong,
+                artistData: result.rows,
             };
-
-            res.render("song", data);
+            res.render("new-song", data);
         }
     });
 });
 
 
+app.get(`/songs/:id/edit`, (req, res) => {
+    const query = parseInt(req.params.id);
+
+    let getSongAndArtistName = `SELECT songs.*, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE songs.id = ${query}`;
+
+    pool.query(getSongAndArtistName, (err, result) => {
+        if (err) {
+          console.log(`There was an error.`);
+          console.log(err.message);
+        } else {
+          let data = {
+            songData: result.rows[0],
+          };
+
+          pool.query(
+            `SELECT id, name FROM artists ORDER BY id ASC`,
+            (err, result) => {
+              if (err) {
+                console.log(`There was an error.`);
+                console.log(err.message);
+              } else {
+                data.artistsData = result.rows;
+                res.render("edit-song", data);
+              }
+            });
+        }
+      });
+});
 
 app.get(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
@@ -260,6 +249,57 @@ app.get(`/songs/:id`, (req, res) => {
     });
 });
 
+
+app.put(`/songs/:id`, (req, res) => {
+    const query = parseInt(req.params.id);
+
+    let command = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body.preview_link}', artwork = '${req.body.artwork}', artist_id = ${req.body.artistId} WHERE id=${query}`;
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            res.redirect(`/songs/${result.rows[0].id}`);
+        }
+    });
+
+});
+
+
+
+app.get(`/songs`, (req, res) => {
+    let command = `SELECT * FROM songs`;
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`There was an error.`);
+            console.log(err.message);
+        } else {
+            const songData = result.rows;
+            const data = {
+                songs: songData,
+            };
+
+            res.render("all-songs", data);
+        }
+    });
+});
+
+app.post(`/songs`, (req, res) => {
+
+    const values = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artistId];
+
+    let command = `INSERT INTO Songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+
+    pool.query(command, values, (err, result) => {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            res.redirect(`/songs/${result.rows[0].id}`);
+        }
+    });
+
+})
 
 
 app.get('/', (request, response) => {
