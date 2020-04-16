@@ -18,9 +18,25 @@ class Allartists extends React.Component {
                         "background" : "rgb(225, 173, 1)"
                       }
 
+    const heading = {
+                      "display" : "flex",
+                      "justify-content" : "center"
+                    }
+
     const title = {
-                    "text-align" : "center"
+
                   }
+
+    const newArtistStyle = {
+                            "position" : "absolute",
+                            "right" : "2%",
+                            "top" : "4%",
+                            "font-size" : "25px",
+                            "text-decoration" : "none",
+                            "color" : "black",
+                            "padding" : "3px",
+                            "border" : "2px solid black"
+                          }
 
     // Javascript stuff
     const allArtists = this.props.result.map(el => {
@@ -32,11 +48,16 @@ class Allartists extends React.Component {
         )
     })
 
+    const newArtist = <a href="/artists/new" style={newArtistStyle}>Add New Artist</a>
+
     return (
       <html>
         <head />
         <body style={background}>
-          <h1 style={title}>All Artists</h1>
+          <div style={heading}>
+            <h1 style={title}>All Artists</h1>
+            {newArtist}
+          </div>
           <div style={artistLayout}>
             {allArtists}
           </div>

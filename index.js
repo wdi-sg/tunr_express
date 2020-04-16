@@ -54,7 +54,7 @@ app.get('/', (request, response) => {
 });
 
 app.get('/artists', (request, response) => {
-  // query database for all pokemon
+  // query database for all artists
   const queryString = 'select * from artists'
 
   pool.query(queryString, (err, result) => {
@@ -69,11 +69,10 @@ app.get('/artists', (request, response) => {
   })
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+app.get('/artists/new', (request, response) => {
 
+    response.render('newartist');
+})
 
 /**
  * ===================================
