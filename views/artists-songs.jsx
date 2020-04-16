@@ -26,6 +26,10 @@ class ArtistSongs extends React.Component {
           <a href="/">
             <button className="btn btn-primary">Back To Home</button>
           </a>
+
+          <a href={`/artists/${info[0].artist_id}/songs/new`}>
+            <button className="btn btn-success">Add A Song for This Artist</button>
+          </a>
           <h1>List of Songs by {info[0].artist_name}</h1>
           <ul>{songsList}</ul>
         </body>

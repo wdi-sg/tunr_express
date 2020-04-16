@@ -21,7 +21,10 @@ class Song extends React.Component {
             <h1>
               {song.id}) {song.title}
             </h1>
-            <h2>Artist: {song.artist_name}</h2>
+            <h2>
+              Artist:{" "}
+              <a href={`/artists/${song.artist_id}`}>{song.artist_name}</a>
+            </h2>
             <h3>Album: {song.album}</h3>
             <p>
               <img src={song.artwork} />
@@ -29,7 +32,6 @@ class Song extends React.Component {
             <p>
               <a href={song.preview_link}>Preview Song</a>
             </p>
-        
 
             <a href={`/songs/${song.id}/edit`}>
               <button className="btn btn-warning">Edit song</button>

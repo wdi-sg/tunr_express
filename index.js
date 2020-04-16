@@ -120,7 +120,7 @@ app.get(`/artists/:id`, (req, res) => {
 app.get(`/artists/:id/songs`, (req, res) => {
   const query = parseInt(req.params.id);
 
-  let command = `SELECT songs.id, songs.title, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE artists.id = ${query}`;
+  let command = `SELECT songs.*, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE artists.id = ${query}`;
 
   pool.query(command, (err, result) => {
     if (err) {
@@ -135,12 +135,36 @@ app.get(`/artists/:id/songs`, (req, res) => {
   });
 });
 
+/**
+ * -------------------
+ * CREATE A NEW SONG FOR A SPECIFIC ARTIST
+ * -------------------
+ */
+
+app.get(`/artists/:id/songs/new`, (req, res) => {
+  const query = parseInt(req.params.id);
+
+  let command = `SELECT * FROM artists WHERE id = ${query}`;
+
+  pool.query(command, (err, result) => {
+    if (err) {
+      console.log(`Error in query!!!`, err);
+    } else {
+      const artist = result.rows[0];
+      const data = {
+        artistData: artist,
+      };
+      res.render(`new-song-byartist`, data);
+    }
+  });
+});
+
 
 /**
  * -------------------
  * UPDATE AN ARTIST
  * -------------------
- */
+ **/
 
 
 app.put(`/artists/:id`, (req, res) => {
@@ -211,7 +235,7 @@ app.post(`/artists`, (req, res) => {
 
 app.get(`/artists`, (req, res) => {
 
-    let command = `SELECT * FROM artists`
+    let command = `SELECT * FROM artists ORDER BY id ASC`
 
     pool.query(command, (err, result) => {
 
@@ -327,7 +351,7 @@ app.get(`/songs/:id`, (req, res) => {
 app.put(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
 
-    let command = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body.preview_link}', artwork = '${req.body.artwork}', artist_id = ${req.body.artistId} WHERE id=${query} RETURNING`;
+    let command = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body.preview_link}', artwork = '${req.body.artwork}', artist_id = ${req.body.artistId} WHERE id=${query} RETURNING *`;
 
     pool.query(command, (err, result) => {
         if (err) {
@@ -364,7 +388,7 @@ app.delete(`/songs/:id`, (req, res) => {
  * -------------------
  */
 app.get(`/songs`, (req, res) => {
-    let command = `SELECT * FROM songs`;
+    let command = `SELECT * FROM songs ORDER BY id ASC`;
 
     pool.query(command, (err, result) => {
         if (err) {
