@@ -21,6 +21,7 @@ class Song extends React.Component {
             <h1>
               {song.id}) {song.title}
             </h1>
+            <h2>Artist: {song.artist_name}</h2>
             <h3>Album: {song.album}</h3>
             <p>
               <img src={song.artwork} />

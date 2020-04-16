@@ -301,7 +301,7 @@ app.get(`/songs/:id/edit`, (req, res) => {
  */
 app.get(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
-    let command = `SELECT * FROM songs WHERE id=${query}`;
+    let command = `SELECT songs.*, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE songs.id = ${query}`;
 
     pool.query(command, (err, result) => {
         if (err) {
