@@ -1,3 +1,5 @@
+const db = require('../util/database.js');
+
 module.exports.getArtistSongById = async (req, res) => {
     // const { id } = req.params;
     // const { rows } = await db.query('SELECT * FROM songs where id = $1', [id]);

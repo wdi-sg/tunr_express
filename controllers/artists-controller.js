@@ -1,8 +1,10 @@
+const db = require('../util/database.js');
+
 module.exports.getArtistById = async (req, res) => {
-    // const { id } = req.params;
-    // const { rows } = await db.query('SELECT * FROM artists where id = $1', [id]);
-    console.log('Get Artist By Id');
-    res.send('Get Artist By Id');
+    const { id } = req.params;
+    const { rows } = await db.query('SELECT * FROM artists where id = $1', [id]);
+    // const result = await db.query('SELECT * FROM artists where id=$1', [id]);
+    res.render('./artists/artist-single', { 'singleArtist': rows[0] });
 }
 
 module.exports.getAllArtists = async (req, res) => {
