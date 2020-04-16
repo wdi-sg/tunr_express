@@ -59,6 +59,42 @@ app.get('/new', (request, response) => {
   response.render('new');
 });
 
+app.get('/artists/:id/songs', (req, res) => {
+    //Getting artist data first
+    const firstValues = [req.params.id]
+    const firstQueryString = "SELECT * FROM artists WHERE id = $1"
+    let artistInfo;
+
+    pool.query(firstQueryString, firstValues, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.send('query error');
+        } else {
+            artistInfo = result.rows[0];
+        }
+    })
+
+
+
+
+    const secondValues = [req.params.id]
+    const secondQueryString = "SELECT title FROM songs WHERE artist_id = $1";
+
+    pool.query(secondQueryString, secondValues, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.send('query error');
+        } else {
+            const songArray = []
+            for (let i = 0; i < result.rows.length; i++){
+                songArray.push(result.rows[i].title)
+            }
+            const data = {songArray, artistInfo}
+            res.render('artistWithSongs', data);
+        }
+    })
+})
+
 app.get('/artists/:id', (req, res) => {
     const values = [req.params.id]
     const queryString = "SELECT * FROM artists WHERE id = $1"
@@ -72,7 +108,6 @@ app.get('/artists/:id', (req, res) => {
             res.render('artist', data);
         }
     })
-
 })
 
 app.post('/artists', (req, res) => {
