@@ -71,6 +71,23 @@ app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
+app.get('/artists/:id', (request, response) => {
+  let id = request.params.id;
+  let queryString = "SELECT * FROM artists WHERE id = " + id;
+  pool.query(queryString, (error, result) => {
+    if(error) {
+      console.log('Query error:', error.stack);
+      response.send('query error');
+    }else {
+      console.log(result.rows);
+      let data = {
+        "artist": result.rows
+      }
+      response.render('id', data);
+    }
+  });
+});
+
 app.post('/artists', (request, response) => {
   let queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
   let values = [request.body.name, request.body.photourl, request.body.nationality];
