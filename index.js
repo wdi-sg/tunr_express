@@ -52,11 +52,11 @@ app.get('/artists/',(request,response)=>{
         response.send( 'query error' );
       } else {
         console.log('query result:', indexResult);
-        response.send(indexResult.rows);
-        /*const indexData = {
-            artists: response.rows
+        //response.send(indexResult.rows);
+        const indexData = {
+            artists: indexResult.rows
         };
-        response.render('index',indexData);*/
+        response.render('index',indexData);
 
 
       }
@@ -70,6 +70,34 @@ app.get('/artists/new', (request, response) => {
   response.render('new');
 });
 
+//list single artist by id
+
+app.get('/artists/:id',(request,response)=>{
+    const queryString = 'SELECT * from artists WHERE id=' + request.params.id;
+    pool.query(queryString, (serr, singleResult) => {
+
+      if (serr) {
+        console.error('query error:', serr.stack);
+        response.send( 'query error' );
+      } else {
+        console.log('query result:', singleResult);
+        //response.send(singleResult.rows);
+        const singleData = {
+            name: singleResult.rows[0].name,
+            photo_url: singleResult.rows[0].photo_url,
+            nationality: singleResult.rows[0].nationality
+        };
+        response.render('show',singleData);
+
+
+      }
+    })
+
+});
+
+
+
+
 //collect form data and add to DB
 app.post('/artists',(request,response)=>{
     const query = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
@@ -80,7 +108,8 @@ app.post('/artists',(request,response)=>{
             response.send( 'query error' );
         } else {
             console.log('query result:', addResult);
-            response.send(addResult.rows);
+            //response.send(addResult.rows);
+            response.redirect('/artists/' + addResult.rows[0].id)
         }
 
     })

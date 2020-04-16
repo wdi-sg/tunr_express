@@ -1,28 +1,21 @@
 var React = require('react');
 
 class Index extends React.Component {
-  render() {
-    console.log("this.props---");
-    console.log( this.props.artists )
+    render() {
+       const artistList = this.props.artists.map(artist => {
 
-    const artistName = this.props.artists.map(artist=>
-    {
-        const link = '/artists/'
-        return <li>{artist.name}<br/><br/></li>
-    })
-
-
-
-    return (
-      <html>
-        <body>
-          <div>
-            <ul>{artistName}</ul>
-          </div>
-        </body>
-      </html>
-    );
-  }
-}
+         return <li>{artist.name}
+         <img src={artist.photo_url}/>
+         {artist.nationality}</li>
+       });
+         return (<html>
+             <head/>
+             <body>
+                 <h1>Artists:</h1>
+                 <ul>{artistList}</ul>
+             </body>
+         </html>);
+     }
+ }
 
 module.exports = Index;
