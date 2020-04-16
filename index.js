@@ -61,6 +61,30 @@ app.get('/new', (request, response) => {
   response.render('new');
 });
 
+app.get('/artists', (request, response) => {
+  // respond with HTML page with form to create new ....
+const queryString = 'SELECT * from artists'
+
+pool.query(queryString, (err, result) => {
+
+  if (err) {
+    console.error('query error:', err.stack);
+    response.send( 'query error' );
+  } else {
+    console.log('query result:', result);
+
+    // redirect to home page
+    var output = {
+      'artists': result.rows,
+    }
+    response.render('artists',output);
+    // response.send( output);
+  }
+});
+  
+});
+
+
 
 /**
  * ===================================
