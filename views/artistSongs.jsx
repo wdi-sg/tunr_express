@@ -4,7 +4,7 @@ class oneArtist extends React.Component {
   render() {
     console.log('looping props********************');
     const songNames = this.props.songs.map(songTitle => {
-        return <li>this.props.songs.title</li>
+        return <li>{songTitle.title}</li>
     })
     return (
       <html>
