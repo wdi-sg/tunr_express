@@ -112,6 +112,37 @@ app.get('/artists/:id', (request, response) => {
   });
 });
 
+app.get('/artists/:id/songs', (request, response) => {
+  let userInput = request.params.id;
+  const queryString = 'SELECT * from artists where id = ($1)'
+  values = [userInput]
+  pool.query(queryString, values, (err, artistResult) => {
+
+      if (err) {
+          console.error('query error:', err.stack);
+          response.send('query error');
+      } else {
+        let selectedArtist = artistResult.rows[0].id
+        const query = 'select * from songs where artist_id = $1'
+        value = [selectedArtist]
+        pool.query(query, value, (err, result) => {
+          if (err) {
+              console.error('query error:', err.stack);
+              response.send('query error');
+          } else {
+            data = {
+              artist : artistResult.rows[0].name,
+              song : result.rows
+            }
+              // console.log('query result:', result.rows);
+              response.render('songs',data);
+              
+          }
+      });
+      }
+  });
+});
+
 app.post('/artists',addArtist)
 
 app.get('/', (request, response) => {
