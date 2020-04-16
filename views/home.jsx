@@ -1,12 +1,17 @@
 var React = require("react");
-
 class Home extends React.Component {
+
   render() {
+    //console.log(this.props.artists)
+    const artistNames = this.props.artists.map((artist)=>{
+      return <li>{artist.name}</li>
+  });
     return (
       <html>
         <head />
         <body>
-          <h1>Welcome!</h1>
+          <h1>All Artists:</h1>
+          <p>{artistNames}</p>
         </body>
       </html>
     );
