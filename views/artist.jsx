@@ -3,8 +3,9 @@ var React = require("react");
 class artist extends React.Component {
   render() {
 
-
-
+    const link="/artists/"+this.props.artist[0].id+"/songs";
+    const editLink= "/artists/"+this.props.artist[0].id+"/edit";
+    const deleteLink = "/artists/"+ this.props.artist[0].id + "?_method=delete";
     return (
       <html>
         <head/>
@@ -28,6 +29,22 @@ class artist extends React.Component {
                 </div>
             </div>
 
+            <div class="row">
+                <div class={"col-12 text-center"}>
+                    <h2><a href={link}>Link to Song</a></h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class={"col-6 border text-center p-0 ml-0"} style={{marginLeft:"0", padding:"0", backgroundColor:"#7C8F8E"}}>
+                          <form method="POST" action={deleteLink}>
+                    <input  style={{fontSize:"40px", color:"white", backgroundColor:"#7C8F8E", borderColor:"#7C8F8E", width:"95%", marginTop:"10px"}} type="submit" value="Delete"/>
+                 </form>
+                </div>
+
+                <div style={{backgroundColor:"#7C8F8E"}} class={"col-6 border text-center p-3"}>
+                        <a style={{fontSize:"40px", color:"white"}} href={editLink}>Edit</a>
+                    </div>
+            </div>
           </div>
         </body>
       </html>
