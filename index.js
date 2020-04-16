@@ -52,47 +52,82 @@ app.engine('jsx', reactEngine);
 
 
 app.get(`/artists/new`, (req, res) => {
-  res.render("new");
+    res.render("new");
 });
 
-app.post(`/artists`, (req, res)=> {
+app.post(`/artists`, (req, res) => {
 
-  let values = [req.body.name, req.body.photo_url, req.body.nationality]
+    let values = [req.body.name, req.body.photo_url, req.body.nationality]
 
-  let command = `INSERT INTO Artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
+    let command = `INSERT INTO Artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
 
-  pool.query(command, values, (err, result)=> {
+    pool.query(command, values, (err, result) => {
 
-    if (err) {
-      console.log(`Error in query!!!`, err)
-    } else {
-      res.redirect(`/artists`)
-    }
-  })
+        if (err) {
+            console.log(`Error in query!!!`, err)
+        } else {
+            res.redirect(`/artists`)
+        }
+    })
 })
 
-app.get(`/artists/:id`, (req,res)=> {
+app.get(`/artists/:id/edit`, (req, res) => {
+    const query = parseInt(req.params.id);
+
+    let command = `SELECT * FROM artists WHERE id = ${query}`;
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            const foundArtist = result.rows[0];
+            const data = {
+                artistData: foundArtist,
+            };
+            res.render("edit", data);
+        }
+    });
+});
+
+app.put(`/artists/:id`, (req, res) => {
+
+    const query = parseInt(req.params.id);
+
+    let command = `UPDATE Artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE id = ${query} RETURNING *`
+
+    console.log(command)
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            res.redirect(`/artists/${query}`)
+        }
+    })
+})
+
+app.get(`/artists/:id`, (req, res) => {
 
     const query = parseInt(req.params.id);
 
     let command = `SELECT * FROM artists WHERE id = ${query}`;
 
     pool.query(command, (err, result) => {
-      if (err) {
-        console.log(`Error in query!!!`, err);
-      } else {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
 
-        const foundArtist = result.rows[0];
+            const foundArtist = result.rows[0];
 
-        const data = {
-          artistData: foundArtist,
-        };
+            const data = {
+                artistData: foundArtist,
+            };
 
-        res.render('artist', data);
-      }
+            res.render('artist', data);
+        }
     });
-
 })
+
 
 app.get(`/artists`, (req, res) => {
 

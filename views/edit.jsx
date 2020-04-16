@@ -18,10 +18,18 @@ class New extends React.Component {
         </head>
         <body>
           <h3>Form Goes Here!</h3>
-          <form action="/artists" method="post">
-            <input name="name" placeholder="Artist Name" />
-            <input name="photo_url" placeholder="Image URL" />
-            <input name="nationality" placeholder="Nationality" />
+          <form action={`/artists/${artist.id}?_method=put`} method="POST">
+            <input value={artist.name} name="name" placeholder="Artist Name" />
+            <input
+              value={artist.photo_url}
+              name="photo_url"
+              placeholder="Image URL"
+            />
+            <input
+              value={artist.nationality}
+              name="nationality"
+              placeholder="Nationality"
+            />
             <button className="btn btn-success" type="submit">
               Submit
             </button>

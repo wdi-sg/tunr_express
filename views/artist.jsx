@@ -4,7 +4,7 @@ class Artist extends React.Component {
   render() {
 
     const artist = this.props.artistData;
-    
+
     return (
       <html>
         <head>
@@ -23,6 +23,10 @@ class Artist extends React.Component {
             </h1>
             <img src={artist.photo_url}></img>
             <p>Nationality: {artist.nationality}</p>
+
+            <a href={`/artists/${artist.id}/edit`}>
+              <button className="btn btn-primary">Edit Artist</button>
+            </a>
           </div>
         </body>
       </html>
