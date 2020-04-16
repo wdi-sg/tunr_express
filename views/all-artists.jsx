@@ -7,7 +7,7 @@ class AllArtists extends React.Component {
 
     const artistLinks = artistArr.map((artist) => {
       return (
-        <li><a href={`/artists/${artist.id}`}>{artist.name}</a></li>
+        <li key={artist.id}><a href={`/artists/${artist.id}`}>{artist.name}</a></li>
       );
     });
 
