@@ -31,17 +31,19 @@ pool.on("error", function (err) {
 //-------------ROUTES---------------
 //----------------------------------
 
+//VIEW HOME PAGE
 app.get("/", (request, response) => {
   response.render("home");
 });
 
+//VIEW CREATE NEW ARTIST PAGE
 app.get("/artists/new", (request, response) => {
   response.render("new-artist");
 });
 
+//CAPTURES NEW ARTIST DATA AND DISPLAYS IT
 app.post("/artists/new", (request, response) => {
   let queryText = `INSERT INTO artists (name, photo_url, nationality) VALUES ('${request.body.name}', '${request.body.photo_url}', '${request.body.nationality}') RETURNING *`;
-
   pool.query(queryText, (err, result) => {
     // console.log(result.rows[0]);
     let artistObj = result.rows[0];
@@ -50,12 +52,30 @@ app.post("/artists/new", (request, response) => {
   });
 });
 
+//DISPLAY SINGULAR ARTIST DETAILS BASED ON ID
 app.get("/artists/:id", (request, response) => {
   let id = request.params.id; 
   let queryText = `SELECT * FROM artists WHERE id=${id}`;
   pool.query(queryText, (err, result) => {
     let artistObj = result.rows[0];
     response.render("display-one-artist", artistObj);
+  });
+});
+
+app.get("/artists/:id/songs", (request, response) => {
+  let artist_id = request.params.id;
+  let artistName;
+  let queryText2 = `SELECT name from artists WHERE id=${artist_id}`;
+  pool.query(queryText2, (err, result) => {
+    artistName = result.rows[0].name;
+  });
+  let queryText = `SELECT * FROM songs WHERE artist_id=${artist_id}`;
+  pool.query(queryText, (err, result) => {
+    console.log(result.rows);
+    let songData = {songs: result.rows,
+    artist: artistName
+    };
+    response.render("display-all-songs", songData);
   });
 });
 
