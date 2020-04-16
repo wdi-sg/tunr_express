@@ -95,8 +95,6 @@ app.put(`/artists/:id`, (req, res) => {
 
     let command = `UPDATE Artists SET name='${req.body.name}', photo_url='${req.body.photo_url}', nationality='${req.body.nationality}' WHERE id = ${query} RETURNING *`
 
-    console.log(command)
-
     pool.query(command, (err, result) => {
         if (err) {
             console.log(`Error in query!!!`, err);
@@ -104,6 +102,24 @@ app.put(`/artists/:id`, (req, res) => {
             res.redirect(`/artists/${query}`)
         }
     })
+})
+
+app.delete(`/artists/:id`, (req, res) => {
+
+    const query = parseInt(req.params.id)
+
+    const command = `DELETE FROM Artists WHERE id = ${query} RETURNING *`
+
+    pool.query(command, (err, result) => {
+
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            res.redirect(`/artists`);
+        }
+
+    })
+
 })
 
 app.get(`/artists/:id`, (req, res) => {
@@ -152,14 +168,10 @@ app.get(`/artists`, (req, res) => {
 
 
 app.get('/', (request, response) => {
-    // query database for all pokemon
-
-    // respond with HTML page displaying all pokemon
-    response.send('home');
+    response.render('home');
 });
 
 app.get('/new', (request, response) => {
-    // respond with HTML page with form to create new pokemon
     response.render('new');
 });
 

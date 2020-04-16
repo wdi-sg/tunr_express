@@ -17,7 +17,10 @@ class New extends React.Component {
           <link rel="stylesheet" href="/styles.css" />
         </head>
         <body>
-          <h3>Form Goes Here!</h3>
+          <a href="/">
+            <button className="btn btn-primary">Back To Home</button>
+          </a>
+          <h3>Creating A New Artist</h3>
           <form action="/artists" method="post">
             <input name="name" placeholder="Artist Name" />
             <input name="photo_url" placeholder="Image URL" />

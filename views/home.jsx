@@ -1,15 +1,7 @@
 var React = require("react");
 
-class AllArtists extends React.Component {
+class Home extends React.Component {
   render() {
-
-    const artistArr = this.props.artists;
-
-    const artistLinks = artistArr.map((artist) => {
-      return (
-        <li><a href={`/artists/${artist.id}`}>{artist.name}</a></li>
-      );
-    });
 
     return (
       <html>
@@ -23,15 +15,18 @@ class AllArtists extends React.Component {
           <link rel="stylesheet" href="/styles.css" />
         </head>
         <body>
-          <a href="/">
-            <button className="btn btn-primary">Back To Home</button>
+          <h1>Welcome to TUNER DB</h1>
+
+          <a href="/artists">
+            <button className="btn btn-primary">View All Artists</button>
           </a>
-          <h1>All Artists</h1>
-          <ul>{artistLinks}</ul>
+          <a href="/artists/new">
+            <button className="btn btn-primary">Add An Artist</button>
+          </a>
         </body>
       </html>
     );
   }
 }
 
-module.exports = AllArtists;
+module.exports = Home;

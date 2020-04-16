@@ -25,7 +25,16 @@ class Artist extends React.Component {
             <p>Nationality: {artist.nationality}</p>
 
             <a href={`/artists/${artist.id}/edit`}>
-              <button className="btn btn-primary">Edit Artist</button>
+              <button className="btn btn-warning">Edit Artist</button>
+            </a>
+            <form method="post" action={`/artists/${artist.id}?_method=delete`}>
+              <button type="submit" className="btn btn-danger">
+                Delete Artist
+              </button>
+            </form>
+
+            <a href="/">
+              <button className="btn btn-primary">Back To Home</button>
             </a>
           </div>
         </body>

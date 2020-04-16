@@ -17,8 +17,11 @@ class New extends React.Component {
           <link rel="stylesheet" href="/styles.css" />
         </head>
         <body>
-          <h3>Form Goes Here!</h3>
-          <form action={`/artists/${artist.id}?_method=put`} method="POST">
+          <a href="/">
+            <button className="btn btn-primary">Back To Home</button>
+          </a>
+          <h1>Editing Artist: {artist.name}</h1>
+          <form action={`?_method=put`} method="POST">
             <input value={artist.name} name="name" placeholder="Artist Name" />
             <input
               value={artist.photo_url}
