@@ -60,7 +60,19 @@ app.get('/new', (request, response) => {
 });
 
 app.get('/artists/:id', (req, res) => {
-    res.send("page under construction")
+    const values = [req.params.id]
+    const queryString = "SELECT * FROM artists WHERE id = $1"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.send('query error');
+        } else {
+            const data = result.rows[0];
+            res.render('artist', data);
+        }
+    })
+
 })
 
 app.post('/artists', (req, res) => {
