@@ -50,7 +50,24 @@ app.engine('jsx', reactEngine);
 
 
 app.get(`/artists/new`, (req, res) => {
-    res.render("new");
+
+    res.render("new-artist");
+});
+
+app.get(`/songs/new`, (req, res) => {
+
+    let command = `SELECT id, name FROM artists`;
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            const data = {
+                artistData: result.rows
+            }
+            res.render("new-song", data);
+        }
+    });
 });
 
 app.post(`/artists`, (req, res) => {
@@ -82,7 +99,7 @@ app.get(`/artists/:id/edit`, (req, res) => {
             const data = {
                 artistData: foundArtist,
             };
-            res.render("edit", data);
+            res.render("edit-artist", data);
         }
     });
 });
@@ -203,6 +220,27 @@ app.get(`/songs`, (req, res) => {
 
 })
 
+app.get(`/songs/new`, (req, res) => {
+    const query = parseInt(req.params.id);
+    let command = `SELECT * FROM songs WHERE id=${query}`;
+
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`There was an error.`);
+            console.log(err.message);
+        } else {
+            const foundSong = result.rows[0];
+            const data = {
+                songData: foundSong,
+            };
+
+            res.render("song", data);
+        }
+    });
+});
+
+
+
 app.get(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
     let command = `SELECT * FROM songs WHERE id=${query}`;
@@ -214,7 +252,7 @@ app.get(`/songs/:id`, (req, res) => {
         } else {
             const foundSong = result.rows[0];
             const data = {
-              songData: foundSong,
+                songData: foundSong,
             };
 
             res.render("song", data);
