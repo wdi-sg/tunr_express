@@ -306,8 +306,64 @@ app.get('/songs/:id', (request, response) =>
             });
     });
 
+///form to edit
+app.get('/songs/:id/edit',(request,response)=>{
+    //console.log("enter edit")
+    const data={}
+    //response.send("Edit mode");
+    const queryString = 'SELECT * from songs WHERE id = ($1)';
+    const input = [request.params.id]
+        pool.query(queryString, input, (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
 
 
+                        data.song=result.rows;
+                        response.render("editSong",data);
+                        //response.send( data );
+                    }
+            });
+
+})
+
+//// process of edit
+
+app.put('/songs/:id', (request,response)=>{
+
+
+     const data={};
+     console.log(request.body);
+     const queryString= "UPDATE songs SET title= ($2) , album= ($3), preview_link= ($4), artwork = ($5) WHERE id = ($1)";
+     const id=request.params.id;
+    const input = [request.params.id, request.body.title, request.body.album, request.body.img, request.body.preview_link];
+        pool.query(queryString, input, (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+
+
+
+
+                        //response.render("editArtist",data);
+                        let url= "/songs/"+id;
+                        response.redirect(url);
+                        //response.send( data );
+                    }
+            });
+})
 
 //////For artist songs
 
