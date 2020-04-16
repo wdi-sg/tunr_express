@@ -71,6 +71,29 @@ app.post(`/artists`, (req, res)=> {
   })
 })
 
+app.get(`/artists/:id`, (req,res)=> {
+
+    const query = parseInt(req.params.id);
+
+    let command = `SELECT * FROM artists WHERE id = ${query}`;
+
+    pool.query(command, (err, result) => {
+      if (err) {
+        console.log(`Error in query!!!`, err);
+      } else {
+
+        const foundArtist = result.rows[0];
+
+        const data = {
+          artistData: foundArtist,
+        };
+
+        res.render('artist', data);
+      }
+    });
+
+})
+
 app.get(`/artists`, (req, res) => {
 
     let command = `SELECT * FROM artists`
@@ -86,7 +109,7 @@ app.get(`/artists`, (req, res) => {
                 artists: artistArr
             }
 
-            res.render('home', artistData)
+            res.render('all-artists', artistData)
 
         }
     })

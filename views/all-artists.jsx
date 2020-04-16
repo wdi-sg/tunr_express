@@ -1,13 +1,13 @@
 var React = require("react");
 
-class Home extends React.Component {
+class AllArtists extends React.Component {
   render() {
 
     const artistArr = this.props.artists;
 
     const artistElements = artistArr.map ( artist=> {
       return (
-        <div className="artist">
+        <div className="artist" key={artist.id}>
           <h1>{artist.id}) {artist.name}</h1>
           <img src={artist.photo_url}></img>
         </div>
@@ -33,4 +33,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = AllArtists;
