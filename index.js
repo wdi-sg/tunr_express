@@ -35,9 +35,8 @@ app.get("/", (request, response) => {
   response.render("home");
 });
 
-app.get("/new", (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render("new");
+app.get("/artists/new", (request, response) => {
+  response.render("new-artist");
 });
 
 //------------------------------
