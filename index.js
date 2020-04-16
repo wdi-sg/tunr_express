@@ -47,6 +47,26 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
+const addArtist = (request, response) => {
+  userEntry = request.body;
+  name = userEntry.name;
+  url = userEntry.photo_url;
+  nationality = userEntry.nationality;
+  const queryString = 'insert into artists (name,photo_url,nationality) values ($1,$2,$3) returning id'
+  let values = [name, url, nationality]
+  pool.query(queryString, values, (err, result) => {
+
+      if (err) {
+          console.error('query error:', err.stack);
+          response.send('query error');
+      } else {
+          // console.log('query result:', result);
+          console.log(result.rows[0].id)
+          link = '/artists/' + result.rows[0].id;
+          response.redirect(link);
+      }
+  });
+}
 
 app.get('/artists', (request, response) => {
   const whenQueryDone = (queryError, result) => {
@@ -67,11 +87,36 @@ app.get('/artists', (request, response) => {
   pool.query(queryString, whenQueryDone )
 });
 
-app.get('/new', (request, response) => {
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
 
+app.get('/artists/:id', (request, response) => {
+  let userInput = request.params.id;
+  const queryString = 'SELECT * from artists where id = ($1)'
+  values = [userInput]
+  pool.query(queryString, values, (err, result) => {
+
+      if (err) {
+          console.error('query error:', err.stack);
+          response.send('query error');
+      } else {
+        data = {
+          artist : result.rows
+        }
+        console.log(data)
+          // console.log('query result:', result.rows);
+          response.render('artist',data);
+      }
+  });
+});
+
+app.post('/artists',addArtist)
+
+app.get('/', (request, response) => {
+  response.redirect('/artists');
+})
 
 /**
  * ===================================
