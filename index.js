@@ -55,11 +55,73 @@ app.get('/', (req, res) => {
   res.send('HELLO');
 });
 
+app.get('/artists', (req, res) => {
+
+    res.render('home');
+})
+
+
+//################# SHOWS ARTIST INFO BASED ON ID selected ###########################################
+app.get("/artists/:id", (req, res) => {
+
+    const whenQueryDone = (error, result) => {
+        if(error) {
+            console.log("ERROR");
+            console.log(queryError);
+            res.status(500);
+            res.send("DATABASE ERROR");
+        } else {
+
+            const data = {
+            artists: result.rows
+        }
+
+        res.render('show', data);
+     }
+
+        console.log("THIS ID PATH WORKS!");
+
+    }
+
+    //Allows for a particular artist in the db to be selected.
+    let index = parseInt(req.params.id);
+    const queryString = "SELECT * FROM artists WHERE id="+index+"";
+
+    pool.query(queryString, whenQueryDone);
+})
+//########################################################
+//########################################################
+//############### Creates a new artist in the database #######################################################
+app.post("/artists", (req, res) => {
+    console.log(req.body);
+
+    const whenQueryDone = (queryError, result) => {
+        if(queryError) {
+            console.log("ERROR");
+            console.log(queryError);
+            res.status(500);
+            res.send("DATABASE ERROR");
+        } else {
+            console.log("NEW ARTISTS: " + result.rows[0]);
+            res.send("HEY NEW ARTIST IN THE HOUSE::: " + result.rows[0].id);
+
+        }
+    }
+            const queryString = "INSERT INTO artists(name, photo_url, nationality) VALUES($1, $2, $3) RETURNING *";
+            const insertValues = [req.body.name, req.body.photo_url, req.body.nationality];
+
+            pool.query(queryString, insertValues, whenQueryDone);
+})
+
+
 app.get('/new', (req, res) => {
   // respond with HTML page with form to create new pokemon
   res.render('new');
 });
 
+
+//########################################################
+//########################################################
 
 /**
  * ===================================
