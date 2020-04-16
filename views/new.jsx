@@ -29,6 +29,10 @@ class New extends React.Component {
                     <div className='row justify-content-center'>
                         <input type='submit' className='btn btn-primary' value='Submit'/>
                     </div>
+                    <br/>
+                    <div className='row justify-content-center'>
+                        <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                    </div>
                 </form>
             </div>
         </body>

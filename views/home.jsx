@@ -16,6 +16,10 @@ class Home extends React.Component {
                 <div className='row justify-content-center'>
                     <button className='btn btn-primary'><a href='/artists/new' className='text-white text-decoration-none'>New Artist</a></button>
                 </div>
+                <br/>
+                <div className='row justify-content-center'>
+                    <button className='btn btn-secondary'><a href='/artists/list' className='text-white text-decoration-none'>List of Artists</a></button>
+                </div>
             </div>
         </body>
       </html>

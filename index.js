@@ -51,6 +51,24 @@ app.get('/artists/', (request, response) => {
     response.render('home');
 });
 
+//List of all Artists
+app.get('/artists/list', (request, response) => {
+    const queryString = 'SELECT * FROM artists ORDER BY id ASC';
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send('An error occurred 😢');
+        } else {
+            const data = {
+                list: result.rows
+            }
+
+        response.render('list', data);
+        }
+    })
+});
+
 //Create New Artist
 app.get('/artists/new', (request, response) => {
     response.render('new');
