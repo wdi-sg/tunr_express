@@ -38,10 +38,10 @@ app.get("/", (request, response) => {
 
 //VIEW ALL ARTISTS
 app.get("/artists/", (request, response) => {
-  let queryText = "SELECT * from artists ORDER BY id ASC";
+  let queryText = "SELECT * from artists ORDER BY name ASC";
   pool.query(queryText, (err, result) => {
     let obj = {
-      artists: result.rows
+      artists: result.rows,
     };
     response.render("display-all-artists", obj);
   });
@@ -65,11 +65,35 @@ app.post("/artists/new", (request, response) => {
 
 //DISPLAY SINGULAR ARTIST DETAILS BASED ON ID
 app.get("/artists/:id", (request, response) => {
-  let id = request.params.id; 
+  let id = request.params.id;
   let queryText = `SELECT * FROM artists WHERE id=${id}`;
   pool.query(queryText, (err, result) => {
     let artistObj = result.rows[0];
     response.render("display-one-artist", artistObj);
+  });
+});
+
+//DISPLAY EDIT ARTIST FORM
+app.get("/artists/:id/edit", (request, response) => {
+  let id = request.params.id;
+  let queryText = `SELECT * FROM artists WHERE id=${id}`;
+  pool.query(queryText, (err, result) => {
+    let artistObj = result.rows[0];
+    console.log(artistObj);
+    response.render("edit-artist", artistObj);
+  });
+});
+
+//DISPLAY EDITED ARTIST DETAILS
+app.post("/artists/:id/edit", (request, response) => {
+  let id = request.params.id;
+  let queryText = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id=${id} RETURNING *`;
+  console.log(queryText);
+  pool.query(queryText, (err, result) => {
+    let artistObj = result.rows[0];
+    // response.render("display-one-artist", artistObj);
+    let link = "http://127.0.0.1:3000/artists/" + id;
+    response.redirect(link);
   });
 });
 
@@ -84,9 +108,7 @@ app.get("/artists/:id/songs", (request, response) => {
   let queryText = `SELECT * FROM songs WHERE artist_id=${artist_id}`;
   pool.query(queryText, (err, result) => {
     console.log(result.rows);
-    let songData = {songs: result.rows,
-    artist: artistName
-    };
+    let songData = { songs: result.rows, artist: artistName };
     response.render("display-all-songs", songData);
   });
 });
