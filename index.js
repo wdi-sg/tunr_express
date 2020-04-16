@@ -42,19 +42,24 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+
+
+
 /**
  * ===================================
  * Routes
  * ===================================
  */
-
+////Blank page
 app.get('/', (request, response) => {
-  // query database for all pokemon
+  // query database for all artist
 
-  // respond with HTML page displaying all pokemon
+  // respond with HTML page displaying all arist
   response.send('hello world');
 });
 
+
+////Show all Artists
 app.get('/artists',(request,response)=>{
     const queryString = 'SELECT * from artists';
 
@@ -77,10 +82,67 @@ pool.query(queryString, (err, result) => {
     //response.render('home');
 });
 
-app.get('/new', (request, response) => {
+
+//////This goes to the form
+
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
+
+/////////This is where input is manipulated for new artist
+app.post('/artists',(request,response)=>{
+    const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("EERRRRRRRROR");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      // if the query ran wiothout errors
+      console.log(result.rows[0]);
+      // response.send('HEY NEW DOOOGGGG::: '+ result.rows[0].id);
+
+      let new_id = result.rows[0].id;
+      response.redirect(new_id)
+    }
+  };
+
+    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING id";
+
+    const input=[request.body.name, request.body.img, request.body.nationality];
+    console.log(input);
+
+
+    pool.query(queryString, input, whenQueryDone);
+
+});
+
+app.get('/artists/:id', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+    console.log(typeof request.params.id);
+    const queryString = 'SELECT * from artists WHERE id = ($1)';
+    const input = [request.params.id]
+    pool.query(queryString, input, (err, result) => {
+
+    if (err) {
+        console.error('query error:', err.stack);
+        response.send( 'query error' );
+            } else {
+        //console.log('query result:', result);
+        const data={};
+
+        data.artist=result.rows;
+        // redirect to home page
+
+        response.render("artist",data);
+        //response.send( data );
+  }
+});
+});
+
+
+
 
 
 /**
