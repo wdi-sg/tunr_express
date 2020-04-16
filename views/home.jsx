@@ -26,7 +26,6 @@ class Home extends React.Component {
           <link rel="stylesheet" href="/styles.css" />
         </head>
         <body>
-          <h1>Welcome!</h1>
           {artistElements}
         </body>
       </html>

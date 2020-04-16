@@ -50,35 +50,54 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get(`/artists`, (req, res)=> {
 
-  let command = `SELECT * FROM artists`
+app.get(`/artists/new`, (req, res) => {
+  res.render("new");
+});
 
-  pool.query(command, (err,result) => {
+app.post(`/artists`, (req, res)=> {
+
+  let values = [req.body.name, req.body.photo_url, req.body.nationality]
+
+  let command = `INSERT INTO Artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *`;
+
+  pool.query(command, values, (err, result)=> {
 
     if (err) {
-      console.log(`There was an error.`);
-      console.log(err.message)
+      console.log(`Error in query!!!`, err)
     } else {
-      const artistArr = result.rows;
-      const artistData = {
-        artists: artistArr
-      }
-
-      res.render('home', artistData)
-
+      res.redirect(`/artists`)
     }
-
   })
-
-
 })
+
+app.get(`/artists`, (req, res) => {
+
+    let command = `SELECT * FROM artists`
+
+    pool.query(command, (err, result) => {
+
+        if (err) {
+            console.log(`There was an error.`);
+            console.log(err.message)
+        } else {
+            const artistArr = result.rows;
+            const artistData = {
+                artists: artistArr
+            }
+
+            res.render('home', artistData)
+
+        }
+    })
+})
+
 
 app.get('/', (request, response) => {
     // query database for all pokemon
 
     // respond with HTML page displaying all pokemon
-    response.render('home');
+    response.send('home');
 });
 
 app.get('/new', (request, response) => {

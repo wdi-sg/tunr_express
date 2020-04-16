@@ -1,4 +1,11 @@
+body {
+      padding: 10%;
+}
+
 .artist {
+      width: 50%;
+      margin: 50px auto;
+      text-align: center;
 }
 
 .artist img {
