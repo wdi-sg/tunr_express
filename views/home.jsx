@@ -6,7 +6,8 @@ class Home extends React.Component {
       <html>
         <head />
         <body>
-          <h1>Welcome!</h1>
+          <h1>Artists</h1>
+          <p>{this.props.</p>
         </body>
       </html>
     );
