@@ -35,8 +35,8 @@ class Artist extends React.Component {
               </button>
             </form>
 
-            <a href="/">
-              <button className="btn btn-primary">Back To Home</button>
+            <a href="/artists">
+              <button className="btn btn-primary">Back To Artists</button>
             </a>
           </div>
         </body>

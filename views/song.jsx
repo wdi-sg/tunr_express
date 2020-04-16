@@ -39,8 +39,8 @@ class Song extends React.Component {
               </button>
             </form>
 
-            <a href="/">
-              <button className="btn btn-primary">Back To Home</button>
+            <a href="/songs">
+              <button className="btn btn-primary">Back To Songs</button>
             </a>
           </div>
         </body>
