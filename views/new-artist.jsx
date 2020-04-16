@@ -10,7 +10,7 @@ class NewArtist extends React.Component {
                 <body>
                     <h3>New Artist</h3>
                     <br/>
-                    <form method="POST" action="/artists/new">
+                    <form method="POST" action="/artists">
                     <input type="text" name="name" placeholder ="name"/>
                     <br/>
                     <input type="text" name="photo_url" placeholder ="photo_url"/>

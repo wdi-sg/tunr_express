@@ -91,8 +91,38 @@ app.get('/artists/new', (request, response) => {
   response.render('new-artist');
 });
 
-// app.post()
+app.post('/artists', (request, response) => {
+  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'
+  const values = [request.body.name, request.body.photo_url, request.body.nationality];
+  pool.query(queryString, values, (err, result) => {
 
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      const queryString = 'SELECT * from artists'
+
+      pool.query(queryString, (err, result) => {
+
+        if (err) {
+          console.error('query error:', err.stack);
+          response.send('query error');
+        } else {
+          console.log('query result:', result);
+
+          // redirect to home page
+          var output = {
+            'artists': result.rows,
+          }
+          response.render('artists', output);
+          // response.send( output);
+        }
+      });
+    }
+  });
+
+
+})
 /**
  * ===================================
  * Listen to requests on port 3000
