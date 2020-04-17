@@ -99,7 +99,58 @@ app.get('/artists/:id/songs', (req, res) => {
             })
         }
     })
-})
+});
+
+app.get('/artists/:id/edit', (req, res) => {
+    //Getting artist data first
+    const values = [req.params.id]
+    const queryString = "SELECT * FROM artists WHERE id = $1"
+    let artistInfo;
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            artistInfo = result.rows[0];
+            const secondValues = [req.params.id]
+            const secondQueryString = "SELECT title FROM songs WHERE artist_id = $1";
+            const data = {artistInfo};
+            res.render('edit', data)
+        }
+    })
+});
+
+app.put('/artists/:id', (req, res) => {
+    const values = [req.body.name, req.body.photo_url, req.body.nationality, req.params.id]
+    const queryString = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            res.redirect('/artists/' + req.params.id)
+        }
+    })
+});
+
+app.delete('/artists/:id', (req, res) => {
+    const values = [req.params.id];
+    const queryString = "DELETE from artists WHERE id=$1"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            res.redirect('/')
+        }
+    })
+});
 
 app.get('/artists/:id', (req, res) => {
     const values = [req.params.id]
@@ -115,7 +166,7 @@ app.get('/artists/:id', (req, res) => {
             res.render('artist', data);
         }
     })
-})
+});
 
 app.post('/artists', (req, res) => {
     const values = [req.body.name, req.body.photo_url, req.body.nationality];
@@ -130,7 +181,7 @@ app.post('/artists', (req, res) => {
             res.redirect('/artists/' + result.rows[0].id)
         }
     })
-})
+});
 
 /**
  * ===================================

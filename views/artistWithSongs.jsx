@@ -14,6 +14,7 @@ class Artist extends React.Component {
     const name = this.props.artistInfo.name;
     const photo_url = this.props.artistInfo.photo_url;
     const nationality = this.props.artistInfo.nationality;
+    const editLink = "/artists/" + this.props.artistInfo.id + "/edit";
 
     return (
       <html>
@@ -29,6 +30,9 @@ class Artist extends React.Component {
             <h1>List of Songs</h1>
             <ul>{songListElements}</ul>
           </div>
+          <form method="GET" action={editLink} className = "container">
+                <button type="submit" className="btn btn-primary">Edit Artist Details</button>
+          </form>
         </body>
       </html>
     );
