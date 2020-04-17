@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'kwansing',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,17 +49,73 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  response.send("Hello World");
 });
+
+//Artists
+app.get('/artists', (request, response) => {
+    const queryString = 'SELECT * from artists';
+
+    pool.query(queryString, (err, result) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', result);
+            response.send(result.rows);
+        }
+    });
+});
+
+//for Creating new artist
+app.get('/artists/new', (req, res) => {
+  res.render('artistNew');
+});
+
+app.post('/artistNew', (req,res) => {
+  console.log(req.body);
+
+  let queryText;
+  let values;
+
+  values = [req.body.name,req.body.photo_url,req.body.nationality];
+  queryText = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+
+  pool.query(queryText, values, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      res.send('query error');
+    } else {
+      console.log('query result:', result);
+      // redirect to home page
+      res.redirect("/artists");
+      console.log(result)
+    }
+  });
+});
+
+//Selecting a specific artist
+app.get('/artists/:id', (req, res) => {
+    values = [req.params.id]
+    console.log(values);
+    queryText = 'SELECT * FROM artists WHERE id = $1';
+    pool.query(queryText, values, (err, result) => {
+
+        if (err) {
+          console.error('query error:', err.stack);
+          res.send( 'query error' );
+        } else {
+          console.log('query result:', result);
+          res.send(result.rows);
+        }
+    });
+})
 
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+    response.render('new');
 });
-
 
 /**
  * ===================================
@@ -69,13 +125,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
