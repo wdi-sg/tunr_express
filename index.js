@@ -502,6 +502,31 @@ app.post('/artists/:id/songs', (request, response) => {
 ////22222222222222222222222222222222222222222222222222222222222222////
 ////22222222222222222222222222222222222222222222222222222222222222////
 
+////Show all Artists
+app.get('/playlist',(request,response)=>{
+    const queryString = 'SELECT * from playlist';
+
+pool.query(queryString, (err, result) => {
+
+  if (err) {
+    console.error('query error:', err.stack);
+    response.send( 'query error' );
+  } else {
+    //console.log('query result:', result);
+    const data={};
+
+    data.playlist=result.rows;
+    // redirect to home page
+
+    response.render("playlisthome",data);
+    //response.send( data );
+  }
+});
+    //response.render('home');
+});
+
+
+
 app.get('/playlist/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('newPlaylist');

@@ -29,9 +29,9 @@ POST `/playlist/:id` - for this playlist, put a single song on the playlist
 - Create a show route `/playlists/:id` => `/playlists/1` ☑
 - Create a form to add a song to a playlist `/playlist/1/newsong` ☑
 - Create an `app.post` to take in the `POST` request and add a song to the playlist. ☑
-- this record is an entry in the DB between the song and the playlist.
-- Add the query into the page `/playlists/:id` that gets all songs in a playlist and lists them on the page (`SELECT * FROM playlist_song`)
-- Change the query to a `JOIN` query so that you can get all info about the song.
+- this record is an entry in the DB between the song and the playlist.☑
+- Add the query into the page `/playlists/:id` that gets all songs in a playlist and lists them on the page (`SELECT * FROM playlist_song`) ☑
+- Change the query to a `JOIN` query so that you can get all info about the song. ☑
 
 ##### table playlist ☑
 
