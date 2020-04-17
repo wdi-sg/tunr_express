@@ -2,14 +2,14 @@ var React = require("react");
 
 class playlist extends React.Component {
   render() {
-
+        console.log(this.props.playlist[0].id)
     //const link="/artists/"+this.props.artist[0].id+"/songs";
-    //const editLink= "/artists/"+this.props.artist[0].id+"/edit";
+    const editLink= "/playlist/"+this.props.playlist[0].id+"/edit";
     //const deleteLink = "/artists/"+ this.props.artist[0].id + "?_method=delete";
     const songsList=this.props.songs.map(song=>
         {
             const url="/songs/"+song.id;
-            console.log(song);
+            //console.log(song);
             return <div class={"col-6 border mt-3 mb-3"}>
                 <span>Title:</span><a href={url}>{song.title}</a>
                 <br/>
@@ -32,6 +32,17 @@ class playlist extends React.Component {
             </div>
             <div class={"row"}>
             {songsList}
+            </div>
+            <div class={"row"}>
+            <div class={"col-12 mh-auto"}>
+                <form method="Get" action={editLink}  style={{textAlign: "Center"}}>
+
+
+                        <span>Click to Edit</span>
+
+                    <input type="submit" value="Edit"></input>
+                </form>
+                </div>
             </div>
           </div>
         </body>

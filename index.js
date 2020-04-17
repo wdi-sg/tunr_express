@@ -55,9 +55,16 @@ app.get('/', (request, response) => {
   // query database for all artist
 
   // respond with HTML page displaying all arist
-  response.send('hello world');
+  response.redirect('/index');
 });
 
+////Blank page
+app.get('/index', (request, response) => {
+  // query database for all artist
+
+  // respond with HTML page displaying all arist
+  response.send('hello world');
+});
 
 ////Show all Artists
 app.get('/artists',(request,response)=>{
@@ -744,6 +751,7 @@ app.get('/playlist/:id/newsong', (request, response) =>
         const queryString = 'SELECT * from playlist WHERE id = ($1)';
         const input = [request.params.id]
         const data={};
+        data.id= request.params.id;
         pool.query(queryString, input, (err, result) =>
             {
 

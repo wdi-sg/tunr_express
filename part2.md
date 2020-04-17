@@ -69,14 +69,14 @@ This route creates a new song with the appropriate artist.
 For the form at `/songs/new`, add a dropdown of artists to select from when creating a new song.☑
 
 ### Further: Playlist
-Restrict the user from adding a song to a playlist twice.
+Restrict the user from adding a song to a playlist twice.☑
 
 ### Further
-Add a button to each song in the lists of songs ( `/songs`, `/artist/:id/songs` ) that goes to a new page.
+Add a button to each song in the lists of songs ( `/songs`, `/artist/:id/songs` ) that goes to a new page.☑
 
-This page will have a list of playlists. Let the user add the song to any playlist.
+This page will have a list of playlists. Let the user add the song to any playlist.☑
 
-**sub-futher**: If a playlist already has the song in it, then don't render that playlist in the list.
+**sub-futher**: If a playlist already has the song in it, then don't render that playlist in the list.☑
 
 ### Further ☑
 Add the ability for the user to add the song to multiple playlists at once. ( this is a checkbox form input )
