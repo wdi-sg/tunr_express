@@ -1,5 +1,8 @@
 const React = require("react");
 
+import Head from '../page-components/head-component';
+import Header from '../page-components/header-component';
+
 class AllArtists extends React.Component {
 
     render() {
@@ -19,10 +22,17 @@ class AllArtists extends React.Component {
 
         return (
             <html>
-            <head />
-            <body>
-                {artistInfo}
-            </body>
+                <Head />
+                <body>
+                    <Header />
+                    <div className="nav">
+                        <a href="/artists/new" className="nav__link add-artist">Add Artist</a>
+                        <a href="/" className="nav__link home-link">Back to Home</a>
+                    </div>
+                    <main>
+                        {artistInfo}
+                    </main>
+                </body>
             </html>
         );
     }

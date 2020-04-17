@@ -1,9 +1,9 @@
-const submitBtn = document.querySelector('.edit-form__submit-btn');
+const submitBtnTwo = document.querySelector('.edit-form__submit-btn');
 
 // let nameInput, nationalityInput, imageLinkInput;
 // [nameInput, nationalityInput, imageLinkInput] = document.querySelectorAll('.edit-form>input');
 
-submitBtn.addEventListener('click', (ev) => {
+submitBtnTwo.addEventListener('click', (ev) => {
 
     invalidMsg = [];
 

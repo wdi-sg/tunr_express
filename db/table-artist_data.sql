@@ -1,4 +1,4 @@
---psql -U zachariah -d tunr_db -a -f ./db/table-artists_data.sql--
+--psql -U zachariah -d tunr_db -a -f ./db/table-artist_data.sql--
 
 CREATE TABLE artists (
 	id serial PRIMARY KEY,

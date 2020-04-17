@@ -1,4 +1,4 @@
-const submitBtn = document.querySelector('.edit-form__submit-btn');
+const submitBtn = document.querySelector('.add-form__submit-btn');
 
 // let nameInput, nationalityInput, imageLinkInput;
 // [nameInput, nationalityInput, imageLinkInput] = document.querySelectorAll('.edit-form>input');

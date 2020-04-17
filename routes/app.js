@@ -35,13 +35,15 @@ const artistsRoutes = require('./artists-routes.js');
 
 const errorController = require('../controllers/404-controller.js');
 
+const db = require('../util/database.js');
+
 app.use(express.static(path.join(__dirname, '../public/')));
 
-app.get('/', (req, res) => {
-    // query database for all pokemon
+app.get('/', async (req, res) => {
 
-    // respond with HTML page displaying all pokemon
-    res.send('home');
+    const queryT = `SELECT * FROM artists WHERE id=3`
+    const { rows } = await db.query(queryT);
+    res.render('home', { 'singleArtist': rows[0] });
 });
 
 app.use('/artists', artistsRoutes);
@@ -56,17 +58,16 @@ app.use(errorController.get404Page);
  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-const db = require('../util/database.js');
-
 let onClose = function() {
 
     console.log("\nclosing");
 
     server.close(() => {
 
+        db.poolEnd();
+
         console.log('Process terminated');
 
-        db.poolEnd();
     })
 };
 
