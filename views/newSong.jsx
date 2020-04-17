@@ -2,6 +2,13 @@ var React = require("react");
 
 class newSong extends React.Component {
   render() {
+        const artistOption=this.props.artist.map(artist=>
+        {
+            //console.log(song);
+            return <option value={artist.id}>{artist.name}</option>
+
+
+        });
     return (
       <html>
         <head />
@@ -33,7 +40,10 @@ class newSong extends React.Component {
 
                     <br></br><br></br>
 
-
+                    <label for="Artist">Choose an artist:</label>
+                    <select id="Artist" name="artist_id">
+                    {artistOption}
+                    </select>
 
                     <input type="submit" value="Submit"></input>
                 </form>

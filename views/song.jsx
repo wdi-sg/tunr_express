@@ -3,7 +3,7 @@ var React = require("react");
 class song extends React.Component {
   render() {
 
-    const link="/songs/"+this.props.song[0].id+"/artists";
+    const link="/artists/"+this.props.song[0].artist_id;
     const editLink= "/songs/"+this.props.song[0].id+"/edit";
     const deleteLink = "/songs/"+ this.props.song[0].id + "?_method=delete";
     return (
@@ -37,7 +37,7 @@ class song extends React.Component {
 
             <div class="row">
                 <div class={"col-12 text-center"}>
-                    <h2><a href={link}>Link to Artist(Not working Yet)</a></h2>
+                    <h2><a href={link}>Link to Artist( Partial working)</a></h2>
                 </div>
             </div>
             <div class="row">

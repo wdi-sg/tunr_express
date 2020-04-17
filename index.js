@@ -250,7 +250,25 @@ pool.query(queryString, (err, result) => {
 
 app.get('/songs/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('newSong');
+
+      const queryString = 'SELECT * from artists';
+
+pool.query(queryString, (err, result) => {
+
+  if (err) {
+    console.error('query error:', err.stack);
+    response.send( 'query error' );
+  } else {
+    //console.log('query result:', result);
+    const data={};
+
+    data.artist=result.rows;
+    // redirect to home page
+
+    response.render('newSong', data);
+    //response.send( data );
+  }
+});
 });
 
 app.post('/songs',(request,response)=>{
@@ -270,10 +288,10 @@ app.post('/songs',(request,response)=>{
       response.redirect(url);
     }
   };
+    console.log(request.body);
+    const queryString = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING id";
 
-    const queryString = "INSERT INTO songs (title, album, preview_link, artwork) VALUES ($1, $2, $3, $4) RETURNING id";
-
-    const input=[request.body.title, request.body.album, request.body.img, request.body.preview_link];
+    const input=[request.body.title, request.body.album, request.body.img, request.body.preview_link, request.body.artist_id];
     console.log(input);
 
 

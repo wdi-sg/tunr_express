@@ -10,17 +10,17 @@ Add a second table to record which songs are in a playlist.
 
 This is a join table between a playlist and songs. (each record in the join table records the adding of one song to the playlist)
 
-GET `/playlist` - list all the playlists
+GET `/playlist` - list all the playlists ☑
 
-GET `/playlist/new` - render the form to create a new playlist
+GET `/playlist/new` - render the form to create a new playlist ☑
 
-POST `/playlist` - create a new playlist
+POST `/playlist` - create a new playlist ☑
 
-GET `/playlist/:id/newsong` - render the form to add a song to the playlist
+GET `/playlist/:id/newsong` - render the form to add a song to the playlist ☑
 
-GET `/playlist/:id` - show all the song titles inside this playlist
+GET `/playlist/:id` - show all the song titles inside this playlist ☑
 
-POST `/playlist/:id` - for this playlist, put a single song on the playlist
+POST `/playlist/:id` - for this playlist, put a single song on the playlist ☑
 
 ### How to Start
 
@@ -54,14 +54,14 @@ POST `/playlist/:id` - for this playlist, put a single song on the playlist
 (note this functionality does not require any JOIN queries, just a 2nd SQL query)
 
 GET `/artist/1/songs` 
-This page displays a list of songs for this artist
+This page displays a list of songs for this artist ☑
 
 GET `/artist/1/songs/new` 
-This page renders a form to create a new song.
+This page renders a form to create a new song. ☑
 
-The `action` of the form can be set to send the appropriate artist id needed to create the song.
+The `action` of the form can be set to send the appropriate artist id needed to create the song. ☑
 
-POST `/artist/1/songs`
+POST `/artist/1/songs` ☑
 This route creates a new song with the appropriate artist.
 
 
