@@ -246,7 +246,7 @@ pool.query(queryString, (err, result) => {
     //response.render('home');
 });
 
-//////This goes to the form
+//////This goes to the form for songs
 
 app.get('/songs/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
@@ -491,6 +491,163 @@ app.post('/artists/:id/songs', (request, response) => {
 
     pool.query(queryString, input, whenQueryDone);
 });
+
+
+////22222222222222222222222222222222222222222222222222222222222222////
+////22222222222222222222222222222222222222222222222222222222222222////
+////22222222222222222222222222222222222222222222222222222222222222////
+////22222222222222222222222222222222222222222222222222222222222222////
+////22222222222222222222222222222222222222222222222222222222222222////
+////22222222222222222222222222222222222222222222222222222222222222////
+////22222222222222222222222222222222222222222222222222222222222222////
+////22222222222222222222222222222222222222222222222222222222222222////
+
+app.get('/playlist/new', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  response.render('newPlaylist');
+});
+
+app.post('/playlist',(request,response)=>
+    {
+        const whenQueryDone = (queryError, result) =>
+            {
+                if( queryError )
+                {
+                    console.log("EERRRRRRRROR");
+                    console.log(queryError);
+                    response.status(500);
+                    response.send('db error');
+                }
+                else
+                {
+
+                    console.log(result.rows[0]);
+
+                    let new_id = result.rows[0].id;
+                    let url= "/playlist/"+new_id;
+                    response.redirect(url);
+                }
+            };
+        const queryString = "INSERT INTO playlist (name) VALUES ($1) RETURNING id";
+
+        const input=[request.body.name];
+
+        pool.query(queryString, input, whenQueryDone);
+
+    });
+
+app.get('/playlist/:id', (request, response) =>
+    {
+        // respond with HTML page with form to create new pokemon
+        console.log(typeof request.params.id);
+        const queryString = 'SELECT * from playlist WHERE id = ($1)';
+        const input = [request.params.id]
+        pool.query(queryString, input, (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+
+                        const data={};
+                        data.playlist=result.rows;
+                        response.render("playlist",data);
+                        //response.send( data );
+                    }
+            });
+    });
+
+
+
+app.get('/playlist/:id/newsong', (request, response) =>
+    {
+        // respond with HTML page with form to create new pokemon
+
+        const queryString = 'SELECT * from playlist WHERE id = ($1)';
+        const input = [request.params.id]
+        const data={};
+        pool.query(queryString, input, (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+
+
+                        data.playlist=result.rows;
+                        //response.render("playlist",data);
+                        const querySongString = 'SELECT * from songs';
+                        pool.query(querySongString, (songErr, songResult) =>
+                            {
+
+                                if (err)
+                                    {
+                                        console.error('query error:', songErr.stack);
+                                        response.send( 'query error' );
+                                    }
+                                else
+                                    {
+                                        data.song=songResult.rows;
+                                        //response.send( data );
+                                        response.render("songsToPlayList",data);
+
+
+                                    }
+                            })
+
+                    }
+            });
+    });
+
+
+app.post('/playlist/:id', (request, response) =>
+    {
+        // respond with HTML page with form to create new pokemon
+        console.log(typeof request.params.id);
+        //response.send(request.body);
+        console.log(request.body)
+
+          const id =parseInt(request.params.id);
+            const whenQueryDone = (queryError, result) => {
+            if( queryError ){
+              console.log("EERRRRRRRROR");
+              console.log(queryError);
+              response.status(500);
+              response.send('db error');
+            }else{
+              // if the query ran wiothout errors
+
+
+              let url= "/playlist/"+id;
+              response.redirect(url);
+            }
+          };
+            const input = [id];
+            let queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ";
+            for (let songCount =0; songCount < request.body.songid.length; songCount++)
+            {
+                //console.log(request.body.songid[songCount]);
+
+                queryString += `($1, $${songCount+2}),`;
+                input.push(parseInt(request.body.songid[songCount]));
+            }
+            queryString=queryString.slice(0,-1);
+            console.log(queryString)
+            console.log(input);
+
+
+            pool.query(queryString, input, whenQueryDone);
+    });
+
+
 
 /**
  * ===================================

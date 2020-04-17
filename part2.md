@@ -24,23 +24,23 @@ POST `/playlist/:id` - for this playlist, put a single song on the playlist
 
 ### How to Start
 
-- Create a form: `/playlists/new`
-- Create an `app.post` to take in the `POST` and create a record of a playlist
-- Create a show route `/playlists/:id` => `/playlists/1`
-- Create a form to add a song to a playlist `/playlist/1/newsong`
-- Create an `app.post` to take in the `POST` request and add a song to the playlist.
+- Create a form: `/playlists/new` ☑
+- Create an `app.post` to take in the `POST` and create a record of a playlist ☑
+- Create a show route `/playlists/:id` => `/playlists/1` ☑
+- Create a form to add a song to a playlist `/playlist/1/newsong` ☑
+- Create an `app.post` to take in the `POST` request and add a song to the playlist. ☑
 - this record is an entry in the DB between the song and the playlist.
 - Add the query into the page `/playlists/:id` that gets all songs in a playlist and lists them on the page (`SELECT * FROM playlist_song`)
 - Change the query to a `JOIN` query so that you can get all info about the song.
 
-##### table playlist
+##### table playlist ☑
 
 | column name  | type |
 |--------------|------|
 | id   | primary key (int) |
 | name | text |
 
-##### table playlist_song
+##### table playlist_song ☑
 
 | column name  | type |
 |--------------|------|
@@ -53,10 +53,10 @@ POST `/playlist/:id` - for this playlist, put a single song on the playlist
 
 (note this functionality does not require any JOIN queries, just a 2nd SQL query)
 
-GET `/artist/1/songs`
+GET `/artist/1/songs` 
 This page displays a list of songs for this artist
 
-GET `/artist/1/songs/new`
+GET `/artist/1/songs/new` 
 This page renders a form to create a new song.
 
 The `action` of the form can be set to send the appropriate artist id needed to create the song.
