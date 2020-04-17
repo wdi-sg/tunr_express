@@ -58,7 +58,7 @@ app.get('/artists/list', (request, response) => {
     pool.query(queryString, (err, result) => {
         if (err) {
             console.log('Query Error', err.stack);
-            response.send('An error occurred 😢');
+            response.send('An error occurred when displaying list of artists 😢');
         } else {
             const data = {
                 list: result.rows
@@ -69,7 +69,7 @@ app.get('/artists/list', (request, response) => {
     })
 });
 
-//Create New Artist
+//Create new artist
 app.get('/artists/new', (request, response) => {
     response.render('new');
 });
@@ -83,7 +83,7 @@ app.post('/artists', (request, response) => {
     pool.query(queryString, values, (err, result) => {
         if (err) {
             console.log('Query Error', err.stack);
-            response.send('An error occurred 😢');
+            response.send('An error occurred when creating new artist 😢');
         } else {
             const data = {
                 name: newArtist.name,
@@ -96,16 +96,17 @@ app.post('/artists', (request, response) => {
     })
 });
 
-//Display songs for an artist
+//Display all songs of an artist
 app.get('/artists/:id/songs', (request, response) => {
 
     let id = request.params.id;
     let querySongString = 'SELECT * FROM songs WHERE artist_id=' + id;
+    //let queryString = 'SELECT songs.id, songs.title, songs.preview_link, songs.artwork, song.artist_id, artists.id', artists.name, artists.photo_url, artists.nationality FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)
 
     pool.query(querySongString, (err, result) => {
         if (err) {
             console.log('Query Error', err.stack);
-            response.send('An error occurred 😢');
+            response.send("An error occurred when displaying artist's songs 😢");
         } else {
             let songs = result.rows;
             let queryArtistString = 'SELECT * FROM artists WHERE id=' + songs[0].artist_id;
@@ -122,24 +123,29 @@ app.get('/artists/:id/songs', (request, response) => {
     });
 })
 
-//Show Individual Artist
+//Show individual artist
 app.get('/artists/:id', (request, response) => {
     const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
     pool.query(queryString, (err, result) => {
         if (err) {
             console.log('Query Error', err.stack);
-            response.send('An error occurred 😢');
+            response.send('An error occurred when displaying artist information 😢');
         } else {
-            let index = request.params.id - 1;
-            const data = {
-                id: result.rows[index].id,
-                name: result.rows[index].name,
-                photo_url: result.rows[index].photo_url,
-                nationality: result.rows[index].nationality
-            }
+            result.rows.forEach(row => {
+                let index = result.rows.indexOf(row)
 
-        response.render('show', data);
+                if (parseInt(request.params.id) === row.id) {
+                    const data = {
+                        id: result.rows[index].id,
+                        name: result.rows[index].name,
+                        photo_url: result.rows[index].photo_url,
+                        nationality: result.rows[index].nationality
+                    }
+
+                response.render('show', data);
+                }
+            })
         }
     });
 })
