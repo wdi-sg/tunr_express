@@ -95,10 +95,20 @@ app.post('/artists', (request, response) => {
     const whenQueryDone = (queryError, result) => {
         if (queryError) {
             response.status(500);
-            response.send('db error');
+            // response.send('db error');
         } else {
-            // console.log(request.body);
-            // console.log(result.rows[0])
+            // const newArtistId = 'SELECT id FROM artists where name ='+request.body.name;
+
+            // pool.query(newArtistId, newArtistValues, (queryError, newArtistIdResult) =>
+            //     {
+            //         if (queryError) {
+            //             response.status(500);
+            //             // response.send('db error');
+            //         } else {
+            //             console.log(newArtistIdResult);
+            //             response.send(newArtistIdResult.rows);
+            //         }
+            //     });
 
             response.redirect('/');
         };

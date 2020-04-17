@@ -16,7 +16,6 @@ class NewArtist extends React.Component {
           <h3>Add New Artist</h3>
           <form action="/artists" method="POST">
             {formInput}
-
             <button type="submit" value="submit">Add</button>
           </form>
         </body>
