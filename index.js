@@ -542,6 +542,7 @@ app.get('/playlist/:id', (request, response) =>
         console.log(typeof request.params.id);
         const queryString = 'SELECT * from playlist WHERE id = ($1)';
         const input = [request.params.id]
+        const data = {};
         pool.query(queryString, input, (err, result) =>
             {
 
@@ -553,13 +554,34 @@ app.get('/playlist/:id', (request, response) =>
                 else
                     {
 
-                        const data={};
                         data.playlist=result.rows;
-                        response.render("playlist",data);
+                        //response.render("playlist",data);
                         //response.send( data );
-                    }
-            });
-    });
+                                const queryJoinString = 'SELECT * FROM songs INNER JOIN playlist_song ON ( songs.id = playlist_song.song_id ) WHERE playlist_song.playlist_id=($1)';
+
+                                const id = [parseInt (request.params.id)]
+                                console.log(id);
+                                pool.query(queryJoinString, id, (Songerr, Songresult) =>
+                                {
+
+                                    if (err)
+                                        {
+                                            console.error('query error:', Songerr.stack);
+                                            response.send( 'query error' );
+                                        }
+                                    else
+                                        {
+                                            console.log("Query Successful");
+
+                                            data.songs=Songresult.rows;
+                                            console.log(data);
+                                            response.render("playlist",data);
+                                            //response.send( data );
+                                        }
+                                });
+                        }
+                });
+        });
 
 
 
@@ -631,7 +653,7 @@ app.post('/playlist/:id', (request, response) =>
             }
           };
             const input = [id];
-            let queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ";
+            let queryString = "INSERT INTO playlist_song (playlist_id, song_id) VALUES ";
             for (let songCount =0; songCount < request.body.songid.length; songCount++)
             {
                 //console.log(request.body.songid[songCount]);
