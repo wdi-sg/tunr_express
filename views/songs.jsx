@@ -32,7 +32,7 @@ class Songs extends React.Component {
                     <br/>
                     <div className='row justify-content-center'>
                         <div className='col-2'>
-                            <button className='btn btn-primary'><a href='/artists/list' className='text-white'>Back to Artists List</a></button>
+                            <button className='btn btn-primary'><a href='/artists/list' className='text-white text-decoration-none'>Back to Artists List</a></button>
                         </div>
                         <div className='col-2'>
                             <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>

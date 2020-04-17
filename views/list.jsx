@@ -3,7 +3,9 @@ class List extends React.Component {
     render () {
         const artists = this.props.list;
         const displayArtist = artists.map(artist => {
-            let idPage = '/artists/' + artist.id + '/songs';
+        let idPage = '/artists/' + artist.id;
+        let songPage= '/artists/' + artist.id + '/songs'
+
             return (
                 <div className="card" style={{width: "15rem"}}>
                     <img className="card-img-top" src={artist.photo_url} alt={artist.name} style={{height: "12rem"}}/>
@@ -12,7 +14,12 @@ class List extends React.Component {
                         <p className="card-text text-center">{artist.nationality}</p>
                         <br/>
                         <div className='row justify-content-center'>
-                            <button className='btn btn-info'><a href={idPage} className='text-white text-decoration-none'>Songs</a></button>
+                            <div className='col-5'>
+                                <button className='btn btn-primary'><a href={idPage} className='text-white text-decoration-none'>Profile</a></button>
+                            </div>
+                            <div className='col-5'>
+                                <button className='btn btn-info'><a href={songPage} className='text-white text-decoration-none'>Songs</a></button>
+                            </div>
                         </div>
                     </div>
                 </div>
