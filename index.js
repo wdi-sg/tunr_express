@@ -57,7 +57,7 @@ app.get('/artists/list', (request, response) => {
 
     pool.query(queryString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send('An error occurred when displaying list of artists 😢');
         } else {
             const data = {
@@ -82,7 +82,7 @@ app.post('/artists', (request, response) => {
 
     pool.query(queryString, values, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send('An error occurred when creating new artist 😢');
         } else {
             const data = {
@@ -109,18 +109,47 @@ app.get('/artists/:id/songs', (request, response) => {
             response.send("An error occurred when displaying artist's songs 😢");
         } else {
             let songs = result.rows;
-            let queryArtistString = 'SELECT * FROM artists WHERE id=' + songs[0].artist_id;
+            let queryArtistString = 'SELECT * FROM artists WHERE id=' + id;
 
             pool.query(queryArtistString, (err, result) => {
                 const data = {
                     songs: songs,
                     artist: result.rows
                 }
-
             response.render('songs', data);
             });
         }
     });
+})
+
+//Edit artist details
+app.get('/artists/:id/edit', (request, response) => {
+
+    let id = request.params.id;
+    let queryString = 'SELECT * FROM artists WHERE id=' + id;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send("An error occurred when displaying artist's page 😢");
+        } else {
+            const data = {
+                artist: result.rows
+            }
+        response.render('edit', data);
+        }
+    });
+})
+
+app.post('/artists/:id', (request, response) => {
+
+    const update = request.body;
+    const queryString = "UPDATE artists SET name='" + update.name + "', photo_url='" + update.photo_url + "', nationality='" + update.nationality + "' WHERE id=" + request.params.id;
+
+    pool.query(queryString, (err, result) => {
+        let updatedArtistPage = '/artists/' + request.params.id;
+        response.redirect(updatedArtistPage);
+    })
 })
 
 //Show individual artist

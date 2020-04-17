@@ -8,6 +8,7 @@ class Show extends React.Component {
         const nationality = this.props.nationality;
 
         const idPage = '/artists/' + id + '/songs';
+        const editPage = '/artists/' + id + '/edit';
 
         return (
              <html>
@@ -31,7 +32,12 @@ class Show extends React.Component {
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                        <div className='col-2 d-flex justify-content-around'>
+                            <button className='btn btn-primary'><a href={editPage} className='text-white text-decoration-none'>Edit Profile</a></button>
+                        </div>
+                        <div className='col-2'>
+                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                        </div>
                     </div>
                 </div>
             </body>
