@@ -77,15 +77,16 @@ app.get('/artists/', (request, response) => {
 
 });
 
-app.post('/artists', (request, response) => {
-    response.render('add');
-})
-
 app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+  // respond with HTML page with form to create new artists
   response.render('new');
 });
 
+app.post('/artists', (request, response) => {
+    // respond with HTML page that shows added artist
+    // response.render('add');
+    response.send("Artist submitted");
+})
 
 /**
  * ===================================
