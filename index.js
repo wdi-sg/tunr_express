@@ -626,7 +626,116 @@ app.get('/playlist/:id', (request, response) =>
                 });
         });
 
+///form to edit
+app.get('/playlist/:id/edit',(request,response)=>{
+    //console.log("enter edit")
+    const data={}
+    //response.send("Edit mode");
+    //const queryString = 'SELECT * from songs WHERE id = ($1)';
+    const queryString = 'SELECT songs.id  FROM songs INNER JOIN playlist_song ON ( songs.id = playlist_song.song_id ) WHERE playlist_song.playlist_id=($1)';
+    const input = [request.params.id];
+    const id = parseInt(request.params.id);
+        pool.query(queryString, input, (err, result) =>
+            {
 
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+                        let querySongString = 'SELECT * from songs WHERE ';
+
+                        const input = []
+                        for(let currentSongCount = 0; currentSongCount < result.rows.length; currentSongCount++)
+                        {
+                            querySongString += `id !=($${currentSongCount+1}) and `;
+                            input.push(parseInt(result.rows[currentSongCount].id));
+                        }
+                        querySongString = querySongString.slice(0, -4);
+                        console.log(querySongString);
+                        console.log(input);
+                        //response.send(result.rows);
+                            pool.query(querySongString, input, (Songerr, Songresult) =>
+                                {
+
+                                    if (Songerr)
+                                        {
+                                            console.error('query error:', Songerr.stack);
+                                            response.send( 'query error' );
+                                        }
+                                    else
+                                        {
+
+                                            const queryNameString = 'SELECT * from playlist WHERE id = ($1)';
+                                            const input = [id]
+                                            data.song=Songresult.rows;
+                                            //response.send(result.rows);
+                                                pool.query(queryNameString, input, (Nameerr, Nameresult) =>
+                                                    {
+
+                                                        if (Nameerr)
+                                                            {
+                                                                console.error('query error:', Nameerr.stack);
+                                                                response.send( 'query error' );
+                                                            }
+                                                        else
+                                                            {
+
+
+                                                                data.name=Nameresult.rows;
+                                                                response.render("editSongsToPlayList",data);
+                                                                //response.send( data );
+                                                            }
+                                                    });
+                                        }
+                                });
+                    }
+            });
+
+})
+
+//// process of edit
+
+app.put('/playlist/:id', (request, response) =>
+    {
+        // respond with HTML page with form to create new pokemon
+        console.log(typeof request.params.id);
+        //response.send(request.body);
+        console.log(request.body)
+
+          const id =parseInt(request.params.id);
+            const whenQueryDone = (queryError, result) => {
+            if( queryError ){
+              console.log("EERRRRRRRROR");
+              console.log(queryError);
+              response.status(500);
+              response.send('db error');
+            }else{
+              // if the query ran wiothout errors
+
+
+              let url= "/playlist/"+id;
+              response.redirect(url);
+            }
+          };
+            const input = [id];
+            let queryString = "INSERT INTO playlist_song (playlist_id, song_id) VALUES ";
+            for (let songCount =0; songCount < request.body.songid.length; songCount++)
+            {
+                //console.log(request.body.songid[songCount]);
+
+                queryString += `($1, $${songCount+2}),`;
+                input.push(parseInt(request.body.songid[songCount]));
+            }
+            queryString=queryString.slice(0,-1);
+            console.log(queryString)
+            console.log(input);
+
+
+            pool.query(queryString, input, whenQueryDone);
+    });
 
 app.get('/playlist/:id/newsong', (request, response) =>
     {

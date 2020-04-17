@@ -66,7 +66,7 @@ This route creates a new song with the appropriate artist.
 
 
 ### Further
-For the form at `/songs/new`, add a dropdown of artists to select from when creating a new song.
+For the form at `/songs/new`, add a dropdown of artists to select from when creating a new song.☑
 
 ### Further: Playlist
 Restrict the user from adding a song to a playlist twice.
