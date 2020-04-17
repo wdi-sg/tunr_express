@@ -48,11 +48,19 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all artists
-
-  // respond with HTML page displaying all artists
-  response.render('home');
+app.get('/', (req, res) => {
+  const queryString = "SELECT * FROM artists"
+  pool.query(queryString, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            let artistsArray = result.rows;
+            const data = {artistsArray}
+            res.render('home', data);
+        }
+  })
 });
 
 app.get('/new', (request, response) => {
@@ -72,27 +80,23 @@ app.get('/artists/:id/songs', (req, res) => {
             res.send('query error');
         } else {
             artistInfo = result.rows[0];
-        }
-    })
+            const secondValues = [req.params.id]
+            const secondQueryString = "SELECT title FROM songs WHERE artist_id = $1";
 
-
-
-
-    const secondValues = [req.params.id]
-    const secondQueryString = "SELECT title FROM songs WHERE artist_id = $1";
-
-    pool.query(secondQueryString, secondValues, (err, result) => {
-        if (err){
-            console.error('query error', err.stack);
-            res.status(500);
-            res.send('query error');
-        } else {
-            const songArray = []
-            for (let i = 0; i < result.rows.length; i++){
-                songArray.push(result.rows[i].title)
-            }
-            const data = {songArray, artistInfo}
-            res.render('artistWithSongs', data);
+            pool.query(secondQueryString, secondValues, (err, result) => {
+                if (err){
+                    console.error('query error', err.stack);
+                    res.status(500);
+                    res.send('query error');
+                } else {
+                    const songArray = []
+                    for (let i = 0; i < result.rows.length; i++){
+                        songArray.push(result.rows[i].title)
+                    }
+                    const data = {songArray, artistInfo}
+                    res.render('artistWithSongs', data);
+                }
+            })
         }
     })
 })
