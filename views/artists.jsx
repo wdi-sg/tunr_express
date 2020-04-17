@@ -4,14 +4,20 @@ class Artists extends React.Component {
   render() {
       var artists = this.props.artists;
       artists = artists.map(element =>{ 
-        return <li>
+        return <li className = "border-dark border-bottom">
         <h2> {element.id}. {element.name}</h2>
         <br/>
         <img src={`${element.photo_url}`} className = "w-25"/>
         <br/>
         <h3> Nationality: {element.nationality}</h3>
+        <br/>
         </li>
       })
+      if(artists.length==0){
+        artists = [
+          <h2>Artist not found</h2>
+        ]
+      }
     return (
       <html>
           <head>

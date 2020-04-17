@@ -73,7 +73,7 @@ app.get('/artists', (request, response) => {
       console.error('query error:', err.stack);
       response.send('query error');
     } else {
-      console.log('query result:', result);
+      // console.log('query result:', result);
 
       // redirect to home page
       var output = {
@@ -108,7 +108,7 @@ app.post('/artists', (request, response) => {
           console.error('query error:', err.stack);
           response.send('query error');
         } else {
-          console.log('query result:', result);
+          // console.log('query result:', result);
 
           // redirect to home page
           var output = {
@@ -133,13 +133,38 @@ app.get('/artists/:id', (request, response) => {
       console.error('query error:', err.stack);
       response.send('query error');
     } else {
-      console.log('query result:', result);
+      // console.log('query result:', result);
 
       // redirect to home page
       var output = {
         'artists': result.rows,
       }
       response.render('artists', output);
+      // response.send(output);
+    }
+  });
+});
+
+app.get('/artists/:id/edit', (request, response) => {
+  // respond with HTML page with form to create new ....
+  var artistId = request.params.id;
+  const queryString = `SELECT * FROM artists WHERE id = ${artistId}`
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      // console.log('query result:', result);
+
+      // redirect to home page
+      var output = {
+        'artists': result.rows,
+      }
+      console.log(output);
+      
+      response.render('edit-artist', output);
       // response.send(output);
     }
   });
