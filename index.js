@@ -433,8 +433,64 @@ app.get('/artists/:id/songs', (request, response) =>
             });
     });
 
+//////This goes to the form
+
+app.get('/artists/:id/songs/new', (request, response) => {
+  // respond with HTML page with form to create new songs
+  //response.render('newArtistSong');
+            const input = [request.params.id]
+            const data={};
+            const queryArtistString = 'SELECT * from artists WHERE id = ($1)';
+                pool.query(queryArtistString, input, (err, result) =>
+                {
+
+                    if (err)
+                        {
+                            console.error('query error:', err.stack);
+                            response.send( 'query error' );
+                        }
+                    else
+                        {
 
 
+                        data.artist=result.rows;
+                        response.render("newartistSong",data);
+                        //response.send( data );
+                        }
+            });
+});
+
+app.post('/artists/:id/songs', (request, response) => {
+  // respond with HTML page with form to create new songs
+  //response.render('newArtistSong');
+  //response.send("edit artist");
+  const id =request.params.id;
+    const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("EERRRRRRRROR");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      // if the query ran wiothout errors
+      console.log(result.rows[0]);
+      // response.send('HEY NEW DOOOGGGG::: '+ result.rows[0].id);
+
+      let new_id = result.rows[0].id;
+
+      let url= "/songs/"+new_id;
+      response.redirect(url);
+    }
+  };
+
+    const queryString = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING id";
+
+    const input=[request.body.title, request.body.album, request.body.preview_link, request.body.img,  parseInt(id)];
+    console.log(input);
+
+
+    pool.query(queryString, input, whenQueryDone);
+});
 
 /**
  * ===================================
