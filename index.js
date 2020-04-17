@@ -83,9 +83,26 @@ app.get('/artists/new', (request, response) => {
 });
 
 app.post('/artists', (request, response) => {
-    // respond with HTML page that shows added artist
-    // response.render('add');
-    response.send("Artist submitted");
+
+let string = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
+
+value = [request.body.name, request.body.photo_url, request.body.nationality];
+
+console.log(request.body);
+
+whendone = (err, result) => {
+    if(err){
+        console.log(err);
+        console.log("there is an error");
+    }else{
+    console.log("++++++++++++++++++++");
+    console.log("Succeeded");
+    response.redirect("/artists/");
+    }
+
+}
+
+    pool.query(string, value, whendone)
 })
 
 /**

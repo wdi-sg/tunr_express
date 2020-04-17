@@ -9,13 +9,9 @@ class Home extends React.Component {
         return <li>{artistRow.name}</li>
     });
 
-    console.log("---------------");
-    console.log(artistArrayElement);
-    console.log("---------------");
-
     return (
       <html>
-        <head />
+        <head/>
         <body>
           <h1>Hello World!!</h1>
           <h2> Artists names</h2>
