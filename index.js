@@ -64,14 +64,26 @@ app.get('/artists/list', (request, response) => {
                 list: result.rows
             }
 
-        response.render('list', data);
+        response.render('list_artists', data);
         }
+    })
+});
+
+//List of all songs
+app.get('/artists/songs/', (request, response) => {
+    let queryString = 'SELECT * FROM songs';
+
+    pool.query(queryString, (err, result) => {
+        const data = {
+            allSongs: result.rows
+        }
+    response.render('all_songs', data)
     })
 });
 
 //Create new artist
 app.get('/artists/new', (request, response) => {
-    response.render('new');
+    response.render('new_artist');
 });
 
 app.post('/artists', (request, response) => {
@@ -96,6 +108,49 @@ app.post('/artists', (request, response) => {
     })
 });
 
+//Create new artist
+app.get('/artists/songs/new', (request, response) => {
+
+    let queryString = 'SELECT * FROM artists ORDER BY id ASC'
+
+    pool.query(queryString, (err, result) => {
+        const data = {
+            allArtists: result.rows
+        }
+
+    response.render('new_song', data);
+    })
+});
+
+app.post('/artists/songs', (request, response) => {
+    const newSong = request.body;
+    let queryIdString = "SELECT id FROM artists WHERE name='" + newSong.artist + "'";
+
+    pool.query(queryIdString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send("An error occurred when posting new song 😢");
+        } else {
+            const artistId = result.rows[0].id.toString();
+            let values = [newSong.title, newSong.album, newSong.preview_link, newSong.artwork, artistId];
+            let queryInsertString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)'
+
+            pool.query(queryInsertString, values, (err, result) => {
+                const data = {
+                    title: newSong.title,
+                    album: newSong.album,
+                    preview_link: newSong.preview_link,
+                    artwork: newSong.artwork,
+                    artist_id: artistId,
+                    artist_name: newSong.artist
+                }
+                response.render('song', data);
+            })
+        }
+    })
+});
+
+
 //Display all songs of an artist
 app.get('/artists/:id/songs', (request, response) => {
 
@@ -116,7 +171,7 @@ app.get('/artists/:id/songs', (request, response) => {
                     songs: songs,
                     artist: result.rows
                 }
-            response.render('songs', data);
+            response.render('artist_songs', data);
             });
         }
     });
@@ -136,7 +191,7 @@ app.get('/artists/:id/edit', (request, response) => {
             const data = {
                 artist: result.rows
             }
-        response.render('edit', data);
+        response.render('edit_artist', data);
         }
     });
 })
@@ -151,6 +206,7 @@ app.put('/artists/:id', (request, response) => {
     })
 })
 
+//Delete artist
 app.delete('/artists/:id', (request, response) => {
     const queryString = 'DELETE FROM artists WHERE id=' + request.params.id;
     console.log('queryString:', queryString)
@@ -185,7 +241,7 @@ app.get('/artists/:id', (request, response) => {
                         nationality: result.rows[index].nationality
                     }
 
-                response.render('show', data);
+                response.render('show_artist', data);
                 }
             })
         }

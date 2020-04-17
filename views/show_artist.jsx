@@ -1,5 +1,5 @@
 const React = require('react');
-class Show extends React.Component {
+class Show_Artist extends React.Component {
     render () {
 
         const id = this.props.id;
@@ -59,4 +59,4 @@ class Show extends React.Component {
     }
 }
 
-module.exports = Show;
+module.exports = Show_Artist;

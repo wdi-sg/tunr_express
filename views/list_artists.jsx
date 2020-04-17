@@ -1,5 +1,5 @@
 const React = require('react');
-class List extends React.Component {
+class List_Artist extends React.Component {
     render () {
         const artists = this.props.list;
         const displayArtist = artists.map(artist => {
@@ -50,4 +50,4 @@ class List extends React.Component {
     }
 }
 
-module.exports = List;
+module.exports = List_Artist;

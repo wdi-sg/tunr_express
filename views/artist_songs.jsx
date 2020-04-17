@@ -1,5 +1,5 @@
 const React = require('react');
-class Songs extends React.Component {
+class Artist_Songs extends React.Component {
     render () {
 
         let artistName = this.props.artist[0].name;
@@ -49,4 +49,4 @@ class Songs extends React.Component {
     }
 }
 
-module.exports = Songs;
+module.exports = Artist_Songs;

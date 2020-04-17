@@ -1,7 +1,13 @@
 var React = require("react");
 
-class New extends React.Component {
+class Edit_Artist extends React.Component {
   render() {
+
+    const name = this.props.artist[0].name;
+    const photoUrl = this.props.artist[0].photo_url;
+    const nationality = this.props.artist[0].nationality;
+    const idPage = '/artists/' + this.props.artist[0].id + ' ?_method=put';
+
     return (
       <html>
         <head>
@@ -10,19 +16,19 @@ class New extends React.Component {
         <body>
             <br/>
             <div className='container'>
-                <h1 className='text-center'>New Artist</h1>
+                <h1 className='text-center'>Edit Profile</h1>
                 <br/>
-                <form method='POST' action='/artists'>
+                <form method='POST' action={idPage}>
                     <div className='row justify-content-center'>
-                        <p>Name <input type='text' name='name' placeholder='Enter name'/>
+                        <p>Name <input type='text' name='name' value={name} placeholder='Enter name'/>
                         </p>
                     </div>
                     <div className='row justify-content-center'>
-                        <p>Photo <input type='text' name='photo_url' placeholder='Enter URL'/>
+                        <p>Photo <input type='text' name='photo_url' value={photoUrl} placeholder='Enter URL'/>
                         </p>
                     </div>
                     <div className='row justify-content-center'>
-                        <p>Nationality <input type='text' name='nationality' placeholder='Enter nationality'/>
+                        <p>Nationality <input type='text' name='nationality' value={nationality} placeholder='Enter nationality'/>
                         </p>
                     </div>
                     <br/>
@@ -41,4 +47,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Edit_Artist;

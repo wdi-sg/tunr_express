@@ -14,11 +14,21 @@ class Home extends React.Component {
                 <h5 className='text-center'>The world's #1 music catalog/ player</h5>
                 <br/>
                 <div className='row justify-content-center'>
-                    <button className='btn btn-primary'><a href='/artists/new' className='text-white text-decoration-none'>New Artist</a></button>
+                    <div className='col 2 d-flex justify-content-end'>
+                        <button className='btn btn-primary'><a href='/artists/new' className='text-white text-decoration-none'>New Artist</a></button>
+                    </div>
+                    <div className='col 2'>
+                        <button className='btn btn-primary'><a href='/artists/songs/new' className='text-white text-decoration-none'>New Song</a></button>
+                    </div>
                 </div>
                 <br/>
                 <div className='row justify-content-center'>
-                    <button className='btn btn-secondary'><a href='/artists/list' className='text-white text-decoration-none'>List of Artists</a></button>
+                    <div className='col 2 d-flex justify-content-end'>
+                        <button className='btn btn-warning'><a href='/artists/list' className='text-dark text-decoration-none'>List of Artists</a></button>
+                    </div>
+                    <div className='col 2'>
+                        <button className='btn btn-warning'><a href='/artists/songs/' className='text-dark text-decoration-none'>List of Songs</a></button>
+                    </div>
                 </div>
             </div>
         </body>
