@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'kokchuantan',
+  user: 'apple',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -14,15 +14,15 @@ const configs = {
 
 const pool = new pg.Pool(configs);
 
-pool.on('error', function (err) {
-  console.log('idle client error', err.message, err.stack);
+pool.on('error', function (error) {
+  console.log('idle client error', error.message, error.stack);
 });
 
 /**
- * ===================================
- * Configurations and set up
- * ===================================
- */
+* ===================================
+* Configurations and set up
+* ===================================
+*/
 
 // Init express app
 const app = express();
@@ -43,127 +43,147 @@ app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
 /**
- * ===================================
- * Routes
- * ===================================
- */
-const addArtist = (request, response) => {
-  userEntry = request.body;
-  name = userEntry.name;
-  url = userEntry.photo_url;
-  nationality = userEntry.nationality;
-  const queryString = 'insert into artists (name,photo_url,nationality) values ($1,$2,$3) returning id'
-  let values = [name, url, nationality]
-  pool.query(queryString, values, (err, result) => {
+* ===================================
+* GET Routes
+* ===================================
+*/
 
-      if (err) {
-          console.error('query error:', err.stack);
-          response.send('query error');
-      } else {
-          // console.log('query result:', result);
-          console.log(result.rows[0].id)
-          link = '/artists/' + result.rows[0].id;
-          response.redirect(link);
-      }
-  });
-}
+app.get('/', (request, response) => {
+  response.render('home');
+});
 
-app.get('/artists', (request, response) => {
-  const whenQueryDone = (queryError, result) => {
-    if( queryError ){
-      console.log(queryError, 'error');
-      response.status(500);
-      response.send('error');
-    }else{
-      const data = {
-         artists : result.rows
-      };
-      response.render('home', data); 
+app.get('/artists/', (request, response) => {
+  pool.query('SELECT * FROM artists', (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const artists = result.rows;
+      response.render('artists', {"artists": artists});
     }
-  };
-
-  const queryString = "SELECT * FROM artists";
-
-  pool.query(queryString, whenQueryDone )
+  })
 });
 
 app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   response.render('new');
 });
 
 app.get('/artists/:id', (request, response) => {
-  let userInput = request.params.id;
-  const queryString = 'SELECT * from artists where id = ($1)'
-  values = [userInput]
-  pool.query(queryString, values, (err, result) => {
+  const artistId = request.params.id;
 
-      if (err) {
-          console.error('query error:', err.stack);
-          response.send('query error');
-      } else {
-        data = {
-          artist : result.rows
-        }
-        console.log(data)
-          // console.log('query result:', result.rows);
-          response.render('artist',data);
-      }
+  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const artist = result.rows[0];
+      response.render('artist', {'artist': artist});
+    }
+  });
+});
+
+app.get('/artists/:id/edit', (request, response) => {
+  const artistId = request.params.id;
+
+  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
+    if (error) {
+      console.log('artist query error: ', error.message, error.stack);
+    } else {
+      const artist = result.rows[0];
+      response.render('artist-edit', {"artist": artist});
+    }
   });
 });
 
 app.get('/artists/:id/songs', (request, response) => {
-  let userInput = request.params.id;
-  const queryString = 'SELECT * from artists where id = ($1)'
-  values = [userInput]
-  pool.query(queryString, values, (err, artistResult) => {
+  const artistId = request.params.id;
 
-      if (err) {
-          console.error('query error:', err.stack);
-          response.send('query error');
-      } else {
-        let selectedArtist = artistResult.rows[0].id
-        const query = 'select * from songs where artist_id = $1'
-        value = [selectedArtist]
-        pool.query(query, value, (err, result) => {
-          if (err) {
-              console.error('query error:', err.stack);
-              response.send('query error');
-          } else {
-            data = {
-              artist : artistResult.rows[0].name,
-              song : result.rows
-            }
-              // console.log('query result:', result.rows);
-              response.render('songs',data);
-              
-          }
+  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
+    if (error) {
+      console.log('artist query error: ', error.message, error.stack);
+    } else {
+      const artist = result.rows[0];
+
+      pool.query('SELECT * FROM songs WHERE artist_id=$1', [artistId], (error, result) => {
+        if (error) {
+          console.log('query error: ', error.message, error.stack);
+        } else {
+          const songs = result.rows;
+          response.render('artist-songs', {"songs": songs, "artist": artist});
+        }
       });
-      }
-  });
+    }
+  })
 });
 
-app.post('/artists',addArtist)
 
-app.get('/', (request, response) => {
-  response.redirect('/artists');
-})
 
 /**
- * ===================================
- * Listen to requests on port 3000
- * ===================================
- */
+* ===================================
+* POST Routes
+* ===================================
+*/
+
+app.post('/artists', (request, response) => {
+  const name = request.body.name;
+  const photo_url = request.body.photo_url;
+  const nationality = request.body.nationality;
+
+  const values = [name, photo_url, nationality];
+
+  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
+
+  pool.query(queryString, values, (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      response.render('success');
+    }
+  });
+})
+
+
+
+/**
+* ===================================
+* PUT Routes
+* ===================================
+*/
+
+app.put('/artists/:id', (request, response) => {
+  const name = request.body.name;
+  const photo_url = request.body.photo_url;
+  const nationality = request.body.nationality;
+  const artistId = request.params.id;
+
+  const values = [name, photo_url, nationality, artistId];
+
+  const queryString = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4';
+
+  pool.query(queryString, values, (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      response.render('success');
+    }
+  })
+})
+
+
+
+/**
+* ===================================
+* Listen to requests on port 3000
+* ===================================
+*/
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
