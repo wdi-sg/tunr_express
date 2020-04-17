@@ -23,11 +23,16 @@ module.exports = {
 
         try {
 
-            await pool.connect(() => {
-                console.log('connected');
-            });
+            const client = await pool.connect();
+            console.log('connected!');
 
-            return await pool.query(queryText, queryValues);
+            const res = await pool.query(queryText, queryValues);
+
+            client.release();
+            console.log('released!');
+
+            return res;
+
         } catch (e) {
             console.log(`Error\n` + e.message, e.stack);
         }
