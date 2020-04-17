@@ -141,8 +141,7 @@ app.get('/artists/:id/edit', (request, response) => {
     });
 })
 
-app.post('/artists/:id', (request, response) => {
-
+app.put('/artists/:id', (request, response) => {
     const update = request.body;
     const queryString = "UPDATE artists SET name='" + update.name + "', photo_url='" + update.photo_url + "', nationality='" + update.nationality + "' WHERE id=" + request.params.id;
 
@@ -150,6 +149,20 @@ app.post('/artists/:id', (request, response) => {
         let updatedArtistPage = '/artists/' + request.params.id;
         response.redirect(updatedArtistPage);
     })
+})
+
+app.delete('/artists/:id', (request, response) => {
+    const queryString = 'DELETE FROM artists WHERE id=' + request.params.id;
+    console.log('queryString:', queryString)
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send('An error occurred when deleting artist information 😢');
+        } else {
+            response.redirect('/artists/list');
+        }
+    });
 })
 
 //Show individual artist

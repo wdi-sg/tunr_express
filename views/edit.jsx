@@ -6,7 +6,7 @@ class Edit extends React.Component {
     const name = this.props.artist[0].name;
     const photoUrl = this.props.artist[0].photo_url;
     const nationality = this.props.artist[0].nationality;
-    const idPage = '/artists/' + this.props.artist[0].id;
+    const idPage = '/artists/' + this.props.artist[0].id + ' ?_method=put';
 
     return (
       <html>
