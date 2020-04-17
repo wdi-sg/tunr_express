@@ -113,6 +113,96 @@ app.get("/artists/:id/songs", (request, response) => {
   });
 });
 
+//VIEW CREATE NEW PLAYLIST PAGE
+app.get("/playlist/new", (request, response) => {
+  response.render("new-playlist");
+});
+
+//CAPTURES NEW PLAYLIST DATA AND DISPLAYS IT
+app.post("/playlist/new", (request, response) => {
+  let queryText = `INSERT INTO playlist (name) VALUES ('${request.body.name}') RETURNING *`;
+  pool.query(queryText, (err, result) => {
+    let artistObj = result.rows[0];
+    console.log(artistObj);
+    // response.render("display-one-artist", artistObj);
+  });
+});
+
+//VIEW ADD NEW SONG TO PLAYLIST PAGE
+app.get("/playlist/:plid/newsong", (request, response) => {
+  let plid = request.params.plid;
+  let plName;
+  let queryText = `SELECT name FROM playlist WHERE id = ${plid}`;
+  pool.query(queryText, (err, result) => {
+    plName = result.rows[0].name;
+    queryText = `SELECT songs.id, songs.title, songs.album, artists.name FROM songs JOIN artists ON (artists.id = songs.artist_id) ORDER BY songs.id ASC`;
+    pool.query(queryText, (err, result) => {
+      let obj = {
+        songsArr: result.rows,
+        pl_id: plid,
+        pl_name: plName,
+      };
+      // console.log(obj);
+      response.render("playlist-add-song", obj);
+    });
+  });
+});
+
+//CAPTURES NEW PLAYLIST SONG DATA AND DISPLAYS IT
+app.post("/playlist/:plid", (request, response) => {
+  // console.log(request.body);
+  let playlistId = parseInt(request.body.plid);
+  let songStr = request.body.song_selected;
+  let res = songStr.split(". ");
+  let selectedSongId = parseInt(res[0]);
+  // console.log(selectedSongId);
+  let queryText = `SELECT song_id FROM playlist_song WHERE playlist_id=${playlistId}`;
+  pool.query(queryText, (err, result) => {
+    let songArr = result.rows;
+    // console.log(songArr);
+    let songExists = songArr.find((ele) => {
+      return ele.song_id === selectedSongId;
+    });
+    // console.log(songExists);
+    if (songExists) {
+      let plName;
+      queryText = `SELECT name FROM playlist WHERE id = ${playlistId}`;
+      pool.query(queryText, (err, result) => {
+        plName = result.rows[0].name;
+        queryText = `SELECT songs.id, songs.title, songs.album, artists.name FROM songs JOIN artists ON (artists.id = songs.artist_id) ORDER BY songs.id ASC`;
+        pool.query(queryText, (err, result) => {
+          let obj = {
+            songsArr: result.rows,
+            pl_id: playlistId,
+            pl_name: plName,
+            comments: "Song already exists in playlist. Please select an alternative.",
+            defaultVal: songStr
+          };
+          // console.log(obj);
+          response.render("playlist-add-song", obj);
+        });
+      });
+    } else {
+      queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${playlistId}, ${selectedSongId})`;
+      pool.query(queryText, (err, results) => {
+        // console.log(result.rows);
+        response.redirect("");
+      });
+    }
+  });
+});
+
+//DISPLAY SINGULAR PLAYLIST DETAILS BASED ON PLAYLIST ID
+app.get("/playlist/:plid", (request, response) => {
+  let plid = request.params.plid;
+  let queryText = `SELECT playlist_song.playlist_id, songs.title FROM playlist_song JOIN songs ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id=${plid}`;
+  console.log(queryText);
+  pool.query(queryText, (err, result) => {
+    console.log(result.rows);
+    // response.render("", artistObj);
+  });
+});
+
 //------------------------------
 //-----LISTEN ON PORT 3000------
 //------------------------------
