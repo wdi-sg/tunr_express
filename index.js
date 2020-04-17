@@ -54,6 +54,10 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
+    response.redirect('/artists/');
+})
+
+app.get('/artists/', (request, response) => {
   // query database for all pokemon
     let text = "SELECT * FROM artists";
 
@@ -73,7 +77,11 @@ app.get('/', (request, response) => {
 
 });
 
-app.get('/new', (request, response) => {
+app.post('/artists', (request, response) => {
+    response.render('add');
+})
+
+app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });

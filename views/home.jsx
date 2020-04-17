@@ -20,8 +20,8 @@ class Home extends React.Component {
           <h1>Hello World!!</h1>
           <h2> Artists names</h2>
           <ul>{artistArrayElement}</ul>
-          <form action="/new">
-          <input type="submit" value="button"/>
+          <form action="/artists/new">
+          <input type="submit" value="create artist"/>
           </form>
         </body>
       </html>
