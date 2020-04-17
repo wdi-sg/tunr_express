@@ -65,7 +65,7 @@ app.engine('jsx', reactEngine);
 // View list of artists
 app.get('/artists', (request, response) => {
   // respond with HTML page with form to create new ....
-  const queryString = 'SELECT * from artists'
+  const queryString = 'SELECT * from artists ORDER BY id ASC'
 
   pool.query(queryString, (err, result) => {
 
@@ -100,7 +100,7 @@ app.post('/artists', (request, response) => {
       console.error('query error:', err.stack);
       response.send('query error');
     } else {
-      const queryString = 'SELECT * from artists'
+      const queryString = 'SELECT * from artists ORDER BY id ASC'
 
       pool.query(queryString, (err, result) => {
 
@@ -125,7 +125,7 @@ app.post('/artists', (request, response) => {
 app.get('/artists/:id', (request, response) => {
   // respond with HTML page with form to create new ....
   var artistId = request.params.id;
-  const queryString = `SELECT * FROM artists WHERE id = ${artistId}`
+  const queryString = `SELECT * FROM artists WHERE id = ${artistId} ORDER BY id ASC`
 
   pool.query(queryString, (err, result) => {
 
@@ -148,7 +148,7 @@ app.get('/artists/:id', (request, response) => {
 app.get('/artists/:id/edit', (request, response) => {
   // respond with HTML page with form to create new ....
   var artistId = request.params.id;
-  const queryString = `SELECT * FROM artists WHERE id = ${artistId}`
+  const queryString = `SELECT * FROM artists WHERE id = ${artistId} ORDER BY id ASC`
 
   pool.query(queryString, (err, result) => {
 
@@ -162,7 +162,7 @@ app.get('/artists/:id/edit', (request, response) => {
       var output = {
         'artists': result.rows,
       }
-      console.log(output);
+      // console.log(output);
       
       response.render('edit-artist', output);
       // response.send(output);
@@ -170,6 +170,37 @@ app.get('/artists/:id/edit', (request, response) => {
   });
 });
 
+app.put('/artists/:id', (request, response) => {
+  var artistId = request.params.id;
+  const queryString = 
+  `UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4`;
+  const values = [request.body.name, request.body.photo_url,request.body.nationality,artistId];
+  pool.query(queryString, values, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      const queryString = `SELECT * from artists WHERE id = ${artistId} ORDER BY id ASC`;
+
+      pool.query(queryString, (err, result) => {
+
+        if (err) {
+          console.error('query error:', err.stack);
+          response.send('query error');
+        } else {
+          // console.log('query result:', result);
+
+          var output = {
+            'artists': result.rows,
+          }
+          response.render('artists', output);
+          // response.send( output);
+        }
+      });
+    }
+  });
+});
 /**
  * ===================================
  * Listen to requests on port 3000
