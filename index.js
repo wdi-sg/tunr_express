@@ -49,52 +49,35 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  respond.send("hello world");
+  // query database for all pokemon
+
+  // respond with HTML page displaying all pokemon
   // response.render('home');
+  response.send("hello world");
 });
 
-app.get('/artists', (request, response) => {
-  // respond with HTML page with all artists
-  pool.query('SELECT * FROM artists', (error, result) => {
-    if (error) {
-      console.log('query error');
-    } else {
-      const artists = result.rows;
-      // respond with HTML page displaying all artist
-      response.render('artists', {"artists": artists});
-    }
-  })
-});
 
-app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new artist
-  response.render('new');
-});
-
-// Create a new artist
-
-app.post('/artists', (request, response) => {
-  const name = request.body.name;
-  const photo_url = request.body.photo_url;
-  const nationality = request.body.nationality;
-
-  const values = [name, photo_url, nationality];
-
-  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
-
+//***** Display a form for adding new artists ******
+app.get('/artists/new',(request, response)=>{
+    response.render('new-artist');
+})
 
 
 app.get('/artists/:id', (request, response) => {
-  const artistId = request.params.id;
-
-  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
-    if (error) {
-      console.log('query error: ', error.message, error.stack);
-    } else {
-      const artist = result.rows[0];
-      response.render('single', {'artist': artist});
+  // respond with HTML page with form to create new artist
+  const whenQueryDone = (queryError, result) => {
+      if( queryError ){
+        console.log("Error");
+        console.log(queryError);
+        response.send('An error has occurred');
+    }else{
+     const data = {
+        artists: results.row
+        }
+      // if the query ran without errors
+     response.render('new-artist', data);
     }
-  });
+};
 });
 
 
