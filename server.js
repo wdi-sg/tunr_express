@@ -23,3 +23,5 @@ const run = async => {
 
   app.listen(port, _=>console.log(`listening on port ${port}`))
 }
+
+run();
