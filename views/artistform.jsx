@@ -4,11 +4,12 @@ const Head = require('./head');
 class ArtistForm extends React.Component {
   render() {
     let data = this.props;
-    let nameHolder = data.name || "Artist Name";
-    let photoHolder = data.photo_url || "Artist Photo URL";
-    let nationalityHolder = data.nationality ||  "Artist Nationality";
+    let artistId = data.id;
+    let nameValue = data.name || "";
+    let photoValue = data.photo_url || "";
+    let nationalityValue = data.nationality ||  "";
     let buttonText = data.new ? "Add Artist" : "Update Artist";
-
+    let formAction = data.new ? "/artists/new" : `/artists/${data.id}?_method=put`;
     return (
       <html>
         <Head />
@@ -17,17 +18,21 @@ class ArtistForm extends React.Component {
           <div className="container">
             <div className="row my-3">
               <div className="col-6 offset-3">
-                <form action="/artists/new" method="post">
+                <form action={formAction} method="post">
                   <div className="form-group">
+                    <input type="hidden" name="id" value={artistId} />
                     <input className="form-control"
                            name="name"
-                           placeholder={nameHolder} /><br />
+                           defaultValue={nameValue}
+                           placeholder="Artist Name" /><br />
                     <input className="form-control"
                            name="photo_url"
-                           placeholder={photoHolder} /><br />
+                           defaultValue={photoValue}
+                           placeholder="Photo URL" /><br />
                     <input className="form-control"
                            name="nationality"
-                           placeholder={nationalityHolder} /><br />
+                           defaultValue={nationalityValue}
+                           placeholder="Nationality" /><br />
                     <input className="btn btn-outline-info btn-block"
                            type="submit"
                            value={buttonText}/>
