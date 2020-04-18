@@ -1,7 +1,7 @@
 var React = require('react');
 class Edit extends React.Component {
   render() {
-    let currentId = this.props.artist.id;
+    let currentId = String(this.props.artist[0].id);
     let putLink = "/artists/" + currentId + "?_method=put";
     return (
       <html>
