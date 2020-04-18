@@ -67,6 +67,7 @@ app.get('/artists', async function (req, res) {
 
 app.get('/artists/new', (req, res) => {
   let data = {
+    id: 0,
     name: "",
     photo_url: "",
     nationality: "",
@@ -107,6 +108,7 @@ app.get('/artists/:id/edit', async function (req, res) {
       "WHERE id = $1";
   let artistResult = await makeQuery(getArtist, artistId);
   let data = {
+    id: artistResult[0].id,
     name: artistResult[0].name,
     photo_url: artistResult[0].photo_url,
     nationality: artistResult[0].nationality,
