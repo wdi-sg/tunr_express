@@ -11,16 +11,16 @@ module.exports.getAllSongsOfArtist = async (req, res) => {
     try {
         const queryT = `SELECT * FROM songs WHERE artist_id = ${req.artist.id}`
         const { rows } = await db.query(queryT);
+
+        res.render('./songs/song-all.jsx', {
+            'allSongs': rows,
+            'artist': req.artist
+        });
+
     } catch (e) {
-        res.render('404');
+        res.status(404).render('404');
         console.log(e);
     }
-
-    !rows[0] ? res.render('404') : res.render('./songs/song-all.jsx', {
-        'allSongs': rows,
-        'artist': req.artist
-    });
-
 }
 
 module.exports.getAddSongToArtist = async (req, res) => {
