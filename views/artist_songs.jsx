@@ -4,6 +4,7 @@ class Artist_Songs extends React.Component {
 
         let artistName = this.props.artist[0].name;
         const songsList = this.props.songs;
+        const addSongPage = '/artists/' + this.props.id + '/songs/new'
 
         const displaySongs = songsList.map(song => {
             let songDetailsId = '/artists/' + this.props.id + '/songs/' + song.id;
@@ -37,10 +38,13 @@ class Artist_Songs extends React.Component {
                     <h2 className='text-center'>Songs by {artistName}</h2>
                     <br/>
                     <div className='row justify-content-center'>
-                        <div className='col-2'>
+                        <div className='col-2 d-flex justify-content-end'>
                             <button className='btn btn-dark'><a href='/artists/list' className='text-white text-decoration-none'>Back to Artists List</a></button>
                         </div>
-                        <div className='col-2'>
+                        <div className='col-2 d-flex justify-content-center'>
+                            <button className='btn btn-primary'><a href={addSongPage} className='text-white text-decoration-none'>Add Song</a></button>
+                        </div>
+                        <div className='col-2 d-flex justify-content-start'>
                             <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                         </div>
                     </div>

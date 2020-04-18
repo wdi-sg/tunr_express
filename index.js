@@ -214,6 +214,25 @@ app.put('/artists/:id/songs/:songId', (request, response) => {
     })
 })
 
+//Add new song from artist's page
+app.get('/artists/:id/songs/new', (request, response) => {
+    const id = request.params.id;
+    const queryString = 'SELECT * FROM artists WHERE id=' + id;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send("An error occurred when displaying artist's songs 😢");
+        } else {
+            const data = {
+                artist: result.rows[0]
+            }
+
+        response.render('new_artist_song', data);
+        }
+    })
+})
+
 //Display individual song
 app.get('/artists/:id/songs/:songId', (request, response) => {
     let artistId = request.params.id;
@@ -236,7 +255,6 @@ app.get('/artists/:id/songs/:songId', (request, response) => {
 
 //Display all songs of an artist
 app.get('/artists/:id/songs', (request, response) => {
-
     let id = request.params.id;
     let querySongString = 'SELECT * FROM songs WHERE artist_id=' + id;
     //let queryString = 'SELECT songs.id, songs.title, songs.preview_link, songs.artwork, song.artist_id, artists.id', artists.name, artists.photo_url, artists.nationality FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)
