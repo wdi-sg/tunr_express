@@ -9,7 +9,7 @@ class EditArtist extends React.Component {
         <head />
         <body>
           <h3>Edit Artist</h3>
-          <form method='PUT' action='/artists/:id?method_put'>
+          <form method='PUT' action={`/artists/${artist.id}?method_put`}>
             <h4>Name</h4>
             <input type='text' name='name' value={artist.name}/>
             <h4>Photo URL</h4>

@@ -130,15 +130,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
       console.log('artist query error: ', error.message. stack);
     } else {
       const artist = result.rows[0];
-
-      pool.query('SELECT * FROM songs', (error, result) => {
-        if (error) {
-          console.log('query error: ', error.message, error.stack);
-        } else {
-          const songList = result.rows;
-          response.render('artist-addsong', {'artist': artist, 'songList': songList});
-        }
-      })
+      response.render('artist-addsong', {'artist': artist});
     }
   })
 });
@@ -250,6 +242,24 @@ app.post('/artists', (request, response) => {
   });
 });
 
+app.post('/artists/:id/songs', (request, response) => {
+  const title = request.body.title;
+  const album = request.body.album;
+  const preview_link = request.body.preview_link;
+  const artwork = request.body.artwork;
+  const artist_id = request.body.artist_id;
+
+  const values = [title, album, preview_link, artwork, artist_id];
+
+  pool.query('INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)', values, (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      response.render('success');
+    }
+  })
+});
+
 app.post('/playlists', (request, response) => {
   const name = request.body.name;
   const songs = request.body.songs;
@@ -258,7 +268,7 @@ app.post('/playlists', (request, response) => {
     if (error) {
       console.log('playlist insery error: ', error.message, error.stack);
     } else {
-      const playlist_id = result.rows[0].id;
+      const playlistId = result.rows[0].id;
 
       pool.query('SELECT id, title FROM songs', (error, result) => {
         if (error) {
@@ -275,7 +285,7 @@ app.post('/playlists', (request, response) => {
           })
 
           songsId.forEach(songId => {
-            pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlist_id], (error, result) => {
+            pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlistId], (error, result) => {
               if (error) {
                 console.log(`error inserting song_id ${songId}: `, error.message, error.stack);
               } else {
@@ -310,7 +320,7 @@ app.post('/playlists/:id', (request, response) => {
       })
 
       songsId.forEach(songId => {
-        pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlist_id], (error, result) => {
+        pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlistId], (error, result) => {
           if (error) {
             console.log(`error inserting song_id ${songId}: `, error.message, error.stack);
           } else {
