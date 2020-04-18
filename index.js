@@ -95,6 +95,22 @@ app.get('/artists/:id', async function (req, res) {
   res.render('artistview', {artist: artistResult[0]});
 });
 
+app.get('/artists/:id/edit', async function (req, res) {
+  let artistId = [req.params.id];
+  let getArtist =
+      "SELECT * FROM artists " +
+      "WHERE id = $1";
+  let artistResult = await makeQuery(getArtist, artistId);
+  let data = {
+    name: artistResult[0].name,
+    photo_url: artistResult[0].photo_url,
+    nationality: artistResult[0].nationality,
+    new: false
+  };
+
+  res.render('artistform', data);
+});
+
 // start server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT);
