@@ -48,6 +48,7 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//Show Song Index
 app.get('/', (req, res) => {
   const queryString = "SELECT * FROM artists"
   pool.query(queryString, (err, result) => {
@@ -63,10 +64,12 @@ app.get('/', (req, res) => {
   })
 });
 
+//Add New Artist
 app.get('/new', (request, response) => {
   response.render('new');
 });
 
+//Get list of songs
 app.get('/artists/:id/songs', (req, res) => {
     //Getting artist data first
     const firstValues = [req.params.id]
@@ -101,6 +104,40 @@ app.get('/artists/:id/songs', (req, res) => {
     })
 });
 
+//Create new song for artist
+app.get('/artists/:id/songs/new', (req, res) => {
+    const values = [req.params.id]
+    const queryString = "SELECT * FROM artists WHERE id = $1"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            const data = result.rows[0];
+            res.render('newartistsong', data);
+        }
+    })
+});
+
+//POST request for adding new song for particular artist
+app.post('/artists/:id/songs', (req, res) =>{
+    const values = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
+    const queryString = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)";
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            res.redirect('/artists/' + req.params.id + '/songs')
+        }
+    })
+});
+
+//Form for editing songs
 app.get('/artists/:id/edit', (req, res) => {
     //Getting artist data first
     const values = [req.params.id]
@@ -122,6 +159,23 @@ app.get('/artists/:id/edit', (req, res) => {
     })
 });
 
+//POST request for adding new artist
+app.post('/artists', (req, res) => {
+    const values = [req.body.name, req.body.photo_url, req.body.nationality];
+    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            res.redirect('/artists/' + result.rows[0].id)
+        }
+    })
+});
+
+//PUT request for updating songs
 app.put('/artists/:id', (req, res) => {
     const values = [req.body.name, req.body.photo_url, req.body.nationality, req.params.id]
     const queryString = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4"
@@ -137,6 +191,7 @@ app.put('/artists/:id', (req, res) => {
     })
 });
 
+//DELETE request for updating songs
 app.delete('/artists/:id', (req, res) => {
     const values = [req.params.id];
     const queryString = "DELETE from artists WHERE id=$1"
@@ -152,6 +207,7 @@ app.delete('/artists/:id', (req, res) => {
     })
 });
 
+//Display artist
 app.get('/artists/:id', (req, res) => {
     const values = [req.params.id]
     const queryString = "SELECT * FROM artists WHERE id = $1"
@@ -168,9 +224,15 @@ app.get('/artists/:id', (req, res) => {
     })
 });
 
-app.post('/artists', (req, res) => {
-    const values = [req.body.name, req.body.photo_url, req.body.nationality];
-    const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+//Form for creating new playlist
+app.get('/playlist/new', (req, res) => {
+    res.render('newplaylist')
+})
+
+//POST request for adding new playlist
+app.post('/playlist', (req, res) => {
+    const values = [req.body.name];
+    const queryString = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
 
     pool.query(queryString, values, (err, result) => {
         if (err){
@@ -178,10 +240,80 @@ app.post('/artists', (req, res) => {
             res.status(500);
             res.send('query error');
         } else {
-            res.redirect('/artists/' + result.rows[0].id)
+            res.redirect('/playlist/' + result.rows[0].id)
+            //res.redirect('/artists/' + result.rows[0].id)
         }
     })
-});
+})
+
+//Display playlist
+app.get('/playlist/:id', (req, res) => {
+    const values = [req.params.id]
+    const queryString = "SELECT * FROM playlist WHERE id = $1"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            const playlistInfo = result.rows[0];
+
+            const secondQueryString = "SELECT songs.title, artists.name, songs.album FROM ((songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) INNER JOIN artists ON (songs.artist_id = artists.id))) WHERE playlist_song.playlist_id = $1"
+            pool.query(secondQueryString, values, (err, result2) => {
+                const songInfo = result2.rows;
+                const data = {playlistInfo, songInfo}
+                res.render('playlist', data);
+            })
+        }
+    })
+})
+
+//Form to add a song to the playlist
+app.get('/playlist/:id/newsong', (req, res) => {
+    const values = [req.params.id]
+    const queryString = "SELECT * FROM playlist WHERE id = $1"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            const secondQueryString = "SELECT songs.id AS songid, songs.title AS songtitle, songs.album AS albumname, artists.name AS artistname FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)"
+            pool.query(secondQueryString, (err, result2) => {
+                if (err){
+                    console.error('query error', err.stack);
+                    res.status(500);
+                    res.send('query error')
+                } else {
+                    const songInfoArray = result2.rows;
+                    const playlistInfo = result.rows[0];
+                    const data = {songInfoArray, playlistInfo}
+                    res.render('newsongforplaylist', data);
+                }
+            })
+
+
+        }
+    })
+})
+
+//POST request for adding a song to a playlist
+app.post('/playlist/:id', (req, res) => {
+    const values = [req.body.songid, req.params.id]
+    const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            res.redirect('/playlist/' + req.params.id)
+        }
+    })
+})
 
 /**
  * ===================================
