@@ -132,6 +132,25 @@ app.get('/playlist/new', (request, response) => {
 });
 
 
+app.get('/playlist/:id/newsong', (request, response) => {
+  let id = request.params.id;
+  let queryString = "SELECT * FROM songs";
+    pool.query(queryString, (error, result) => {
+    if(error) {
+      console.log('Query error:', error.stack);
+      response.send('query error');
+    }else {
+      console.log(result.rows);
+      let data = {
+        "songs": result.rows,
+        "id": id
+      };
+      response.render('playlistsongsadd', data);
+    }
+  });
+});
+
+
 app.get('/playlist/:id/', (request, response) => {
   let id = request.params.id;
   let queryString = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_song.playlist_id = " + id;
