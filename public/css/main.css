@@ -243,3 +243,55 @@ main {
 		margin-top: 4px;
 		margin-bottom: 4%;
 }
+
+/*songs*/
+
+.single-song__container {
+		width: 100%;
+		height: auto;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		box-sizing: border-box;
+}
+
+.single-song__container:first-of-type {
+		margin-top: 6%;
+}
+
+.single-song__img-container {
+		display: flex;
+		width: 40%;
+		height: auto;
+		justify-content: center;
+		align-items: center;
+}
+
+.single-song__img {
+		width: 300px;
+		height: 300px;
+		object-fit: cover;
+}
+
+.single-song__title,
+.single-song__album {
+		color: rgba(1, 1, 1, 0.6);
+		width: 100%;
+		text-align: center;
+		font-size: 1.1rem;
+		letter-spacing: 0.3rem;
+		text-decoration: none;
+		box-sizing: border-box;
+}
+
+.single-song__name {
+		margin-top: 4%;
+		margin-bottom: 4px;
+		font-weight: 700;
+}
+
+.single-artist__nationality {
+		margin-top: 4px;
+		margin-bottom: 4%;
+}

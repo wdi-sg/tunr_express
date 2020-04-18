@@ -11,9 +11,20 @@ const songsController = require('../controllers/songs-controller');
 router.use('/', express.static(path.join(__dirname, '..', '/public/')));
 router.use('/:id', express.static(path.join(__dirname, '..', '/public/')));
 
+router.use('/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const queryT = `SELECT * FROM songs WHERE artist_id=${req.artist.id} ORDER BY id`
+    const { rows } = await db.query(queryT);
+    req.song = rows[id];
+    req.song.position = id;
+    next();
+})
+
 router.get('/:id/edit', songsController.getEditArtistSongById);
 
-router.delete('/:id/delete', songsController.deleteArtistSongById);
+router.get('/:id/delete', songsController.deleteArtistSongById);
+
+router.get('/add', songsController.getAddSongToArtist);
 
 router.get('/:id', songsController.getArtistSongById);
 

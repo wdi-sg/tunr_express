@@ -7,11 +7,11 @@ class ArtistDeleted extends React.Component {
     render() {
         return (
             <html>
-                <div className="overlay"></div>
                 <Head />
                 <body>
                     <Header />
-                    <div className="banner">
+                    <div className="nav">
+                        <div className="overlay"></div>
                         <a href="/" className="nav__link home-link"><p>Home</p></a>
                         <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                     </div>

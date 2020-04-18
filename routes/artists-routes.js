@@ -5,6 +5,7 @@ const path = require('path');
 const db = require('../util/database.js');
 
 const artistsController = require('../controllers/artists-controller');
+const songsController = require('../controllers/songs-controller');
 const songsRoutes = require('./songs-routes.js');
 
 router.use('/', express.static(path.join(__dirname, '..', '/public/')));
@@ -20,11 +21,14 @@ router.use('/:id/songs', async (req, res, next) => {
     const { rows } = await db.query(queryT);
 
     req.artist = rows[0]
-    console.log(req.artist);
     next();
 })
 
 router.use('/:id/songs', songsRoutes);
+
+router.use('/songs/add', () => {
+
+})
 
 router.get('/:id/edit', artistsController.getEditArtistById);
 

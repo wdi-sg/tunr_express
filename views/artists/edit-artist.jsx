@@ -11,12 +11,11 @@ class EditArtistForm extends React.Component {
             <html>
                 <Head />
                 <script defer src="scripts/edit-form.js" />
-                <div className="overlay"></div>
-
                 <body>
                     <Header />
                     <main>
-                        <div className="banner">
+                        <div className="nav">
+                            <div className="overlay"></div>
                             <a href="/" className="nav__link home-link"><p>Home</p></a>
                             <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                         </div>

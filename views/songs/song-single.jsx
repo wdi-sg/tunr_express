@@ -14,7 +14,7 @@ class SingleSong extends React.Component {
                 <body>
                     <Header />
                     <main>
-                        <div className="banner">
+                        <div className="nav">
                             <a href="/" className="nav__link home-link"><p>Home</p></a>
                             <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                         </div>
@@ -25,8 +25,8 @@ class SingleSong extends React.Component {
                             <p className="single-song__title">{this.props.singleSong.title}</p>
                             <p className="single-song__album">{this.props.singleSong.album}</p>
                             <div className ="song__edit-delete-links">
-                                <a href="./edit" className="recipe__edit-link">Edit</a>
-                                <a href="./delete" className="recipe__delete-link">Delete Song</a>
+                                <a href="./edit" className="song__edit-link">Edit</a>
+                                <a href="./delete" className="song__delete-link">Delete Song</a>
                             </div>
                         </div>
                     </main>

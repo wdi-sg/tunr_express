@@ -2,12 +2,10 @@ const db = require('../util/database.js');
 
 module.exports.getArtistSongById = async (req, res) => {
 
-    const { id } = req.params;
-    const queryT = `SELECT * FROM songs WHERE artist_id=${req.artist.id}`
-    const { rows } = await db.query(queryT);
-    console.log(rows[id]);
+    console.log(req.song);
 
-    !rows ? res.render('404') : res.render('./songs/song-single.jsx', { 'singleSong': rows[id] });
+    !req.song.title ? res.render('404') : res.render('./songs/song-single.jsx', { 'singleSong': req.song });
+
 }
 
 module.exports.getAllSongsOfArtist = async (req, res) => {
@@ -19,24 +17,45 @@ module.exports.getAllSongsOfArtist = async (req, res) => {
         'allSongs': rows,
         'artist': req.artist
     });
+
+}
+
+module.exports.getAddSongToArtist = async (req, res) => {
+
+    res.render('./songs/add-song.jsx', { 'artist': req.artist });
 }
 
 module.exports.postAddSongToArtist = async (req, res) => {
-    console.log('Add New Artist!');
-    res.send('Add New Artist!');
+
+    const queryT = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) RETURNING *`;
+    const queryV = `VALUES(${req.body.title}, ${req.body.album}, ${req.body["preview_link"]}, ${req.body.artwork}, ${req.artist.id})`
+
+    res.redirect('./songs');
+
 }
 
 module.exports.getEditArtistSongById = async (req, res) => {
-    console.log('Get Edit Artist Form By Id!');
-    res.send('Get Edit Artist Form By Id!');
+
+    !req.song.title ? res.render('404') : res.render('./songs/edit-song.jsx', {
+        'singleSong': req.song,
+        'artist': req.artist
+    });
+
 }
 
 module.exports.putArtistSongById = async (req, res) => {
-    console.log('Artist Edited!');
-    res.send('Artist Edited!');
+
+    const queryT = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body['preview link']}', artwork = '${req.body.artwork}', artist_id = '${req.artist.id}' WHERE id=${req.song.id}`
+
+    const { rows } = await db.query(queryT);
+    res.redirect(`./${req.song.position}`);
+
 }
 
 module.exports.deleteArtistSongById = async (req, res) => {
-    console.log('Delete Artist Form By Id!');
-    res.send('Delete Artist Form By Id!');
+
+    const queryT = `DELETE from songs WHERE id=${req.song.id}`
+    const { rows } = await db.query(queryT);
+    res.render('./songs/song-deleted');
+
 }

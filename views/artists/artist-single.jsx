@@ -10,11 +10,12 @@ class SingleArtist extends React.Component {
         return (
             <html>
                 <Head />
-                <div className="overlay"></div>
+
                 <body>
                     <Header />
                     <main>
-                        <div className="banner">
+                        <div className="nav">
+                            <div className="overlay"></div>
                             <a href="/" className="nav__link home-link"><p>Home</p></a>
                             <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                         </div>
@@ -25,8 +26,8 @@ class SingleArtist extends React.Component {
                             <p className="single-artist__name">{this.props.singleArtist.name}</p>
                             <p className="single-artist__nationality">{this.props.singleArtist.nationality}</p>
                             <div className ="artist__edit-delete-links">
-                                <a href="./edit" className="recipe__edit-link">Edit</a>
-                                <a href="./delete" className="recipe__delete-link">Delete Artist</a>
+                                <a href="./edit" className="song__edit-link">Edit</a>
+                                <a href="./delete" className="song__delete-link">Delete Artist</a>
                             </div>
                         </div>
                     </main>
