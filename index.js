@@ -31,6 +31,13 @@ pool.on("error", function (err) {
 //-------------ROUTES---------------
 //----------------------------------
 
+function parseSingleQuote(obj) {
+  for (const key in obj) {
+    obj[key] = obj[key].replace("'", "''");
+  }
+  return obj;
+}
+
 //VIEW HOME PAGE
 app.get("/", (request, response) => {
   response.render("home");
@@ -90,7 +97,6 @@ app.post("/artists/:id/edit", (request, response) => {
   let queryText = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id=${id} RETURNING *`;
   console.log(queryText);
   pool.query(queryText, (err, result) => {
-    let artistObj = result.rows[0];
     // response.render("display-one-artist", artistObj);
     let link = "http://127.0.0.1:3000/artists/" + id;
     response.redirect(link);
@@ -115,9 +121,39 @@ app.get("/artists/:id/songs", (request, response) => {
 
 //VIEW ALL SONGS
 app.get("/songs", (request, response) => {
-  let queryText = "SELECT * FROM songs ORDER BY id ASC";
+  let queryText = "SELECT songs.id, songs.title, artists.name FROM songs JOIN artists ON (artists.id = songs.artist_id) ORDER BY songs.title ASC";
   pool.query(queryText, (err, result) => {
+    console.log(result.rows);
+    let obj = {
+      songsArr: result.rows
+    }
+    response.render("display-all-songs-list", obj);
+  });
+});
 
+//DISPLAY FORM TO ADD NEW SONG
+app.get("/songs/new", (request, response) => {
+  let queryText = `SELECT * FROM artists ORDER BY name`;
+  pool.query(queryText, (err, result) => {
+    // console.log(result.rows);
+    let obj = {
+      artistArr: result.rows,
+    };
+    response.render("new-song", obj);
+  });
+});
+
+//CAPTURE NEW SONG DATA AND DISPLAY NEWLY ADDED SONG
+app.post("/songs/new", (request, response) => {
+  console.log(request.body);
+  obj = parseSingleQuote(request.body);
+  let artist_id = parseInt(request.body.artist_id);
+  let queryText = `INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ('${obj.title}', '${obj.album}', '${obj.preview_link}', '${obj.artwork}', ${artist_id}) RETURNING *`;
+  console.log(queryText);
+  pool.query(queryText, (err, result) => {
+    console.log(result.rows);
+    let link = "http://127.0.0.1:3000/songs/" + result.rows[0].id;
+    response.redirect(link);
   });
 });
 
@@ -131,13 +167,13 @@ app.get("/songs/:sid", (request, response) => {
   });
 });
 
-//VIEW ALL PLAYLISTS 
+//VIEW ALL PLAYLISTS
 app.get("/playlist", (request, response) => {
   let queryText = "SELECT * FROM playlist ORDER BY name ASC";
   pool.query(queryText, (err, result) => {
     console.log(result.rows);
     let obj = {
-      plArr: result.rows
+      plArr: result.rows,
     };
     response.render("display-all-playlists", obj);
   });
@@ -236,7 +272,7 @@ app.get("/playlist/:plid", (request, response) => {
       plName = result.rows[0].name;
       let obj = {
         songsArr: songsArr,
-        plName: plName
+        plName: plName,
       };
       console.log(obj);
       response.render("display-one-playlist", obj);
