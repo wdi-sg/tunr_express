@@ -3,7 +3,6 @@ const Head = require('./head');
 
 class ArtistView extends React.Component {
   render() {
-    console.log(this.props);
     let editLink = `${this.props.artist.id}/edit`
     let deleteLink = `${this.props.artist.id}/delete`;
 
@@ -22,8 +21,8 @@ class ArtistView extends React.Component {
         <Head />
 
         <body>
-          <div className="container text-center">
 
+          <div className="container text-center">
             <div className="row my-3">
               <div className="col-6 offset-3">
 
@@ -58,19 +57,23 @@ class ArtistView extends React.Component {
                 </div>
 
                 <div className="row my-3">
-                  <div className="col-6">
+                  <div className="col">
                     <a href={editLink}
                        className="btn btn-info btn-block">Edit Artist Info</a>
                   </div>
-                  <div className="col-6">
+                </div>
+
+                <div className="row my-3">
+                  <div className="col">
                     <a href={deleteLink}
                        className="btn btn-outline-danger btn-block">Delete Artist</a>
                   </div>
                 </div>
+
               </div>
             </div>
-
           </div>
+
         </body>
       </html>
     );
