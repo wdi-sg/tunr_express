@@ -135,7 +135,7 @@ Playlist Part
 ***************/
 
 ////////////Show All playlists
-app.get('/playlist', (requet,response) => {
+app.get('/playlist', (request,response) => {
     let queryString = `select * from playlist`
 
     pool.query(queryString, (err, result) => {
@@ -150,9 +150,10 @@ app.get('/playlist', (requet,response) => {
     })
 })
 
+
 ////////////
 //////////// Creating new Playlist
-app.get('/playlists/new', (request, response) => {
+app.get('/playlist/new', (request, response) => {
     response.render('newplaylist');
 })
 
@@ -171,6 +172,45 @@ app.post('/playlists/show', (request, response) => {
         else{
             const data = result.rows;
             response.send(result.rows);
+        }
+    })
+})
+
+
+//////////////Create new song for playlist
+app.get('/playlist/:id/newsong', (request, response) => {
+    const id = request.params.id;
+
+    // Identify playlist that is requested
+    const queryString = `select * from playlist where id=${id}`
+
+    pool.query(queryString, (err, result) => {
+        if(err){
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        }
+        else{
+            const data = {"playlistDetails" : result.rows};
+            response.render('newsong', data);
+        }
+    })
+})
+
+//////////////Show individual playlist
+app.get('/playlist/:id', (request, response) => {
+    const id = request.params.id;
+
+    // Identify playlist that is requested
+    const queryString = `select * from playlist where id=${id}`
+
+    pool.query(queryString, (err, result) => {
+        if(err){
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        }
+        else{
+            const data = {"playlistDetails" : result.rows};
+            response.render('singleplaylist', data);
         }
     })
 })
