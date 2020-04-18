@@ -54,6 +54,12 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
+app.get('/artists', async function (req, res) {
+  let artistQuery = "SELECT * FROM artists";
+  let artists = await makeQuery(artistQuery);
+  res.render('artistlist', {artistlist: artists});
+});
+
 app.get('/artists/new', (req, res) => {
   res.render('artistform');
 });
