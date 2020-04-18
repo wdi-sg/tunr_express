@@ -145,7 +145,7 @@ app.get('/playlists/new', (request, response) => {
   })
 });
 
-app.get('/playlists/:id', (request, response) => {
+app.get('/playlists/:id/', (request, response) => {
   const playlistId = request.params.id;
 
   pool.query('SELECT * FROM playlist_song WHERE playlist_id=$1', [playlistId], (error, result) => {
@@ -178,6 +178,27 @@ app.get('/playlists/:id', (request, response) => {
       };
 
       playlistSongsQuery();
+    }
+  })
+});
+
+app.get('/playlists/:id/newsong', (request, response) => {
+  const playlistId = request.params.id;
+
+  pool.query('SELECT * FROM playlist WHERE id=$1', [playlistId], (error, result) => {
+    if (error) {
+      console.log('playlist query error: ', error.message. stack);
+    } else {
+      const playlist = result.rows[0];
+
+      pool.query('SELECT * FROM songs', (error, result) => {
+        if (error) {
+          console.log('query error: ', error.message, error.stack);
+        } else {
+          const songList = result.rows;
+          response.render('playlist-addsong', {'playlist': playlist, 'songList': songList});
+        }
+      })
     }
   })
 });
@@ -247,7 +268,40 @@ app.post('/playlists', (request, response) => {
       })
     }
   })
-})
+});
+
+app.post('/playlists/:id', (request, response) => {
+  const playlistId = request.params.id;
+  const songs = request.body.songs;
+
+  pool.query('SELECT id, title FROM songs', (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const songList = result.rows;
+
+      const songsId = songs.map(song => {
+        for (let i = 0; i < songList.length; i++) {
+          if (songList[i].title === song) {
+            return songList[i].id;
+          }
+        }
+      })
+
+      songsId.forEach(songId => {
+        pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlist_id], (error, result) => {
+          if (error) {
+            console.log(`error inserting song_id ${songId}: `, error.message, error.stack);
+          } else {
+            console.log('done!');
+          }
+        })
+      })
+
+      response.render('success');
+    }
+  })
+});
 
 
 
