@@ -129,6 +129,23 @@ app.get('/playlist/new', (request, response) => {
 });
 
 
+app.get('/playlist', (request, response) => {
+  // query database for all artist
+  let queryString = "SELECT * FROM playlist";
+  pool.query(queryString, (err, res) => {
+    if(err){
+      console.log("Query error!: ", err.message);
+    }else {
+      console.log(res.rows);
+      let data = {
+        "playlists": res.rows
+      };
+      response.render('playlisthome', data);
+    }
+  });
+});
+
+
 app.post('/artists', (request, response) => {
   let queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
   let values = [request.body.name, request.body.photourl, request.body.nationality];

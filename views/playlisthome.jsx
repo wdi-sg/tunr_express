@@ -1,20 +1,22 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Playlisthome extends React.Component {
   render() {
-    let allArtist = this.props.artists.map(artist => {
-        let artistLink = "/artists/" + artist.id;
-        return <li><a href={artistLink}>{artist.name}</a></li>
+    let allPlaylist = this.props.playlists.map(playlist => {
+        let playlistLink = "/playlist/" + playlist.id;
+        return <li><a href={playlistLink}>{playlist.name}</a></li>
     });
     return (
       <html>
         <head />
         <body>
-          <h1>Welcome! All artists: </h1>
+          <h1>List of playlists: </h1>
           <ul>
-            {allArtist}
+            {allPlaylist}
           </ul>
-          <a href="/artists/new">Add a new Artist</a>
+          <div>
+            <a href="/playlist/new">Add a new Playlist</a>
+          </div>
         </body>
       </html>
     );
