@@ -48,7 +48,7 @@ class Show_Song extends React.Component {
                     <br/>
                     <div className='row justify-content-center'>
                         <div className='col-3 d-flex justify-content-end'>
-                            <button className='btn btn-dark'><a href={backToArtistSongList} className='text-white text-decoration-none'>Back to Song List</a></button>
+                            <button className='btn btn-dark'><a href={backToArtistSongList} className='text-white text-decoration-none'>Back to Artist Songs</a></button>
                         </div>
                         <div className='col-3'>
                             <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>

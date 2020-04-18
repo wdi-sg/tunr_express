@@ -9,6 +9,8 @@ class Song extends React.Component {
         const artist_id = this.props.artist_id;
         const artist_name = this.props.artist_name;
 
+        const artistPage = '/artists/' + artist_id + '/songs';
+
         return (
             <html>
             <head>
@@ -32,7 +34,12 @@ class Song extends React.Component {
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                        <div className='col-2 d-flex justify-content-center'>
+                            <button className='btn btn-dark'><a href={artistPage} className='text-white text-decoration-none'>Artist Songs</a></button>
+                        </div>
+                        <div className='col-2'>
+                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                        </div>
                     </div>
                     <br/>
                 </div>

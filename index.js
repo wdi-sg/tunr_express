@@ -46,7 +46,9 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-//Home
+/////////////////////
+////   Home     ////
+///////////////////
 app.get('/artists/', (request, response) => {
     response.render('home');
 });
@@ -69,7 +71,9 @@ app.get('/artists/list', (request, response) => {
     })
 });
 
-//List of all songs
+////////////////////////////
+////  List of all songs  //
+//////////////////////////
 app.get('/artists/songs/', (request, response) => {
     let queryString = 'SELECT * FROM songs';
 
@@ -81,7 +85,9 @@ app.get('/artists/songs/', (request, response) => {
     })
 });
 
-//Create new artist
+/////////////////////////////////////////
+////  Create new artist (from home)  ///
+///////////////////////////////////////
 app.get('/artists/new', (request, response) => {
     response.render('new_artist');
 });
@@ -108,9 +114,10 @@ app.post('/artists', (request, response) => {
     })
 });
 
-//Create new artist
+////////////////////////////////////
+////  Add new song (from home)  ///
+//////////////////////////////////
 app.get('/artists/songs/new', (request, response) => {
-
     let queryString = 'SELECT * FROM artists ORDER BY id ASC'
 
     pool.query(queryString, (err, result) => {
@@ -150,7 +157,9 @@ app.post('/artists/songs', (request, response) => {
     })
 });
 
-//Edit artist's song
+///////////////////////////
+////    Edit song     ////
+/////////////////////////
 app.get('/artists/:id/songs/:songId/edit', (request, response) => {
     let artistId = request.params.id;
     let songId = request.params.songId;
@@ -183,7 +192,6 @@ app.get('/artists/:id/songs/:songId/edit', (request, response) => {
 })
 
 app.put('/artists/:id/songs/:songId', (request, response) => {
-
     let songId = request.params.songId;
     let updateDetails = request.body;
     console.log(request.body)
@@ -214,7 +222,9 @@ app.put('/artists/:id/songs/:songId', (request, response) => {
     })
 })
 
-//Add new song from artist's page
+////////////////////////////////////////////
+////  Add new song (from artist's page)  //
+//////////////////////////////////////////
 app.get('/artists/:id/songs/new', (request, response) => {
     const id = request.params.id;
     const queryString = 'SELECT * FROM artists WHERE id=' + id;
@@ -233,7 +243,9 @@ app.get('/artists/:id/songs/new', (request, response) => {
     })
 })
 
-//Display individual song
+//////////////////////////////
+////   Individual song   ////
+////////////////////////////
 app.get('/artists/:id/songs/:songId', (request, response) => {
     let artistId = request.params.id;
     let songId = request.params.songId;
@@ -253,7 +265,23 @@ app.get('/artists/:id/songs/:songId', (request, response) => {
     })
 })
 
-//Display all songs of an artist
+//////////////////////////
+////   Delete song   ////
+////////////////////////
+app.delete('/artists/:id/songs/:songId', (request, response) => {
+    let artistId = request.params.id;
+    let songId = request.params.songId;
+    let queryString = 'DELETE FROM songs WHERE id=' + songId;
+
+    pool.query(queryString, (err, result) => {
+        let artistSongPage = '/artists/' + artistId + '/songs/';
+        response.redirect(artistSongPage);
+    })
+});
+
+/////////////////////////////////////////
+////   Display all artist's songs   ////
+///////////////////////////////////////
 app.get('/artists/:id/songs', (request, response) => {
     let id = request.params.id;
     let querySongString = 'SELECT * FROM songs WHERE artist_id=' + id;
@@ -279,9 +307,10 @@ app.get('/artists/:id/songs', (request, response) => {
     });
 })
 
-//Edit artist details
+//////////////////////////////////
+////   Edit artist details   ////
+////////////////////////////////
 app.get('/artists/:id/edit', (request, response) => {
-
     let id = request.params.id;
     let queryString = 'SELECT * FROM artists WHERE id=' + id;
 
@@ -308,7 +337,9 @@ app.put('/artists/:id', (request, response) => {
     })
 })
 
-//Delete artist
+///////////////////////////
+////  Delete artist   ////
+/////////////////////////
 app.delete('/artists/:id', (request, response) => {
     const queryString = 'DELETE FROM artists WHERE id=' + request.params.id;
     console.log('queryString:', queryString)
@@ -323,7 +354,9 @@ app.delete('/artists/:id', (request, response) => {
     });
 })
 
-//Show individual artist
+//////////////////////////////
+////  Individual artist  ////
+////////////////////////////
 app.get('/artists/:id', (request, response) => {
     const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
