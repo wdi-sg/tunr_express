@@ -157,6 +157,27 @@ app.put('/artists/:id', async function (req, res) {
   res.redirect(`/artists/${req.body.id}`);
 });
 
+app.delete('/artists/:id', async function (req, res) {
+  let artistInfo = [
+    Number(req.params.id),
+  ];
+
+  let deleteQuery =
+      "DELETE FROM artists " +
+      "WHERE id = $1";
+
+  let deleteResult = await makeQuery(deleteQuery, artistInfo);
+  if (deleteResult.name === "error") {
+    let data = {
+      errorinfo: deleteResult
+    };
+    res.render('errorpage', data);
+    return;
+  }
+
+  res.redirect('/artists');
+});
+
 // start server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Listening on port " + PORT));
