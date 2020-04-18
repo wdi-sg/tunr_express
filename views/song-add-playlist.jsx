@@ -38,6 +38,11 @@ class SongAddPlaylist extends React.Component {
                 <br></br>
                 <form method="POST" action={link}>
                   {plArrCheckbox}
+                  <input
+                    type="hidden"
+                    name="song_id"
+                    value={this.props.songId}
+                  />
                   <br></br>
                   <input
                     className="btn btn-primary"

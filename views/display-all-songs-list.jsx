@@ -12,8 +12,8 @@ class DisplayAllSongsList extends React.Component {
         <li>
           <a href={href}>{text}</a>
           <br></br>
-          <a href={href2}>
-            <input className="btn btn-info" type="submit" value="Add To Playlist"/>
+          <a className="btn btn-info" href={href2}>
+            Add To Playlist
           </a>
           <br></br>
           <br></br>

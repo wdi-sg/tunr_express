@@ -159,13 +159,28 @@ app.post("/songs/new", (request, response) => {
   });
 });
 
+//CAPTURE SONG ADD PLAYLIST DATA AND DISPLAY ALL PLAYLISTS
+app.post("/playlist", (request, response) => {
+  console.log(request.body);
+  let obj = request.body;
+  for (let i=0; i<obj.playlist_id.length; i++) {
+    let queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${obj.playlist_id[i]}, ${obj.song_id}) RETURNING *`;
+    pool.query(queryText, (err, result) => {
+      console.log(result.rows);
+      return;
+    });
+  }
+  response.redirect("http://127.0.0.1:3000/playlist");
+});
+
+
 //DISPLAY PLAYLIST OPTIONS FOR EACH SONG
 app.get("/songs/:sid/add", (request, response) => {
   let songId = parseInt(request.params.sid);
   let queryText = `SELECT playlist_id FROM playlist_song WHERE song_id=${songId}`;
-  console.log(queryText);
+  // console.log(queryText);
   pool.query(queryText, (err, result) => {
-    console.log(result.rows);
+    // console.log(result.rows);
     if (!lodash.isEmpty(result.rows)) {
       let inPlaylist = result.rows;
       let string = `id != ${inPlaylist[0].playlist_id}`;
@@ -175,24 +190,28 @@ app.get("/songs/:sid/add", (request, response) => {
       queryText = `SELECT * FROM playlist WHERE ${string}`;
       console.log(queryText);
       pool.query(queryText, (err, result) => {
-        console.log(result.rows);
+        // console.log(result.rows);
         let obj = {
-          plArr: result.rows
+          plArr: result.rows,
+          songId: songId
         };
         response.render("song-add-playlist", obj);
       });
     } else {
       queryText = `SELECT * FROM playlist ORDER BY name ASC`;
       pool.query(queryText, (err, result) => {
-        console.log(result.rows);
         let obj = {
-          plArr: result.rows
+          plArr: result.rows,
+          songId: songId
         };
+        console.log(obj);
         response.render("song-add-playlist", obj);
       });
     }
   });
 });
+
+
 
 //VIEW ONE SONG
 app.get("/songs/:sid", (request, response) => {
