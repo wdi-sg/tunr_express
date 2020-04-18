@@ -1,22 +1,21 @@
 const React = require('react');
+const Head = require('./head');
 
 class ArtistForm extends React.Component {
   render() {
     return (
       <html>
-        <head>
-          <link rel="stylesheet"
-                href="/pub/css/bootstrap.min.css"
-          />
-        </head>
+        {Head}
 
         <body>
           <div className="container">
             <form action="/artists/new" method="post">
-              <input name="name" placeholder="Artist Name" /><br />
-              <input name="photo_url" placeholder="Photo URL" /><br />
-              <input name="nationality" placeholder="Country" /><br />
-              <input type="submit" />
+              <div class="form-group">
+                <input name="name" placeholder="Artist Name" /><br />
+                <input name="photo_url" placeholder="Photo URL" /><br />
+                <input name="nationality" placeholder="Country" /><br />
+                <input type="submit" />
+              </div>
             </form>
           </div>
         </body>

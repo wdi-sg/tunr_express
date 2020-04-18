@@ -1,15 +1,12 @@
 const React = require('react');
+const Head = require('./head');
 
 class filename extends React.Component {
   render() {
     console.log(this.props.artist);
     return (
       <html>
-        <head>
-          <link rel="stylesheet"
-                href="/pub/css/bootstrap.min.css"
-          />
-        </head>
+        {Head}
 
         <body>
           <div className="container text-center">
