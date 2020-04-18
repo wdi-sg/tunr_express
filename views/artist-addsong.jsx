@@ -1,8 +1,8 @@
 var React = require('react');
 
-class PlaylistAdd extends React.Component {
+class ArtistSongAdd extends React.Component {
   render() {
-    const playlist = this.props.playlist;
+    const artist = this.props.artist;
     const songs = this.props.songList;
 
     const options = songs.map(song => {
@@ -18,10 +18,10 @@ class PlaylistAdd extends React.Component {
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
       </head>
       <body>
-      <h3>Add Songs To Playlist</h3>
-      <form method="POST" action={`/playlist/${playlist.id}`}>
+      <h3>Add Songs To Artist</h3>
+      <form method="POST" action={`/artist/${artist.id}/songs`}>
       <h4>Name</h4>
-      <p>{playlist.name}</p>
+      <p>{artist.name}</p>
       <h4>Add Songs</h4>
       <select className="selectpicker" multiple data-live-search="true" name="songs">
       {options}
@@ -39,4 +39,4 @@ class PlaylistAdd extends React.Component {
 }
 }
 
-module.exports = PlaylistAdd;
+module.exports = ArtistSongAdd;

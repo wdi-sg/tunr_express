@@ -122,6 +122,27 @@ app.get('/artists/:id/songs', (request, response) => {
   })
 });
 
+app.get('/artists/:id/songs/new', (request, response) => {
+  const artistId = request.params.id;
+
+  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
+    if (error) {
+      console.log('artist query error: ', error.message. stack);
+    } else {
+      const artist = result.rows[0];
+
+      pool.query('SELECT * FROM songs', (error, result) => {
+        if (error) {
+          console.log('query error: ', error.message, error.stack);
+        } else {
+          const songList = result.rows;
+          response.render('artist-addsong', {'artist': artist, 'songList': songList});
+        }
+      })
+    }
+  })
+});
+
 
 
 /**
