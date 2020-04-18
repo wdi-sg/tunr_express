@@ -18,6 +18,8 @@ const run = async () => {
   app.use(express.urlencoded({ extended: true }))
   app.use(methodOverride('_method'))
 
+
+  app.get(APP_ROOT, (req,res) => res.redirect(`${APP_ROOT}\songs`))
   app.use(APP_ROOT, artistRoute)
   app.use(APP_ROOT, songRoute)
 
