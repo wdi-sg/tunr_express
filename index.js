@@ -95,10 +95,31 @@ app.get('/artists/:id', async function (req, res) {
   let artistId = [req.params.id];
   let getArtist =
       "SELECT * FROM artists " +
-      "WHERE id = $1";
+      "WHERE id >= $1 " +
+      "ORDER BY id LIMIT 2";
   let artistResult = await makeQuery(getArtist, artistId);
 
-  res.render('artistview', {artist: artistResult[0]});
+  let prevArtistQuery =
+      "SELECT * FROM artists " +
+      "WHERE id < $1 " +
+      "ORDER BY id LIMIT 1";
+  let prevArtistResult = await makeQuery(prevArtistQuery, artistId);
+
+  console.log(artistResult);
+  console.log(prevArtistResult);
+
+  let prevArtist = prevArtistResult.length === 0 ? 0 : prevArtistResult[0].id;
+  let nextArtist = artistResult.length === 1 ? 0 : artistResult[1].id;
+
+  let data = {
+    artist: artistResult[0],
+    prevArtistId: prevArtist,
+    nextArtistId: nextArtist
+  };
+
+  console.log(data);
+
+  res.render('artistview', data);
 });
 
 app.get('/artists/:id/edit', async function (req, res) {
