@@ -113,4 +113,4 @@ app.get('/artists/:id/edit', async function (req, res) {
 
 // start server listen
 const PORT = process.env.PORT || 3000;
-app.listen(PORT);
+app.listen(PORT, () => console.log("Listening on port " + PORT));
