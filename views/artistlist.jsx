@@ -8,7 +8,7 @@ class ArtistList extends React.Component {
       let key = `artist-${artist.id}`;
       let link = `/artists/${artist.id}`;
       return (
-        <a className="text-info list-group-item list-group-item-action"
+        <a key={key} className="text-info list-group-item list-group-item-action"
            href={link}>{artist.name}</a>
       );
     });
