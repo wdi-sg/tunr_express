@@ -157,6 +157,29 @@ app.put('/artists/:id', async function (req, res) {
   res.redirect(`/artists/${req.body.id}`);
 });
 
+app.get('/artists/:id/delete', async function (req, res) {
+  let artistId = [Number(req.params.id)];
+
+  let artistQuery = "SELECT name FROM artists WHERE id = $1";
+  let artistName = await makeQuery(artistQuery, artistId);
+
+  let songQuery =
+      "SELECT id, title, album " +
+      "FROM songs " +
+      "WHERE artist_id = $1 " +
+      "ORDER BY album, id";
+
+  let songResults = await makeQuery(songQuery, artistId);
+
+  let data = {
+    name: artistName[0].name,
+    id: req.params.id,
+    songs: songResults
+  };
+
+  res.render('artistdelete', data);
+});
+
 app.delete('/artists/:id', async function (req, res) {
   let artistInfo = [
     Number(req.params.id),
