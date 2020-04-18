@@ -44,7 +44,7 @@ app.engine('jsx', reactEngine);
 
 /**
 * ===================================
-* GET Routes
+* GET Routes Artists
 * ===================================
 */
 
@@ -118,6 +118,29 @@ app.get('/artists/:id/songs', (request, response) => {
 
 /**
 * ===================================
+* GET Routes Playlists
+* ===================================
+*/
+
+app.get('/playlists/', (request, response) => {
+  response.send('under construciton');
+});
+
+app.get('/playlists/new', (request, response) => {
+  pool.query('SELECT * FROM songs', (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const songList = result.rows;
+      response.render('new-playlist', {"songList": songList});
+    }
+  })
+})
+
+
+
+/**
+* ===================================
 * POST Routes
 * ===================================
 */
@@ -138,6 +161,47 @@ app.post('/artists', (request, response) => {
       response.render('success');
     }
   });
+});
+
+app.post('/playlists', (request, response) => {
+  const name = request.body.name;
+  const songs = request.body.songs;
+
+  pool.query('INSERT INTO playlist (name) VALUES ($1) RETURNING id', [name], (error, result) => {
+    if (error) {
+      console.log('playlist insery error: ', error.message, error.stack);
+    } else {
+      const playlist_id = result.rows[0].id;
+
+      pool.query('SELECT id, title FROM songs', (error, result) => {
+        if (error) {
+          console.log('query error: ', error.message, error.stack);
+        } else {
+          const songList = result.rows;
+
+          const songsId = songs.map(song => {
+            for (let i = 0; i < songList.length; i++) {
+              if (songList[i].title === song) {
+                return songList[i].id;
+              }
+            }
+          })
+
+          songsId.forEach(songId => {
+            pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlist_id], (error, result) => {
+              if (error) {
+                console.log(`error inserting song_id ${songId}: `, error.message, error.stack);
+              } else {
+                console.log('done!');
+              }
+            })
+          })
+
+          response.render('success');
+        }
+      })
+    }
+  })
 })
 
 
