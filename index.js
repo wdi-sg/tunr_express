@@ -61,7 +61,13 @@ app.get('/artists', async function (req, res) {
 });
 
 app.get('/artists/new', (req, res) => {
-  res.render('artistform');
+  let data = {
+    name: "",
+    photo_url: "",
+    nationality: "",
+    new: true
+  };
+  res.render('artistform', data);
 });
 
 app.post('/artists/new', async function (req, res) {
