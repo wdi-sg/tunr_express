@@ -44,6 +44,10 @@ app.get("/", (request, response) => {
   response.render("home");
 });
 
+//----------------------------------
+//-----------ARTIST ROUTES----------
+//----------------------------------
+
 //VIEW ALL ARTISTS
 app.get("/artists/", (request, response) => {
   let queryText = "SELECT * from artists ORDER BY name ASC";
@@ -120,6 +124,10 @@ app.get("/artists/:id/songs", (request, response) => {
   });
 });
 
+//----------------------------------
+//-----------SONG ROUTES------------
+//----------------------------------
+
 //VIEW ALL SONGS
 app.get("/songs", (request, response) => {
   let queryText =
@@ -163,9 +171,8 @@ app.post("/songs/new", (request, response) => {
 app.get("/songs/:sid/add", (request, response) => {
   let songId = parseInt(request.params.sid);
   let queryText = `SELECT playlist_id FROM playlist_song WHERE song_id=${songId}`;
-  // console.log(queryText);
+  //ensures that only playlist(s) that do not have the song already are displayed
   pool.query(queryText, (err, result) => {
-    // console.log(result.rows);
     if (!lodash.isEmpty(result.rows)) {
       let inPlaylist = result.rows;
       let string = `id != ${inPlaylist[0].playlist_id}`;
@@ -175,7 +182,6 @@ app.get("/songs/:sid/add", (request, response) => {
       queryText = `SELECT * FROM playlist WHERE ${string}`;
       console.log(queryText);
       pool.query(queryText, (err, result) => {
-        // console.log(result.rows);
         let obj = {
           plArr: result.rows,
           songId: songId
@@ -205,6 +211,10 @@ app.get("/songs/:sid", (request, response) => {
     response.render("display-one-song", result.rows[0]);
   });
 });
+
+//----------------------------------
+//----------PLAYLIST ROUTES---------
+//----------------------------------
 
 //CAPTURE SONG-ADD-PLAYLIST DATA AND DISPLAY ALL PLAYLISTS
 app.post("/playlist", (request, response) => {
