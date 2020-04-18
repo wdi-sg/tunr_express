@@ -134,6 +134,24 @@ Playlist Part
 
 ***************/
 
+////////////Show All playlists
+app.get('/playlist', (requet,response) => {
+    let queryString = `select * from playlist`
+
+    pool.query(queryString, (err, result) => {
+        if(err){
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        }
+        else{
+            const data = {"result" : result.rows};
+            response.render('allplaylists', data);
+        }
+    })
+})
+
+////////////
+//////////// Creating new Playlist
 app.get('/playlists/new', (request, response) => {
     response.render('newplaylist');
 })
@@ -151,6 +169,7 @@ app.post('/playlists/show', (request, response) => {
             response.send('query error');
         }
         else{
+            const data = result.rows;
             response.send(result.rows);
         }
     })
