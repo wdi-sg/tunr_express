@@ -64,13 +64,12 @@ app.post('/artists/new', async function (req, res) {
     req.body.photo_url,
     req.body.nationality
   ];
-
   let insertArtist =
       "INSERT INTO artists (name, photo_url, nationality) " +
       "VALUES ($1, $2, $3) " +
       "RETURNING id";
-
   let newArtistId = await makeQuery(insertArtist, newArtistValues);
+
   res.redirect(`/artists/${newArtistId[0].id}`);
 });
 
