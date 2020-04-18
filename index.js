@@ -139,6 +139,24 @@ app.get('/artists/:id/edit', async function (req, res) {
   res.render('artistform', data);
 });
 
+app.put('/artists/:id', async function (req, res) {
+  let artistInfo = [
+    Number(req.body.id),
+    req.body.name,
+    req.body.photo_url,
+    req.body.nationality
+  ];
+
+  let updateQuery =
+      "UPDATE artists " +
+      "SET (name, photo_url, nationality) = " +
+      "($2, $3, $4) " +
+      "WHERE id = $1";
+
+  await makeQuery(updateQuery, artistInfo);
+  res.redirect(`/artists/${req.body.id}`);
+});
+
 // start server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Listening on port " + PORT));
