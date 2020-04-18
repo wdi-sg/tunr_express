@@ -102,7 +102,7 @@ app.get('/artists/:id', async function (req, res) {
   let prevArtistQuery =
       "SELECT * FROM artists " +
       "WHERE id < $1 " +
-      "ORDER BY id LIMIT 1";
+      "ORDER BY id DESC LIMIT 1";
   let prevArtistResult = await makeQuery(prevArtistQuery, artistId);
 
   console.log(artistResult);
