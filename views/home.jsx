@@ -2,7 +2,7 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
-        console.log('home.jsx')
+        // console.log('home.jsx')
     return (
       <html>
         <head />

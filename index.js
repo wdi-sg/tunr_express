@@ -141,7 +141,7 @@ app.get('/artists/:id', (req, res) => {
             const data = {
                 artist : artistProfileResult.rows[0]
             };
-            console.log(data);
+            // console.log(data);
             res.render('show-artist', data);
         };
     });
@@ -149,10 +149,10 @@ app.get('/artists/:id', (req, res) => {
 
 
 
-//?????????????????????????????????????????????????????????????????????
+//------------------------------------------------------
 // EDIT FORM
-// - on-going -
-//
+// - DONE -
+//------------------------------------------------------
 app.get('/artists/:id/edit', (req, res) => {
     const editArtistProfile = 'SELECT * FROM artists WHERE id ='+req.params.id;
     pool.query(editArtistProfile, (editArtistProfileErr, editArtistProfileResult) => {
@@ -170,10 +170,10 @@ app.get('/artists/:id/edit', (req, res) => {
     });
 });
 
-//?????????????????????????????????????????????????????????????????????
+//------------------------------------------------------
 // EDIT (UPDATE) Artist
-// - on-going -
-//
+// - DONE -
+//------------------------------------------------------
 app.put('/artists/:id', (req, res) => {
     const putArtistProfile = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id='+req.params.id;
 
@@ -188,7 +188,24 @@ app.put('/artists/:id', (req, res) => {
             res.redirect('/artists/'+req.params.id);
         };
     });
+});
 
+//------------------------------------------------------
+// DELETE Artist
+// - DONE -
+//------------------------------------------------------
+app.delete('/artists/:id', (req, res) => {
+    const deleteArtist = 'DELETE FROM artists WHERE id='+req.params.id;
+
+    pool.query(deleteArtist, (deleteArtistErr) => {
+        if (deleteArtistErr) {
+            console.log(deleteArtistErr);
+            res.status(500);
+            res.send('ERR');
+        } else {
+            res.redirect('/artists');
+        };
+    });
 });
 
 

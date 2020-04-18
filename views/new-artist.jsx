@@ -2,7 +2,7 @@ var React = require("react");
 
 class NewArtist extends React.Component {
   render() {
-        console.log("new-artists.jsx");
+        // console.log("new-artists.jsx");
 
         const artistsKeys = ['Name', 'Photo_url', 'Nationality'];
         const formInput = artistsKeys.map((artistsKey) => {

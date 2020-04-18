@@ -2,7 +2,7 @@ var React = require("react");
 
 class Artists extends React.Component {
   render() {
-    console.log('artists.jsx')
+    // console.log('artists.jsx')
     const artistsNameList = this.props.rows.map((artist) => {
         return <li key={artist.id}><a href={'/artists/'+artist.id}>{artist.name}</a></li>
     })

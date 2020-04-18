@@ -3,7 +3,7 @@ var React = require("react");
 class EditArtist extends React.Component {
   render() {
 
-        console.log("new-artists.jsx");
+        // console.log("new-artists.jsx");
         let artistData = this.props.artist;
 
         // link to reset Artist
