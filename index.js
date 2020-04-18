@@ -113,6 +113,24 @@ app.get("/artists/:id/songs", (request, response) => {
   });
 });
 
+//VIEW ALL SONGS
+app.get("/songs", (request, response) => {
+  let queryText = "SELECT * FROM songs ORDER BY id ASC";
+  pool.query(queryText, (err, result) => {
+
+  });
+});
+
+//VIEW ONE SONG
+app.get("/songs/:sid", (request, response) => {
+  let songId = parseInt(request.params.sid);
+  let queryText = `SELECT * FROM songs WHERE id=${songId}`;
+  pool.query(queryText, (err, result) => {
+    // console.log(result.rows);
+    response.render("display-one-song", result.rows[0]);
+  });
+});
+
 //VIEW ALL PLAYLISTS 
 app.get("/playlist", (request, response) => {
   let queryText = "SELECT * FROM playlist ORDER BY name ASC";

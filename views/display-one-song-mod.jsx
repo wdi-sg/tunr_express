@@ -7,13 +7,18 @@ class DisplayOneSongMod extends React.Component {
 
     return (
       <div>
-        <h4>TITLE: {song.title}</h4>
+        <h4>Title: {song.title}</h4>
         <ul>
-          <li>ID: {song.id}</li>
-          <li>ALBUM: {song.album}</li>
-          {/* <li>PREVIEW: <img src={song.preview_link} height="300" width="300"></img></li>
-          <li>ARTWORK: <img src={song.artwork} height="300" width="300"></img></li> */}
+          <li>Id: {song.id}</li>
+          <li>Album: {song.album}</li>
+          <li>Preview: 
+            <br></br>
+            <img src={song.preview_link} height="300" width="300"></img></li>
+          <li>Artwork: 
+            <br></br>
+            <img src={song.artwork} height="300" width="300"></img></li>
         </ul>
+        <br></br>
       </div>
     );
   }
