@@ -1,18 +1,22 @@
 const React = require('react');
 const Head = require('./head');
 
-class filename extends React.Component {
+class ArtistView extends React.Component {
   render() {
-    console.log(this.props.artist);
     return (
       <html>
-        {Head}
+        <Head />
 
         <body>
           <div className="container text-center">
-            <h4>{this.props.artist.name}</h4>
-            <img src={this.props.artist.photo_url} />
-            <p>From: {this.props.artist.nationality}</p>
+            <div className="row my-3">
+              <div className="col-8 offset-2">
+                <h4>{this.props.artist.name}</h4>
+                <img src={this.props.artist.photo_url}
+                     width="200px"/>
+                <h4>{this.props.artist.nationality}</h4>
+              </div>
+            </div>
           </div>
         </body>
       </html>
@@ -20,4 +24,4 @@ class filename extends React.Component {
   }
 }
 
-module.exports = filename;
+module.exports = ArtistView;
