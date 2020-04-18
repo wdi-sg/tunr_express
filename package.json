@@ -4,7 +4,8 @@
   "description": "We're going to be building Tunr, the worlds #1 music catalog / player (those Spotify haters can't keep up with us).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -13,11 +14,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3",
-    "express-react-views": "^0.10.5",
+    "@react-ssr/core": "latest",
+    "@react-ssr/express": "latest",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "method-override": "^3.0.0",
     "pg": "^7.4.3",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "bulma": "^0.8.2"
   }
 }
