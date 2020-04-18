@@ -6,7 +6,8 @@ class DisplayOnePlaylist extends React.Component {
     let link = "/playlist/" + plid;
     let songsArr = this.props.songsArr;
     let songsArrHtml = songsArr.map((element) => {
-      return <li>{element.title}</li>;
+      let link2 = "/songs/" + element.id;
+      return <li><a href={link2}>{element.title}</a></li>;
     });
 
     return (

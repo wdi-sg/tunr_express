@@ -2,6 +2,7 @@ const express = require("express");
 const methodOverride = require("method-override");
 const pg = require("pg");
 const app = express();
+const lodash = require("lodash");
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -121,12 +122,13 @@ app.get("/artists/:id/songs", (request, response) => {
 
 //VIEW ALL SONGS
 app.get("/songs", (request, response) => {
-  let queryText = "SELECT songs.id, songs.title, artists.name FROM songs JOIN artists ON (artists.id = songs.artist_id) ORDER BY songs.title ASC";
+  let queryText =
+    "SELECT songs.id, songs.title, artists.name FROM songs JOIN artists ON (artists.id = songs.artist_id) ORDER BY songs.title ASC";
   pool.query(queryText, (err, result) => {
     console.log(result.rows);
     let obj = {
-      songsArr: result.rows
-    }
+      songsArr: result.rows,
+    };
     response.render("display-all-songs-list", obj);
   });
 });
@@ -154,6 +156,41 @@ app.post("/songs/new", (request, response) => {
     console.log(result.rows);
     let link = "http://127.0.0.1:3000/songs/" + result.rows[0].id;
     response.redirect(link);
+  });
+});
+
+//DISPLAY PLAYLIST OPTIONS FOR EACH SONG
+app.get("/songs/:sid/add", (request, response) => {
+  let songId = parseInt(request.params.sid);
+  let queryText = `SELECT playlist_id FROM playlist_song WHERE song_id=${songId}`;
+  console.log(queryText);
+  pool.query(queryText, (err, result) => {
+    console.log(result.rows);
+    if (!lodash.isEmpty(result.rows)) {
+      let inPlaylist = result.rows;
+      let string = `id != ${inPlaylist[0].playlist_id}`;
+      for (let i = 1; i < inPlaylist.length; i++) {
+        string = string + ` AND id != ${inPlaylist[i].playlist_id}`;
+      }
+      queryText = `SELECT * FROM playlist WHERE ${string}`;
+      console.log(queryText);
+      pool.query(queryText, (err, result) => {
+        console.log(result.rows);
+        let obj = {
+          plArr: result.rows
+        };
+        response.render("song-add-playlist", obj);
+      });
+    } else {
+      queryText = `SELECT * FROM playlist ORDER BY name ASC`;
+      pool.query(queryText, (err, result) => {
+        console.log(result.rows);
+        let obj = {
+          plArr: result.rows
+        };
+        response.render("song-add-playlist", obj);
+      });
+    }
   });
 });
 
