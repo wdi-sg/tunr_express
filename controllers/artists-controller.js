@@ -28,7 +28,7 @@ module.exports.postAddArtist = async (req, res) => {
     const queryV = [req.body.name, req.body.nationality, req.body['image link']];
     const { rows } = await db.query(queryT, queryV);
 
-    res.redirect(`./${rows[0].id}`);
+    res.redirect(`./artists/${rows[0].id}`);
 
 }
 

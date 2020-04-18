@@ -2,16 +2,19 @@ const db = require('../util/database.js');
 
 module.exports.getArtistSongById = async (req, res) => {
 
-    console.log(req.song);
-
-    !req.song.title ? res.render('404') : res.render('./songs/song-single.jsx', { 'singleSong': req.song });
+    res.render('./songs/song-single.jsx', { 'singleSong': req.song });
 
 }
 
 module.exports.getAllSongsOfArtist = async (req, res) => {
 
-    const queryT = `SELECT * FROM songs WHERE artist_id = ${req.artist.id}`
-    const { rows } = await db.query(queryT);
+    try {
+        const queryT = `SELECT * FROM songs WHERE artist_id = ${req.artist.id}`
+        const { rows } = await db.query(queryT);
+    } catch (e) {
+        res.render('404');
+        console.log(e);
+    }
 
     !rows[0] ? res.render('404') : res.render('./songs/song-all.jsx', {
         'allSongs': rows,
