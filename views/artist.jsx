@@ -3,7 +3,6 @@ var React = require("react");
 class Artist extends React.Component {
   render() {
     const artist = this.props.artist;
-    console.log(artist.photo_url)
 
     return (
       <html>

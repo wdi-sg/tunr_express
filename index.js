@@ -42,6 +42,14 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+async function asyncForEach(array, callback) {
+  for (let i = 0; i < array.length; i++) {
+    await callback(array[i], i, array);
+  }
+}
+
+const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
 /**
 * ===================================
 * GET Routes Artists
@@ -135,7 +143,44 @@ app.get('/playlists/new', (request, response) => {
       response.render('new-playlist', {"songList": songList});
     }
   })
-})
+});
+
+app.get('/playlists/:id', (request, response) => {
+  const playlistId = request.params.id;
+
+  pool.query('SELECT * FROM playlist_song WHERE playlist_id=$1', [playlistId], (error, result) => {
+    if (error) {
+      console.log('playlist songs query error: ', error.message, error.stack);
+    } else {
+      const playlistSongs = result.rows;
+      const songs = [];
+
+      const playlistSongsQuery = async () => {
+        await asyncForEach(playlistSongs, async playlistSong => {
+          await waitFor(50);
+          pool.query('SELECT * FROM songs WHERE id=$1', [playlistSong.song_id], (error, result) => {
+            if (error) {
+              console.log('song query error: ', error.message, error.stack);
+            } else {
+              songs.push(result.rows[0]);
+            }
+          })
+        })
+
+        pool.query('SELECT * FROM playlist WHERE id=$1', [playlistId], (error, result) => {
+          if (error) {
+            console.log('playlist query error: ', error.message, error.stack);
+          } else {
+            const playlist = result.rows[0];
+            response.render('playlist', {"playlist": playlist, "songs": songs});
+          }
+        })
+      };
+
+      playlistSongsQuery();
+    }
+  })
+});
 
 
 
