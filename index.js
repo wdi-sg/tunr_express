@@ -31,8 +31,9 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-// const methodOverride = require('method-override');
-// app.use(methodOverride('_method'));
+// For PUT or DELETE
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 
 
 // Sets a layout look to your express project
@@ -62,15 +63,20 @@ app.set('view engine', 'jsx');
 // - newArtistId
 
 // '/artists/:id'
-// - artistId
 // - artistProfile
 // - artistProfileResult
+
+// '/artists/:id/edit'
+// - editArtistProfile
+// - editArtistProfileErr
+// - editArtistProfileResult
+
 
 // '/' MAIN (HOME PAGE)
 //jsx: home
 
 //------------------------------------------------------
-// List out all ARTIST in HTML.
+// INDEX. List out all ARTIST in HTML.
 // - DONE (to artists.jsx) -
 //------------------------------------------------------
 app.get('/artists', (req, res) => {
@@ -78,7 +84,7 @@ app.get('/artists', (req, res) => {
     const allArtistsQ = 'SELECT * from artists';
     const whenQueryDone = (queryError, allArtistsResult) => {
         if (queryError) {
-            console.log(querryError);
+            console.log(queryError);
             res.status(500);
             res.send('db error');
         } else {
@@ -95,29 +101,6 @@ app.get('/artists', (req, res) => {
 app.get('/artists/new', (req, res) => {
     //FORM to add new artists
     res.render('new-artist')
-});
-
-//------------------------------------------------------
-// SHOW ARTIST by ID
-// - DONE (to show-artist.jsx) -
-//------------------------------------------------------
-app.get('/artists/:id', (req, res) => {
-    const artistId = req.params.id;
-    const artistProfile = 'SELECT * FROM artists WHERE id ='+artistId;
-    pool.query(artistProfile, (artistProfileErr, artistProfileResult) => {
-        if (artistProfileErr) {
-            console.error(artistProfileErr);
-            res.send( 'query error' );
-        } else {
-            // console.log('query result:', artistResult);
-            // show info about artist selected.
-            const data = {
-                artist : artistProfileResult.rows[0]
-            }
-            console.log(data);
-            res.render('show-artist', data);
-        };
-    });
 });
 
 //------------------------------------------------------
@@ -141,24 +124,73 @@ app.post('/artists', (req, res) => {
     pool.query(newArtistProfile, newArtistValues, whenQueryDone);
 });
 
-//?????????????????????????????????????????????????????
+//------------------------------------------------------
+// SHOW ARTIST by ID
+// - DONE (to show-artist.jsx) -
+//------------------------------------------------------
+app.get('/artists/:id', (req, res) => {
+    const artistProfile = 'SELECT * FROM artists WHERE id ='+req.params.id;
+    pool.query(artistProfile, (artistProfileErr, artistProfileResult) => {
+        if (artistProfileErr) {
+            console.log(artistProfileErr);
+            res.status(500);
+            res.send('ERR');
+        } else {
+            // console.log('query result:', artistResult);
+            // show info about artist selected.
+            const data = {
+                artist : artistProfileResult.rows[0]
+            };
+            console.log(data);
+            res.render('show-artist', data);
+        };
+    });
+});
+
+
+
+//?????????????????????????????????????????????????????????????????????
+// EDIT FORM
+// - on-going -
 //
-// -  -
-//?????????????????????????????????????????????????????
-// app.get('/songs', (req, res) => {
-//     // query database for all artists
-//     const allSongsQ = 'SELECT * from artists';
-//     const whenQueryDone = (queryError, allArtistsResult) => {
-//         if (queryError) {
-//             console.log(querryError);
-//             res.status(500);
-//             res.send('db error');
-//         } else {
-//             res.render('artists', allArtistsResult);
-//         }
-//     }
-//     pool.query(allArtistsQ, whenQueryDone);
-// });
+app.get('/artists/:id/edit', (req, res) => {
+    const editArtistProfile = 'SELECT * FROM artists WHERE id ='+req.params.id;
+    pool.query(editArtistProfile, (editArtistProfileErr, editArtistProfileResult) => {
+        if (editArtistProfileErr) {
+            console.log(editArtistProfileErr);
+            res.status(500);
+            res.send('ERR');
+        } else {
+            const data = {
+                artist : editArtistProfileResult.rows[0]
+            };
+            // console.log(data);
+            res.render('edit-artist', data);
+        };
+    });
+});
+
+//?????????????????????????????????????????????????????????????????????
+// EDIT (UPDATE) Artist
+// - on-going -
+//
+app.put('/artists/:id', (req, res) => {
+    const putArtistProfile = 'UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id='+req.params.id;
+
+    const putArtistValues = [req.body.name, req.body.photo_url, req.body.nationality];
+
+    pool.query(putArtistProfile, putArtistValues, (putArtistProfileErr, putArtistProfileResult) => {
+        if (putArtistProfileErr) {
+            console.log(putArtistProfileErr);
+            res.status(500);
+            res.send('ERR');
+        } else {
+            res.redirect('/artists/'+req.params.id);
+        };
+    });
+
+});
+
 
 
 //------------------------------------------------------
