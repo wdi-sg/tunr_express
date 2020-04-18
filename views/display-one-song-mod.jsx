@@ -2,7 +2,6 @@ var React = require("react");
 
 class DisplayOneSongMod extends React.Component {
   render() {
-    
     let song = this.props.song;
 
     return (
@@ -11,12 +10,16 @@ class DisplayOneSongMod extends React.Component {
         <ul>
           <li>Id: {song.id}</li>
           <li>Album: {song.album}</li>
-          <li>Preview: 
+          <li>
+            Preview:
             <br></br>
-            <img src={song.preview_link} height="300" width="300"></img></li>
-          <li>Artwork: 
+            <img src={song.preview_link} height="300" width="300"></img>
+          </li>
+          <li>
+            Artwork:
             <br></br>
-            <img src={song.artwork} height="300" width="300"></img></li>
+            <img src={song.artwork} height="300" width="300"></img>
+          </li>
         </ul>
         <br></br>
       </div>

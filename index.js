@@ -92,7 +92,7 @@ app.get("/artists/:id/edit", (request, response) => {
   });
 });
 
-//DISPLAY EDITED ARTIST DETAILS
+//CAPTURE AND DISPLAY EDITED ARTIST DETAILS
 app.post("/artists/:id/edit", (request, response) => {
   let id = request.params.id;
   let queryText = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id=${id} RETURNING *`;
@@ -159,21 +159,6 @@ app.post("/songs/new", (request, response) => {
   });
 });
 
-//CAPTURE SONG ADD PLAYLIST DATA AND DISPLAY ALL PLAYLISTS
-app.post("/playlist", (request, response) => {
-  console.log(request.body);
-  let obj = request.body;
-  for (let i=0; i<obj.playlist_id.length; i++) {
-    let queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${obj.playlist_id[i]}, ${obj.song_id}) RETURNING *`;
-    pool.query(queryText, (err, result) => {
-      console.log(result.rows);
-      return;
-    });
-  }
-  response.redirect("http://127.0.0.1:3000/playlist");
-});
-
-
 //DISPLAY PLAYLIST OPTIONS FOR EACH SONG
 app.get("/songs/:sid/add", (request, response) => {
   let songId = parseInt(request.params.sid);
@@ -211,16 +196,28 @@ app.get("/songs/:sid/add", (request, response) => {
   });
 });
 
-
-
 //VIEW ONE SONG
 app.get("/songs/:sid", (request, response) => {
   let songId = parseInt(request.params.sid);
-  let queryText = `SELECT * FROM songs WHERE id=${songId}`;
+  let queryText = `SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name FROM songs JOIN artists ON (songs.artist_id = artists.id) WHERE songs.id=${songId}`;
   pool.query(queryText, (err, result) => {
-    // console.log(result.rows);
+    console.log(result.rows);
     response.render("display-one-song", result.rows[0]);
   });
+});
+
+//CAPTURE SONG-ADD-PLAYLIST DATA AND DISPLAY ALL PLAYLISTS
+app.post("/playlist", (request, response) => {
+  console.log(request.body);
+  let obj = request.body;
+  for (let i=0; i<obj.playlist_id.length; i++) {
+    let queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${obj.playlist_id[i]}, ${obj.song_id}) RETURNING *`;
+    pool.query(queryText, (err, result) => {
+      console.log(result.rows);
+      return;
+    });
+  }
+  response.redirect("http://127.0.0.1:3000/playlist");
 });
 
 //VIEW ALL PLAYLISTS
@@ -272,20 +269,18 @@ app.get("/playlist/:plid/newsong", (request, response) => {
 
 //CAPTURES NEW PLAYLIST SONG DATA AND DISPLAYS IT
 app.post("/playlist/:plid", (request, response) => {
-  // console.log(request.body);
   let playlistId = parseInt(request.body.plid);
   let songStr = request.body.song_selected;
   let res = songStr.split(". ");
   let selectedSongId = parseInt(res[0]);
-  // console.log(selectedSongId);
   let queryText = `SELECT song_id FROM playlist_song WHERE playlist_id=${playlistId}`;
+  //Check if song already exists in playlist based on id
   pool.query(queryText, (err, result) => {
     let songArr = result.rows;
-    // console.log(songArr);
     let songExists = songArr.find((ele) => {
       return ele.song_id === selectedSongId;
     });
-    // console.log(songExists);
+    //If song already exists in playlist, prompt user to select an alternative song
     if (songExists) {
       let plName;
       queryText = `SELECT name FROM playlist WHERE id = ${playlistId}`;
@@ -301,14 +296,12 @@ app.post("/playlist/:plid", (request, response) => {
               "Song already exists in playlist. Please select an alternative.",
             defaultVal: songStr,
           };
-          // console.log(obj);
           response.render("playlist-add-song", obj);
         });
       });
     } else {
       queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${playlistId}, ${selectedSongId})`;
       pool.query(queryText, (err, results) => {
-        // console.log(result.rows);
         response.redirect("http://127.0.0.1:3000/playlist/" + playlistId);
       });
     }

@@ -1,4 +1,5 @@
 var React = require("react");
+var Main = require("./main");
 
 class SongAddPlaylist extends React.Component {
   render() {
@@ -18,45 +19,27 @@ class SongAddPlaylist extends React.Component {
       );
     });
 
-    return (
-      <html>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-            crossorigin="anonymous"
-          />
-        </head>
-        <body>
-          <div className="container">
-            <div className="row">
-              <div className="col mt-5">
-                <h3>
-                  <u>Add Song to Playlist</u>
-                </h3>
-                <br></br>
-                <form method="POST" action={link}>
-                  {plArrCheckbox}
-                  <input
-                    type="hidden"
-                    name="song_id"
-                    value={this.props.songId}
-                  />
-                  <br></br>
-                  <input
-                    className="btn btn-primary"
-                    type="submit"
-                    value="Submit"
-                  />
-                  <br></br>
-                </form>
-              </div>
-            </div>
+    const songAddPl = (
+      <div className="container">
+        <div className="row">
+          <div className="col mt-5">
+            <h3>
+              <u>Add Song to Playlist</u>
+            </h3>
+            <br></br>
+            <form method="POST" action={link}>
+              {plArrCheckbox}
+              <input type="hidden" name="song_id" value={this.props.songId} />
+              <br></br>
+              <input className="btn btn-primary" type="submit" value="Submit" />
+              <br></br>
+            </form>
           </div>
-        </body>
-      </html>
+        </div>
+      </div>
     );
+
+    return <Main children={songAddPl} />;
   }
 }
 

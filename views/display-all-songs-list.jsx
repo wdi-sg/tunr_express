@@ -1,4 +1,5 @@
 var React = require("react");
+var Main = require("./main");
 
 class DisplayAllSongsList extends React.Component {
   render() {
@@ -21,34 +22,23 @@ class DisplayAllSongsList extends React.Component {
       );
     });
 
-    return (
-      <html>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-            crossorigin="anonymous"
-          />
-        </head>
-        <body>
-          <div className="container">
-            <div className="row">
-              <div className="col mt-5">
-                <form method="GET" action={link}>
-                  <h3>
-                    <u>All Songs</u>
-                  </h3>
-                  <br></br>
-
-                  <ul>{songsArrHtml}</ul>
-                </form>
-              </div>
-            </div>
+    const displayAllSongsList = (
+      <div className="container">
+        <div className="row">
+          <div className="col mt-5">
+            <form method="GET" action={link}>
+              <h3>
+                <u>All Songs</u>
+              </h3>
+              <br></br>
+              <ul>{songsArrHtml}</ul>
+            </form>
           </div>
-        </body>
-      </html>
+        </div>
+      </div>
     );
+
+    return <Main children={displayAllSongsList} />;
   }
 }
 
