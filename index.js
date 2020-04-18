@@ -121,6 +121,42 @@ app.post('/artists', (request, response) => {
     })
 })
 
+
+
+/***************
+================
+================
+================
+Playlist Part
+================
+================
+================
+
+***************/
+
+app.get('/playlists/new', (request, response) => {
+    response.render('newplaylist');
+})
+
+app.post('/playlists/show', (request, response) => {
+    const artistName = request.body.playlist;
+
+    let queryString = 'insert into playlist (playlist_name) values ($1) returning *'
+
+    const values = [artistName];
+
+    pool.query(queryString, values, (err, result) => {
+        if(err) {
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        }
+        else{
+            response.send(result.rows);
+        }
+    })
+})
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
