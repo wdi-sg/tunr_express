@@ -45,8 +45,13 @@ pool.on('error', function (err) {
 
 // generic SQL query helper function
 const makeQuery = async function (query, values) {
-  let results = await pool.query(query, values);
-  return results.rows;
+  try {
+    let results = await pool.query(query, values);
+    return results.rows;
+  }
+  catch (err) {
+    return err;
+  }
 };
 
 // routes
