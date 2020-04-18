@@ -113,6 +113,18 @@ app.get("/artists/:id/songs", (request, response) => {
   });
 });
 
+//VIEW ALL PLAYLISTS 
+app.get("/playlist", (request, response) => {
+  let queryText = "SELECT * FROM playlist ORDER BY name ASC";
+  pool.query(queryText, (err, result) => {
+    console.log(result.rows);
+    let obj = {
+      plArr: result.rows
+    };
+    response.render("display-all-playlists", obj);
+  });
+});
+
 //VIEW CREATE NEW PLAYLIST PAGE
 app.get("/playlist/new", (request, response) => {
   response.render("new-playlist");
@@ -120,11 +132,11 @@ app.get("/playlist/new", (request, response) => {
 
 //CAPTURES NEW PLAYLIST DATA AND DISPLAYS IT
 app.post("/playlist/new", (request, response) => {
-  let queryText = `INSERT INTO playlist (name) VALUES ('${request.body.name}') RETURNING *`;
+  let queryText = `INSERT INTO playlist (name) VALUES ('${request.body.name}')`;
   pool.query(queryText, (err, result) => {
     let artistObj = result.rows[0];
     console.log(artistObj);
-    // response.render("display-one-artist", artistObj);
+    response.redirect("http://127.0.0.1:3000/playlist");
   });
 });
 

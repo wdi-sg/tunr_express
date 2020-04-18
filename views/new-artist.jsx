@@ -19,11 +19,12 @@ class NewArtist extends React.Component {
                 <h3><u>Add New Artist</u></h3>
                 <br></br>
                 <form method="POST" action="/artists/new">
-                  <input type="text" name="name" placeholder="Name" />
+                  <input type="text" className="form-control" name="name" placeholder="Name" />
                   <br></br>
                   <br></br>
                   <input
                     type="text"
+                    className="form-control"
                     name="photo_url"
                     placeholder="Photo URL Link"
                   />
@@ -33,6 +34,7 @@ class NewArtist extends React.Component {
                     type="text"
                     name="nationality"
                     placeholder="Nationality"
+                    className="form-control"
                   />
                   <br></br>
                   <br></br>
