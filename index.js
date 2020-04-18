@@ -101,6 +101,12 @@ app.get('/artists/:id', (request, response) => {
 });
 
 
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new artist
+  response.render('new');
+});
+
+
 app.get('/artists', (request, response) => {
   // query database for all artist
   let queryString = "SELECT * FROM artists";
@@ -118,9 +124,8 @@ app.get('/artists', (request, response) => {
 });
 
 
-app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new artist
-  response.render('new');
+app.get('/playlist/new', (request, response) => {
+  response.render('playlistnew');
 });
 
 
