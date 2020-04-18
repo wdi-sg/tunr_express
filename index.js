@@ -64,7 +64,7 @@ app.get('/artists/list', (request, response) => {
                 list: result.rows
             }
 
-        response.render('list_artists', data);
+        response.render('all_artists', data);
         }
     })
 });
@@ -150,6 +150,89 @@ app.post('/artists/songs', (request, response) => {
     })
 });
 
+//Edit artist's song
+app.get('/artists/:id/songs/:songId/edit', (request, response) => {
+    let artistId = request.params.id;
+    let songId = request.params.songId;
+    let querySongString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) WHERE songs.artist_id =' + artistId + 'AND songs.id =' + songId;
+
+    pool.query(querySongString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send("An error occurred when editing artist's songs 😢");
+        } else {
+            let queryArtistString = 'SELECT * FROM artists ORDER BY id ASC';
+            let songDetails = result.rows[0];
+
+            pool.query(queryArtistString, (err, result) => {
+                if (err) {
+                    console.log('Query Error', err.stack);
+                    response.send("An error occurred when editing artist's songs 😢");
+                } else {
+                    const data = {
+                        song: songDetails,
+                        artists: result.rows
+                    }
+
+                response.render('edit_song', data);
+                }
+            })
+
+        }
+    })
+})
+
+app.put('/artists/:id/songs/:songId', (request, response) => {
+
+    let songId = request.params.songId;
+    let updateDetails = request.body;
+    console.log(request.body)
+
+    let queryArtistString = "SELECT * FROM artists WHERE name='" + updateDetails.artist + "'";
+
+    pool.query(queryArtistString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send("An error occurred when updating songs 😢");
+        } else {
+            let artistId = result.rows[0].id;
+
+            let queryUpdateSongString = "UPDATE songs SET title='" + updateDetails.title + "', album='" + updateDetails.album + "', preview_link='" + updateDetails.preview_link + "', artwork='" + updateDetails.artwork + "', artist_id='" + artistId + "' WHERE id=" + songId;
+
+            console.log('update song:' , queryUpdateSongString)
+
+            pool.query(queryUpdateSongString, (err, result) => {
+                if (err) {
+                    console.log('Query Error', err.stack);
+                    response.send("An error occurred when updating songs 😢");
+                } else {
+                    let updatedSongPage = '/artists/' + artistId + '/songs/' + songId;
+                    response.redirect(updatedSongPage);
+                }
+            })
+        }
+    })
+})
+
+//Display individual song
+app.get('/artists/:id/songs/:songId', (request, response) => {
+    let artistId = request.params.id;
+    let songId = request.params.songId;
+    let queryString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) WHERE songs.artist_id =' + artistId + 'AND songs.id =' + songId;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send("An error occurred when editing artist's songs 😢");
+        } else {
+            const data = {
+                song: result.rows[0]
+            }
+
+        response.render('show_song', data);
+        }
+    })
+})
 
 //Display all songs of an artist
 app.get('/artists/:id/songs', (request, response) => {
@@ -168,6 +251,7 @@ app.get('/artists/:id/songs', (request, response) => {
 
             pool.query(queryArtistString, (err, result) => {
                 const data = {
+                    id: id,
                     songs: songs,
                     artist: result.rows
                 }
