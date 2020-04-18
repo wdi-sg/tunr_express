@@ -6,5 +6,5 @@ CREATE TABLE songs (
 	album VARCHAR (255),
 	preview_link VARCHAR (355),
 	artwork VARCHAR (355),
-	artist_id INTEGER REFERENCES artists(id)
+	artist_id INTEGER REFERENCES artists(id) ON DELETE CASCADE
 );
