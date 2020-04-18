@@ -3,7 +3,8 @@ var React = require("react");
 class ShowArtist extends React.Component {
   render() {
         // console.log('show-artist.jsx')
-        let artistData = this.props.artist;
+        let artistData = this.props.rows[0];
+        // let songsData = this.props.songs;
         // console.log(artistData.id);
 
         //link to Home Page
@@ -17,6 +18,8 @@ class ShowArtist extends React.Component {
 
         const artistDeleteLink = "/artists/" + artistData.id + "?_method=delete";
 
+        const artistSongsLink = "/artists/" + artistData.id + "/songs"
+
     return (
       <html>
         <head />
@@ -28,6 +31,7 @@ class ShowArtist extends React.Component {
             <p>Name: {artistData.name}</p>
             <p>Photo url: {artistData.photo_url}</p>
             <p>Nationality: {artistData.nationality}</p>
+            <p><a href={artistSongsLink}>Songs</a></p>
             <br/>
             <br/>
             <form method="POST" action={artistDeleteLink}>

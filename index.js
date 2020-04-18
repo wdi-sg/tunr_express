@@ -61,16 +61,20 @@ app.set('view engine', 'jsx');
 // - newArtistProfile
 // - newArtistValues
 // - newArtistId
-
+//---------------------------------
 // '/artists/:id'
 // - artistProfile
 // - artistProfileResult
-
+//---------------------------------
 // '/artists/:id/edit'
 // - editArtistProfile
 // - editArtistProfileErr
 // - editArtistProfileResult
-
+//---------------------------------
+// app.delete
+// - deleteArtist
+// - deleteArtistErr
+//---------------------------------
 
 // '/' MAIN (HOME PAGE)
 //jsx: home
@@ -104,6 +108,24 @@ app.get('/artists/new', (req, res) => {
 });
 
 //------------------------------------------------------
+// SHOW ARTIST by ID
+// - DONE (to show-artist.jsx) -
+//------------------------------------------------------
+app.get('/artists/:id', (req, res) => {
+    const artistProfile = 'SELECT * FROM artists WHERE id ='+req.params.id;
+    pool.query(artistProfile, (artistProfileErr, artistProfileResult) => {
+        if (artistProfileErr) {
+            console.log(artistProfileErr);
+            res.status(500);
+            res.send('ERR');
+        } else {
+            // console.log('query result:', artistProfileResult);
+            res.render('show-artist', artistProfileResult);
+        };
+    });
+});
+
+//------------------------------------------------------
 // Save NEW ARTIST
 // - DONE (from new-artist.jsx redirect to /artists/:id) -
 //------------------------------------------------------
@@ -124,11 +146,12 @@ app.post('/artists', (req, res) => {
     pool.query(newArtistProfile, newArtistValues, whenQueryDone);
 });
 
-//------------------------------------------------------
-// SHOW ARTIST by ID
-// - DONE (to show-artist.jsx) -
-//------------------------------------------------------
-app.get('/artists/:id', (req, res) => {
+//????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+// Display songs from artists with id = 1
+// - ON GOING -
+// /artists/1/songs
+
+app.get('/artists/:id/songs', (req, res) => {
     const artistProfile = 'SELECT * FROM artists WHERE id ='+req.params.id;
     pool.query(artistProfile, (artistProfileErr, artistProfileResult) => {
         if (artistProfileErr) {
@@ -136,18 +159,26 @@ app.get('/artists/:id', (req, res) => {
             res.status(500);
             res.send('ERR');
         } else {
-            // console.log('query result:', artistResult);
-            // show info about artist selected.
-            const data = {
-                artist : artistProfileResult.rows[0]
-            };
-            // console.log(data);
-            res.render('show-artist', data);
+                const artistSongs = "SELECT id, title FROM songs WHERE artist_id ="+req.params.id;
+                console.log(artistSongs);
+                pool.query(artistSongs, (artistSongsErr, artistSongsResult) => {
+                    if (artistSongsErr) {
+                        console.log(artistSongsErr);
+                        res.status(500);
+                        res.send('show songs err');
+                    } else {
+                        console.log(artistSongsResult)
+                        const artistSongsData = {
+                            artist: artistProfileResult,
+                            songs: artistSongsResult
+                        }
+                        console.log('query result:', artistSongsData);
+                        res.render('artist-songs', artistSongsData);
+                    }
+                });
         };
     });
 });
-
-
 
 //------------------------------------------------------
 // EDIT FORM
@@ -190,6 +221,14 @@ app.put('/artists/:id', (req, res) => {
     });
 });
 
+
+
+
+
+
+
+
+
 //------------------------------------------------------
 // DELETE Artist
 // - DONE -
@@ -207,6 +246,7 @@ app.delete('/artists/:id', (req, res) => {
         };
     });
 });
+
 
 
 
