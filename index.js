@@ -85,6 +85,69 @@ app.get('/artists/songs/', (request, response) => {
     })
 });
 
+////////////////////////////
+////  List of playlists  //
+//////////////////////////
+app.get('/playlists/', (request, response) => {
+    let queryString = 'SELECT * FROM playlist';
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when posting new playlist 😢');
+        } else {
+            const data = {
+                playlists: result.rows
+            }
+        response.render('all_playlists', data)
+        }
+    })
+});
+
+////////////////////////////
+////  Add new playlist   //
+//////////////////////////
+app.get('/playlists/new', (request, response) => {
+    let queryString = 'SELECT * FROM songs';
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when creating new artist 😢');
+        } else {
+            response.render('new_playlist');
+        }
+    })
+})
+
+app.post('/playlists/', (request, response) => {
+    console.log(request.body)
+    const newPlaylistName = request.body.name;
+    let queryInsertString = "INSERT INTO playlist (name) VALUES ('" + newPlaylistName + "')";
+
+    pool.query(queryInsertString, (err, result) => {
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when posting new playlist 😢');
+        } else {
+            let queryString = 'SELECT * FROM playlist';
+
+            pool.query(queryString, (err, result) => {
+                 if (err) {
+                    console.log('dbQuery Error', err.stack);
+                    response.send('An error occurred when posting new playlist 😢');
+                } else {
+                    const data = {
+                        playlists: result.rows
+                    }
+
+                response.render('all_playlists', data)
+                }
+            })
+        }
+    })
+})
+
 /////////////////////////////////////////
 ////  Create new artist (from home)  ///
 ///////////////////////////////////////
@@ -121,11 +184,16 @@ app.get('/artists/songs/new', (request, response) => {
     let queryString = 'SELECT * FROM artists ORDER BY id ASC'
 
     pool.query(queryString, (err, result) => {
-        const data = {
-            allArtists: result.rows
-        }
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send("An error occurred when displaying artist's songs 😢");
+        } else {
+            const data = {
+                allArtists: result.rows
+            }
 
-    response.render('new_song', data);
+        response.render('new_song', data);
+        }
     })
 });
 
@@ -135,7 +203,7 @@ app.post('/artists/songs', (request, response) => {
 
     pool.query(queryIdString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send("An error occurred when posting new song 😢");
         } else {
             const artistId = result.rows[0].id.toString();
@@ -143,15 +211,20 @@ app.post('/artists/songs', (request, response) => {
             let queryInsertString = 'INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)'
 
             pool.query(queryInsertString, values, (err, result) => {
-                const data = {
-                    title: newSong.title,
-                    album: newSong.album,
-                    preview_link: newSong.preview_link,
-                    artwork: newSong.artwork,
-                    artist_id: artistId,
-                    artist_name: newSong.artist
-                }
+                if (err) {
+                    console.log('dbQuery Error', err.stack);
+                    response.send("An error occurred when adding songs 😢");
+                } else {
+                    const data = {
+                        title: newSong.title,
+                        album: newSong.album,
+                        preview_link: newSong.preview_link,
+                        artwork: newSong.artwork,
+                        artist_id: artistId,
+                        artist_name: newSong.artist
+                    }
                 response.render('song', data);
+                }
             })
         }
     })
@@ -167,7 +240,7 @@ app.get('/artists/:id/songs/:songId/edit', (request, response) => {
 
     pool.query(querySongString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send("An error occurred when editing artist's songs 😢");
         } else {
             let queryArtistString = 'SELECT * FROM artists ORDER BY id ASC';
@@ -175,7 +248,7 @@ app.get('/artists/:id/songs/:songId/edit', (request, response) => {
 
             pool.query(queryArtistString, (err, result) => {
                 if (err) {
-                    console.log('Query Error', err.stack);
+                    console.log('dbQuery Error', err.stack);
                     response.send("An error occurred when editing artist's songs 😢");
                 } else {
                     const data = {
@@ -194,24 +267,21 @@ app.get('/artists/:id/songs/:songId/edit', (request, response) => {
 app.put('/artists/:id/songs/:songId', (request, response) => {
     let songId = request.params.songId;
     let updateDetails = request.body;
-    console.log(request.body)
 
     let queryArtistString = "SELECT * FROM artists WHERE name='" + updateDetails.artist + "'";
 
     pool.query(queryArtistString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send("An error occurred when updating songs 😢");
         } else {
             let artistId = result.rows[0].id;
 
             let queryUpdateSongString = "UPDATE songs SET title='" + updateDetails.title + "', album='" + updateDetails.album + "', preview_link='" + updateDetails.preview_link + "', artwork='" + updateDetails.artwork + "', artist_id='" + artistId + "' WHERE id=" + songId;
 
-            console.log('update song:' , queryUpdateSongString)
-
             pool.query(queryUpdateSongString, (err, result) => {
                 if (err) {
-                    console.log('Query Error', err.stack);
+                    console.log('dbQuery Error', err.stack);
                     response.send("An error occurred when updating songs 😢");
                 } else {
                     let updatedSongPage = '/artists/' + artistId + '/songs/' + songId;
@@ -231,7 +301,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
 
     pool.query(queryString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send("An error occurred when displaying artist's songs 😢");
         } else {
             const data = {
@@ -253,7 +323,7 @@ app.get('/artists/:id/songs/:songId', (request, response) => {
 
     pool.query(queryString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send("An error occurred when editing artist's songs 😢");
         } else {
             const data = {
@@ -274,8 +344,13 @@ app.delete('/artists/:id/songs/:songId', (request, response) => {
     let queryString = 'DELETE FROM songs WHERE id=' + songId;
 
     pool.query(queryString, (err, result) => {
-        let artistSongPage = '/artists/' + artistId + '/songs/';
-        response.redirect(artistSongPage);
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send("An error occurred when deleting song 😢");
+        } else {
+            let artistSongPage = '/artists/' + artistId + '/songs/';
+            response.redirect(artistSongPage);
+        }
     })
 });
 
@@ -289,19 +364,24 @@ app.get('/artists/:id/songs', (request, response) => {
 
     pool.query(querySongString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send("An error occurred when displaying artist's songs 😢");
         } else {
             let songs = result.rows;
             let queryArtistString = 'SELECT * FROM artists WHERE id=' + id;
 
             pool.query(queryArtistString, (err, result) => {
-                const data = {
-                    id: id,
-                    songs: songs,
-                    artist: result.rows
+                if (err) {
+                    console.log('dbQuery Error', err.stack);
+                    response.send("An error occurred when displaying artist's songs 😢");
+                } else {
+                    const data = {
+                        id: id,
+                        songs: songs,
+                        artist: result.rows
+                    }
+                response.render('artist_songs', data);
                 }
-            response.render('artist_songs', data);
             });
         }
     });
@@ -316,7 +396,7 @@ app.get('/artists/:id/edit', (request, response) => {
 
     pool.query(queryString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send("An error occurred when displaying artist's page 😢");
         } else {
             const data = {
@@ -332,8 +412,13 @@ app.put('/artists/:id', (request, response) => {
     const queryString = "UPDATE artists SET name='" + update.name + "', photo_url='" + update.photo_url + "', nationality='" + update.nationality + "' WHERE id=" + request.params.id;
 
     pool.query(queryString, (err, result) => {
-        let updatedArtistPage = '/artists/' + request.params.id;
-        response.redirect(updatedArtistPage);
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when updating artist information 😢');
+        } else {
+            let updatedArtistPage = '/artists/' + request.params.id;
+            response.redirect(updatedArtistPage);
+        }
     })
 })
 
@@ -342,11 +427,10 @@ app.put('/artists/:id', (request, response) => {
 /////////////////////////
 app.delete('/artists/:id', (request, response) => {
     const queryString = 'DELETE FROM artists WHERE id=' + request.params.id;
-    console.log('queryString:', queryString)
 
     pool.query(queryString, (err, result) => {
         if (err) {
-            console.log('Query Error', err.stack);
+            console.log('dbQuery Error', err.stack);
             response.send('An error occurred when deleting artist information 😢');
         } else {
             response.redirect('/artists/list');

@@ -3,11 +3,6 @@ const React = require("react");
 class New_Song extends React.Component {
   render() {
 
-    const allArtists = this.props.allArtists;
-    const allArtistsList = allArtists.map(artist => {
-        console.log(artist.name)
-        return(<option>{artist.name}</option>);
-    })
 
     return (
       <html>
@@ -19,7 +14,7 @@ class New_Song extends React.Component {
             <div className='container'>
                 <h1 className='text-center'>New Song</h1>
                 <br/>
-                <form method='POST' action='/artists/songs'>
+                <form method='POST' action='/playlist'>
                     <div className='row justify-content-center'>
                         <p>Title <input type='text' name='title' placeholder='Enter title'/>
                         </p>
