@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS playlist (
 
 CREATE TABLE IF NOT EXISTS songz (
 	id serial primary key,
-	song_name text
+	title text,
+	artist text,
+	added_at text not null default TO_CHAR(NOW() :: DATE, 'dd/mm/yyyy')
 );
 
 CREATE TABLE IF NOT EXISTS playlist_song (

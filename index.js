@@ -184,16 +184,83 @@ app.get('/playlist/:id/newsong', (request, response) => {
     // Identify playlist that is requested
     const queryString = `select * from playlist where id=${id}`
 
-    pool.query(queryString, (err, result) => {
-        if(err){
-            console.error('query error: ', err.stack);
-            response.send('query error');
-        }
-        else{
-            const data = {"playlistDetails" : result.rows};
-            response.render('newsong', data);
-        }
-    })
+    let playlistDetails;
+
+    // Async function to get all relevant details from database before rendering
+    async function getDetails(){
+        let promise = new Promise((resolve, reject) => {
+            // Get playlist details
+            pool.query(queryString, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    playlistDetails = result.rows;
+                    resolve('resolved');
+                }
+            })
+        })
+
+        await promise;
+
+        // Get all songs from database
+        const queryString2 = `select * from songs`
+
+        pool.query(queryString2, (err, result) => {
+            if(err){
+                console.error('query error: ', err.stack);
+                response.send('query error');
+            }
+            else{
+                const data = {"playlistDetails" : playlistDetails, "songList" : result.rows };
+                response.render('newsong', data);
+            }
+        })
+    }
+    getDetails()
+
+});
+
+
+app.post('/playlist/:id', (request, response) => {
+    const id = request.params.id;
+
+    async function addSong(){
+        // Add song into database songz
+        let queryString = 'insert into songz (title, artist) values ($1, $2) returning *'
+
+        const values = [request.body.title, request.body.artist]
+
+        let songDetails;
+
+        await pool.query(queryString, values, (err, result) => {
+            if(err){
+                console.error('query error: ', err.stack);
+                response.send('query error');
+            }
+            else{
+                songDetails = result.rows;
+                resolve('resolved');
+            }
+        })
+
+        // create relationship between song and playlist
+        let queryString2 = 'insert into playlist_song (playlist_id, song_id) values ($1, $2) returning *'
+
+        const values2 = [id, songDetails.id]
+        console.log(values2);
+        pool.query(queryString2, values2, (err, result) => {
+            if(err){
+                console.error('query error: ', err.stack);
+                response.send('query error');
+            }
+            else{
+                playlistSongDetails = result.rows;
+                console.log(playlistSongDetails);
+            }
+        })
+    }
 })
 
 //////////////Show individual playlist
@@ -213,6 +280,33 @@ app.get('/playlist/:id', (request, response) => {
             response.render('singleplaylist', data);
         }
     })
+
+    // // Identify playlist that is requested
+    // const queryString = `select * from playlist where id=${id}`
+
+    // let playlistDetails;
+
+    // // Async function to get playlist details from database
+    // async function getDetails(){
+    //     let promise = new Promise((resolve, reject) => {
+
+    //         pool.query(queryString, (err, result) => {
+    //             if(err){
+    //                 console.error('query error: ', err.stack);
+    //                 response.send('query error');
+    //             }
+    //             else{
+    //                 playlistDetails = result.rows;
+    //                 resolve('resolved');
+    //             }
+    //         })
+    //     })
+
+    //     await promise;
+
+
+    // }
+    // getDetails()
 })
 
 

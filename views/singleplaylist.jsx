@@ -46,6 +46,14 @@ class Singleplaylist extends React.Component {
                   <th scope="col">Songs</th>
                 </tr>
               </thead>
+                <tr>
+                  <th>
+                      <audio controls>
+                        <source src="http://a1748.phobos.apple.com/us/r1000/074/Music/d4/97/e7/mzm.bigdtgoz.aac.p.m4a" type="audio/mp3"></source>
+                        Your browser does not support the audio element.
+                      </audio>
+                  </th>
+                </tr>
               <tbody>
               </tbody>
             </table>
