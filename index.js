@@ -18,8 +18,8 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-// mount ./static onto virt path .pub
-app.use('/pub', express.static('./static'));
+// mount ./static onto virt path / (for subfolders)
+app.use('/', express.static('./static'));
 let options = {
   root: ('static'),
   dotfiles: 'deny',
