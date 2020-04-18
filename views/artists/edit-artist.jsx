@@ -11,10 +11,15 @@ class EditArtistForm extends React.Component {
             <html>
                 <Head />
                 <script defer src="scripts/edit-form.js" />
+                <div className="overlay"></div>
 
                 <body>
                     <Header />
                     <main>
+                        <div className="banner">
+                            <a href="/" className="nav__link home-link"><p>Home</p></a>
+                            <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
+                        </div>
                         <form method="POST" action={`/artists/${this.props.singleArtist.id}?_method=put`} className="edit-form">
                             <h2 className="edit-form__header">Edit Artist Information</h2>
                             <input type="text" name="name" placeholder="Name" maxLength="25" defaultValue={this.props.singleArtist.name} />

@@ -16,7 +16,7 @@ pool.on('error', function(err) {
 
 module.exports = {
     poolEnd: async () => {
-        await pool.end(() => console.log('Shut down db connection pool'));
+        await pool.end(() => console.log('\nShut down db connection pool'));
     },
 
     query: async (queryText, queryValues) => {
@@ -29,7 +29,7 @@ module.exports = {
             const res = await pool.query(queryText, queryValues);
 
             client.release();
-            console.log('released!');
+            console.log('client released!');
 
             return res;
 

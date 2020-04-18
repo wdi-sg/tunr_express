@@ -7,12 +7,13 @@ class NotFoundPage extends React.Component {
     render() {
         return (
             <html>
-                <head />
+                <Head />
+                <div className="overlay"></div>
                 <body>
                 <Header />
 
                     <main>
-                    <h1>Page not Found! TUNR</h1>
+                    <h1>Page not Found!</h1>
                     </main>
                 </body>
             </html>

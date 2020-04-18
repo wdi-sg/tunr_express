@@ -2,12 +2,27 @@ const express = require('express');
 const Router = require('express-promise-router');
 const router = new Router();
 const path = require('path');
+const db = require('../util/database.js');
 
 const artistsController = require('../controllers/artists-controller');
 const songsRoutes = require('./songs-routes.js');
 
 router.use('/', express.static(path.join(__dirname, '..', '/public/')));
 router.use('/:id', express.static(path.join(__dirname, '..', '/public/')));
+
+
+//Middleware to store artist properties in request before moving on to songsRoutes. Necessary for queries made in songs-controller as artist id in url will not be exposed there.
+
+router.use('/:id/songs', async (req, res, next) => {
+
+    const { id } = req.params;
+    const queryT = `SELECT * FROM artists WHERE id=${id}`
+    const { rows } = await db.query(queryT);
+
+    req.artist = rows[0]
+    console.log(req.artist);
+    next();
+})
 
 router.use('/:id/songs', songsRoutes);
 

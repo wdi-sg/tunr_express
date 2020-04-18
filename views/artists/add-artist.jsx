@@ -9,13 +9,14 @@ class AddArtistForm extends React.Component {
 
         return (
             <html>
+                <div className="overlay"></div>
                 <Head />
                 <script defer src="scripts/add-form.js" />
                 <body>
                     <Header />
                     <div className="nav">
-                        <a href="/" className="nav__link home-link">Back to Home</a>
-                        <a href="/artists/" className="nav__link show-all-artists">Show All Artists</a>
+                        <a href="/" className="nav__link home-link"><p>Home</p></a>
+                        <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                     </div>
                     <main>
                         <form method="POST" action={`/artists`} className="add-form">
@@ -23,7 +24,7 @@ class AddArtistForm extends React.Component {
                             <input type="text" name="name" placeholder="Name" maxLength="25" />
                             <input type="text" name="nationality" placeholder="Nationality" />
                             <input type="text" name="image link" placeholder="Image Link" />
-                            <button className="add-form__submit-btn" type="submit">Edit</button>
+                            <button className="add-form__submit-btn" type="submit">Add</button>
                         </form>
                     </main>
                 </body>

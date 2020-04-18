@@ -1,17 +1,24 @@
 const db = require('../util/database.js');
 
 module.exports.getArtistSongById = async (req, res) => {
-    // const { id } = req.params;
-    // const { rows } = await db.query('SELECT * FROM songs where id = $1', [id]);
-    console.log('Get Artist Song By Id');
-    res.send('Get Artist Song By Id');
+
+    const { id } = req.params;
+    const queryT = `SELECT * FROM songs WHERE artist_id=${req.artist.id}`
+    const { rows } = await db.query(queryT);
+    console.log(rows[id]);
+
+    !rows ? res.render('404') : res.render('./songs/song-single.jsx', { 'singleSong': rows[id] });
 }
 
 module.exports.getAllSongsOfArtist = async (req, res) => {
-    // const { id } = req.params;
-    // const { rows } = await db.query('SELECT * FROM songs');
-    console.log('Get All Songs');
-    res.send('Get All Songs');
+
+    const queryT = `SELECT * FROM songs WHERE artist_id = ${req.artist.id}`
+    const { rows } = await db.query(queryT);
+
+    !rows[0] ? res.render('404') : res.render('./songs/song-all.jsx', {
+        'allSongs': rows,
+        'artist': req.artist
+    });
 }
 
 module.exports.postAddSongToArtist = async (req, res) => {

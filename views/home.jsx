@@ -9,10 +9,13 @@ class Home extends React.Component {
             <html>
                 <Head />
                 <body>
+
                     <Header />
                     <main>
+
                     <div className="banner">
-                        <div className="nav">
+                        <div className="landing-page__nav">
+                            <div className="overlay"></div>
                             <a href="/artists/" className=" landing-page-link">ARTISTS</a>
                         </div>
                     </div>

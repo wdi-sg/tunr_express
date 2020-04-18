@@ -1,0 +1,202 @@
+.add-form {
+		overflow-y: scroll;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		align-items: center;
+		height: 100%;
+		width: 90%;
+		color: #49494b;
+}
+
+.add-form__header {
+		margin: 12px 0;
+		padding: 12px 0;
+		font-size: 1.6rem;
+}
+
+.add-form>input {
+		margin: 12px 0;
+		width: 80%;
+		height: 35px;
+		color: #49494b;
+		font-size: 1rem;
+		border: 1px dotted #49494b;
+		text-align: center;
+		outline: none;
+}
+
+.add-form__ingredients,
+.add-form__instructions {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		height: 100%;
+		width: 90%;
+		padding: 20px 0;
+		margin: 12px 0;
+		border-bottom: 1px dotted #49494b;
+		box-sizing: border-box;
+}
+
+.add-form button {
+		cursor: pointer;
+		border-radius: 0px;
+		text-decoration: none;
+		margin: 12px 12px;
+		padding: 12px 18px;
+		font-size: 12px;
+		line-height: 19px;
+		min-width: 100px;
+		max-width: 200px;
+		width: 30%;
+		text-transform: uppercase;
+		font-family: 'IBM Plex Sans', sans-serif;
+		font-weight: 400;
+		letter-spacing: 3px;
+		border: solid 2px #49494b;
+		background: transparent;
+		color: #49494b;
+		-webkit-transition: all .1s linear;
+		-moz-transition: all .1s linear;
+		-ms-transition: all .1s linear;
+		-o-transition: all .1s linear;
+		transition: all .1s linear;
+		outline: none;
+		box-sizing: border-box;
+}
+
+.add-form button:hover {
+		background-color: #49494b;
+		color: white;
+		border-radius: 30px;
+		transition: all .4s ease-out;
+		-webkit-transition: all .4s ease-out;
+		-moz-transition: all .4s ease-out;
+		-ms-transition: all .4s ease-out;
+		-o-transition: all .4s ease-out;
+}
+
+.add-form button:active {
+		background-color: #49494b;
+		color: lightgrey;
+		transition: all .1s linear;
+		-webkit-transition: all .1s linear;
+		-moz-transition: all .1s linear;
+		-ms-transition: all .1s linear;
+		-o-transition: all .1s linear;
+}
+
+.add-form__create-btn {
+		width: 80% !important;
+}
+
+.add-form h3 {
+		width: 100%;
+		padding: 10px 0;
+		text-align: center;
+		font-size: 1.6rem;
+		font-weight: 600;
+		color: #49494b;
+		/*		margin: 12px 0;*/
+}
+
+/*edit-artist*/
+
+.edit-form {
+		overflow-y: scroll;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		align-items: center;
+		height: 100%;
+		width: 90%;
+		color: #49494b;
+}
+
+.edit-form__header {
+		margin: 12px 0;
+		padding: 12px 0;
+		font-size: 1.6rem;
+}
+
+.edit-form>input {
+		margin: 12px 0;
+		width: 80%;
+		height: 35px;
+		color: #49494b;
+		font-size: 1rem;
+		border: 1px dotted #49494b;
+		text-align: center;
+		outline: none;
+}
+
+.edit-form button {
+		cursor: pointer;
+		border-radius: 0px;
+		text-decoration: none;
+		margin: 12px 12px;
+		padding: 12px 18px;
+		font-size: 12px;
+		line-height: 19px;
+		min-width: 100px;
+		width: 30%;
+		max-width: 200px;
+		text-transform: uppercase;
+		font-family: 'IBM Plex Sans', sans-serif;
+		font-weight: 400;
+		letter-spacing: 3px;
+		border: solid 2px #49494b;
+		background: transparent;
+		color: #49494b;
+		-webkit-transition: all .1s linear;
+		-moz-transition: all .1s linear;
+		-ms-transition: all .1s linear;
+		-o-transition: all .1s linear;
+		transition: all .1s linear;
+		outline: none;
+		box-sizing: border-box;
+}
+
+.edit-form button:hover {
+		background-color: #49494b;
+		color: white;
+		border-radius: 30px;
+		transition: all .4s ease-out;
+		-webkit-transition: all .4s ease-out;
+		-moz-transition: all .4s ease-out;
+		-ms-transition: all .4s ease-out;
+		-o-transition: all .4s ease-out;
+}
+
+.edit-form button:active {
+		background-color: #49494b;
+		color: lightgrey;
+		transition: all .1s linear;
+		-webkit-transition: all .1s linear;
+		-moz-transition: all .1s linear;
+		-ms-transition: all .1s linear;
+		-o-transition: all .1s linear;
+}
+
+.edit-form__create-btn {
+		width: 80% !important;
+}
+
+.edit-form h3 {
+		width: 100%;
+		padding: 10px 0;
+		text-align: center;
+		font-size: 1.6rem;
+		font-weight: 600;
+		color: #49494b;
+		/*		margin: 12px 0;*/
+}
+
+/**/
+
+.form__btn-wrapper {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+}

@@ -3,18 +3,18 @@ const React = require("react");
 import Head from '../page-components/head-component';
 import Header from '../page-components/header-component';
 
-class AllArtists extends React.Component {
+class AllSongs extends React.Component {
 
     render() {
 
-        const artistInfo = this.props.allArtists.map(artist =>
+        const songInfo = this.props.allSongs.map(song =>
 
-            <div className="single-artist__container" key={artist.id}>
-                <div className="single-artist__img-container">
-                    <img src={artist["photo_url"]} alt={artist.name} className="single-artist__img"/>
+            <div className="single-song__container" key={song.id}>
+                <div className="single-song__img-container">
+                    <img src={song.artwork} alt={song.album} className="single-song__img"/>
                 </div>
-                <a href={`./${artist.id}`} className="single-artist__name">{artist.name}</a>
-                <p className="single-artist__nationality">{artist.nationality}</p>
+                <a href={`./${song.id}`} className="single-song__title">{song.name}</a>
+                <p className="single-song__album">{song.album}</p>
             </div>
         )
 
@@ -22,16 +22,16 @@ class AllArtists extends React.Component {
 
         return (
             <html>
+                <div className="overlay"></div>
                 <Head />
                 <body>
                     <Header />
                     <div className="nav">
-                        <div className="overlay"></div>
                         <a href="/" className="nav__link home-link"><p>Home</p></a>
                         <a href="/artists/new" className="nav__link add-artist"><p>Add Artist</p></a>
                     </div>
                     <main>
-                        {artistInfo}
+                        {songInfo}
                     </main>
                 </body>
             </html>
@@ -39,4 +39,4 @@ class AllArtists extends React.Component {
     }
 }
 
-module.exports = AllArtists;
+module.exports = AllSongs;
