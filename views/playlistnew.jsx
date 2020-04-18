@@ -11,7 +11,7 @@ class Playlistnew extends React.Component {
           </div>
           <div>
             <div>
-              <form method="POST" action="/playlisthome">
+              <form method="POST" action="/playlist">
                 <div>
                   Name:
                   <input type="text" name="name"></input>

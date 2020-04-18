@@ -143,6 +143,20 @@ app.post('/artists', (request, response) => {
 });
 
 
+app.post('/playlist', (request, response) => {
+  let queryString = "INSERT INTO playlist (name) VALUES ($1)";
+  let values = [request.body.name];
+  pool.query(queryString, values, (error, result) => {
+    if(error) {
+      console.log('Query error:', error.stack);
+      response.send('query error');
+    }else {
+      response.redirect('/playlist');
+    }
+  });
+});
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
