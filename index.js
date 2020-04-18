@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/artists', async function (req, res) {
-  let artistQuery = "SELECT * FROM artists";
+  let artistQuery = "SELECT * FROM artists ORDER BY id";
   let artists = await makeQuery(artistQuery);
   res.render('artistlist', {artistlist: artists});
 });
