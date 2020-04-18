@@ -2,16 +2,18 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
-    const artistsNameList = this.props.rows.map((artist) => {
-        return <li key={artist.id}><a href={'/artists/'+artist.id}>{artist.name}</a></li>
-    })
-
+        console.log('home.jsx')
     return (
       <html>
         <head />
         <body>
           <h1>Welcome!</h1>
-          <ul>{artistsNameList}</ul>
+            <div>
+                <a href="/artists">Artists</a>
+            </div>
+            <div>
+                <a href="/songs">Songs</a>
+            </div>
           <br/>
           <a href="/artists/new">Add New Artist</a>
         </body>
