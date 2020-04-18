@@ -1,15 +1,18 @@
 var React = require("react");
 
-class DisplayOneArtist extends React.Component {
+class DisplayOnePlaylist extends React.Component {
   render() {
-
-    let artist = this.props;
-    let link = "/artists/" + artist.id;
+    let plid = this.props.songsArr[0].playlist_id;
+    let link = "/playlist/" + plid;
+    let songsArr = this.props.songsArr;
+    let songsArrHtml = songsArr.map((element) => {
+      return <li>{element.title}</li>;
+    });
 
     return (
       <html>
         <head>
-        <link
+          <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
@@ -20,17 +23,13 @@ class DisplayOneArtist extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col mt-5">
-                <h3><u>Artist</u></h3>
-                <br></br>
                 <form method="GET" action={link}>
-                  <h4>Id:</h4>
-                  <p>{artist.id}</p>
-                  <h4>Name:</h4>
-                  <p>{artist.name}</p>
-                  <h4>Nationality:</h4>
-                  <p>{artist.nationality}</p>
-                  <h4>Photo:</h4>
-                  <img src={artist.photo_url} height="300" width="300"></img>
+                  <h3><u>Playlist Name: {this.props.plName}</u></h3>
+                  <br></br>
+                  <h4>Songs:</h4>
+                  <ul>
+                    {songsArrHtml}
+                  </ul>
                 </form>
               </div>
             </div>
@@ -41,4 +40,4 @@ class DisplayOneArtist extends React.Component {
   }
 }
 
-module.exports = DisplayOneArtist;
+module.exports = DisplayOnePlaylist;

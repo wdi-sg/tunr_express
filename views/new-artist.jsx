@@ -16,7 +16,7 @@ class NewArtist extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col mt-5">
-                <h3>Add New Artist</h3>
+                <h3><u>Add New Artist</u></h3>
                 <br></br>
                 <form method="POST" action="/artists/new">
                   <input type="text" name="name" placeholder="Name" />

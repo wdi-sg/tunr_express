@@ -1,5 +1,5 @@
 var React = require("react");
-var DisplayOneSong = require("./display-one-song");
+var DisplayOneSongMod= require("./display-one-song-mod");
 
 class DisplayAllSongs extends React.Component {
   render() {
@@ -7,7 +7,7 @@ class DisplayAllSongs extends React.Component {
     let artist = this.props.artist;
 
     let songs = this.props.songs.map((element) => {
-      return <DisplayOneSong song={element} />;
+      return <DisplayOneSongMod song={element} />;
     });
 
     return (
@@ -24,7 +24,7 @@ class DisplayAllSongs extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col mt-5">
-                <h2>Songs By {artist}</h2>
+                <h3><u>Songs By {artist}</u></h3>
                 <br></br>
                 {songs}
               </div>

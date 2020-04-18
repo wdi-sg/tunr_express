@@ -24,7 +24,7 @@ class AllArtists extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col mt-5">
-                <h2>All Artists</h2>
+                <h3><u>All Artists</u></h3>
                 <br></br>
                 <form method="GET" action="/artists/">
                   <ul>

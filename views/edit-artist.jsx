@@ -18,7 +18,7 @@ class EditArtist extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col mt-5">
-                <h3>Edit Artist</h3>
+                <h3><u>Edit Artist</u></h3>
                 <br></br>
                 <form method="POST" action={link}>
                   <input type="text" name="name" placeholder="Name" defaultValue={artist.name}/>

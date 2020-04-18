@@ -1,6 +1,6 @@
 var React = require("react");
 
-class DisplayOneSong extends React.Component {
+class DisplayOneSongMod extends React.Component {
   render() {
     
     let song = this.props.song;
@@ -19,4 +19,4 @@ class DisplayOneSong extends React.Component {
   }
 }
 
-module.exports = DisplayOneSong;
+module.exports = DisplayOneSongMod;

@@ -175,8 +175,9 @@ app.post("/playlist/:plid", (request, response) => {
             songsArr: result.rows,
             pl_id: playlistId,
             pl_name: plName,
-            comments: "Song already exists in playlist. Please select an alternative.",
-            defaultVal: songStr
+            comments:
+              "Song already exists in playlist. Please select an alternative.",
+            defaultVal: songStr,
           };
           // console.log(obj);
           response.render("playlist-add-song", obj);
@@ -186,7 +187,7 @@ app.post("/playlist/:plid", (request, response) => {
       queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${playlistId}, ${selectedSongId})`;
       pool.query(queryText, (err, results) => {
         // console.log(result.rows);
-        response.redirect("");
+        response.redirect("http://127.0.0.1:3000/playlist/" + playlistId);
       });
     }
   });
@@ -195,11 +196,21 @@ app.post("/playlist/:plid", (request, response) => {
 //DISPLAY SINGULAR PLAYLIST DETAILS BASED ON PLAYLIST ID
 app.get("/playlist/:plid", (request, response) => {
   let plid = request.params.plid;
-  let queryText = `SELECT playlist_song.playlist_id, songs.title FROM playlist_song JOIN songs ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id=${plid}`;
+  let queryText = `SELECT playlist_song.playlist_id, songs.title, songs.id FROM playlist_song JOIN songs ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id=${plid}`;
   console.log(queryText);
   pool.query(queryText, (err, result) => {
     console.log(result.rows);
-    // response.render("", artistObj);
+    let songsArr = result.rows;
+    queryText = `SELECT name FROM playlist WHERE id = ${plid}`;
+    pool.query(queryText, (err, result) => {
+      plName = result.rows[0].name;
+      let obj = {
+        songsArr: songsArr,
+        plName: plName
+      };
+      console.log(obj);
+      response.render("display-one-playlist", obj);
+    });
   });
 });
 

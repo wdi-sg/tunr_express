@@ -16,7 +16,7 @@ class NewPlaylist extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col mt-5">
-                <h3>Add New Playlist</h3>
+                <h3><u>Add New Playlist</u></h3>
                 <br></br>
                 <form method="POST" action="/playlist/new">
                   <input type="text" name="name" placeholder="Name" />

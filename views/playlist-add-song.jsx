@@ -30,7 +30,7 @@ class PlaylistAddSong extends React.Component {
           <div className="container">
             <div className="row">
               <div className="col mt-5">
-                <h3>Add Song To Playlist</h3>
+                <h3><u>Add Song To Playlist</u></h3>
                 <br></br>
                 <h4>Playlist Name: {this.props.pl_name}</h4>
                 <br></br>
