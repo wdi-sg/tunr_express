@@ -1,3 +1,8 @@
+drop table artist;
+drop table playlsit;
+drop table playlist_song;
+drop table song;
+
 create table if not exists artist
 (
 	id serial not null
@@ -24,6 +29,31 @@ create table if not exists song
 			references artist
 				on update cascade on delete set default
 );
+
+create table if not exists playlist
+(
+	id serial not null
+		constraint playlist_pk
+			primary key,
+	name text default 'Default Playlist'
+);
+
+
+create table if not exists playlist_song
+(
+	id serial not null
+		constraint playlist_song_pk
+			primary key,
+	song_id int
+		constraint playlist_song_song_id_fk
+			references song
+				on update cascade on delete cascade,
+	playlist_id int
+		constraint playlist_song_playlist_id_fk
+			references playlist
+				on update cascade on delete cascade
+);
+
 
 
 insert into artist (id, name) VALUES (DEFAULT, DEFAULT)

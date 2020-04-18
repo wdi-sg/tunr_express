@@ -15,12 +15,12 @@ router.get('/songs/new', showCreateSong)
 
 router.post('/songs', addNewSong)
 
-router.get('/songs:id', showSong)
+router.get('/songs/:id', showSong)
 
 router.get('/songs/:id/edit', editSong)
 
-router.put('/songs:id', updateSong)
+router.put('/songs/:id', updateSong)
 
-router.delete('/songs:id', removeSong)
+router.delete('/songs/:id', removeSong)
 
 module.exports = router

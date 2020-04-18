@@ -31,6 +31,19 @@ const removeArtist = ((req, res) => {
   res.json('edit artist')
 })
 
+const showArtistSongs =((req,res) => {
+  res.json('show artist songs')
+})
+
+const createNewArtistSong = ((res,req)=> {
+  res.json('show create new artist songs')
+})
+
+const showCreateNewArtistSong = ((res, req)=> {
+  res.json('show create new artist song form')
+})
+
+
 module.exports = {
   listArtists,
   showCreateArtist,
@@ -38,5 +51,8 @@ module.exports = {
   showArtist,
   editArtist,
   updateArtist,
-  removeArtist
+  removeArtist,
+  showArtistSongs,
+  createNewArtistSong,
+  showCreateNewArtistSong
 }
