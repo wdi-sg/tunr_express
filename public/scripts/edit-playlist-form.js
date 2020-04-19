@@ -1,7 +1,7 @@
-const addSongBtn = document.querySelector('.add-form__add-song-btn');
-const deleteSongBtn = document.querySelector('.add-form__delete-song-btn');
-const addPlaylistBtn = document.querySelector('.add-form__submit-btn');
-const addPlaylistForm = document.querySelector('.add-form');
+const addSongBtn = document.querySelector('.edit-form__add-song-btn');
+const deleteSongBtn = document.querySelector('.edit-form__delete-song-btn');
+const editPlaylistBtn = document.querySelector('.edit-form__submit-btn');
+const editPlaylistForm = document.querySelector('.edit-form');
 
 
 const songSelect = document.getElementById('songs-select');
@@ -23,11 +23,11 @@ artistSelect.addEventListener('change', filterSongOptions);
 
 addSongBtn.addEventListener('click', () => {
 
-    addPlaylistBtn.style.visibility = 'visible';
+    editPlaylistBtn.style.visibility = 'visible';
 
     document.querySelector('.form__btn-wrapper').insertAdjacentHTML('afterend',
         `
-        <div class="add-form__song-container">
+        <div class="edit-form__song-container">
             <h5>Artist: </h5>
             <input type="text" name="[artist]" value="${artistSelect.value}"></input>
             <h5>Song:</h5>
@@ -40,11 +40,11 @@ addSongBtn.addEventListener('click', () => {
 
 deleteSongBtn.addEventListener('click', () => {
 
-    if (document.querySelectorAll('.add-form__song-container').length <= 1)
-        addPlaylistBtn.style.visibility = 'hidden';
+    if (document.querySelectorAll('.edit-form__song-container').length <= 1)
+        editPlaylistBtn.style.visibility = 'hidden';
 
-    const songInputs = document.querySelectorAll('.add-form__song-container');
+    const songInputs = document.querySelectorAll('.edit-form__song-container');
 
-    addPlaylistForm.removeChild(songInputs[songInputs.length - 1]);
+    editPlaylistForm.removeChild(songInputs[songInputs.length - 1]);
 
 })
