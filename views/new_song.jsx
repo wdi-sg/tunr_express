@@ -3,6 +3,10 @@ const React = require("react");
 class New_Song extends React.Component {
   render() {
 
+    const allArtists = this.props.allArtists;
+    const allArtistsList = allArtists.map(artist => {
+        return (<option>{artist.name}</option>)
+    })
 
     return (
       <html>

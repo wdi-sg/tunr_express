@@ -1,16 +1,17 @@
 const React = require('react');
-class Show_Playlist extends React.Component {
+class Edit_Playlist extends React.Component {
     render () {
 
         const playlistId = this.props.playlistId;
         const playlistName = this.props.playlistName;
-        const updatedSongs = this.props.updatedSongs;
+        const addedSongs = this.props.addedSongs;
 
-        const updatedSongsList = updatedSongs.map(updatedSong => {
-            return (<li>{updatedSong.title}</li>)
+        const addedSongsList = addedSongs.map(addedSong => {
+            return (<li>{addedSong.title}</li>)
         })
 
-        const editPlaylist = '/playlists/' + playlistId + '/newsong';
+        const addSongToPlaylist = '/playlists/' + playlistId + '/newsong';
+        const editPlaylist = '/playlists/' + playlistId + '/edit';
 
         return (
             <html>
@@ -21,11 +22,11 @@ class Show_Playlist extends React.Component {
                 <br/>
                 <div className='container'>
                     <div className='row justify-content-center'>
-                        <h1 className='text-center'>{playlistName}</h1>
+                        <h1 className='text-center'>Edit {playlistName}</h1>
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-info'><a href={editPlaylist} className='text-white'>Add/ Remove Songs</a></button>
+                        <button className='btn btn-info'><a href={addSongToPlaylist} className='text-white'>Add/ Remove Songs</a></button>
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
@@ -33,7 +34,7 @@ class Show_Playlist extends React.Component {
                     </div>
                     <div className='row justify-content-center'>
                         <ol>
-                            {updatedSongsList}
+                            {addedSongsList}
                         </ol>
                     </div>
                     <br/>
@@ -52,4 +53,4 @@ class Show_Playlist extends React.Component {
     }
 }
 
-module.exports = Show_Playlist;
+module.exports = Edit_Playlist;

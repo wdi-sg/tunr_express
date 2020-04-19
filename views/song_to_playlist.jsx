@@ -1,17 +1,40 @@
 const React = require('react');
+
+
 class Song_To_Playlist extends React.Component {
     render () {
 
         const playlistId = this.props.playlistId;
         const playlistName = this.props.playlistName;
-        const allSongs = this.props.songs;
+        const allSongs = this.props.allSongs;
+        const existingSongs = this.props.existingSongs;
         const playlistPage = '/playlists/' + playlistId;
 
         const allSongsList = allSongs.map(song => {
-            return (<div>
-                        <input className="form-check-input" name='song_id' type="checkbox" value={song.id} id={song.id}/>
-                        <label className="form-check-label" for={song.id}>{song.title}</label>
+            let songExists = false;
+
+            existingSongs.forEach(existingSong => {
+                if (song.id === existingSong.id) {
+                    songExists = true;
+                }
+            })
+            return (
+                <div className='col-3' style={{borderLeft: "1px solid gainsboro"}}>
+
+                {songExists === true ?
+                    <input className="form-check-input" name='song_id' type="checkbox" value={song.id} id={song.id} checked/>
+                :
+                    <input className="form-check-input" name='song_id' type="checkbox" value={song.id} id={song.id} />
+                }
+
+                    <label className="form-check-label" for={song.id}><strong>{song.title}</strong></label>
+                    <p><i>{song.album}</i></p>
+                    <p>{song.artist_name}</p>
+                    <div>
+                        <a href={song.preview_link} className='btn btn-info' style={{width: '70px', height: '27px', padding: 0}}>Preview</a>
                     </div>
+                    <br/><br/>
+                </div>
             )
         })
 
@@ -26,14 +49,29 @@ class Song_To_Playlist extends React.Component {
                     <div className='row justify-content-center'>
                         <h1 className='text-center'>{playlistName}</h1>
                     </div>
+                    <br/>
+                    <div className='row justify-content-center'>
+                        <h4 className='text-center'>Select songs to add to this playlist</h4>
+                    </div>
+                    <br/>
                     <div className='row justify-content-center'>
                         <form method='POST' action={playlistPage}>
                             <div className="form-check">
-                                {allSongsList}
+                                <div className='row justify-content-center'>
+                                    {allSongsList}
+                                </div>
                             </div>
                             <br/>
-                            <input type="submit" className='btn btn-primary' value="Submit"/>
+                            <div className='row justify-content-center'>
+                                <div className='col-2 d-flex justify-content-end'>
+                                    <button className='btn btn-dark'><a href={playlistPage} className='text-white'>Back to Playlist</a></button>
+                                </div>
+                                <div className='col-2'>
+                                    <input type="submit" className='btn btn-primary' value="Submit"/>
+                                </div>
+                            </div>
                         </form>
+                        <br/>
                     </div>
                 </div>
             </body>
