@@ -65,12 +65,12 @@ app.engine('jsx', reactEngine);
 // View list of artists
 app.get('/artists', (request, response) => {
   // respond with HTML page with form to create new ....
-  const queryString = 'SELECT * from artists ORDER BY id ASC'
+  const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists'
 
   pool.query(queryString, (err, result) => {
 
     if (err) {
-      console.error('query error:', err.stack);
+      console.error('query error1:', err.stack);
       response.send('query error');
     } else {
       // console.log('query result:', result);
@@ -97,15 +97,15 @@ app.post('/artists', (request, response) => {
   pool.query(queryString, values, (err, result) => {
 
     if (err) {
-      console.error('query error:', err.stack);
+      console.error('query error2:', err.stack);
       response.send('query error');
     } else {
-      const queryString = 'SELECT * from artists ORDER BY id ASC'
+      const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists'
 
       pool.query(queryString, (err, result) => {
 
         if (err) {
-          console.error('query error:', err.stack);
+          console.error('query error3:', err.stack);
           response.send('query error');
         } else {
           // console.log('query result:', result);
@@ -123,22 +123,27 @@ app.post('/artists', (request, response) => {
 });
 
 app.get('/artists/:id', (request, response) => {
-  // respond with HTML page with form to create new ....
   var artistId = request.params.id;
-  const queryString = `SELECT * FROM artists WHERE id = ${artistId} ORDER BY id ASC`
-
+  const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
   pool.query(queryString, (err, result) => {
 
     if (err) {
-      console.error('query error:', err.stack);
+      console.error('query error4:', err.stack);
       response.send('query error');
     } else {
       // console.log('query result:', result);
-
+      var idMatch = [];
+      // console.log(result.rows)
+      for (id in result.rows) {
+        if (result.rows[id].artistid == artistId) {
+          idMatch.push(result.rows[id]);
+        }
+      }
       // redirect to home page
       var output = {
-        'artists': result.rows,
+        'artists': idMatch,
       }
+
       response.render('artists', output);
       // response.send(output);
     }
@@ -148,22 +153,27 @@ app.get('/artists/:id', (request, response) => {
 app.get('/artists/:id/edit', (request, response) => {
   // respond with HTML page with form to create new ....
   var artistId = request.params.id;
-  const queryString = `SELECT * FROM artists WHERE id = ${artistId} ORDER BY id ASC`
+  const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists'
 
   pool.query(queryString, (err, result) => {
 
     if (err) {
-      console.error('query error:', err.stack);
+      console.error('query error5:', err.stack);
       response.send('query error');
     } else {
       // console.log('query result:', result);
-
+      var idMatch = [];
+      // console.log(result.rows)
+      for (id in result.rows) {
+        if (result.rows[id].artistid == artistId) {
+          idMatch.push(result.rows[id]);
+        }
+      }
       // redirect to home page
       var output = {
-        'artists': result.rows,
+        'artists': idMatch,
       }
-      // console.log(output);
-      
+
       response.render('edit-artist', output);
       // response.send(output);
     }
@@ -172,35 +182,105 @@ app.get('/artists/:id/edit', (request, response) => {
 
 app.put('/artists/:id', (request, response) => {
   var artistId = request.params.id;
-  const queryString = 
-  `UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4`;
-  const values = [request.body.name, request.body.photo_url,request.body.nationality,artistId];
-  pool.query(queryString, values, (err, result) => {
+  const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
+
+  pool.query(queryString, (err, result) => {
 
     if (err) {
-      console.error('query error:', err.stack);
+      console.error('query error6:', err.stack);
       response.send('query error');
     } else {
-      const queryString = `SELECT * from artists WHERE id = ${artistId} ORDER BY id ASC`;
+      var idMatch = [];
+      // console.log(result.rows)
+      for (id in result.rows) {
+        if (result.rows[id].artistid == artistId) {
+          idMatch.push(result.rows[id]);
+        }
+      }
 
-      pool.query(queryString, (err, result) => {
+      var mappedId = idMatch[0].id;
+      const queryString =
+        `UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4`;
+      const values = [request.body.name, request.body.photo_url, request.body.nationality, mappedId];
+      pool.query(queryString, values, (err, result) => {
 
         if (err) {
-          console.error('query error:', err.stack);
+          console.error('query error7:', err.stack);
           response.send('query error');
         } else {
-          // console.log('query result:', result);
+          const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists WHERE id = ${mappedId}`;
+          pool.query(queryString, (err, result) => {
 
-          var output = {
-            'artists': result.rows,
-          }
-          response.render('artists', output);
-          // response.send( output);
+            if (err) {
+              console.error('query error8:', err.stack);
+              response.send('query error');
+            } else {
+
+              // redirect to home page
+              var output = {
+                'artists': result.rows,
+              }
+
+              response.render('artists', output);
+              // response.send(output);
+            }
+          });
         }
       });
     }
-  });
-});
+  })
+})
+
+app.delete('/artists/:id', (request, response) => {
+  var artistId = request.params.id;
+  const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error9:', err.stack);
+      response.send('query error');
+    } else {
+      var idMatch = [];
+      // console.log(result.rows)
+      for (id in result.rows) {
+        if (result.rows[id].artistid == artistId) {
+          idMatch.push(result.rows[id]);
+        }
+      }
+
+      var mappedId = idMatch[0].id;
+      const queryString =
+        `DELETE FROM artists WHERE id = ${mappedId}`;
+      pool.query(queryString, (err, result) => {
+
+        if (err) {
+          console.error('query error10:', err.stack);
+          response.send('query error');
+        } else {
+          const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists`;
+          pool.query(queryString, (err, result) => {
+
+            if (err) {
+              console.error('query error11:', err.stack);
+              response.send('query error');
+            } else {
+
+              // redirect to home page
+              var output = {
+                'artists': result.rows,
+              }
+
+              response.render('artists', output);
+              // response.send(output);
+            }
+          });
+        }
+      });
+    }
+  })
+})
+
 /**
  * ===================================
  * Listen to requests on port 3000
@@ -209,7 +289,6 @@ app.put('/artists/:id', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function () {
-
   console.log("closing");
 
   server.close(() => {
@@ -222,3 +301,12 @@ let onClose = function () {
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+function mapId(queryResult) {
+  var resultMap = {};
+  for (let i = 0; i < queryResult.rows.length; i++) {
+    var record = queryResult.rows[i];
+    resultMap[`${i + 1}`] = record.id;
+  }
+  return resultMap;
+}

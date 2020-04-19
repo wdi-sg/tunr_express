@@ -21,19 +21,23 @@ class EditArtist extends React.Component {
                 <body>
                     <h3>Edit Artist</h3>
                     <br />
-                    <form method="POST" action={`/artists/${artist.id}?_method=put`}>
-                        Name:&emsp;
-                    <input type="text" name="name" value={artist.name} />
+                    <form method="POST" action={`/artists/${artist.artistid}?_method=put`}>
+                    Name:&emsp;
+                    <input type="text" name="name" defaultValue={artist.name} />
                         <br /><br />
 
                     Photo_url:&emsp;
-                    <input type="text" name="photo_url" value={artist.photo_url} className="w-50" />
+                    <input type="text" name="photo_url" defaultValue={artist.photo_url} className="w-50" />
                         <br /><br />
 
                     Nationality:&emsp;
-                    <input type="text" name="nationality" value={artist.nationality} />
+                    <input type="text" name="nationality" defaultValue={artist.nationality} />
                         <br /><br />
                         <button type="submit"> Submit </button>
+                    </form>
+
+                    <form method="POST" action={`/artists/${artist.artistid}?_method=delete`}>
+                        <button type="submit"> Delete </button>
                     </form>
 
                 </body>

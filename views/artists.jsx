@@ -3,9 +3,29 @@ var React = require("react");
 class Artists extends React.Component {
   render() {
       var artists = this.props.artists;
-      artists = artists.map(element =>{ 
-        return <li className = "border-dark border-bottom">
-        <h2> {element.id}. {element.name}</h2>
+      if(artists.length==0){
+        artists = [
+          <li key = "Not Found"className = "border-dark border-bottom">
+          <h2>Artist not found</h2>
+          </li>
+        ]
+      }
+      else if(artists.length==1){
+        artists = artists.map((element,index) =>{ 
+          return <li key = {element.name} className = "border-dark border-bottom">
+          <h2>{element.name}</h2>
+          <br/>
+          <img src={`${element.photo_url}`} className = "w-25"/>
+          <br/>
+          <h3> Nationality: {element.nationality}</h3>
+          <br/>
+          </li>
+        })
+      }
+      else {
+      artists = artists.map((element,index) =>{ 
+        return <li key = {element.name} className = "border-dark border-bottom">
+        <h2> {element.artistid}. {element.name}</h2>
         <br/>
         <img src={`${element.photo_url}`} className = "w-25"/>
         <br/>
@@ -13,11 +33,8 @@ class Artists extends React.Component {
         <br/>
         </li>
       })
-      if(artists.length==0){
-        artists = [
-          <h2>Artist not found</h2>
-        ]
-      }
+    }
+      
     return (
       <html>
           <head>
