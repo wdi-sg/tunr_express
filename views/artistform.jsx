@@ -11,6 +11,8 @@ class ArtistForm extends React.Component {
     let nationalityValue = data.nationality ||  "";
     let buttonText = data.new ? "Add Artist" : "Update Artist";
     let formAction = data.new ? "/artists/new" : `/artists/${data.id}?_method=put`;
+    let backLink = `/artists/${data.id}`;
+
     return (
       <html>
         <Head />
@@ -41,8 +43,12 @@ class ArtistForm extends React.Component {
                            type="submit"
                            value={buttonText}/>
                   </div>
-                </div>
-                
+                </form>
+                <a href={backLink}
+                   className="btn btn-info btn-block">
+                  Go Back to Artist Page
+                </a>
+
               </div>
             </div>
           </div>
