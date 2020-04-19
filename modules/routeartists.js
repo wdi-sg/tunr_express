@@ -161,6 +161,20 @@ router.get('/:id/songs', async function (req, res) {
 });
 
 router.get('/:aid/songs/:sid', async function (req, res) {
+  let songId = req.params.sid;
+
+  let songQuery =
+      "SELECT * FROM songs " +
+      "WHERE id = $1";
+
+  let songInfo = await makeQuery(songQuery, [songId]);
+
+  let data = {
+    aid: req.params.aid,
+    song: songInfo[0]
+  };
+
+  res.render('songview', data);
 });
 
 module.exports = router;
