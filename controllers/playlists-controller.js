@@ -1,4 +1,5 @@
 const db = require('../util/database.js');
+const getDateUtil = require('../util/get-date.js');
 
 module.exports.getPlaylistById = async (req, res) => {
 
@@ -38,19 +39,51 @@ module.exports.getAddPlaylist = async (req, res) => {
     const resultArtists = await db.query(queryT);
     const resultSongs = await db.query(queryT2);
 
-    console.log(resultSongs.rows);
-
     res.render('./playlists/add-playlist', { artists: resultArtists.rows, songs: resultSongs.rows });
 }
 
 module.exports.postAddPlaylist = async (req, res) => {
 
-    // const queryT = `INSERT INTO playlists() VALUES() RETURNING *`;
-    // const queryV = [];
-    // const { rows } = await db.query(queryT, queryV);
+    if (!Array.isArray(req.body.artist))
+        req.body.artist = req.body.artist.split();
+
+    if (!Array.isArray(req.body.song))
+        req.body.song = req.body.song.split();
+
+    let i = 0;
+    const playlistArr = req.body.artist.reduce((arr, el) => {
+        const obj = { 'artist': el, 'song': req.body.song[i] };
+        i++;
+        return arr.push(obj), arr;
+    }, [])
+
+    const queryT1 = `INSERT into playlists(created_on, name) VALUES ($1, $2) RETURNING *`
+    const queryV1 = [getDateUtil.getTimeStamp(), req.body['playlist_name']];
+
+    const resultOne = await db.query(queryT1, queryV1);
+
+    playlistArr.forEach(async playlistSong => {
+        const queryT2 = `SELECT id, artist_id FROM songs WHERE title='${playlistSong.song}'`;
+        const { rows } = await db.query(queryT2);
+
+        console.log(resultOne.rows);
+        console.log(rows);
+
+        const queryT3 = `INSERT into playlists_songs(song_id, playlist_id) VALUES ('${rows[0].id}', '${resultOne.rows[0].id}') RETURNING *`
+
+        const resultThree = await db.query(queryT3);
+
+    })
+
+    // const queryT1 = `SELECT id, artist_id FROM songs WHERE name=${req.body}`;
+    // const { rows } = await db.query(queryT1);
+
+    // const queryT2 = `INSERT INTO playlists() VALUES() RETURNING *`;
+    // const queryV2 = [];
+    // const { rows } = await db.query(queryT2, query2);
 
     // res.redirect(`./playlists/${rows[0].id}`);
-    console.log('Post Add Playlist');
+    console.log(playlistArr);
 
 }
 
