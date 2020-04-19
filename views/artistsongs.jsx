@@ -11,14 +11,14 @@ class ArtistSongs extends React.Component {
     let songList, songTable, headerText, deleteText;
     if (count === 0) {
       headerText =
-        <h5 class="p-2 text-center">
+        <h5 className="p-2 text-center">
           There are no {this.props.name} songs in the database. <br />
         </h5>;
       songTable = "";
 
     } else {
       headerText =
-        <h5 class="p-2 text-center">
+        <h5 className="p-2 text-center">
           There are {count} {this.props.name} songs in the database. <br />
         </h5>;
 
@@ -36,7 +36,7 @@ class ArtistSongs extends React.Component {
 
       songTable =
         <div className="my-3"
-             style={{"overflow-y": "scroll", "max-height": "70vh"}}>
+             style={{overflowY: "scroll", maxHeight: "70vh"}}>
           <table className="table">
             <thead>
               <tr>
