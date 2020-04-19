@@ -29,7 +29,7 @@ class AllArtists extends React.Component {
                         <div className="overlay"></div>
                         <a href="/" className="nav__link home-link"><p>Home</p></a>
                         <a href="/artists/new" className="nav__link add-artist"><p>Add Artist</p></a>
-                        <a href="/" className="nav__link add-artist"><p>Playlists</p></a>
+                        <a href="/playlists" className="nav__link add-artist"><p>Playlists</p></a>
                     </div>
                     <main>
                         {artistInfo}

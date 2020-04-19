@@ -32,7 +32,7 @@ app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
 const artistsRoutes = require('./artists-routes.js');
-
+const playlistsRoutes = require('./playlists-routes.js');
 const errorController = require('../controllers/404-controller.js');
 
 const db = require('../util/database.js');
@@ -47,6 +47,8 @@ app.get('/', async (req, res) => {
 });
 
 app.use('/artists', artistsRoutes);
+
+app.use('/playlists', playlistsRoutes);
 
 app.use(errorController.get404Page);
 
