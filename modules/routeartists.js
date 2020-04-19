@@ -160,6 +160,23 @@ router.get('/:id/songs', async function (req, res) {
   res.render('artistsongs', data);
 });
 
+router.get('/:aid/songs/new', async function (req, res) {
+  let artistId = req.params.aid;
+  let artistQuery = "SELECT name FROM artists WHERE id = $1";
+  let artistName = await makeQuery(artistQuery, [artistId]);
+
+  let data = {
+    id: artistId,
+    name: artistName[0].name
+  };
+
+  res.render('artistsongform', data);
+});
+
+router.post('/:aid/songs/new', async function (req, res) {
+  res.send(req.body);
+});
+
 router.get('/:aid/songs/:sid', async function (req, res) {
   let songId = req.params.sid;
 
