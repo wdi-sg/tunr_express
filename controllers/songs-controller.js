@@ -38,7 +38,7 @@ module.exports.postAddSongToArtist = async (req, res) => {
         req.body.artwork,
         req.artist.id);
 
-    newSong.save();
+    await newSong.save();
 
     res.redirect('./songs');
 
