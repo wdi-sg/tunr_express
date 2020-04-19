@@ -110,6 +110,87 @@ app.get('/artists/:id/songs', (request, response) => {
     });
 });
 
+app.get('/playlist/new', (request, response) => {
+  // query database for all pokemon
+
+  // respond with HTML page displaying all pokemon
+  response.render('newplaylist');
+});
+
+app.get('/playlist/:id/newsong', (request, response) => {
+  // query database for all pokemon
+
+  // respond with HTML page displaying all pokemon
+  response.render('pladdsong');
+});
+
+app.post('/playlist', (request, response) => {
+    let queryString = 'INSERT INTO playlist (name) VALUES ($1)'
+    const values = [request.body.playlistName];
+    pool.query(queryString, values, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result: ', result);
+            response.redirect('/');
+        }
+    })
+});
+
+app.get('/playlist/:id', (request, response) => {
+    let playlistId = parseInt(request.params.id);
+    let queryString = 'SELECT title, album, artist_id FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_id =$1';
+    const values=[playlistId];
+    pool.query(queryString, values, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            var data = {
+                songs: result.rows,
+                plId: playlistId
+            }
+            console.log('*********************************');
+            console.log('query result: ', result.rows);
+            response.render('showplaylist', data);
+        };
+    });
+});
+
+app.post('/playlist/:id', (request, response) => {
+    let queryString = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1,$2)'
+    console.log('blahhhhhhhhhhhhhh' + request.params.id);
+    const values = [request.body.songId, request.body.playlistId];
+    pool.query(queryString, values, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result: ', result);
+            response.redirect('/playlist');
+        }
+    })
+});
+
+app.get('/playlist', (request, response) => {
+    let plId = parseInt(request.params.id);
+    let queryString = 'SELECT name FROM playlist';
+    // const values=[plId];
+    pool.query(queryString, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            var data = {
+                pl: result.rows
+            }
+            console.log('query result: ', result.rows);
+            response.render('playlist', data);
+        };
+    });
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
