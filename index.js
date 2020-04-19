@@ -186,9 +186,16 @@ app.get('/playlists/:id/newsong', (request, response) => {
 app.post('/playlists/:id', (request, response) => {
     let selectedSongs = request.body.song_id;
 
+    //Change single song added from string to array
+    if (typeof(selectedSongs) === 'string') {
+        selectedSongs = [];
+        selectedSongs.push(request.body.song_id)
+    }
+
     const addSongsToPlaylist = selectedSongs.map(songId => {
         let queryString = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES (' + songId + ', ' + request.params.id + ')'
 
+        //Update playlist_song relationship table
         pool.query(queryString, (err, result) => {
             if (err) {
                 console.log('dbQuery Error', err.stack);
@@ -196,6 +203,7 @@ app.post('/playlists/:id', (request, response) => {
             } else {
                 queryString = 'SELECT songs.id, songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id =' + request.params.id;
 
+                //Get details of added songs to display on page
                 pool.query(queryString, (err, result) => {
                     if (err) {
                         console.log('dbQuery Error', err.stack);
@@ -204,6 +212,7 @@ app.post('/playlists/:id', (request, response) => {
                         let addedSongs = result.rows;
                         let queryPlaylistString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
 
+                        //Get playlist name to display even when playlist is empty
                         pool.query(queryPlaylistString, (err, result) => {
                             if (err) {
                                 console.log('dbQuery Error', err.stack);
@@ -231,6 +240,7 @@ app.post('/playlists/:id', (request, response) => {
 app.get('/playlists/:id', (request, response) => {
     let queryString = 'SELECT songs.id, songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id =' + request.params.id;
 
+    //Get details of added songs to display on page
     pool.query(queryString, (err, result) => {
         if (err) {
             console.log('dbQuery Error', err.stack);
@@ -239,6 +249,7 @@ app.get('/playlists/:id', (request, response) => {
             let addedSongs = result.rows;
             let queryPlaylistString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
 
+            //Get playlist name to display even when playlist is empty
             pool.query(queryPlaylistString, (err, result) => {
                 if (err) {
                     console.log('dbQuery Error', err.stack);
