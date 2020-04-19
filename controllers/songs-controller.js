@@ -9,7 +9,7 @@ module.exports.getArtistSongById = async (req, res) => {
 module.exports.getAllSongsOfArtist = async (req, res) => {
 
     try {
-        const queryT = `SELECT * FROM songs WHERE artist_id = ${req.artist.id}`
+        const queryT = `SELECT * FROM songs WHERE artist_id = ${req.artist.id} ORDER BY id`
         const { rows } = await db.query(queryT);
 
         res.render('./songs/song-all.jsx', {
