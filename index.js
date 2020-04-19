@@ -53,7 +53,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/artists', (req, res) => {
-
     res.render('home');
 })
 
@@ -115,7 +114,7 @@ app.get('/playlists/:id', (req, res) => {
             } else {
                 console.log("DISPLAYED PLAYLIST!");
 
-            var playlistId = req.params.id;
+            var playlistId = parseInt(req.params.id);
             //Make second query
             const songs = "SELECT * FROM songs";
 
@@ -137,8 +136,6 @@ app.get('/playlists/:id', (req, res) => {
 
         }
         }
-
-
             const showPlaylist = "SELECT * FROM playlist WHERE id="+ req.params.id;
 
     pool.query(showPlaylist, whenQueryDone);
@@ -189,7 +186,7 @@ app.get("/artists/:id", (req, res) => {
 
 
 
-            const queryJoinString = "SELECT songs.title FROM songs INNER JOIN artists ON(artists.id = songs.artist_id) WHERE artists.id ="+req.params.id;
+            const queryJoinString = "SELECT songs.title, songs.artist_id FROM songs INNER JOIN artists ON(artists.id = songs.artist_id) WHERE artists.id ="+req.params.id;
 
             pool.query(queryJoinString, (songQueryError, songResult) => {
 
@@ -211,6 +208,27 @@ app.get("/artists/:id", (req, res) => {
 
     pool.query(queryString, whenQueryDone);
 })
+
+app.post("/artist/new", (req, res) => {
+
+ const whenQueryDone = (queryError, artistResult) => {
+        if(queryError) {
+            console.log("ERROR: COULD NOT ADD SONG TO ARTIST!");
+            console.log(queryError);
+            res.status(500);
+            res.send("NEW ARTIST IN THE HOUSE: " + artistResult);
+        } else {
+            console.log("SONG ADDED" + artistResult);
+        }
+    }
+
+    const queryString = "INSERT INTO songs(title, album, artist_id) VALUES($1, $2, $3) RETURNING *";
+    const insertValues = [req.body.title, req.body.album, req.body.songId];
+    pool.query(queryString, insertValues, whenQueryDone);
+
+})
+
+
 //########################################################
 //########################################################
 //############### Creates a new artist in the database #######################################################
