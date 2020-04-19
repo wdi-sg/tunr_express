@@ -3,6 +3,7 @@ var React = require("react");
 
 class AddToPlayList extends React.Component {
     render() {
+        let url = '/playlist/'+ this.props.id;
         const songList = this.props.songs.map(song => {
          return <option value={song.id}>{song.title}--{song.album}</option>
        });
@@ -10,9 +11,9 @@ class AddToPlayList extends React.Component {
          return (<html>
                     <body>
                         <h1>Add song to playlist</h1>
-                        <form action='/playlist/${this.props.playlistid}' method="POST">
+                        <form action={url} method="POST">
                             <p>Name:
-                                <select name="songindex">
+                                <select name="songs">
                                 {songList}
                                 </select>
                             </p>

@@ -92,6 +92,18 @@ app.get('/artists/:id',(request,response)=>{
     })
 });
 
+app.get('/artists/:id/songs', (request,response)=>{
+    let queryText = 'SELECT * FROM songs WHERE artist_id=$1';
+    let values = [request.params.id];
+    pool.query(queryText, values, (err, artistSongResult)=>{
+        const data = {
+            songs: artistSongResult.rows
+        }
+        response.render('artistsongs', data);
+    })
+
+});
+
 //collect form data and add to DB
 app.post('/artists',(request,response)=>{
     const query = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
@@ -174,6 +186,9 @@ app.post('/songs',(request,response)=>{
 
 });
 
+
+
+
 //list all playlists
 app.get('/playlist/',(request,response)=>{
     const queryString = 'SELECT name from playlist';
@@ -193,23 +208,7 @@ app.get('/playlist/',(request,response)=>{
     })
 });
 
-//take form data and post to DB for playlist
-app.post('/playlist',(request,response)=>{
-    const query = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
-    const insertValues = [request.body.name];
-    pool.query(query,insertValues,(aerr, addPlaylistResult)=>{
-        if (aerr) {
-            console.error('query error:', aerr.stack);
-            response.send( 'query error' );
-        } else {
-            console.log('query result:', addPlaylistResult);
-            //response.send(addPlaylistResult.rows);
-            response.redirect('/playlist/' + addPlaylistResult.rows[0].id)
-        }
 
-    })
-
-});
 
 // form to add new playlist
 app.get('/playlist/new', (request, response) => {
@@ -234,7 +233,68 @@ app.get('/playlist/:id/newsong', (request, response) => {
     })
 });
 
+//render form to add songs to artist
+app.get('/artist/:id/songs/new', (request, response) => {
+  // respond with HTML page with form to create new song
+  response.render('addsongstoartist');
+});
+
+//take form data and put it into DB for artist songs
+app.post('/artist/:id/songs', (request, response) => {
+    const queryString = 'INSERT INTO songs (title, album, preview_link,artwork,artist_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+    let id = request.params.id;
+    console.log(request.params.id)
+       const values = [request.body.title, request.body.album, request.body.preview_link,request.body.artwork,id];
+       console.log(values);
+       pool.query(queryString, values, (err, addSongArtistResult) => {
+
+         if (err) {
+           console.error('query error3:', err.stack);
+           response.send('query error');
+        } else {
+            //console.log(addSongArtistResult.rows[0].id);
+            console.log(request.params.id);
+           response.redirect('/songs/' + addSongArtistResult.rows[0].id)
+        }
+    })
+});
+
+
+
 //get song and add to DB for playlist by id
+app.post('/playlist/:id', (request, response) => {
+    const queryString = 'INSERT INTO playlist_song ( song_id,playlist_id) VALUES ($1, $2)';
+    const queryValues = [request.body.songs, request.params.id];
+    pool.query(queryString, queryValues, (err, playlistSongResult) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        }else{
+            let path = '/playlist/'+request.params.id;
+            response.redirect(path);
+        }
+    })
+});
+
+
+
+//take form data and post to DB for playlist
+app.post('/playlist',(request,response)=>{
+    const query = 'INSERT INTO playlist (name) VALUES ($1) RETURNING *';
+    const insertValues = [request.body.name];
+    pool.query(query,insertValues,(aerr, addPlaylistResult)=>{
+        if (aerr) {
+            console.error('query error:', aerr.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', addPlaylistResult);
+            //response.send(addPlaylistResult.rows);
+            response.redirect('/playlist/' + addPlaylistResult.rows[0].id)
+        }
+
+    })
+
+});
 
 
 //list single playlist by id
