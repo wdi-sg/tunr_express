@@ -6,7 +6,7 @@ class Home extends React.Component {
       <html>
         <head/>
             <body>
-
+                Hello world
             </body>
       </html>
     );
