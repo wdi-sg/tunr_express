@@ -5,8 +5,8 @@ class ArtistSongs extends React.Component {
     console.log('artist-songs.jsx')
     let artistData = this.props.artist.rows[0];
     let songsData = this.props.songs.rows;
-    console.log(artistData);
-    console.log(songsData);
+    // console.log(artistData);
+    // console.log(songsData);
 
     //link to Home Page
     let homeLink = "/"
@@ -19,17 +19,20 @@ class ArtistSongs extends React.Component {
 
     const artistDeleteLink = "/artists/" + artistData.id + "?_method=delete";
 
+    const addSongLink = "/artists/" + artistData.id + "/songs/new";
+
     // const artistSongsLink = "/artists/" + artistData.id + "/songs"
 
 
     const artistSongsList = songsData.map((artistSong) => {
-        return <li key={artistSong.id}><a href={'/artists/'+artistData.id+'/songs/'+artistSong.id}>{artistSong.title}</a></li>
+        return <li><p><strong>{artistSong.title}</strong> - {artistSong.album}</p></li>
     })
 
     return (
       <html>
-        <head />
-        <body>
+        <head>
+        </head>
+        <body margin-left="20px">
             <p><a href={homeLink}>Back to Main</a></p>
             <p><a href={allArtistsLink}>All Artists</a></p>
             <p><a href={artistEditLink}>Edit Artist Profile</a></p>
@@ -37,8 +40,8 @@ class ArtistSongs extends React.Component {
             <p>Name: {artistData.name}</p>
             <p>Photo url: {artistData.photo_url}</p>
             <p>Nationality: {artistData.nationality}</p>
-            <p>All Songs</p>
-            <ul>{artistSongsList}</ul>
+            <h4>All Songs <a href={addSongLink}> + Add Song</a></h4>
+            <ol>{artistSongsList}</ol>
             <br/>
             <br/>
         </body>

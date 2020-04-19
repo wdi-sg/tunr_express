@@ -146,11 +146,10 @@ app.post('/artists', (req, res) => {
     pool.query(newArtistProfile, newArtistValues, whenQueryDone);
 });
 
-//????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-// Display songs from artists with id = 1
-// - ON GOING -
-// /artists/1/songs
-
+//------------------------------------------------------
+// Display songs by artists id
+// - DONE -
+//------------------------------------------------------
 app.get('/artists/:id/songs', (req, res) => {
     const artistProfile = 'SELECT * FROM artists WHERE id ='+req.params.id;
     pool.query(artistProfile, (artistProfileErr, artistProfileResult) => {
@@ -159,26 +158,61 @@ app.get('/artists/:id/songs', (req, res) => {
             res.status(500);
             res.send('ERR');
         } else {
-                const artistSongs = "SELECT id, title FROM songs WHERE artist_id ="+req.params.id;
+                const artistSongs = "SELECT * FROM songs WHERE artist_id ="+req.params.id;
                 console.log(artistSongs);
                 pool.query(artistSongs, (artistSongsErr, artistSongsResult) => {
                     if (artistSongsErr) {
-                        console.log(artistSongsErr);
                         res.status(500);
                         res.send('show songs err');
                     } else {
-                        console.log(artistSongsResult)
                         const artistSongsData = {
                             artist: artistProfileResult,
                             songs: artistSongsResult
                         }
-                        console.log('query result:', artistSongsData);
                         res.render('artist-songs', artistSongsData);
                     }
                 });
         };
     });
 });
+
+//------------------------------------------------------
+// FORM to ddd new song to artists by id
+// - DONE -
+//------------------------------------------------------
+app.get('/artists/:id/songs/new', (req, res) => {
+    const artistProfile = 'SELECT * FROM artists WHERE id ='+req.params.id;
+    pool.query(artistProfile, (artistProfileErr, artistProfileResult) => {
+        if (artistProfileErr) {
+            console.log(artistProfileErr);
+            res.status(500);
+            res.send('ERR');
+        } else {
+            res.render('new-song-artist', artistProfileResult);
+        };
+    });
+});
+
+//------------------------------------------------------
+// SAVE new song to artists by id
+// - DONE -
+//------------------------------------------------------
+app.post('/artists/:id/songs', (req, res) => {
+    const whenQueryDone = (newSongTAErr, newSongTAResult) => {
+        if (newSongTAErr) {
+            res.status(500);
+            res.send('db error');
+        } else {
+            let newSongTAId = newSongTAResult.rows[0].id;
+            // console.log(newArtistId);
+            res.redirect('/artists/'+req.body.artist_id+'/songs');
+        };
+    };
+    const newSongTA = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) values ($1, $2, $3, $4, $5) RETURNING *";
+    const newSongTAValues = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
+    pool.query(newSongTA, newSongTAValues, whenQueryDone);
+});
+
 
 //------------------------------------------------------
 // EDIT FORM
