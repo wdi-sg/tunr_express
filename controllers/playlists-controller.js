@@ -120,7 +120,6 @@ module.exports.putPlaylistById = async (req, res) => {
     const { id } = req.params;
     const queryT = `UPDATE playlists SET name = '${req.body.name}' WHERE id=${id}`
     const { rows } = await db.query(queryT);
-    console.log(req.body.name);
 
     if (!Array.isArray(req.body.artist))
         req.body.artist = req.body.artist.split();

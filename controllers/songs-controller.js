@@ -1,4 +1,5 @@
 const db = require('../util/database.js');
+const Song = require('../models/song.js');
 
 module.exports.getArtistSongById = async (req, res) => {
 
@@ -9,8 +10,8 @@ module.exports.getArtistSongById = async (req, res) => {
 module.exports.getAllSongsOfArtist = async (req, res) => {
 
     try {
-        const queryT = `SELECT * FROM songs WHERE artist_id = ${req.artist.id} ORDER BY id`
-        const { rows } = await db.query(queryT);
+
+        const rows = await Song.getAll(req.artist.id);
 
         res.render('./songs/song-all.jsx', {
             'allSongs': rows,
@@ -30,8 +31,14 @@ module.exports.getAddSongToArtist = async (req, res) => {
 
 module.exports.postAddSongToArtist = async (req, res) => {
 
-    const queryT = `INSERT INTO songs(title, album, preview_link, artwork, artist_id) RETURNING *`;
-    const queryV = `VALUES(${req.body.title}, ${req.body.album}, ${req.body["preview_link"]}, ${req.body.artwork}, ${req.artist.id})`
+    const newSong = new Song(
+        req.body.title,
+        req.body.album,
+        req.body["preview link"],
+        req.body.artwork,
+        req.artist.id);
+
+    newSong.save();
 
     res.redirect('./songs');
 
@@ -48,17 +55,23 @@ module.exports.getEditArtistSongById = async (req, res) => {
 
 module.exports.putArtistSongById = async (req, res) => {
 
-    const queryT = `UPDATE songs SET title = '${req.body.title}', album = '${req.body.album}', preview_link = '${req.body['preview link']}', artwork = '${req.body.artwork}', artist_id = '${req.artist.id}' WHERE id=${req.song.id}`
+    await Song.edit(
+        req.body.title,
+        req.body.album,
+        req.body['preview link'],
+        req.body.artwork,
+        req.artist.id,
+        req.song.id
+    );
 
-    const { rows } = await db.query(queryT);
     res.redirect(`./${req.song.position}`);
 
 }
 
 module.exports.deleteArtistSongById = async (req, res) => {
 
-    const queryT = `DELETE from songs WHERE id=${req.song.id}`
-    const { rows } = await db.query(queryT);
+    await Song.delete(req.song.id);
+
     res.render('./songs/song-deleted');
 
 }
