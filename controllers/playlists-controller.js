@@ -64,20 +64,16 @@ module.exports.postAddPlaylist = async (req, res) => {
     const resultOne = await db.query(queryT1, queryV1);
 
     playlistArr.forEach(async playlistSong => {
+
         const queryT2 = `SELECT id, artist_id FROM songs WHERE title='${playlistSong.song}'`;
         const { rows } = await db.query(queryT2);
 
-        console.log(resultOne.rows);
-        console.log(rows);
-
         const queryT3 = `INSERT into playlists_songs(song_id, playlist_id) VALUES ('${rows[0].id}', '${resultOne.rows[0].id}') RETURNING *`
-
         const resultThree = await db.query(queryT3);
 
     })
 
-    // res.redirect(`./playlists/${rows[0].id}`);
-    console.log(playlistArr);
+    res.redirect(`./playlists/${resultOne.rows[0].id}`);
 
 }
 
