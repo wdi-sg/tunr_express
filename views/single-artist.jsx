@@ -55,8 +55,8 @@ class SingleArtist extends React.Component {
 
         </head>
         <body className="bg-secondary">
-        <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand" href="/artists">Tunr Express</a>
+        <nav className="navbar navbar-light bg-light">
+            <a className="navbar-brand" href="/artists">Tunr Express</a>
           </nav>
           <div className="container-fluid">
             <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Artists</u></em></h1>

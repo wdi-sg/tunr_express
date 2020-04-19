@@ -316,7 +316,46 @@ app.get('/artists/:id/songs', (request, response) => {
     }
   });
 });
+app.get('/artists/:id/songs/new', (request, response) => {
+  // respond with HTML page with form to create new ....
+  var id = {'id' : request.params.id};
+  response.render('new-song',id);
+});
 
+app.post('/artists/songs', (request, response) => {
+  const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists`;
+  pool.query(queryString, (err, result) => {
+    if (err) {
+      console.error('query error2:', err.stack);
+      response.send('query error');
+    } else {
+      var idMatch = [];
+      // console.log(result.rows)
+      for (id in result.rows) {
+        if (result.rows[id].artistid == request.body.artist_id) {
+          idMatch.push(result.rows[id]);
+        }
+      }
+      var mappedId = idMatch[0].id;
+      const queryString = 'INSERT INTO songs (title, album, preview_link,artwork,artist_id) VALUES ($1, $2, $3, $4, $5)';
+      const values = [request.body.title, request.body.album, request.body.preview_link,request.body.artwork,mappedId];
+      pool.query(queryString, values, (err, result) => {
+
+        if (err) {
+          console.error('query error3:', err.stack);
+          response.send('query error');
+        } else {
+          // console.log('query result:', result);
+
+          // redirect to home page
+ 
+          response.redirect(`/artists/${request.body.artist_id}/songs`);
+          // response.send( output);
+        }
+      });
+    }
+  });
+});
 /**
  * ===================================
  * Listen to requests on port 3000

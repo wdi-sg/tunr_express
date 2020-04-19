@@ -2,6 +2,10 @@ var React = require("react");
 
 class NewArtist extends React.Component {
     render() {
+        var currentArtist = this.props.id;
+
+        // console.log(currentArtist); //yields: "/js" (where snippets run)
+
         return (
             <html>
                 <head>
@@ -12,24 +16,30 @@ class NewArtist extends React.Component {
                         <a className="navbar-brand" href="/artists">Tunr Express</a>
                     </nav>
                     <div className="container-fluid">
-                        <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Add New Artist</u></em></h1>
+                        <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Add New Song</u></em></h1>
                         <div className="container w-75 ml-auto mr-auto pl-0 pr-0">
                             <br />
-                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5" method="POST" action={`/artists`}>
-                                Name:&emsp;
-                    <input type="text" name="name" placeholder="name" />
+                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5" method="POST" action={`/artists/songs`}>
+                                Title:&emsp;
+                        <input type="text" name="title" placeholder="title" />
                                 <br /><br />
 
-                    Photo_url:&emsp;
-                    <input type="text" name="photo_url" placeholder="photo_url" />
+                        Album:&emsp;
+                        <input type="text" name="album" placeholder="album" />
                                 <br /><br />
 
-                    Nationality:&emsp;
-                    <input type="text" name="nationality" placeholder="nationality" />
+                        Preview_Link:&emsp;
+                        <input type="text" name="preview_link" placeholder="preview_link" />
+                                <br /><br />
+                        Artwork&emsp;
+                        <input type="text" name="artwork" placeholder="artwork" />
+                                <br /><br />
+                        Artist_Id&emsp;
+                        <input type="text" name="artist_id" defaultValue={currentArtist} />
                                 <br /><br />
                                 <button className="btn btn-success w-50 ml-auto mr-auto" type="submit"> Submit </button>
                                 <br />
-                                
+
                             </form>
 
 
