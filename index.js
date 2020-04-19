@@ -49,9 +49,8 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  //home page
-
-  // respond with HTML page displaying all pokemon
+  // UPDATE HOME PAGE
+  // respond with app home page
   response.render('home');
 });
 
@@ -65,24 +64,38 @@ app.get('/artists/', (request, response) => {
       console.error('query error:', err.stack);
       response.send('query error');
     } else {
-      console.log('query result:');
-      var artistObj = result.rows;
-      // console.log(artistObj.length);
-      response.send(artistObj);
-      response.render('artists');
+      console.log('query result:', result.rows);
+
+      response.render('artists', result);
     }
   });
-  // response.render('artists');
 });
 
 app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+  // respond with HTML page with form to create new artist
+  response.render('new-artist');
 });
 
 app.post('/artists', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+  console.log(request.body);
+
+  const whenQueryDone = (queryError, result) => {
+    if (queryError) {
+      console.log("Query Error Detected!");
+      console.log("------------------");
+      console.log(queryError)
+    } else {
+      console.log("New Artist Added!");
+
+    }
+  };
+
+  const queryString = "INSERT INTO artists (name,photo_url,nationality) VALUES ($1,$2,$3) RETURNING *";
+  const insertValues = [request.body.name, request.body.photo_url, request.body.nationality];
+
+  pool.query(queryString, insertValues, whenQueryDone)
+
+  response.render('artist-added', request.body);
 });
 
 /**

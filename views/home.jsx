@@ -1,5 +1,9 @@
 var React = require("react");
 
+//home page to include anchor tags w/ reference to corresponding links
+console.log("Home Page Accessed");
+console.log("------------------");
+
 class Home extends React.Component {
   render() {
     return (
