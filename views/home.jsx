@@ -14,8 +14,6 @@ class Home extends React.Component {
             <div>
                 <a href="/songs">Songs</a>
             </div>
-          <br/>
-          <a href="/artists/new">Add New Artist</a>
         </body>
       </html>
     );

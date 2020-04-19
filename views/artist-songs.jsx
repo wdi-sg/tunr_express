@@ -25,7 +25,7 @@ class ArtistSongs extends React.Component {
 
 
     const artistSongsList = songsData.map((artistSong) => {
-        return <li><p><strong>{artistSong.title}</strong> - {artistSong.album}</p></li>
+        return <li key={artistSong.id}><p><strong>{artistSong.title}</strong> - {artistSong.album}</p></li>
     })
 
     return (

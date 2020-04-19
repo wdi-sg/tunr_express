@@ -12,11 +12,11 @@ class Artists extends React.Component {
         <head />
         <body>
             <a href="/">Back to Main</a>
-          <h1>Artists</h1>
-          <ul>{artistsNameList}</ul>
-          <br/>
-          <a href="/artists/new">Add New Artist</a>
-          <br/>
+            <h1>Artists</h1>
+            <a href="/artists/new">Add New Artist</a>
+            <br/>
+            <ol>{artistsNameList}</ol>
+            <br/>
         </body>
       </html>
     );

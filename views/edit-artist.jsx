@@ -6,6 +6,9 @@ class EditArtist extends React.Component {
         // console.log("new-artists.jsx");
         let artistData = this.props.artist;
 
+        //back to Artist page
+        const artistPageLink = "/artists/" + artistData.id
+
         // link to reset Artist
         const artistEditLink = "/artists/" + artistData.id+ "/edit";
         // link to edit query link (PUT) action for submit
@@ -14,7 +17,7 @@ class EditArtist extends React.Component {
         //Form Items
         const artistsKeys = ['Name', 'Photo_url', 'Nationality'];
         const artistFormInput = artistsKeys.map((artistsKey) => {
-            return <p key={artistsKey}>{artistsKey}: <input name= {artistsKey.toLowerCase()} value={artistData[artistsKey.toLowerCase()]}/></p>;
+            return <p key={artistsKey}>{artistsKey}: <input name= {artistsKey.toLowerCase()} defaultValue={artistData[artistsKey.toLowerCase()]}/></p>;
         });
 
 
@@ -23,6 +26,7 @@ class EditArtist extends React.Component {
       <html>
         <head />
         <body>
+            <p><a href={artistLink}>Back to Artist Page</a></p>
             <p><a href={artistEditLink}>Reset</a></p>
             <h3>Add New Artist</h3>
             <form action={artistLink} method="POST">
