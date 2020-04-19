@@ -6,7 +6,7 @@ class Tracks extends React.Component {
             return <table>
             <tr>
                 <td>{track.title}</td>
-                <td>{track.album}</td>
+                <td>/{track.album}/</td>
                 <td>--{track.name}</td>
               </tr>
               </table>

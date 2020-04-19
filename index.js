@@ -123,6 +123,11 @@ app.get('/artists', (request, response) => {
 /*===================================================*/
 /*===================================================*/
 
+/**
+ * ===================================
+ * Tracklist feature
+ * ===================================
+ */
 
 //Display the list of songs and artists
 // app.get('/playlist/new', (request, response) => {
@@ -143,14 +148,36 @@ app.get('/playlist', (request, response) => {
       response.render('tracks', data)
     }
   }
-    const queryString = "SELECT songs.title, songs.album, artists.name FROM songs INNER JOIN artists ON songs.artist_id = artists.id ";
+    const queryString = "SELECT songs.title, songs.album, artists.name FROM songs INNER JOIN artists ON songs.artist_id = artists.id"
 
     pool.query(queryString, trackListQuery )
 
 });
 
+/**
+ * ===================================
+ * Playlist id feature
+ * ===================================
+ */
 
+app.get('/playlist/:id', (request, response) => {
+  //console.log("this", request.body);
 
+  const queryString = "SELECT songs.title, songs.album, artists.name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) WHERE artists.id = " + request.params.id ;
+
+  const playListQuery = (playListQueryError, result) => {
+    if(playListQueryError){
+      console.log("Error found!");
+      console.log(playListQueryError);
+    }else{
+
+      response.send(result.rows)
+    }
+  }
+
+    pool.query(queryString, playListQuery )
+
+});
 
 
 
