@@ -5,8 +5,36 @@ class Singleartist extends React.Component {
     //CSS stuff
     const imageStyle = {
                     "max-width" : "500px",
-                    "max-height" : "500px"
+                    "max-height" : "500px",
+                    "display" : "inline"
                 }
+
+    const background = {
+                        "background" : "rgb(38, 38, 38)"
+                    };
+
+    const title = {
+                    "color" : "white"
+                }
+
+    const nationalityStyle = {
+                                "color" : "white"
+                            };
+
+    const newSongDiv = {
+                            "display" : "inline",
+                            "float" : "right",
+                            "fontSize" : "76px",
+                            "display" : "inline",
+                            "position" : "relative",
+                            "top" : "270px",
+                            "right" : "40px"
+                        };
+
+    const newSongStyle = {
+                            "color" : "white",
+                            "textDecoration" : "none"
+                        }
 
     //Javascript stuff
 
@@ -17,7 +45,7 @@ class Singleartist extends React.Component {
 
     const artistImage = <img src={artist.photo_url} style={imageStyle}></img>
 
-    const artistNationality = <p>Nationality: {artist.nationality}</p>
+    const artistNationality = <p>{artist.nationality}</p>
 
     ////////Song stuff
     const artistSongs = this.props.allSongDetails;
@@ -39,17 +67,22 @@ class Singleartist extends React.Component {
         )
     })
 
+    const newSongURL = `/artists/${artist.id}/songs/new`
+
     return (
       <html>
         <head>
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"></link>
         </head>
-        <body>
-          <h1>{artistName}</h1>
-          <div>
+        <body style={background}>
+          <h1 style={title}>{artistName}</h1>
+          <div style={imageStyle}>
             {artistImage}
           </div>
-          <div>
+          <div style={newSongDiv}>
+            <a href={newSongURL} style={newSongStyle}>+</a>
+          </div>
+          <div style={nationalityStyle}>
             {artistNationality}
           </div>
           <div>

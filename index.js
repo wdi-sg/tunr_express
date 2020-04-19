@@ -72,6 +72,7 @@ app.get('/artists', (request, response) => {
 
 // Show single artist
 app.get('/artists/:id/songs', (request, response) => {
+    console.log('redirect works');
     // Get ID of artist
     const id = request.params.id;
 
@@ -106,6 +107,7 @@ app.get('/artists/:id/songs', (request, response) => {
             }
             else{
                 allSongDetails = result.rows;
+                console.log(allSongDetails);
                 resolve();
             }
         })
@@ -117,6 +119,91 @@ app.get('/artists/:id/songs', (request, response) => {
     })
 
 });
+
+/*
+===================
+Creating a new Song
+====================
+*/
+
+app.get('/artists/:id/songs/new', (request, response) => {
+
+    const data = {"artistID" : request.params.id};
+
+    response.render('newsong', data);
+})
+
+// Add song into database
+app.post('/artists/:id/songs', (request, response) => {
+    const id = request.params.id;
+
+    const songDetails = request.body;
+
+    // Add song into song database
+    let addSongDB = new Promise((resolve, reject) => {
+        let queryString = 'insert into songs (title, album, preview_link, artwork, artist_id) values ($1, $2, $3, $4, $5)'
+
+        const values = [songDetails.title, songDetails.album, songDetails.preview_link, songDetails.artwork, id];
+
+        pool.query(queryString, values, (err, result) => {
+            if(err) {
+                console.error('query error: ', err.stack);
+                response.send('query error');
+            }
+            else{
+                console.log('successfully added song into db');
+                resolve();
+            }
+        })
+    })
+
+    addSongDB.then(() => {
+        response.redirect(`/artists/${id}/songs`);
+    })
+
+    // // Get artist details
+    // let artistDetails;
+
+    // let getArtistDetails = new Promise((resolve, reject) => {
+    //     const queryString = `select * from artists where id=${id}`
+
+    //     pool.query(queryString, (err, result) => {
+    //         if(err) {
+    //             console.error('query error: ', err.stack);
+    //             response.send('query error');
+    //         }
+    //         else{
+    //             artistDetails = result.rows;
+    //             resolve();
+    //         }
+    //     })
+    // })
+
+    // // Get all songs from artist
+    // let allSongDetails;
+
+    // let getSongDetails = new Promise((resolve, reject) => {
+    //     const queryString2 = `select * from songs where artist_id = ${id}`
+
+    //     pool.query(queryString2, (err, result) => {
+    //         if(err) {
+    //             console.error('query error: ', err.stack);
+    //             response.send('query error');
+    //         }
+    //         else{
+    //             allSongDetails = result.rows;
+    //             resolve();
+    //         }
+    //     })
+    // })
+
+    // addSongDB.then(() => {
+    //     Promise.all([getArtistDetails, getSongDetails]).then(() => {
+    //         const data = {"artistDetails" : artistDetails, "allSongDetails" : allSongDetails};
+    //         response.redirect(`/artists/${id}/songs`);
+    //     })
+    // })
+})
 
 
 /*
