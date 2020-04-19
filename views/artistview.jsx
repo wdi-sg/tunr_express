@@ -3,7 +3,8 @@ const Head = require('./head');
 
 class ArtistView extends React.Component {
   render() {
-    let editLink = `${this.props.artist.id}/edit`
+    let songsLink = `${this.props.artist.id}/songs`;
+    let editLink = `${this.props.artist.id}/edit`;
     let deleteLink = `${this.props.artist.id}/delete`;
 
     let prevLink = `${this.props.prevArtistId}`;
@@ -53,6 +54,13 @@ class ArtistView extends React.Component {
                     <img src={this.props.artist.photo_url}
                          width="200px"/>
                     <h4>{this.props.artist.nationality}</h4>
+                  </div>
+                </div>
+
+                <div className="row my-3">
+                  <div className="col">
+                    <a href={songsLink}
+                       className="btn btn-info btn-block">View Artist Songs</a>
                   </div>
                 </div>
 
