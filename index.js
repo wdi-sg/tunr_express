@@ -44,21 +44,115 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
- * Routes
+ * Create feature
  * ===================================
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
   response.render('home');
 });
 
 app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   response.render('new');
 });
+
+app.post('/new', (request, response) => {
+  console.log("this", request.body);
+
+  const artistAddQuery = (queryError, result) => {
+    if(queryError){
+      console.log("Error found!");
+      console.log(queryError);
+    }else{
+      console.log(result);
+    }
+  }
+    const queryString = "INSERT INTO artists (name,photo_url,nationality) VALUES ($1,$2,$3) RETURNING *";
+    const insertValues = [request.body.artistName,request.body.photoUrl,request.body.nationality];
+
+    pool.query(queryString, insertValues, artistAddQuery )
+
+});
+
+/**
+ * ===================================
+ * Artists index feature
+ * ===================================
+ */
+
+app.get('/artists', (request, response) => {
+  // respond with HTML page with form to create new pokemon
+  const artistQuery = ( error, result) => {
+    if ( error ){
+      console.log("An Errorr!!")
+    }else{
+        const data ={
+          artistNames: result.rows
+        }
+        response.render('index', data)
+        //response.send(result.rows[0].name);
+    }
+  }
+  const queryString = "SELECT * FROM artists;"
+  pool.query(queryString, artistQuery )
+});
+
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/**********PART 2*************************************/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+/*===================================================*/
+
+
+//Display the list of songs and artists
+// app.get('/playlist/new', (request, response) => {
+//   response.send("NEW list");
+// });
+
+app.get('/playlist', (request, response) => {
+  console.log("this", request.body);
+
+  const trackListQuery = (trackQueryError, result) => {
+    if(trackQueryError){
+      console.log("Error found!");
+      console.log(trackQueryError);
+    }else{
+      const data = {
+        tracks: result.rows
+      }
+      response.render('tracks', data)
+    }
+  }
+    const queryString = "SELECT songs.title, songs.album, artists.name FROM songs INNER JOIN artists ON songs.artist_id = artists.id ";
+
+    pool.query(queryString, trackListQuery )
+
+});
+
+
+
+
+
 
 
 /**
