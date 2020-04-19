@@ -174,7 +174,7 @@ router.get('/:aid/songs/:sid', async function (req, res) {
     song: songInfo[0]
   };
 
-  res.render('songview', data);
+  res.render('artistsongview', data);
 });
 
 module.exports = router;
