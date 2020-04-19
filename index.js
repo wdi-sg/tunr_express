@@ -1,7 +1,5 @@
-console.log("starting up!!");
-
-const express = require('express');
-const methodOverride = require('method-override');
+import express from 'express'
+import * as methodOverride from 'method-override'
 const pg = require('pg');
 
 // Initialise postgres client

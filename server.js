@@ -1,23 +1,21 @@
+require('dotenv').config()
 const express = require('express')
 const register = require('@react-ssr/express/register')
 const methodOverride = require('method-override')
-const dotenv = require('dotenv')
 const { artistRoute, songRoute, playlistRoute } = require('./routes/index')
 const { handle404, handle500} = require('./controllers/errors')
 
-dotenv.config()
-
-const app = express()
 const PORT = 3000
 const APP_ROOT = '/'
+
+const app = express()
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 const run = async () => {
 
   await register(app)
-  app.use(express.json())
-  app.use(express.urlencoded({ extended: true }))
-  app.use(methodOverride('_method'))
-
 
   app.get(APP_ROOT, (req,res) => res.redirect(`${APP_ROOT}\songs`))
   app.use(APP_ROOT, artistRoute)

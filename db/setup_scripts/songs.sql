@@ -1,70 +1,3 @@
-drop table artist;
-drop table playlsit;
-drop table playlist_song;
-drop table song;
-
-create table if not exists artist
-(
-	id serial not null
-		constraint artist_pk
-			primary key,
-	name text default 'unknown artist',
-	photo_url text default null,
-	nationality text default 'unknown nation'
-);
-
-
-
-create table if not exists song
-(
-	id serial not null
-		constraint song_pk
-			primary key,
-	title text default 'unknown title',
-	album text default 'unknown album',
-	preview_link text default null,
-	artwork text default null,
-	artist_id int default 1
-		constraint song_artist_id_fk
-			references artist
-				on update cascade on delete set default
-);
-
-create table if not exists playlist
-(
-	id serial not null
-		constraint playlist_pk
-			primary key,
-	name text default 'Default Playlist'
-);
-
-
-create table if not exists playlist_song
-(
-	id serial not null
-		constraint playlist_song_pk
-			primary key,
-	song_id int
-		constraint playlist_song_song_id_fk
-			references song
-				on update cascade on delete cascade,
-	playlist_id int
-		constraint playlist_song_playlist_id_fk
-			references playlist
-				on update cascade on delete cascade
-);
-
-
-
-insert into artist (id, name) VALUES (DEFAULT, DEFAULT)
-
-INSERT INTO artist(name, photo_url, nationality) VALUES('Yeah Yeah Yeahs', 'http://www.athousandguitars.com/wp-content/uploads/2013/04/yeah-yeah-yeahs.jpg', 'USA');
-INSERT INTO artist(name, photo_url, nationality) VALUES('Nosaj Thing', 'http://wertn.com/wp-content/uploads/2012/04/Nosaj-Thing_Mondrian_CL_High-3487.jpg', 'USA');
-INSERT INTO artist(name, photo_url, nationality) VALUES('Norah Jones', 'http://entertainmentrealm.files.wordpress.com/2012/05/norahjones1.jpg', 'USA');
-INSERT INTO artist(name, photo_url, nationality) VALUES('Lykke Li', 'http://www.chartattack.com/wp-content/uploads/2012/07/lykke-li-newmain1-photo-by-daniel-jackson.jpg', 'Sweeden');
-INSERT INTO artist(name, photo_url, nationality) VALUES('Kendrick Lamar', 'http://www.xxlmag.com/wp-content/uploads/2013/06/kendricklamar_001-1600.jpg', 'USA');
-
-
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Maps', 'Fever to Tell', 'http://a1748.phobos.apple.com/us/r1000/074/Music/d4/97/e7/mzm.bigdtgoz.aac.p.m4a', 'http://a3.mzstatic.com/us/r30/Features/d6/ba/99/dj.homcvzwl.60x60-50.jpg', '1');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Heads Will Roll', 'It''s Blitz! (Deluxe Edition)', 'http://a308.phobos.apple.com/us/r1000/064/Music/9c/a6/3a/mzm.zgjjoqyj.aac.p.m4a', 'http://a1.mzstatic.com/us/r30/Music/4c/30/8c/mzi.gcicgujl.60x60-50.jpg', '1');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Gold Lion', 'Show Your Bones', 'http://a850.phobos.apple.com/us/r1000/105/Music/d0/b6/fe/mzm.qoeoeazp.aac.p.m4a', 'http://a5.mzstatic.com/us/r30/Features/73/a1/1a/dj.mwlaurzf.60x60-50.jpg', '1');
@@ -161,7 +94,7 @@ INSERT INTO artist(name, photo_url, nationality) VALUES('Kendrick Lamar', 'http:
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Try (Kyle Hall Remix)', 'Home Remixes - Single', 'http://a303.phobos.apple.com/us/r1000/050/Music/v4/af/f0/19/aff0197d-e5a0-368d-51fe-903dee07fe6f/mzaf_4429577025238401915.plus.aac.p.m4a', 'http://a1.mzstatic.com/us/r30/Music/v4/c3/0c/e9/c30ce928-ad01-87e8-aaae-cfff88f2fd07/810874020321.60x60-50.jpg', '2');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Heart Entire', 'Daly City - SF Laptop & Machine Battle 2007', 'http://a1477.phobos.apple.com/us/r1000/070/Music/ee/62/b6/mzm.uqphqump.aac.p.m4a', 'http://a2.mzstatic.com/us/r30/Features/3e/cb/79/dj.mmrcjyjt.60x60-50.jpg', '2');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Eclipse Blue (feat. Kazu Makino)', 'Nova Tunes 2.7', 'http://a87.phobos.apple.com/us/r1000/025/Music4/v4/66/6c/03/666c031f-3652-4e8f-a61f-569651fb06b5/mzaf_5520208683398516963.plus.aac.p.m4a', 'http://a2.mzstatic.com/us/r30/Music4/v4/86/a7/f1/86a7f180-0c6c-bb6b-c81c-42779f76371a/3700551758739_cover.60x60-50.jpg', '2');
- INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Eclipse', 'Trax 5 - song for the Next Generation', 'http://a791.phobos.apple.com/us/r1000/086/Music2/v4/c0/ee/89/c0ee89c2-17e0-7c5c-bf04-291d6292c73e/mzaf_2140794032069766367.aac.m4a', 'http://a3.mzstatic.com/us/r30/Music2/v4/b9/30/c0/b930c06b-c103-7fc9-29ca-e2d4071819d6/cover.60x60-50.jpg', '2');
+ INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Eclipse', 'Trax 5 - songModel for the Next Generation', 'http://a791.phobos.apple.com/us/r1000/086/Music2/v4/c0/ee/89/c0ee89c2-17e0-7c5c-bf04-291d6292c73e/mzaf_2140794032069766367.aac.m4a', 'http://a3.mzstatic.com/us/r30/Music2/v4/b9/30/c0/b930c06b-c103-7fc9-29ca-e2d4071819d6/cover.60x60-50.jpg', '2');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('FWD', 'Best of Rush Hour - 2009', 'http://a1829.phobos.apple.com/us/r1000/120/Music2/v4/48/90/99/489099a6-f320-eef4-d2e7-2a3cfd7b230f/mzaf_4175158127785468666.aac.m4a', 'http://a2.mzstatic.com/us/r30/Music/9c/80/b7/mzi.cfvncbin.60x60-50.jpg', '2');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Light #3 (Gerry Read Remix)', 'Home Remixes - Single', 'http://a1250.phobos.apple.com/us/r1000/016/Music6/v4/77/dc/81/77dc8102-7eb5-93b4-e5dc-21f53e87327d/mzaf_70703093560941596.plus.aac.p.m4a', 'http://a1.mzstatic.com/us/r30/Music/v4/c3/0c/e9/c30ce928-ad01-87e8-aaae-cfff88f2fd07/810874020321.60x60-50.jpg', '2');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Eclipse / Blue (feat. Kazu Makino)', 'Eclettica by Glass Coffee', 'http://a1589.phobos.apple.com/us/r30/Music6/v4/9d/7a/53/9d7a5329-e791-5701-7906-905acee1b293/mzaf_4102106214504920178.plus.aac.p.m4a', 'http://a3.mzstatic.com/us/r30/Music/v4/6a/aa/37/6aaa3799-2a81-9bcb-fe8f-7dcd2bb1ed09/cover.60x60-50.jpg', '2');
@@ -186,7 +119,7 @@ INSERT INTO artist(name, photo_url, nationality) VALUES('Kendrick Lamar', 'http:
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Nightingale', 'Come Away With Me', 'http://a854.phobos.apple.com/us/r30/Music/v4/3f/16/f1/3f16f178-8226-34fc-6f85-885aa4200db7/mzaf_1234616573675811085.plus.aac.p.m4a', 'http://a3.mzstatic.com/us/r30/Music6/v4/ad/4b/fd/ad4bfda0-147a-23b5-24d4-a4bc0cb1683b/05099946382351.60x60-50.jpg', '3');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('The Long Day Is Over', 'Come Away With Me', 'http://a687.phobos.apple.com/us/r30/Music4/v4/51/c5/8e/51c58eca-57a3-3df2-2651-5dabc1318c59/mzaf_7532076601039258541.plus.aac.p.m4a', 'http://a3.mzstatic.com/us/r30/Music6/v4/ad/4b/fd/ad4bfda0-147a-23b5-24d4-a4bc0cb1683b/05099946382351.60x60-50.jpg', '3');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Painter Song', 'Come Away With Me', 'http://a69.phobos.apple.com/us/r30/Music4/v4/0c/37/02/0c370214-f55e-8f1d-2af7-d2c679c8e7a9/mzaf_365113054507498310.plus.aac.p.m4a', 'http://a3.mzstatic.com/us/r30/Music6/v4/ad/4b/fd/ad4bfda0-147a-23b5-24d4-a4bc0cb1683b/05099946382351.60x60-50.jpg', '3');
- INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Broken', 'Big Change: song for FINCA', 'http://a1387.phobos.apple.com/us/r30/Music/e0/0c/86/mzm.stxzxhrz.aac.p.m4a', 'http://a5.mzstatic.com/us/r30/Music/cd/67/7f/mzi.ylgbzggr.60x60-50.jpg', '3');
+ INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Broken', 'Big Change: songModel for FINCA', 'http://a1387.phobos.apple.com/us/r30/Music/e0/0c/86/mzm.stxzxhrz.aac.p.m4a', 'http://a5.mzstatic.com/us/r30/Music/cd/67/7f/mzi.ylgbzggr.60x60-50.jpg', '3');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Everybody Needs a Best Friend', 'Ted (Original Motion Picture Soundtrack)', 'http://a1570.phobos.apple.com/us/r1000/120/Music/34/3b/1d/mzi.icyxhiuf.aac.p.m4a', 'http://a2.mzstatic.com/us/r30/Music/v4/5a/7c/09/5a7c094f-3ff8-3fc3-bdfb-808b1ccace9f/UMG_cvrart_00602537095582_01_RGB72_1200x1200_12UMGIM34871.60x60-50.jpg', '3');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('Take Off Your Cool (feat. Norah Jones)', 'Speakerboxxx / The Love Below', 'http://a1973.phobos.apple.com/us/r1000/082/Music/ed/5b/c5/mzm.bdrtrbbt.aac.p.m4a', 'http://a2.mzstatic.com/us/r30/Features/76/d0/cc/dj.jnsdqzva.60x60-50.jpg', '3');
  INSERT INTO song(title, album, preview_link, artwork, artist_id) VALUES('How Many Times Have You Broken My Heart?', 'The Lost Notebooks of Hank Williams', 'http://a1688.phobos.apple.com/us/r1000/109/Music/fa/b4/00/mzm.rfzhzedu.aac.p.m4a', 'http://a1.mzstatic.com/us/r30/Music/32/45/b6/mzi.npyjsjgf.60x60-50.jpg', '3');
