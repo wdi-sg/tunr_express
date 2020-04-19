@@ -70,6 +70,11 @@ class ArtistSongs extends React.Component {
                   Go Back to Artist Page
                 </a>
 
+                <a href="songs/new"
+                   className="btn btn-info btn-block my-3">
+                  Add a Song for this Artist
+                </a>
+
               </div>
             </div>
           </div>
