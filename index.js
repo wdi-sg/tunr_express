@@ -452,7 +452,7 @@ app.post(`/songs`, (req, res) => {
  */
 
  app.post(`/playlists`, (req,res)=> {
-   let command = `INSERT INTO playlists (name) VALUES (${req.body.name})`;
+   let command = `INSERT INTO playlists (name) VALUES ('${req.body.name}') RETURNING *`;
     pool.query(command, (err, result) => {
       if (err) {
         console.log(`Error in query!!!`, err);
@@ -475,18 +475,6 @@ app.post(`/songs`, (req, res) => {
       }
     });
   });
-
- app.post(`/playlists`, (req, res) => {
-   let command = `INSERT INTO playlists (name) VALUES (${req.body.name})`;
-   pool.query(command, (err, result) => {
-     if (err) {
-       console.log(`Error in query!!!`, err);
-     } else {
-       res.redirect(`/playlists/${result.rows[0].id}`);
-     }
-   });
- });
-
 
  app.get(`/playlists`, (req, res) => {
    let command = `SELECT * FROM playlists`;

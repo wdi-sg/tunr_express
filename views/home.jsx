@@ -29,6 +29,12 @@ class Home extends React.Component {
           <a href="/songs/new">
             <button className="btn btn-secondary">Add A Song</button>
           </a>
+          <a href="/playlists">
+            <button className="btn btn-light">View All Playlists</button>
+          </a>
+          <a href="/playlists/new">
+            <button className="btn btn-light">Add A Playlist</button>
+          </a>
         </body>
       </html>
     );

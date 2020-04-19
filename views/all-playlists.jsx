@@ -27,6 +27,10 @@ class AllPlaylists extends React.Component {
           <a href="/">
             <button className="btn btn-primary">Back To Home</button>
           </a>
+
+          <a href="/playlists/new">
+            <button className="btn btn-light">Add A Playlist</button>
+          </a>
           <h1>All Playlists</h1>
           <ul>{playlistLinks}</ul>
         </body>
