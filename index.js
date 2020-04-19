@@ -72,7 +72,6 @@ app.get('/artists',(request, response)=>{
 
 });
 
-
 //***** Display a form for adding new artists ******
 app.get('/artists/new',(request, response)=>{
   const whenQueryDone = (queryError, result) => {
@@ -136,6 +135,105 @@ app.post('/artists',(request, response)=>{
 
 });
 
+//***** Display a form for adding new playlists ******
+app.get('/playlists/new',(request, response)=>{
+  const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      response.render('new-playlist');
+    }
+  };
+
+  const queryString = "SELECT * FROM playlist";
+
+  pool.query(queryString, whenQueryDone )
+
+});
+
+//Create a new playlist
+app.post('/playlists',(request, response)=>{
+     const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      response.redirect('/playlists/')
+    }
+  };
+
+  const queryString = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
+  const insertValues = [request.body.name];
+
+  pool.query(queryString, insertValues, whenQueryDone )
+
+});
+
+//See a single playlist
+app.get('/playlists/:id', (request, response) => {
+
+  const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      console.log(result.rows[0]);
+      const data = {
+        playlistName : result.rows[0].name,
+      }
+      response.render('show', data);
+  };
+  const queryString = "SELECT * FROM playlist WHERE id="+request.params.id;
+  pool.query(queryString, whenQueryDone )
+};
+});
+
+//***** Display a form for adding songs to a playlist ******
+app.get('/playlists/:id/newsong',(request, response)=>{
+  const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      response.render('new-playlist-song');
+    }
+  };
+
+  const queryString = "SELECT * FROM playlist_song";
+
+  pool.query(queryString, whenQueryDone )
+
+});
+
+//Add song to playlist
+//should the route still be /playlists? (same for action in jsx)
+app.post('/playlists',(request, response)=>{
+     const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      response.redirect('/playlists/')
+    }
+  };
+
+  const queryString = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
+  const insertValues = [request.body.name];
+
+  pool.query(queryString, insertValues, whenQueryDone )
+
+});
 // //show particular artist's page
 // app.get('/artists/:id', (request, response) => {
 //   const whenQueryDone = (queryError, result) => {
