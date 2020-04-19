@@ -21,7 +21,7 @@ class ArtistDelete extends React.Component {
     } else {
       headerText =
         <h5 class="p-2 bg-danger text-white rounded-lg text-center">
-         There are {count} {this.props.name} songs in the database. <br />
+          There are {count} {this.props.name} songs in the database. <br />
           Deleting the artist will delete all their songs as well.
         </h5>;
       deleteText = "Delete Artist and All Songs";
@@ -64,28 +64,20 @@ class ArtistDelete extends React.Component {
             <div className="row my-3">
               <div className="col-8 offset-2">
 
-                <div className="row my-3">
-                  <div className="col">
-                    <Nav />
-                  </div>
-                </div>
+                <Nav />
 
-                <div className="row my-3">
-                  <div className="col">
-                    {headerText}
-                    {songTable}
-                    <form action={deleteLink} method="post">
-                      <button type="submit"
-                              className="btn btn-danger btn-block my-3">
-                        {deleteText}
-                      </button>
-                    </form>
-                    <a href={backLink}
-                       className="btn btn-info btn-block">
-                      Go Back to Artist Page
-                    </a>
-                  </div>
-                </div>
+                {headerText}
+                {songTable}
+                <form action={deleteLink} method="post">
+                  <button type="submit"
+                          className="btn btn-danger btn-block my-3">
+                    {deleteText}
+                  </button>
+                </form>
+                <a href={backLink}
+                   className="btn btn-info btn-block">
+                  Go Back to Artist Page
+                </a>
 
               </div>
             </div>

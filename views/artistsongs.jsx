@@ -60,22 +60,14 @@ class ArtistSongs extends React.Component {
             <div className="row my-3">
               <div className="col-8 offset-2">
 
-                <div className="row my-3">
-                  <div className="col">
-                    <Nav />
-                  </div>
-                </div>
+                <Nav />
 
-                <div className="row my-3">
-                  <div className="col">
-                    {headerText}
-                    {songTable}
-                    <a href={backLink}
-                       className="btn btn-info btn-block my-3">
-                      Go Back to Artist Page
-                    </a>
-                  </div>
-                </div>
+                {headerText}
+                {songTable}
+                <a href={backLink}
+                   className="btn btn-info btn-block my-3">
+                  Go Back to Artist Page
+                </a>
 
               </div>
             </div>

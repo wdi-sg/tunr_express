@@ -22,22 +22,15 @@ class ArtistList extends React.Component {
             <div className="row my-3">
               <div className="col-8 offset-2">
 
-                <div className="row my-3">
-                  <div className="col">
-                    <Nav />
-                  </div>
-                </div>
+                <Nav />
 
-                <div className="row my-3">
-                  <div className="col">
-                    <ul className="list-group">
-                      {artists}
-                    </ul>
-                    <a href="/artists/new"
-                       className="btn btn-info btn-block my-3">
-                      Add New Artist</a>
-                  </div>
-                </div>
+                <ul className="list-group">
+                  {artists}
+                </ul>
+                <a href="/artists/new"
+                   className="btn btn-info btn-block my-3">
+                  Add New Artist
+                </a>
 
               </div>
             </div>

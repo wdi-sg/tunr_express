@@ -28,20 +28,12 @@ class ArtistView extends React.Component {
             <div className="row my-3">
               <div className="col-8 offset-2">
 
-                <div className="row my-3">
-                  <div className="col">
-                    <Nav />
-                  </div>
-                </div>
+                <Nav />
 
-                <div className="row my-3">
-                  <div className="col">
-                    <h4>{this.props.artist.name}</h4>
-                    <img src={this.props.artist.photo_url}
-                         width="200px"/>
-                    <h4>{this.props.artist.nationality}</h4>
-                  </div>
-                </div>
+                <h4>{this.props.artist.name}</h4>
+                <img src={this.props.artist.photo_url}
+                     width="200px"/>
+                <h4>{this.props.artist.nationality}</h4>
 
                 <div className="row my-3">
                   <div className="col-3">
