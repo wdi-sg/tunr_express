@@ -22,7 +22,7 @@ class ArtistSongs extends React.Component {
     };
     var artists = this.props.artists;
     artists = artists.map((element) => {
-      return <div className="card text-center bg-light ml-0 mr-0">
+      return <div key={element.name} className="card text-center bg-light ml-0 mr-0">
         <img style={square} className="card-img-top mx-auto"
           src={`${element.photo_url}`} alt="Card image cap" />
         <div className="card-body">
@@ -36,7 +36,7 @@ class ArtistSongs extends React.Component {
 
     var songs = this.props.songs;
     songs = songs.map((element) => {
-      return <li className="list-group-item list-group-item-action"><a key={element.title} href={`${element.preview_link}`} target="_blank">
+      return <li key={element.title} className="list-group-item list-group-item-action"><a href={`${element.preview_link}`} target="_blank">
         <img style={square2} src={`${element.artwork}`} className="float-left mr-3" />
         <h6 className = " text-dark"> {element.songid}. {element.title}</h6>
         <h7 className = " text-dark">Album: {element.album}</h7>

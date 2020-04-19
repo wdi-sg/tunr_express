@@ -1,6 +1,6 @@
 var React = require("react");
 
-class NewArtist extends React.Component {
+class NewSong extends React.Component {
     render() {
         var currentArtist = this.props.id;
 
@@ -54,4 +54,4 @@ class NewArtist extends React.Component {
     }
 }
 
-module.exports = NewArtist;
+module.exports = NewSong;

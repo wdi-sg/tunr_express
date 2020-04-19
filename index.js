@@ -356,6 +356,67 @@ app.post('/artists/songs', (request, response) => {
     }
   });
 });
+
+app.get('/artists/:artist_id/songs/edit/:song_id', (request, response) => {
+  const queryString = `SELECT * FROM songs WHERE id = ${request.params.song_id}`;
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error3:', err.stack);
+      response.send('query error');
+    } else {
+      // console.log('query result:', result);
+
+      var output = {
+        'artist':request.params.artist_id,
+        'song': result.rows,
+      }
+      response.render('edit-song',output);
+    }
+  });
+  
+});
+
+app.put('/artists/:artist_id/songs/:song_id', (request, response) => {
+  const queryString = `UPDATE songs SET title = $1, album = $2, preview_link = $3, artwork = $4 WHERE id = ${request.params.song_id}`;
+  const values = [request.body.title,request.body.album,request.body.preview_link,request.body.artwork];
+  pool.query(queryString,values, (err, result) => {
+
+    if (err) {
+      console.error('query error3:', err.stack);
+      response.send('query error');
+    } else {
+      // console.log('query result:', result);
+
+      var output = {
+        'song': result.rows,
+      }
+      response.redirect(`/artists/${request.params.artist_id}/songs`);
+
+    }
+  });
+  
+});
+
+app.delete('/artists/:artist_id/songs/:song_id', (request, response) => {
+  const queryString = `DELETE FROM songs WHERE id = ${request.params.song_id}`;
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error3:', err.stack);
+      response.send('query error');
+    } else {
+      // console.log('query result:', result);
+
+      var output = {
+        'song': result.rows,
+      }
+      response.redirect(`/artists/${request.params.artist_id}/songs`);
+
+    }
+  });
+  
+});
 /**
  * ===================================
  * Listen to requests on port 3000
