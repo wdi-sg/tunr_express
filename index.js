@@ -48,37 +48,110 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
 
-  // respond with HTML page displaying all pokemon
-  // response.render('home');
-  response.send("hello world");
+//***** Display home page where all the artists are ******
+app.get('/artists',(request, response)=>{
+  const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      const data = {
+        artistsInformation : result.rows
+      }
+      console.log(result.rows);
+      response.render('home', data);
+    }
+  };
+
+  const queryString = "SELECT * FROM artists";
+
+  pool.query(queryString, whenQueryDone )
+
 });
 
 
 //***** Display a form for adding new artists ******
 app.get('/artists/new',(request, response)=>{
-    response.render('new-artist');
-})
-
-
-app.get('/artists/:id', (request, response) => {
-  // respond with HTML page with form to create new artist
   const whenQueryDone = (queryError, result) => {
-      if( queryError ){
-        console.log("Error");
-        console.log(queryError);
-        response.send('An error has occurred');
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
     }else{
-     const data = {
-        artists: results.row
-        }
-      // if the query ran without errors
-     response.render('new-artist', data);
+      response.render('new-artist');
     }
+  };
+
+  const queryString = "SELECT * FROM artists";
+
+  pool.query(queryString, whenQueryDone )
+
+});
+
+//See a single artist
+app.get('/artists/:id', (request, response) => {
+
+  const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      console.log(result.rows[0]);
+      const data = {
+        artistName : result.rows[0].name,
+        photo : result.rows[0].photo_url,
+        nationality : result.rows[0].nationality
+      }
+      response.render('show', data);
+  };
+  const queryString = "SELECT * FROM artists WHERE id="+request.params.id;
+  pool.query(queryString, whenQueryDone )
 };
 });
+
+
+//Create a new artist
+app.post('/artists',(request, response)=>{
+     const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      response.redirect('/artists/')
+    }
+  };
+
+  const queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+  const insertValues = [request.body.name, request.body.photo_url, request.body.nationality];
+
+  pool.query(queryString, insertValues, whenQueryDone )
+
+});
+
+// //show particular artist's page
+// app.get('/artists/:id', (request, response) => {
+//   const whenQueryDone = (queryError, result) => {
+//       if( queryError ){
+//         console.log("Error");
+//         console.log(queryError);
+//         response.send('An error has occurred');
+//     }else{
+//      const data = {
+//         artists: results.row
+//         }
+//       // if the query ran without errors
+//      response.render('new-artist', data);
+//     }
+//     };
+// });
 
 
 /**
