@@ -1,11 +1,11 @@
-var React = require("react");
+const React = require("react");
 
-class Home extends React.Component {
+class artistsSearch extends React.Component {
   render() {
     return (
       <html>
         <head>
-          <meta charSet="UTF-8" />
+          <meta charset="UTF-8" />
           <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0"
@@ -25,11 +25,29 @@ class Home extends React.Component {
           ></script>
         </head>
         <body>
-          <h1>Welcome to Tunr!</h1>
+          <div>
+            <h1>Here is the artist you requested!</h1>
+          </div>
+          <div>
+            <ul>
+              <li>
+                <strong>Id</strong>: {this.props.id}
+              </li>
+              <li>
+                <strong>Name</strong>: {this.props.name}
+              </li>
+              <li>
+                <strong>Photo URL</strong>: {this.props.photo_url}
+              </li>
+              <li>
+                <strong>Nationality</strong>: {this.props.nationality}
+              </li>
+            </ul>
+          </div>
         </body>
       </html>
     );
   }
 }
 
-module.exports = Home;
+module.exports = artistsSearch;

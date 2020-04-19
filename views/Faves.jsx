@@ -2,6 +2,15 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
+    const favorites = this.props.favorites;
+    const favoriteInfo = favorites.map(favorites => {
+      return (
+        <h6>
+          <a href={favorites.preview_link}>{favorites.title}</a>
+        </h6>
+      );
+    });
+    <h1>See {this.props.username}'s favorites </h1>;
     return (
       <html>
         <head>
@@ -25,7 +34,11 @@ class Home extends React.Component {
           ></script>
         </head>
         <body>
-          <h1>Welcome to Tunr!</h1>
+          <h1>See favorites!</h1>
+          <h6>
+            <a href={favorites.preview_link}>{favorites.title}</a>
+          </h6>
+          <div>{favoriteInfo}</div>
         </body>
       </html>
     );
