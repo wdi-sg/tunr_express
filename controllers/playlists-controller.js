@@ -2,11 +2,16 @@ const db = require('../util/database.js');
 
 module.exports.getPlaylistById = async (req, res) => {
 
-    // const { id } = req.params;
-    // const queryT = `SELECT * FROM playlists WHERE id=${id}`
-    // const { rows } = await db.query(queryT);
+    const { id } = req.params;
+    const queryT = `SELECT * FROM playlists WHERE id=${id}`
+    const { rows } = await db.query(queryT);
 
-    // res.render('./playlists/playlist-single', { 'singlePlaylist': rows[0] });
+    try {
+        res.render('./playlists/playlist-single', { 'singlePlaylist': rows[0] });
+    } catch (e) {
+        res.status(404).render('404');
+        console.log(e);
+    }
 
     console.log('Get Playlist By Id');
 
@@ -14,17 +19,28 @@ module.exports.getPlaylistById = async (req, res) => {
 
 module.exports.getAllPlaylists = async (req, res) => {
 
-    // const { rows } = await db.query('SELECT * FROM artists');
+    const { rows } = await db.query('SELECT * FROM playlists');
 
-    // res.render('./playlists/playlist-all', { 'allPlaylists': rows });
+    try {
+        res.render('./playlists/playlist-all', { 'allPlaylists': rows });
+    } catch (e) {
+        res.status(404).render('404');
+        console.log(e);
+    }
 
     console.log('Get All Playlists');
 }
 
 module.exports.getAddPlaylist = async (req, res) => {
-    // res.render('./playlist/add-playlist');
-    console.log('Get Add Playlist Form');
 
+    const queryT = `SELECT name, id from artists`;
+    const queryT2 = `SELECT title, artist_id from songs`;
+    const resultArtists = await db.query(queryT);
+    const resultSongs = await db.query(queryT2);
+
+    console.log(resultSongs.rows);
+
+    res.render('./playlists/add-playlist', { artists: resultArtists.rows, songs: resultSongs.rows });
 }
 
 module.exports.postAddPlaylist = async (req, res) => {
