@@ -19,6 +19,7 @@ class AddSongForm extends React.Component {
                         <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                     </div>
                     <main>
+                        <div className="form__wrapper">
                         <form method="POST" action={`/artists/${this.props.artist.id}/songs`} className="add-form">
                             <h2 className="add-form__header">Add New Song</h2>
                             <input type="text" name="title" placeholder="Title" maxLength="25" />
@@ -27,6 +28,7 @@ class AddSongForm extends React.Component {
                             <input type="text" name="artwork" placeholder="Artwork" />
                             <button className="add-form__submit-btn" type="submit">Add</button>
                         </form>
+                        </div>
                     </main>
                 </body>
             </html>

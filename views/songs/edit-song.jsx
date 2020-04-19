@@ -20,19 +20,21 @@ class EditSongForm extends React.Component {
                             <a href="/" className="nav__link home-link"><p>Home</p></a>
                             <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                         </div>
-                        <form method="POST" action={`/artists/${this.props.artist.id}/songs/${this.props.singleSong.position}?_method=put`} className="edit-form">
-                            <h2 className="edit-form__header">Edit Song</h2>
-                            <p className="edit-form__header-label">Title</p>
-                            <input type="text" name="title" placeholder="Title" maxLength="25" defaultValue={`${this.props.singleSong.title}`}/>
-                            <p className="edit-form__header-label">Album</p>
-                            <input type="text" name="album" placeholder="Album" defaultValue={`${this.props.singleSong.album}`}/>
-                            <p className="edit-form__header-label">Preview Link</p>
-                            <input type="text" name="preview link" placeholder="Preview Link" value={`${this.props.singleSong['preview_link']}`} />
-                            <p className="edit-form__header-label">Artwork Link</p>
-                            <input type="text" name="artwork" placeholder="Artwork Link" default defaultValue={`${this.props.singleSong.artwork}`} />
-                            <button className="edit-form__submit-btn" type="submit">Edit</button>
+                        <div className="form__wrapper">
+                            <form method="POST" action={`/artists/${this.props.artist.id}/songs/${this.props.singleSong.position}?_method=put`} className="edit-form">
+                                <h2 className="edit-form__header">Edit Song</h2>
+                                <p className="edit-form__header-label">Title</p>
+                                <input type="text" name="title" placeholder="Title" maxLength="25" defaultValue={`${this.props.singleSong.title}`}/>
+                                <p className="edit-form__header-label">Album</p>
+                                <input type="text" name="album" placeholder="Album" defaultValue={`${this.props.singleSong.album}`}/>
+                                <p className="edit-form__header-label">Preview Link</p>
+                                <input type="text" name="preview link" placeholder="Preview Link" value={`${this.props.singleSong['preview_link']}`} />
+                                <p className="edit-form__header-label">Artwork Link</p>
+                                <input type="text" name="artwork" placeholder="Artwork Link" default defaultValue={`${this.props.singleSong.artwork}`} />
+                                <button className="edit-form__submit-btn" type="submit">Edit</button>
 
-                        </form>
+                            </form>
+                        </div>
                     </main>
                 </body>
             </html>

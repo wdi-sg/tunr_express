@@ -1,3 +1,12 @@
+.form__wrapper {
+		width: 80%;
+		min-height: 50vh;
+		height: auto;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+}
+
 .add-form {
 		overflow-y: scroll;
 		display: flex;
@@ -15,8 +24,10 @@
 		font-size: 1.6rem;
 }
 
-.add-form>input {
+.add-form input {
 		margin: 12px 0;
+		padding: 4px 0;
+		max-width: 900px;
 		width: 80%;
 		height: 35px;
 		color: #49494b;
@@ -24,10 +35,10 @@
 		border: 1px dotted #49494b;
 		text-align: center;
 		outline: none;
+		background-color: rgba(255, 255, 255, 0.4);
 }
 
-.add-form__ingredients,
-.add-form__instructions {
+.add-form__song-container {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -47,9 +58,9 @@
 		padding: 12px 18px;
 		font-size: 12px;
 		line-height: 19px;
-		min-width: 100px;
+		min-width: 150px;
 		max-width: 200px;
-		width: 30%;
+		width: 3 s0%;
 		text-transform: uppercase;
 		font-family: 'IBM Plex Sans', sans-serif;
 		font-weight: 400;
@@ -87,21 +98,36 @@
 		-o-transition: all .1s linear;
 }
 
-.add-form__create-btn {
+.add-form__submit-btn {
 		width: 80% !important;
 }
 
-.add-form h3 {
+.add-form h2,
+.add-form h3,
+.add-form h4 {
 		width: 100%;
 		padding: 10px 0;
 		text-align: center;
 		font-size: 1.6rem;
 		font-weight: 600;
+		letter-spacing: 0.1rem;
 		color: #49494b;
 		/*		margin: 12px 0;*/
 }
 
-/*edit-artist*/
+.add-form>select {
+		width: 80%;
+		max-width: 900px;
+		height: 20%;
+		-webkit-appearance: none;
+		padding: 8px 16px;
+		margin: 12px 0;
+		color: #49494b;
+		background-color: rgba(255, 255, 255, 0.4);
+		outline: none;
+}
+
+/*edit*/
 
 .edit-form {
 		overflow-y: scroll;
@@ -120,7 +146,7 @@
 		font-size: 1.6rem;
 }
 
-.edit-form>input {
+.edit-form input {
 		margin: 12px 0;
 		width: 80%;
 		height: 35px;
@@ -179,18 +205,42 @@
 		-o-transition: all .1s linear;
 }
 
-.edit-form__create-btn {
+.edit-form__submit-btn {
 		width: 80% !important;
 }
 
-.edit-form h3 {
+.edit-form h2,
+.edit-form h3,
+.edit-form h4 {
 		width: 100%;
 		padding: 10px 0;
 		text-align: center;
 		font-size: 1.6rem;
 		font-weight: 600;
+		letter-spacing: 0.1rem;
 		color: #49494b;
 		/*		margin: 12px 0;*/
+}
+
+.edit-form__song-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		height: 100%;
+		width: 90%;
+		padding: 20px 0;
+		margin: 12px 0;
+		border-bottom: 1px dotted #49494b;
+		box-sizing: border-box;
+}
+
+.edit-form>select {
+		width: 40%;
+		height: 20%;
+		-webkit-appearance: none;
+		padding: 8px 16px;
+		margin: 12px 0;
+		color: #49494b;
 }
 
 /**/

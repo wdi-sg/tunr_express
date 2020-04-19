@@ -37,6 +37,7 @@ class EditPlaylistForm extends React.Component {
                             <a href="/" className="nav__link home-link"><p>Home</p></a>
                             <a href="/playlists/" className="nav__link show-all-playlists"><p>All Playlists</p></a>
                         </div>
+                        <div className="form__wrapper">
                         <form method="POST" action={`/playlists/${this.props.singlePlaylist.id}?_method=put`} className="edit-form">
                             <h2 className="edit-form__header">Edit Playlist</h2>
                             <input type="text" name="" placeholder="" maxLength="25" defaultValue={this.props.singlePlaylist.name} />
@@ -53,6 +54,7 @@ class EditPlaylistForm extends React.Component {
                             {playlistSongs}
                             <button className="edit-form__submit-btn" type="submit">Edit</button>
                         </form>
+                        </div>
                     </main>
                 </body>
             </html>
