@@ -79,6 +79,8 @@ app.set('view engine', 'jsx');
 // '/' MAIN (HOME PAGE)
 //jsx: home
 
+
+
 //------------------------------------------------------
 // INDEX. List out all ARTIST in HTML.
 // - DONE (to artists.jsx) -
@@ -97,6 +99,7 @@ app.get('/artists', (req, res) => {
     }
     pool.query(allArtistsQ, whenQueryDone);
 });
+
 
 //------------------------------------------------------
 // INDEX. List out all SONGS in HTML.
@@ -117,6 +120,28 @@ app.get('/songs', (req, res) => {
     pool.query(allSongsQ, whenQueryDone);
 });
 
+
+//------------------------------------------------------
+// INDEX. List out all Playlists in HTML.
+// - ON GOING -
+//------------------------------------------------------
+app.get('/playlists', (req, res) => {
+    const allPlaylistsQ = 'SELECT * from playlists';
+
+    pool.query(allPlaylistsQ, (queryError, allPlaylistsResult) => {
+        if (queryError) {
+            console.log("playlist db error", queryError);
+            res.status(500);
+            res.send("playlist db error")
+        } else {
+            console.log('playlists');
+            console.log(allPlaylistsResult);
+            res.render('playlists', allPlaylistsResult)
+        }
+    });
+})
+
+
 //------------------------------------------------------
 // FORM to get user input for NEW ARTIST
 // - DONE (to new-artist.jsx) -
@@ -125,6 +150,7 @@ app.get('/artists/new', (req, res) => {
     //FORM to add new artists
     res.render('new-artist')
 });
+
 
 //------------------------------------------------------
 // FORM to get user input for NEW ARTIST
@@ -146,7 +172,14 @@ app.get('/songs/new', (req, res) => {
     pool.query(allArtistsQ, whenQueryDone);
 });
 
-
+//------------------------------------------------------
+// FORM to get user input for NEW PLAYLIST
+// - DONE -
+//------------------------------------------------------
+app.get('/playlists/new', (req, res) => {
+    //FORM to add new playlist
+        res.render('new-playlist');
+});
 
 
 //------------------------------------------------------
@@ -187,6 +220,38 @@ app.get('/songs/:id', (req, res) => {
 
 
 //------------------------------------------------------
+// SHOW PLAYLIST by ID
+// - ON GOING -
+//------------------------------------------------------
+app.get('/playlists/:id', (req, res) => {
+    const playlistQ = 'SELECT * FROM playlists WHERE id ='+req.params.id;
+    pool.query(playlistQ, (playlistQErr, playlistQResult) => {
+        if (playlistQErr) {
+            console.log(playlistQErr);
+            res.status(500);
+            res.send('playlistQ ERR');
+        } else {
+            const playlistSongQ = "SELECT playlist_song.song_id, playlist_song.playlist_id, songs.title FROM playlist_song INNER JOIN songs ON (playlist_song.song_id = songs.id) WHERE playlist_id ="+req.params.id;
+            pool.query(playlistSongQ, (playlistSongQErr, playlistSongQResult) => {
+                if (playlistSongQErr) {
+                    console.log(playlistSongQErr);
+                    res.status(500);
+                    res.send("playlist_song db err")
+                } else {
+                    data = {
+                        playlist : playlistQResult,
+                        playlistSong : playlistSongQResult
+                    }
+                    // console.log('query result:', playlistQResult);
+                    res.render('show-playlist', data);
+                }
+            })
+        };
+    });
+});
+
+
+//------------------------------------------------------
 // Save NEW ARTIST from user input
 // - DONE (from new-artist.jsx redirect to /artists/:id) -
 //------------------------------------------------------
@@ -198,7 +263,6 @@ app.post('/artists', (req, res) => {
             res.send('db error');
         } else {
             let newArtistId = newArtistResult.rows[0].id;
-            // console.log(newArtistId);
             res.redirect('/artists/'+newArtistId);
         };
     };
@@ -226,6 +290,26 @@ app.post('/songs', (req, res) => {
     const newSongValues = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
     pool.query(newSongProfile, newSongValues, whenQueryDone);
 });
+
+//------------------------------------------------------?
+// SAVE NEW PLAYLIST from user input
+// - ON GOING  -
+//------------------------------------------------------
+app.post('/playlists', (req, res) => {
+    const whenQueryDone = (newPlaylistError, newPlaylistResult) => {
+        if (newPlaylistError) {
+            res.status(500);
+            res.send('new playlist db error');
+        } else {
+            let newPlaylistId = newPlaylistResult.rows[0].id;
+            res.redirect('/playlists/'+newPlaylistId);
+        }
+    }
+    const newPlaylist = "INSERT INTO playlists (name) values ($1) RETURNING *";
+    const newPlaylistValues = [req.body.name];
+    pool.query(newPlaylist, newPlaylistValues, whenQueryDone);
+});
+
 
 //------------------------------------------------------
 // Display songs by artists id
@@ -257,8 +341,9 @@ app.get('/artists/:id/songs', (req, res) => {
     });
 });
 
+
 //------------------------------------------------------
-// FORM to ddd new song to artists by id
+// FORM to add new song to artists by id
 // - DONE -
 //------------------------------------------------------
 app.get('/artists/:id/songs/new', (req, res) => {
@@ -273,6 +358,38 @@ app.get('/artists/:id/songs/new', (req, res) => {
         };
     });
 });
+
+
+//-----------------------------------------------------?
+// FORM to add new song to Playlist by id
+// - ON GOING -
+//------------------------------------------------------
+app.get('/playlists/:id/newsong', (req, res) => {
+    const allSAQ = "SELECT songs.id AS song_id, songs.title, songs.artist_id, artists.name AS artist_name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)";
+    pool.query(allSAQ, (allSAQErr, allSAQResult) => {
+        if (allSAQErr) {
+            console.log(allSAQErr);
+            res.status(500);
+            res.send('allSAQ_db err')
+        } else {
+            const playlistQ = "SELECT * from playlists where id="+req.params.id;
+            pool.query(playlistQ, (playlistQErr, playlistQResult) => {
+                if (playlistQErr) {
+                    console.log(playlistQErr);
+                    res.status(500);
+                    res.send('playlistQ db err')
+                } else {
+                    const data = {
+                        playlist : playlistQResult,
+                        allsongs : allSAQResult
+                    }
+                    res.render('new-playlist-song', data);
+                };
+            });
+        };
+    });
+});
+
 
 //------------------------------------------------------
 // SAVE new song to artists by id
@@ -292,6 +409,26 @@ app.post('/artists/:id/songs', (req, res) => {
     const newSongTA = "INSERT INTO songs (title, album, preview_link, artwork, artist_id) values ($1, $2, $3, $4, $5) RETURNING *";
     const newSongTAValues = [req.body.title, req.body.album, req.body.preview_link, req.body.artwork, req.body.artist_id];
     pool.query(newSongTA, newSongTAValues, whenQueryDone);
+});
+
+
+//------------------------------------------------------?
+// SAVE new song to playlist by id
+// - ON GOING -
+//------------------------------------------------------
+app.post('/playlists/:id', (req, res) => {
+    const whenQueryDone = (newSongTPErr, newSongTPResult) => {
+        if (newSongTPErr) {
+            res.status(500);
+            res.send('newSongTP db error');
+        } else {
+            // let newSongTPId = newSongTPResult.rows[0].id;
+            res.redirect('/playlists/'+req.body.playlist_id);
+        };
+    };
+    const newSongTP = "INSERT INTO playlist_song (song_id, playlist_id) values ($1, $2) RETURNING *";
+    const newSongTPValues = [req.body.song_id, req.body.playlist_id];
+    pool.query(newSongTP, newSongTPValues, whenQueryDone);
 });
 
 
@@ -315,6 +452,7 @@ app.get('/artists/:id/edit', (req, res) => {
         };
     });
 });
+
 
 //------------------------------------------------------
 // EDIT FORM (SONG)
@@ -342,6 +480,7 @@ app.get('/songs/:id/edit', (req, res) => {
     });
 });
 
+
 //------------------------------------------------------
 // EDIT (UPDATE) Artist
 // - DONE -
@@ -361,6 +500,7 @@ app.put('/artists/:id', (req, res) => {
         };
     });
 });
+
 
 //------------------------------------------------------
 // EDIT (UPDATE) Song
@@ -397,6 +537,24 @@ app.delete('/artists/:id', (req, res) => {
             res.send('ERR');
         } else {
             res.redirect('/artists');
+        };
+    });
+});
+
+//------------------------------------------------------
+// DELETE SONG
+// - DONE -
+//------------------------------------------------------
+app.delete('/songs/:id', (req, res) => {
+    const deleteSong = 'DELETE FROM songs WHERE id='+req.params.id;
+
+    pool.query(deleteSong, (deleteSongErr) => {
+        if (deleteSongErr) {
+            console.log(deleteSongErr);
+            res.status(500);
+            res.send('ERR');
+        } else {
+            res.redirect('/songs');
         };
     });
 });

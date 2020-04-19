@@ -25,7 +25,7 @@ class ShowSong extends React.Component {
             <p><a href={homeLink}>Back to Main</a></p>
             <p><a href={allSongsLink}>All Songs</a></p>
             <p><a href={songEditLink}>Edit Song Profile</a></p>
-            <h3>Artist</h3>
+            <h3>Songs</h3>
             <p>Title: {songData.title}</p>
             <p>Album: {songData.album}</p>
             <p>Preview Link: {songData.preview_link}</p>
@@ -33,7 +33,7 @@ class ShowSong extends React.Component {
             <p>Artist Id: {songData.artist_id}</p>
             <br/>
             <form method="POST" action={songDeleteLink}>
-                <input type="submit" value="delete Artist"/>
+                <input type="submit" value="delete Song"/>
             </form>
 
         </body>

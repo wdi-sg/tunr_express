@@ -14,6 +14,9 @@ class Home extends React.Component {
             <div>
                 <a href="/songs">Songs</a>
             </div>
+            <div>
+                <a href="/playlists">My Playlist</a>
+            </div>
         </body>
       </html>
     );
