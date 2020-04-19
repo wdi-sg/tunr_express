@@ -71,23 +71,51 @@ app.get('/artists', (request, response) => {
 });
 
 // Show single artist
-app.get('/artists/:id', (request, response) => {
+app.get('/artists/:id/songs', (request, response) => {
     // Get ID of artist
     const id = request.params.id;
 
-    const queryString = `select * from artists where id=${id}`
+    // Get artist details
+    let artistDetails;
 
-    pool.query(queryString, (err, result) => {
-    if(err) {
-        console.error('query error: ', err.stack);
-        response.send('query error');
-    }
-    else{
+    let getArtistDetails = new Promise((resolve, reject) => {
+        const queryString = `select * from artists where id=${id}`
 
-        const data = {"result" : result.rows};
+        pool.query(queryString, (err, result) => {
+            if(err) {
+                console.error('query error: ', err.stack);
+                response.send('query error');
+            }
+            else{
+                artistDetails = result.rows;
+                resolve();
+            }
+        })
+    })
+
+    // Get all songs from artist
+    let allSongDetails;
+
+    let getSongDetails = new Promise((resolve, reject) => {
+        const queryString2 = `select * from songs where artist_id = ${id}`
+
+        pool.query(queryString2, (err, result) => {
+            if(err) {
+                console.error('query error: ', err.stack);
+                response.send('query error');
+            }
+            else{
+                allSongDetails = result.rows;
+                resolve();
+            }
+        })
+    })
+
+    Promise.all([getArtistDetails, getSongDetails]).then(() => {
+        const data = {"artistDetails" : artistDetails, "allSongDetails" : allSongDetails};
         response.render('singleartist', data);
-    }
-  })
+    })
+
 });
 
 
@@ -177,8 +205,14 @@ app.post('/playlists/show', (request, response) => {
 })
 
 
-///////////////
-//////////////Create new song for playlist
+/********************
+=====================
+
+Add song to playlist from exisitng database
+
+=====================
+********************/
+
 app.get('/playlist/:id/newsong', (request, response) => {
     const id = request.params.id;
 
@@ -243,15 +277,13 @@ app.get('/playlist/:id/newsong', (request, response) => {
 
         const data = {"playlistDetails" : playlistDetails, "songsDetails" : allSongsDetails, "artistsDetails" : allArtistsDetails };
 
-        response.render('newsong', data);
+        response.render('addsong', data);
     }
     getDetails()
 
 });
 
 
-//////////////////
-////////////////// Add Song to playlist
 app.post('/playlist/:id', (request, response) => {
 
     const id = request.params.id;
@@ -335,51 +367,94 @@ app.post('/playlist/:id', (request, response) => {
     addSongPlaylist();
 })
 
-//////////////Show individual playlist
+
+
+/**********************
+=======================
+
+Show individual playlist
+
+==========================
+***********************/
 app.get('/playlist/:id', (request, response) => {
     const id = request.params.id;
 
-    // Identify playlist that is requested
-    const queryString = `select * from playlist where id=${id}`
+    let playlistDetails;
 
-    pool.query(queryString, (err, result) => {
-        if(err){
-            console.error('query error: ', err.stack);
-            response.send('query error');
-        }
-        else{
-            const data = {"playlistDetails" : result.rows};
+    let songDetails;
+
+    async function getSongPlaylist() {
+        // Get playlist details
+        const queryString = `select * from playlist where id=${id}`
+
+        let getPlaylistDetails = new Promise((resolve, reject) => {
+            pool.query(queryString, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    playlistDetails = result.rows;
+                    resolve('resolved');
+                }
+            })
+        })
+
+
+
+        let getSongDetails = new Promise((resolve, reject) => {
+            // Inner join 3 tables, song table, artist table, and playlist_song
+            let queryString2 = `
+                SELECT
+                    songs.title,
+                    songs.album,
+                    songs.preview_link,
+                    artists.name
+                FROM
+                    songs
+                INNER JOIN playlist_song
+                ON (songs.id = playlist_song.song_id)
+                INNER JOIN artists
+                ON (songs.artist_id = artists.id)
+            `;
+
+            pool.query(queryString2, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    songDetails = result.rows
+                    resolve('resolve');
+                }
+            })
+        })
+
+        Promise.all([getPlaylistDetails, getSongDetails]).then(() => {
+            const data = {"playlistSongs" : songDetails, "playlistDetails" : playlistDetails};
+
             response.render('singleplaylist', data);
-        }
-    })
+        });
+    }
 
-    // // Identify playlist that is requested
-    // const queryString = `select * from playlist where id=${id}`
-
-    // let playlistDetails;
-
-    // // Async function to get playlist details from database
-    // async function getDetails(){
-    //     let promise = new Promise((resolve, reject) => {
-
-    //         pool.query(queryString, (err, result) => {
-    //             if(err){
-    //                 console.error('query error: ', err.stack);
-    //                 response.send('query error');
-    //             }
-    //             else{
-    //                 playlistDetails = result.rows;
-    //                 resolve('resolved');
-    //             }
-    //         })
-    //     })
-
-    //     await promise;
-
-
-    // }
-    // getDetails()
+    getSongPlaylist();
 })
+
+
+
+/***************
+================
+================
+================
+Artost Part
+================
+================
+================
+
+***************/
+
+
+
 
 
 /**

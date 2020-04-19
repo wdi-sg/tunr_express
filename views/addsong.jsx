@@ -1,6 +1,6 @@
 var React = require("react");
 
-class Newsong extends React.Component {
+class Addsong extends React.Component {
   render() {
     // CSS stuff
 
@@ -71,4 +71,4 @@ class Newsong extends React.Component {
   }
 }
 
-module.exports = Newsong;
+module.exports = Addsong;

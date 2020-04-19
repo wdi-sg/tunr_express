@@ -12,16 +12,16 @@ class Allartists extends React.Component {
                           "display" : "flex",
                           "flex-wrap" : "wrap",
                           "justify-content" : "space-between"
-                        }
+                        };
 
     const background = {
                         "background" : "rgb(225, 173, 1)"
-                      }
+                      };
 
     const heading = {
                       "display" : "flex",
                       "justify-content" : "center"
-                    }
+                    };
 
     const title = {
 
@@ -36,14 +36,24 @@ class Allartists extends React.Component {
                             "color" : "black",
                             "padding" : "3px",
                             "border" : "2px solid black"
-                          }
+                          };
 
+    const linkStyle = {
+                        "textDecoration" : "none",
+                        "color" : "black"
+                    };
     // Javascript stuff
+
     const allArtists = this.props.result.map(el => {
+
+      const artistURL = `/artists/${el.id}/songs`
+
       return (
           <div>
-            <img src={el.photo_url} style={artistImageStyle}></img>
-            <p>{el.name}</p>
+            <a href={artistURL} style={linkStyle}>
+                <img src={el.photo_url} style={artistImageStyle}></img>
+                <p>{el.name}</p>
+            </a>
           </div>
         )
     })
