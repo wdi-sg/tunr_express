@@ -1,5 +1,6 @@
 const React = require('react');
 const Head = require('./head');
+const Nav = require('./nav');
 
 class ArtistList extends React.Component {
   render() {
@@ -19,11 +20,25 @@ class ArtistList extends React.Component {
         <body>
           <div className="container">
             <div className="row my-3">
-              <div className="col-6 offset-3">
-                <ul className="list-group">
-                  {artists}
-                </ul>
-                <a href="/artists/new" className="btn btn-info btn-block">Add New Artist</a>
+              <div className="col-8 offset-2">
+
+                <div className="row my-3">
+                  <div className="col">
+                    <Nav />
+                  </div>
+                </div>
+
+                <div className="row my-3">
+                  <div className="col">
+                    <ul className="list-group">
+                      {artists}
+                    </ul>
+                    <a href="/artists/new"
+                       className="btn btn-info btn-block my-3">
+                      Add New Artist</a>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>

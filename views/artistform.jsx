@@ -1,5 +1,6 @@
 const React = require('react');
 const Head = require('./head');
+const Nav = require('./nav');
 
 class ArtistForm extends React.Component {
   render() {
@@ -17,27 +18,39 @@ class ArtistForm extends React.Component {
         <body>
           <div className="container">
             <div className="row my-3">
-              <div className="col-6 offset-3">
-                <form action={formAction} method="post">
-                  <div className="form-group">
-                    <input type="hidden" name="id" value={artistId} />
-                    <input className="form-control"
-                           name="name"
-                           defaultValue={nameValue}
-                           placeholder="Artist Name" /><br />
-                    <input className="form-control"
-                           name="photo_url"
-                           defaultValue={photoValue}
-                           placeholder="Photo URL" /><br />
-                    <input className="form-control"
-                           name="nationality"
-                           defaultValue={nationalityValue}
-                           placeholder="Nationality" /><br />
-                    <input className="btn btn-outline-info btn-block"
-                           type="submit"
-                           value={buttonText}/>
+              <div className="col-8 offset-2">
+
+                <div className="row my-3">
+                  <div className="col">
+                    <Nav />
                   </div>
-                </form>
+                </div>
+
+                <div className="row my-3">
+                  <div className="col">
+                    <form action={formAction} method="post">
+                      <div className="form-group">
+                        <input type="hidden" name="id" value={artistId} />
+                        <input className="form-control"
+                               name="name"
+                               defaultValue={nameValue}
+                               placeholder="Artist Name" /><br />
+                        <input className="form-control"
+                               name="photo_url"
+                               defaultValue={photoValue}
+                               placeholder="Photo URL" /><br />
+                        <input className="form-control"
+                               name="nationality"
+                               defaultValue={nationalityValue}
+                               placeholder="Nationality" /><br />
+                        <input className="btn btn-outline-info btn-block"
+                               type="submit"
+                               value={buttonText}/>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                
               </div>
             </div>
           </div>

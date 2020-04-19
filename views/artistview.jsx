@@ -1,5 +1,6 @@
 const React = require('react');
 const Head = require('./head');
+const Nav = require('./nav');
 
 class ArtistView extends React.Component {
   render() {
@@ -25,26 +26,11 @@ class ArtistView extends React.Component {
 
           <div className="container text-center">
             <div className="row my-3">
-              <div className="col-6 offset-3">
+              <div className="col-8 offset-2">
 
                 <div className="row my-3">
-                  <div className="col-2">
-                    <a href={prevLink}
-                       className={prevClass}>
-                      Prev
-                    </a>
-                  </div>
-                  <div className="col-8">
-                    <a href="/artists"
-                       className="btn btn-info btn-block">
-                      Back to Browse
-                    </a>
-                  </div>
-                  <div className="col-2">
-                    <a href={nextLink}
-                       className={nextClass}>
-                      Next
-                    </a>
+                  <div className="col">
+                    <Nav />
                   </div>
                 </div>
 
@@ -58,9 +44,21 @@ class ArtistView extends React.Component {
                 </div>
 
                 <div className="row my-3">
-                  <div className="col">
+                  <div className="col-3">
+                    <a href={prevLink}
+                       className={prevClass}>
+                      Prev Artist
+                    </a>
+                  </div>
+                  <div className="col-6">
                     <a href={songsLink}
                        className="btn btn-info btn-block">View Artist Songs</a>
+                  </div>
+                  <div className="col-3">
+                    <a href={nextLink}
+                       className={nextClass}>
+                      Next Artist
+                    </a>
                   </div>
                 </div>
 

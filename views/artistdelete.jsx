@@ -1,5 +1,6 @@
 const React = require('react');
 const Head = require('./head');
+const Nav = require('./nav');
 
 class ArtistDelete extends React.Component {
   render() {
@@ -12,7 +13,7 @@ class ArtistDelete extends React.Component {
     if (count === 0) {
       headerText =
         <h5 class="p-2 bg-success text-white rounded-lg text-center">
-          {this.props.name} has no songs in the database. <br />
+          There are no {this.props.name} songs in the database.<br />
         </h5>;
       deleteText = "Delete Artist";
       songTable = "";
@@ -20,7 +21,7 @@ class ArtistDelete extends React.Component {
     } else {
       headerText =
         <h5 class="p-2 bg-danger text-white rounded-lg text-center">
-         {this.props.name} has {count} songs in the database. <br />
+         There are {count} {this.props.name} songs in the database. <br />
           Deleting the artist will delete all their songs as well.
         </h5>;
       deleteText = "Delete Artist and All Songs";
@@ -62,18 +63,30 @@ class ArtistDelete extends React.Component {
           <div className="container">
             <div className="row my-3">
               <div className="col-8 offset-2">
-                {headerText}
-                {songTable}
-                <form action={deleteLink} method="post">
-                  <button type="submit"
-                          className="btn btn-danger btn-block my-3">
-                    {deleteText}
-                  </button>
-                </form>
-                <a href={backLink}
-                   className="btn btn-info btn-block">
-                  Go Back to Artist Page
-                </a>
+
+                <div className="row my-3">
+                  <div className="col">
+                    <Nav />
+                  </div>
+                </div>
+
+                <div className="row my-3">
+                  <div className="col">
+                    {headerText}
+                    {songTable}
+                    <form action={deleteLink} method="post">
+                      <button type="submit"
+                              className="btn btn-danger btn-block my-3">
+                        {deleteText}
+                      </button>
+                    </form>
+                    <a href={backLink}
+                       className="btn btn-info btn-block">
+                      Go Back to Artist Page
+                    </a>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
