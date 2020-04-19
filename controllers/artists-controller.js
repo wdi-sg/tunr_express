@@ -3,9 +3,6 @@ const Artist = require('../models/artist.js');
 
 module.exports.getArtistById = async (req, res) => {
 
-    // const { id } = req.params;
-    // const queryT = `SELECT * FROM artists WHERE id=${id}`
-    // const { rows } = await db.query(queryT);
     const { id } = req.params;
 
     const rows = await Artist.get(id);
@@ -16,7 +13,7 @@ module.exports.getArtistById = async (req, res) => {
 
 module.exports.getAllArtists = async (req, res) => {
 
-    const { rows } = await db.query('SELECT * FROM artists');
+    const rows = await Artist.getAll();
 
     res.render('./artists/artist-all', { 'allArtists': rows });
 

@@ -30,7 +30,16 @@ module.exports = class Artist {
 
     }
 
+    static async getAll() {
+
+        const { rows } = await db.query('SELECT * FROM artists');
+
+        return rows;
+
+    }
+
     static async edit(name, nationality, photo, artistId) {
+
         const queryT = `UPDATE artists SET name = '${name}', nationality = '${nationality}', photo_url = '${photo}' WHERE id=${artistId}`
         const { rows } = await db.query(queryT);
 
