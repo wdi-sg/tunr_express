@@ -181,15 +181,19 @@ app.post('/playlists/show', (request, response) => {
 app.get('/playlist/:id/newsong', (request, response) => {
     const id = request.params.id;
 
-    // Identify playlist that is requested
-    const queryString = `select * from playlist where id=${id}`
-
     let playlistDetails;
+
+    let allSongsDetails;
+
+    let allArtistsDetails;
 
     // Async function to get all relevant details from database before rendering
     async function getDetails(){
-        let promise = new Promise((resolve, reject) => {
-            // Get playlist details
+        // Identify playlist that is requested
+        const queryString = `select * from playlist where id=${id}`
+
+        // Get playlist details
+        let getPlaylistDetails = new Promise((resolve, reject) => {
             pool.query(queryString, (err, result) => {
                 if(err){
                     console.error('query error: ', err.stack);
@@ -202,21 +206,43 @@ app.get('/playlist/:id/newsong', (request, response) => {
             })
         })
 
-        await promise;
-
         // Get all songs from database
         const queryString2 = `select * from songs`
 
-        pool.query(queryString2, (err, result) => {
-            if(err){
-                console.error('query error: ', err.stack);
-                response.send('query error');
-            }
-            else{
-                const data = {"playlistDetails" : playlistDetails, "songList" : result.rows };
-                response.render('newsong', data);
-            }
+        let getAllSongs = new Promise((resolve, reject) => {
+            pool.query(queryString2, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    allSongsDetails = result.rows;
+                    resolve('resolved');
+                }
+            })
         })
+
+        // Get all songs from database
+        const queryString3 = `select * from artists`
+
+        let getAllArtists = new Promise((resolve, reject) => {
+            pool.query(queryString3, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    allArtistsDetails = result.rows;
+                    resolve('resolved');
+                }
+            })
+        })
+
+        await Promise.all([getPlaylistDetails, getAllSongs, getAllArtists]);
+
+        const data = {"playlistDetails" : playlistDetails, "songsDetails" : allSongsDetails, "artistsDetails" : allArtistsDetails };
+
+        response.render('newsong', data);
     }
     getDetails()
 

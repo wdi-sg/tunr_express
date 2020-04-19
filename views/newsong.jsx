@@ -6,16 +6,31 @@ class Newsong extends React.Component {
 
     // Javascript stuff
     // Would be good if can incorporate autocomplete form for songs from the database
+
+    // Get details of playlist that song is added to
     const playlistDetails = this.props.playlistDetails[0];
 
     const playlistID = playlistDetails.id;
 
     const url = `/playlist/${playlistID}`;
 
-    const allSongs = this.props.songList;
+    // Get details of song options that user can choose from
+    const allSongs = this.props.songsDetails;
+
+    // Get details of artist options that are linked to the songs
+    const allArtists = this.props.artistsDetails;
+
+    // function to get title of artist with artist id
+    const getArtistTitle = (artist_id) => {
+      for (let i=0; i<allArtists.length; i++){
+        if(allArtists[i].id === artist_id){
+          return allArtists[i].name;
+        }
+      }
+    }
 
     const allSongTitle = allSongs.map(el => {
-      return <option value={el.id}>{el.title}</option>
+      return <option value={el.id}>{el.title} -{getArtistTitle(el.artist_id)}</option>
     })
 
     return (
