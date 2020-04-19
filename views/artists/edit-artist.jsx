@@ -19,6 +19,7 @@ class EditArtistForm extends React.Component {
                             <a href="/" className="nav__link home-link"><p>Home</p></a>
                             <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                         </div>
+                        <div className="form__wrapper">
                         <form method="POST" action={`/artists/${this.props.singleArtist.id}?_method=put`} className="edit-form">
                             <h2 className="edit-form__header">Edit Artist Information</h2>
                             <input type="text" name="name" placeholder="Name" maxLength="25" defaultValue={this.props.singleArtist.name} />
@@ -27,6 +28,7 @@ class EditArtistForm extends React.Component {
 
                             <button className="edit-form__submit-btn" type="submit">Edit</button>
                         </form>
+                        </div>
                     </main>
                 </body>
             </html>

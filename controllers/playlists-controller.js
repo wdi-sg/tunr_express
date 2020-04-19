@@ -12,10 +12,14 @@ module.exports.getPlaylistById = async (req, res) => {
     const resultTwo = await db.query(queryT2);
 
     try {
+
         res.render('./playlists/playlist-single', { 'singlePlaylist': resultTwo.rows });
+
     } catch (e) {
+
         res.status(404).render('404');
         console.log(e);
+
     }
 
 }
@@ -25,10 +29,14 @@ module.exports.getAllPlaylists = async (req, res) => {
     const { rows } = await db.query('SELECT * FROM playlists');
 
     try {
+
         res.render('./playlists/playlist-all', { 'allPlaylists': rows });
+
     } catch (e) {
+
         res.status(404).render('404');
         console.log(e);
+
     }
 
 }
@@ -40,7 +48,10 @@ module.exports.getAddPlaylist = async (req, res) => {
     const resultArtists = await db.query(queryT);
     const resultSongs = await db.query(queryT2);
 
-    res.render('./playlists/add-playlist', { artists: resultArtists.rows, songs: resultSongs.rows });
+    res.render('./playlists/add-playlist', {
+        artists: resultArtists.rows,
+        songs: resultSongs.rows
+    });
 }
 
 module.exports.postAddPlaylist = async (req, res) => {
@@ -52,11 +63,14 @@ module.exports.postAddPlaylist = async (req, res) => {
         req.body.song = req.body.song.split();
 
     let i = 0;
-    const playlistArr = req.body.artist.reduce((arr, el) => {
-        const obj = { 'artist': el, 'song': req.body.song[i] };
-        i++;
-        return arr.push(obj), arr;
-    }, [])
+    const playlistArr = req.body.artist
+        .reduce((arr, el) => {
+
+            const obj = { 'artist': el, 'song': req.body.song[i] };
+            i++;
+            return arr.push(obj), arr;
+
+        }, [])
 
     const queryT1 = `INSERT into playlists(created_on, name) VALUES ($1, $2) RETURNING *`
     const queryV1 = [getDateUtil.getTimeStamp(), req.body['playlist_name']];
@@ -92,8 +106,6 @@ module.exports.getEditPlaylistById = async (req, res) => {
     const resultArtists = await db.query(queryT3);
     const resultSongs = await db.query(queryT4);
 
-    // console.log(resultTwo.rows);
-
     res.render('./playlists/edit-playlist', {
         'singlePlaylist': rows[0],
         'playlistSongs': resultTwo.rows,
@@ -108,6 +120,7 @@ module.exports.putPlaylistById = async (req, res) => {
     const { id } = req.params;
     const queryT = `UPDATE playlists SET name = '${req.body.name}' WHERE id=${id}`
     const { rows } = await db.query(queryT);
+    console.log(req.body.name);
 
     if (!Array.isArray(req.body.artist))
         req.body.artist = req.body.artist.split();
@@ -116,11 +129,12 @@ module.exports.putPlaylistById = async (req, res) => {
         req.body.song = req.body.song.split();
 
     let i = 0;
-    const playlistArr = req.body.artist.reduce((arr, el) => {
-        const obj = { 'artist': el, 'song': req.body.song[i] };
-        i++;
-        return arr.push(obj), arr;
-    }, [])
+    const playlistArr = req.body.artist
+        .reduce((arr, el) => {
+            const obj = { 'artist': el, 'song': req.body.song[i] };
+            i++;
+            return arr.push(obj), arr;
+        }, [])
 
     const queryT2 = `DELETE FROM playlists_songs where playlist_id =${id}`
 
@@ -129,8 +143,6 @@ module.exports.putPlaylistById = async (req, res) => {
     playlistArr.forEach(async playlistSong => {
         const queryT3 = `SELECT id, artist_id FROM songs WHERE title='${playlistSong.song}'`;
         const { rows } = await db.query(queryT3);
-
-        console.log(rows);
 
         const queryT4 = `INSERT into playlists_songs(song_id, playlist_id) VALUES ('${rows[0].id}', '${id}') RETURNING *`
 

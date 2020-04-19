@@ -35,8 +35,10 @@ class SinglePlaylist extends React.Component {
                     <main>
                         <div className="single-playlist__container single-display">
                                 {playlistSongs}
-                                <a href="./edit" className="playlist__edit-link"><p>Edit</p></a>
-                                <a href="./delete" className="playlist__delete-link"><p>Delete Playlist</p></a>
+                                <div className="playlist__edit-delete-links">
+                                    <a href="./edit" className="playlist__edit-link"><p>Edit</p></a>
+                                    <a href="./delete" className="playlist__delete-link"><p>Delete Playlist</p></a>
+                                </div>
                         </div>
                     </main>
                 </body>

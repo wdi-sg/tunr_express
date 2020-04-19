@@ -3,6 +3,7 @@
 		min-height: 50vh;
 		height: auto;
 		display: flex;
+		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 }
@@ -127,6 +128,10 @@
 		outline: none;
 }
 
+.add-playlist-btn {
+		visibility: hidden;
+}
+
 /*edit*/
 
 .edit-form {
@@ -211,7 +216,10 @@
 
 .edit-form h2,
 .edit-form h3,
-.edit-form h4 {
+.edit-form h4,
+.delete__header,
+.not-found__header,
+		{
 		width: 100%;
 		padding: 10px 0;
 		text-align: center;

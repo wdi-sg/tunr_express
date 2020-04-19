@@ -27,7 +27,9 @@ class AllPlaylists extends React.Component {
                         <a href="/playlists/new" className="nav__link add-playlist"><p>Add Playlist</p></a>
                     </div>
                     <main>
-                        {playlistInfo}
+                        <div className="form__wrapper">
+                            <h2 className="playlists-all__header">Playlists</h2> { playlistInfo }
+                        </div>
                     </main>
                 </body>
             </html>

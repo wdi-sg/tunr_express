@@ -16,7 +16,9 @@ class SongDeleted extends React.Component {
                         <a href="/artists/" className="nav__link show-all-artists"><p>All Artists</p></a>
                     </div>
                     <main>
-                        <h1>Song Deleted!</h1>
+                        <div className="form__wrapper">
+                            <h1 className="delete__header">Song Deleted!</h1>
+                        </div>
                     </main>
                 </body>
             </html>

@@ -16,7 +16,9 @@ class PlaylistDeleted extends React.Component {
                         <a href="/playlists/" className="nav__link show-all-playlists"><p>All Playlists</p></a>
                     </div>
                     <main>
-                        <h1>Playlist Deleted!</h1>
+                    <div className="form__wrapper">
+                        <h1 className="delete__header">Playlist Deleted!</h1>
+                    </div>
                     </main>
                 </body>
             </html>

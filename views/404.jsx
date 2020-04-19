@@ -11,9 +11,13 @@ class NotFoundPage extends React.Component {
                 <div className="overlay"></div>
                 <body>
                 <Header />
-
                     <main>
-                    <h1>Page not Found!</h1>
+                    <div className="banner">
+                        <div className="landing-page__nav not-found__nav">
+                            <div className="overlay"></div>
+                            <a href="/" className=" landing-page-link">PAGE DOESN'T EXIST, LET ME TAKE YOU BACK HOME</a>
+                        </div>
+                    </div>
                     </main>
                 </body>
             </html>

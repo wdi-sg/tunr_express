@@ -40,7 +40,7 @@ class EditPlaylistForm extends React.Component {
                         <div className="form__wrapper">
                         <form method="POST" action={`/playlists/${this.props.singlePlaylist.id}?_method=put`} className="edit-form">
                             <h2 className="edit-form__header">Edit Playlist</h2>
-                            <input type="text" name="" placeholder="" maxLength="25" defaultValue={this.props.singlePlaylist.name} />
+                            <input type="text" name="name" maxLength="25" defaultValue={this.props.singlePlaylist.name} />
                             <select id="artists-select" name="artists">
                                 {artistOptions}
                             </select>

@@ -39,7 +39,7 @@ class AddPlaylistForm extends React.Component {
                                         <button className="add-form__add-song-btn" type="button">Add Song</button>
                                         <button className="add-form__delete-song-btn" type="button">Delete Song</button>
                                     </div>
-                                    <button className="add-form__submit-btn" type="submit">Add Playlist</button>
+                                    <button className="add-form__submit-btn add-playlist-btn" type="submit">Add Playlist</button>
                                 </form>
                             </div>
                         </main>
