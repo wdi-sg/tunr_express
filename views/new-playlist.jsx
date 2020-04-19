@@ -1,15 +1,7 @@
 var React = require("react");
 
-class AllArtists extends React.Component {
+class NewPlaylist extends React.Component {
   render() {
-
-    const artistArr = this.props.artists;
-    const artistLinks = artistArr.map((artist) => {
-      return (
-        <li key={artist.id}><a href={`/artists/${artist.id}`}>{artist.name}</a></li>
-      );
-    });
-
     return (
       <html>
         <head>
@@ -25,12 +17,17 @@ class AllArtists extends React.Component {
           <a href="/">
             <button className="btn btn-primary">Back To Home</button>
           </a>
-          <h1>All Artists</h1>
-          <ul>{artistLinks}</ul>
+          <h3>Create A New Playlist</h3>
+          <form action="/playlists" method="post">
+            <input name="name" placeholder="Name of Playlist" />
+            <button className="btn btn-success" type="submit">
+              Submit
+            </button>
+          </form>
         </body>
       </html>
     );
   }
 }
 
-module.exports = AllArtists;
+module.exports = NewPlaylist;

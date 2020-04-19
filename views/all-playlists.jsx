@@ -1,12 +1,14 @@
 var React = require("react");
 
-class AllArtists extends React.Component {
+class AllPlaylists extends React.Component {
   render() {
 
-    const artistArr = this.props.artists;
-    const artistLinks = artistArr.map((artist) => {
+    const playlistArr = this.props.playlists;
+    const playlistLinks = playlistArr.map((playlist) => {
       return (
-        <li key={artist.id}><a href={`/artists/${artist.id}`}>{artist.name}</a></li>
+        <li key={playlist.id}>
+          <a href={`/artists/${playlist.id}`}>{playlist.name}</a>
+        </li>
       );
     });
 
@@ -25,12 +27,12 @@ class AllArtists extends React.Component {
           <a href="/">
             <button className="btn btn-primary">Back To Home</button>
           </a>
-          <h1>All Artists</h1>
-          <ul>{artistLinks}</ul>
+          <h1>All Playlists</h1>
+          <ul>{playlistLinks}</ul>
         </body>
       </html>
     );
   }
 }
 
-module.exports = AllArtists;
+module.exports = AllPlaylists;

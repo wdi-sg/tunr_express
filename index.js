@@ -326,7 +326,6 @@ app.get(`/songs/:id/edit`, (req, res) => {
 app.get(`/songs/:id`, (req, res) => {
     const query = parseInt(req.params.id);
     let command = `SELECT songs.*, artists.name AS artist_name FROM songs INNER JOIN artists ON songs.artist_id = artists.id WHERE songs.id = ${query}`;
-
     pool.query(command, (err, result) => {
         if (err) {
             console.log(`There was an error.`);
@@ -426,6 +425,84 @@ app.post(`/songs`, (req, res) => {
     });
 
 })
+
+
+ /**
+ * =========================================================
+ * =========================================================
+ * |###########          ROUTES - PLAYLIST        ##########|
+ * =========================================================
+ * =========================================================
+ */
+
+/**
+ * -------------------
+ * DISPLAY FORM FOR ADDING A NEW PLAYLIST.
+ * -------------------
+ */
+
+ app.get(`/playlists/new`, (req,res)=> {
+   res.render('new-playlist');
+ })
+
+ /**
+ * -------------------
+ * DISPLAY FORM FOR ADDING A NEW PLAYLIST.
+ * -------------------
+ */
+
+ app.post(`/playlists`, (req,res)=> {
+   let command = `INSERT INTO playlists (name) VALUES (${req.body.name})`;
+    pool.query(command, (err, result) => {
+      if (err) {
+        console.log(`Error in query!!!`, err);
+      } else {
+        res.redirect(`/playlists/${result.rows[0].id}`);
+      }
+    });
+ })
+
+  app.get(`/playlists/:id`, (req, res) => {
+    let command = `SELECT * FROM playlists WHERE id = ${req.params.id}`;
+    pool.query(command, (err, result) => {
+      if (err) {
+        console.log(`Error in query!!!`, err);
+      } else {
+        const data = {
+          foundPlaylist: result.rows[0],
+        };
+        res.render(`playlist`, data);
+      }
+    });
+  });
+
+ app.post(`/playlists`, (req, res) => {
+   let command = `INSERT INTO playlists (name) VALUES (${req.body.name})`;
+   pool.query(command, (err, result) => {
+     if (err) {
+       console.log(`Error in query!!!`, err);
+     } else {
+       res.redirect(`/playlists/${result.rows[0].id}`);
+     }
+   });
+ });
+
+
+ app.get(`/playlists`, (req, res) => {
+   let command = `SELECT * FROM playlists`;
+   pool.query(command, (err, result) => {
+     if (err) {
+       console.log(`Error in query!!!`, err);
+     } else {
+       const data = {
+         playlists: result.rows
+       }
+       res.render(`all-playlists`, data)
+     }
+   });
+ });
+
+
 
 /**
  * ===================================
