@@ -29,8 +29,7 @@ class AddToPlaylist extends React.Component {
           </a>
           <h3>Adding to Playlist '{playlist.name}'</h3>
           <form action={`/playlists/${playlist.id}`} method="post">
-
-          <select name="songs">
+          <select name="songId">
             <option>Add Songs...</option>
             {songsList}
           </select>

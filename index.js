@@ -484,17 +484,36 @@ app.get(`/playlists/:id/newsong`, (req, res) => {
 });
 
 app.get(`/playlists/:id`, (req, res) => {
-    let command = `SELECT * FROM playlists WHERE id = ${req.params.id}`;
+    const playlistId = parseInt(req.params.id);
+
+    let command = `SELECT * FROM playlist_song INNER JOIN playlists ON playlist_song.playlist_id = playlists.id INNER JOIN songs ON playlist_song.song_id = songs.id WHERE playlists.id = ${playlistId}`;
+    
     pool.query(command, (err, result) => {
         if (err) {
             console.log(`Error in query!!!`, err);
         } else {
             const data = {
-                foundPlaylist: result.rows[0],
+                playListData: result.rows,
             };
             res.render(`playlist`, data);
         }
     });
+});
+
+app.post(`/playlists/:id`, (req, res) => {
+  const playlistId = parseInt(req.params.id)
+  const songId = parseInt(req.body.songId)
+  let command = `INSERT INTO playlist_song (song_id, playlist_id) VALUES (${songId}, ${playlistId}) RETURNING *`;
+  pool.query(command, (err, result) => {
+    if (err) {
+      console.log(`Error in query!!!`, err);
+    } else {
+      const data = {
+        playlist: result.rows[0],
+      };
+      res.redirect(`/playlists/${playlistId}`);
+    }
+  });
 });
 
 app.get(`/playlists`, (req, res) => {

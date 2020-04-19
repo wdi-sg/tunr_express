@@ -3,7 +3,13 @@ var React = require("react");
 class Playlist extends React.Component {
   render() {
 
-    const playlist = this.props.foundPlaylist;
+    const playlistData = this.props.playListData;
+    const playlist = playlistData[0]
+    const songsList = playlistData.map (song => {
+      return (
+        <li className="songs-list"><a href={`/songs/${song.id}`}>{song.title}</a></li>
+      )
+    })
 
     return (
       <html>
@@ -17,10 +23,11 @@ class Playlist extends React.Component {
           <link rel="stylesheet" href="/styles.css" />
         </head>
         <body>
-          <div className="artist">
             <h1>
               {playlist.id}) {playlist.name}
             </h1>
+
+            <ul>{songsList}</ul>
 
             <a href={`/playlists/${playlist.id}/edit`}>
               <button className="btn btn-warning">Edit Playlist</button>
@@ -34,7 +41,6 @@ class Playlist extends React.Component {
             <a href="/playlists">
               <button className="btn btn-primary">Back To Playlists</button>
             </a>
-          </div>
         </body>
       </html>
     );
