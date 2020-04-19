@@ -19,15 +19,16 @@ class ArtistSongs extends React.Component {
     } else {
       headerText =
         <h5 class="p-2 text-center">
-         There are {count} {this.props.name} songs in the database. <br />
+          There are {count} {this.props.name} songs in the database. <br />
         </h5>;
 
       songList = songs.map(song => {
         let key = song.id;
+        let link = `/artists/${this.props.id}/songs/${song.id}`;
 
         return (
           <tr key={key}>
-            <td>{song.title}</td>
+            <td><a href={link} className="text-info">{song.title}</a></td>
             <td>{song.album}</td>
           </tr>
         )
