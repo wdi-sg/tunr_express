@@ -48,9 +48,6 @@ router.get('/:id', async function (req, res) {
       "ORDER BY id DESC LIMIT 1";
   let prevArtistResult = await makeQuery(prevArtistQuery, artistId);
 
-  console.log(artistResult);
-  console.log(prevArtistResult);
-
   let prevArtist = prevArtistResult.length === 0 ? 0 : prevArtistResult[0].id;
   let nextArtist = artistResult.length === 1 ? 0 : artistResult[1].id;
 
@@ -59,8 +56,6 @@ router.get('/:id', async function (req, res) {
     prevArtistId: prevArtist,
     nextArtistId: nextArtist
   };
-
-  console.log(data);
 
   res.render('artistview', data);
 });

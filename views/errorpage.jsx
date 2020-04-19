@@ -4,7 +4,6 @@ const Head = require('./head');
 class ErrorPage extends React.Component {
   render() {
     let error = this.props.errorinfo;
-    console.log(error);
 
     let errorInfo = Object.keys(error).map(ele => {
       return (
