@@ -14,15 +14,25 @@ class Singleplaylist extends React.Component {
 
     const newSongURL = `/playlist/${playlistID}/newsong`;
 
-    // const allPlaylist = data.map((el, i) => {
+    const playlistSongs = this.props.playlistSongs;
 
-    //   return (
-    //     <tr>
-    //       <th scope="row">{i}</th>
-    //       <td>{el.playlist_name}</td>
-    //     </tr>
-    //     )
-    // })
+    const showSongs = playlistSongs.map((el, i) => {
+
+      return (
+        <tr>
+          <th scope="row">{i}</th>
+          <th scope="row">{el.title}</th>
+          <th scope="row">{el.name}</th>
+          <th scope="row">{el.album}</th>
+          <th scope="row">
+                      <audio controls>
+                        <source src={el.preview_link} type="audio/mp3"></source>
+                        Your browser does not support the audio element.
+                      </audio>
+          </th>
+        </tr>
+        )
+    })
 
     return (
       <html>
@@ -43,17 +53,13 @@ class Singleplaylist extends React.Component {
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Songs</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Artist</th>
+                  <th scope="col">Album</th>
+                  <th scope="col">Preview</th>
                 </tr>
               </thead>
-                <tr>
-                  <th>
-                      <audio controls>
-                        <source src="http://a1748.phobos.apple.com/us/r1000/074/Music/d4/97/e7/mzm.bigdtgoz.aac.p.m4a" type="audio/mp3"></source>
-                        Your browser does not support the audio element.
-                      </audio>
-                  </th>
-                </tr>
+                {showSongs}
               <tbody>
               </tbody>
             </table>

@@ -177,6 +177,7 @@ app.post('/playlists/show', (request, response) => {
 })
 
 
+///////////////
 //////////////Create new song for playlist
 app.get('/playlist/:id/newsong', (request, response) => {
     const id = request.params.id;
@@ -249,44 +250,89 @@ app.get('/playlist/:id/newsong', (request, response) => {
 });
 
 
+//////////////////
+////////////////// Add Song to playlist
 app.post('/playlist/:id', (request, response) => {
+
     const id = request.params.id;
 
-    async function addSong(){
-        // Add song into database songz
-        let queryString = 'insert into songz (title, artist) values ($1, $2) returning *'
+    let playlistDetails;
 
-        const values = [request.body.title, request.body.artist]
+    const songID = request.body.song;
 
-        let songDetails;
+    let songTitles;
 
-        await pool.query(queryString, values, (err, result) => {
-            if(err){
-                console.error('query error: ', err.stack);
-                response.send('query error');
-            }
-            else{
-                songDetails = result.rows;
-                resolve('resolved');
-            }
+    let artistNames;
+
+    async function addSongPlaylist() {
+        // Get playlist details
+        const queryString = `select * from playlist where id=${id}`
+
+        let getPlaylistDetails = new Promise((resolve, reject) => {
+            pool.query(queryString, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    playlistDetails = result.rows;
+                    resolve('resolved');
+                }
+            })
         })
 
-        // create relationship between song and playlist
         let queryString2 = 'insert into playlist_song (playlist_id, song_id) values ($1, $2) returning *'
 
-        const values2 = [id, songDetails.id]
-        console.log(values2);
-        pool.query(queryString2, values2, (err, result) => {
-            if(err){
-                console.error('query error: ', err.stack);
-                response.send('query error');
-            }
-            else{
-                playlistSongDetails = result.rows;
-                console.log(playlistSongDetails);
-            }
+        const values = [id, songID]
+
+
+        let addSongDB = new Promise((resolve, reject) => {
+            pool.query(queryString2, values, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    resolve('resolved');
+                }
+            })
         })
+
+        addSongDB.then(() => {
+            // Inner join 3 tables, song table, artist table, and playlist_song
+            let queryString3 = `
+                SELECT
+                    songs.title,
+                    songs.album,
+                    songs.preview_link,
+                    artists.name
+                FROM
+                    songs
+                INNER JOIN playlist_song
+                ON (songs.id = playlist_song.song_id)
+                INNER JOIN artists
+                ON (songs.artist_id = artists.id)
+            `;
+
+            pool.query(queryString3, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    const data = {"playlistSongs" : result.rows, "playlistDetails" : playlistDetails};
+                    response.render('singleplaylist', data);
+                }
+            })
+        })
+        /* Need a better way to use the async await, it is now hanging by a thread. sequence of operations should be as follows
+        1. Get the playlist details
+        2. asynchronously add the new song to the playlist
+        3. get the songs within the playlist after the new song is added
+        4. render the results once the (1)playlist details (2)songs in playlist are all retrieved.
+        */
     }
+    addSongPlaylist();
 })
 
 //////////////Show individual playlist

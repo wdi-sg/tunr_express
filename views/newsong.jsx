@@ -53,13 +53,13 @@ class Newsong extends React.Component {
           </div>
 
           <div>
-          <h2>Select from database</h2>
-          <form action={url} method="get">
-            <select className="selectpicker my-4" data-live-search="true">
-              {allSongTitle}
-            </select>
-            <input type="submit" value="Add Song!"></input>
-          </form>
+            <h2>Select from database</h2>
+            <form action={url} method="post">
+              <select className="selectpicker my-4" data-live-search="true" name="song">
+                {allSongTitle}
+              </select>
+              <input className="my-4" type="submit" value="Add Song!"></input>
+            </form>
           </div>
 
           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
