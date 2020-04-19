@@ -10,9 +10,6 @@ class AllPlaylists extends React.Component {
         const playlistInfo = this.props.allPlaylists.map(playlist =>
 
             <div className="single-playlist__container" key={playlist.id}>
-                <div className="single-playlist__img-container">
-                    <img src={playlist["photo_url"]} alt={playlist.name} className="single-playlist__img"/>
-                </div>
                 <a href={`./${playlist.id}`} className="single-playlist__name">{playlist.name}</a>
             </div>
         )
@@ -28,7 +25,6 @@ class AllPlaylists extends React.Component {
                         <div className="overlay"></div>
                         <a href="/" className="nav__link home-link"><p>Home</p></a>
                         <a href="/playlists/new" className="nav__link add-playlist"><p>Add Playlist</p></a>
-                        <a href="/" className="nav__link add-playlist"><p>Playlists</p></a>
                     </div>
                     <main>
                         {playlistInfo}

@@ -31,7 +31,6 @@ module.exports.getAllPlaylists = async (req, res) => {
         console.log(e);
     }
 
-    console.log('Get All Playlists');
 }
 
 module.exports.getAddPlaylist = async (req, res) => {
@@ -84,28 +83,66 @@ module.exports.postAddPlaylist = async (req, res) => {
 
 module.exports.getEditPlaylistById = async (req, res) => {
 
-    // const { id } = req.params;
-    // const queryT = `SELECT * FROM playlists WHERE id=${id}`
-    // const { rows } = await db.query(queryT);
+    const { id } = req.params;
+    const queryT = `SELECT * FROM playlists WHERE id=${id}`
+    const { rows } = await db.query(queryT);
 
-    // res.render('./playlists/edit-playlist', {
-    //     'singlePlaylist': rows[0]
-    // });
+    const queryT2 = `SELECT song_id, title, artist_id from playlists_songs INNER JOIN songs ON playlists_songs.song_id = songs.id WHERE playlist_id=${id} ORDER BY song_id`
 
-    console.log('Get Edit Playlist Form By Id');
+    const resultTwo = await db.query(queryT2);
+
+    const queryT3 = `SELECT name, id from artists`;
+    const queryT4 = `SELECT title, artist_id from songs`;
+    const resultArtists = await db.query(queryT3);
+    const resultSongs = await db.query(queryT4);
+
+    // console.log(resultTwo.rows);
+
+    res.render('./playlists/edit-playlist', {
+        'singlePlaylist': rows[0],
+        'playlistSongs': resultTwo.rows,
+        'artists': resultArtists.rows,
+        'songs': resultSongs.rows
+    })
 
 }
 
 module.exports.putPlaylistById = async (req, res) => {
 
+    const { id } = req.params;
+    const queryT = `UPDATE playlists SET name = '${req.body.name}' WHERE id=${id}`
+    const { rows } = await db.query(queryT);
 
-    // const { id } = req.params;
-    // const queryT = `UPDATE playlists SET name = '' WHERE id=${id}`
-    // const { rows } = await db.query(queryT);
+    if (!Array.isArray(req.body.artist))
+        req.body.artist = req.body.artist.split();
 
-    // res.redirect(`./${id}`);
+    if (!Array.isArray(req.body.song))
+        req.body.song = req.body.song.split();
 
-    console.log('Put Playlist By Id');
+    let i = 0;
+    const playlistArr = req.body.artist.reduce((arr, el) => {
+        const obj = { 'artist': el, 'song': req.body.song[i] };
+        i++;
+        return arr.push(obj), arr;
+    }, [])
+
+    const queryT2 = `DELETE FROM playlists_songs where playlist_id =${id}`
+
+    const resultTwo = await db.query(queryT2);
+
+    playlistArr.forEach(async playlistSong => {
+        const queryT3 = `SELECT id, artist_id FROM songs WHERE title='${playlistSong.song}'`;
+        const { rows } = await db.query(queryT3);
+
+        console.log(rows);
+
+        const queryT4 = `INSERT into playlists_songs(song_id, playlist_id) VALUES ('${rows[0].id}', '${id}') RETURNING *`
+
+        const resultFour = await db.query(queryT4);
+
+    })
+
+    res.redirect(`./${id}`);
 
 }
 

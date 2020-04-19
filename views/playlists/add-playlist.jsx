@@ -9,7 +9,7 @@ class AddPlaylistForm extends React.Component {
 
         const artistOptions = this.props.artists.map(artist => <option value={artist.name} artist-id={artist.id}>{artist.name}</option>)
 
-        const songsOptions = this.props.songs.map(song => <option value={song.title} className="song-options" artist={this.props.artists.find(artist => artist.id == song['artist_id']).name}>{song.title}</option>)
+        const songsOptions = this.props.songs.map(song => <option value={song.title} className="song-options" artistid={song['artist_id']}artist={this.props.artists.find(artist => artist.id == song['artist_id']).name}>{song.title}</option>)
 
         return (
 
@@ -28,6 +28,8 @@ class AddPlaylistForm extends React.Component {
 
                             <form method="POST" action={`/playlists`} className="add-form">
                                 <h2 className="add-form__header">Create New Playlist</h2>
+                                <h4>Playlist Name</h4>
+                                <input type="text" name="playlist_name"></input>
                                 <select id="artists-select" name="artists">
                                     {artistOptions}
                                 </select>
