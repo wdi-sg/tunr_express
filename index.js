@@ -114,7 +114,7 @@ app.post('/artists', (request, response) => {
           var output = {
             'artists': result.rows,
           }
-          response.render('artists', output);
+          response.redirect('/artists');
           // response.send( output);
         }
       });
@@ -221,7 +221,7 @@ app.put('/artists/:id', (request, response) => {
                 'artists': result.rows,
               }
 
-              response.render('artists', output);
+              response.redirect(`/artists/${artistId}`);
               // response.send(output);
             }
           });
@@ -271,7 +271,7 @@ app.delete('/artists/:id', (request, response) => {
                 'artists': result.rows,
               }
 
-              response.render('artists', output);
+              response.redirect('/artists');
               // response.send(output);
             }
           });
@@ -280,6 +280,42 @@ app.delete('/artists/:id', (request, response) => {
     }
   })
 })
+
+app.get('/artists/:id/songs', (request, response) => {
+  var artistId = request.params.id;
+  const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error4:', err.stack);
+      response.send('query error');
+    } else {
+      // console.log('query result:', result);
+      var idMatch = [];
+      // console.log(result.rows)
+      for (id in result.rows) {
+        if (result.rows[id].artistid == artistId) {
+          idMatch.push(result.rows[id]);
+        }
+      }
+      // redirect to home page
+      var output = {
+        'artists': idMatch,
+      }
+      var mappedId = idMatch[0].id;
+      const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS songid, * FROM songs WHERE artist_id = ${mappedId}`;
+      pool.query(queryString, (err, result) => { 
+        if (err) {
+          console.error('query error4:', err.stack);
+          response.send('query error');
+        } else {
+          output.songs = result.rows;
+          response.render('artist-songs', output);
+        }
+      })
+    }
+  });
+});
 
 /**
  * ===================================
@@ -301,12 +337,3 @@ let onClose = function () {
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
-
-function mapId(queryResult) {
-  var resultMap = {};
-  for (let i = 0; i < queryResult.rows.length; i++) {
-    var record = queryResult.rows[i];
-    resultMap[`${i + 1}`] = record.id;
-  }
-  return resultMap;
-}
