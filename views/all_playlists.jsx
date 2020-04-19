@@ -4,7 +4,8 @@ class All_Playlists extends React.Component {
 
         const playlists = this.props.playlists;
         const allPlaylists = playlists.map(playlist => {
-            return (<li>{playlist.name}</li>)
+            let playlistIdPage = '/playlists/' + playlist.id;
+            return (<h5><li><a href={playlistIdPage}>{playlist.name}</a></li></h5>)
         })
 
         return (
@@ -16,10 +17,6 @@ class All_Playlists extends React.Component {
                 <br/>
                 <div className='container'>
                     <h2 className='text-center'>List of Playlists</h2>
-                    <br/>
-                    <div className='row justify-content-center'>
-                        <button className='btn btn-warning'><a href='/artists/songs' className='text-dark text-decoration-none'>List of Songs</a></button>
-                    </div>
                     <br/>
                     <div className='row justify-content-center'>
                         <ol>

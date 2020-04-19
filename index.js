@@ -53,7 +53,9 @@ app.get('/artists/', (request, response) => {
     response.render('home');
 });
 
-//List of all Artists
+///////////////////////////////////
+////   //List of all Artists  ////
+/////////////////////////////////
 app.get('/artists/list', (request, response) => {
     const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
@@ -142,6 +144,113 @@ app.post('/playlists/', (request, response) => {
                     }
 
                 response.render('all_playlists', data)
+                }
+            })
+        }
+    })
+})
+
+/////////////////////////////////
+////  Add song to playlist  ////
+///////////////////////////////
+app.get('/playlists/:id/newsong', (request, response) => {
+    let queryPlaylistString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
+
+    pool.query(queryPlaylistString, (err, result) => {
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when adding new song to playlist 😢');
+        } else {
+            let playlistId = result.rows[0].id;
+            let playlistName = result.rows[0].name;
+            let querySongString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name AS artist_name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)' ;
+
+            pool.query(querySongString, (err, result) => {
+                if (err) {
+                    console.log('dbQuery Error', err.stack);
+                    response.send('An error occurred when adding new song to playlist 😢');
+                } else {
+                    const data = {
+                        playlistId: playlistId,
+                        playlistName: playlistName,
+                        songs: result.rows
+                    }
+
+                response.render('song_to_playlist', data)
+                }
+            })
+        }
+    })
+})
+
+app.post('/playlists/:id', (request, response) => {
+    let selectedSongs = request.body.song_id;
+
+    const addSongsToPlaylist = selectedSongs.map(songId => {
+        let queryString = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES (' + songId + ', ' + request.params.id + ')'
+
+        pool.query(queryString, (err, result) => {
+            if (err) {
+                console.log('dbQuery Error', err.stack);
+                response.send('An error occurred when adding to playlist 😢');
+            } else {
+                queryString = 'SELECT songs.id, songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id =' + request.params.id;
+
+                pool.query(queryString, (err, result) => {
+                    if (err) {
+                        console.log('dbQuery Error', err.stack);
+                        response.send('An error occurred when creating new artist 😢');
+                    } else {
+                        let addedSongs = result.rows;
+                        let queryPlaylistString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
+
+                        pool.query(queryPlaylistString, (err, result) => {
+                            if (err) {
+                                console.log('dbQuery Error', err.stack);
+                                response.send('An error occurred when creating new artist 😢');
+                            } else {
+                                const data = {
+                                    playlistId: result.rows[0].id,
+                                    playlistName: result.rows[0].name,
+                                    addedSongs: addedSongs
+                                }
+
+                            response.render('show_playlist', data)
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    })
+})
+
+/////////////////////////////////
+////  Individual playlist  /////
+///////////////////////////////
+app.get('/playlists/:id', (request, response) => {
+    let queryString = 'SELECT songs.id, songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id =' + request.params.id;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when creating new artist 😢');
+        } else {
+            let addedSongs = result.rows;
+            let queryPlaylistString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
+
+            pool.query(queryPlaylistString, (err, result) => {
+                if (err) {
+                    console.log('dbQuery Error', err.stack);
+                    response.send('An error occurred when creating new artist 😢');
+                } else {
+                    const data = {
+                        playlistId: result.rows[0].id,
+                        playlistName: result.rows[0].name,
+                        addedSongs: addedSongs
+                    }
+
+                response.render('show_playlist', data)
                 }
             })
         }

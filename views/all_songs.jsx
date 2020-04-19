@@ -20,6 +20,10 @@ class All_Songs extends React.Component {
                                 <button className='btn btn-primary'><a href={songDetailsId} className='text-white text-decoration-none'>Details</a></button>
                             </div>
                         </div>
+                        <br/>
+                        <div className='row justify-content-center'>
+                            <button className='btn btn-success'><a href='#' className='text-white text-decoration-none'>Add to Playlist</a></button>
+                        </div>
                     </div>
                 </div>
             );
