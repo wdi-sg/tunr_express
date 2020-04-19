@@ -1,12 +1,25 @@
-var React = require("react");
+const React = require('react');
+const Head = require('./head');
+const Nav = require('./nav');
 
 class Home extends React.Component {
   render() {
     return (
       <html>
-        <head />
+        <Head />
         <body>
-          <h1>Welcome!</h1>
+
+          <div className="container">
+            <div className="row my-3">
+              <div className="col-8 offset-2">
+                <Nav />
+                <p className="h4 text-center text-info">
+                  Welcome to tunr!
+                </p>
+              </div>
+            </div>
+          </div>
+
         </body>
       </html>
     );
