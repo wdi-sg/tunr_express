@@ -144,7 +144,7 @@ app.get('/artists/:id', (request, response) => {
         'artists': idMatch,
       }
 
-      response.render('artists', output);
+      response.render('single-artist', output);
       // response.send(output);
     }
   });
