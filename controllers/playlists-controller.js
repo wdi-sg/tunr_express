@@ -7,14 +7,16 @@ module.exports.getPlaylistById = async (req, res) => {
     const queryT = `SELECT * FROM playlists WHERE id=${id}`
     const { rows } = await db.query(queryT);
 
+    const queryT2 = `SELECT * from playlists_songs INNER JOIN songs ON playlists_songs.song_id = songs.id WHERE playlist_id=${id}`
+
+    const resultTwo = await db.query(queryT2);
+
     try {
-        res.render('./playlists/playlist-single', { 'singlePlaylist': rows[0] });
+        res.render('./playlists/playlist-single', { 'singlePlaylist': resultTwo.rows });
     } catch (e) {
         res.status(404).render('404');
         console.log(e);
     }
-
-    console.log('Get Playlist By Id');
 
 }
 
@@ -75,13 +77,6 @@ module.exports.postAddPlaylist = async (req, res) => {
 
     })
 
-    // const queryT1 = `SELECT id, artist_id FROM songs WHERE name=${req.body}`;
-    // const { rows } = await db.query(queryT1);
-
-    // const queryT2 = `INSERT INTO playlists() VALUES() RETURNING *`;
-    // const queryV2 = [];
-    // const { rows } = await db.query(queryT2, query2);
-
     // res.redirect(`./playlists/${rows[0].id}`);
     console.log(playlistArr);
 
@@ -116,10 +111,10 @@ module.exports.putPlaylistById = async (req, res) => {
 
 module.exports.deletePlaylistById = async (req, res) => {
 
-    // const { id } = req.params;
-    // const queryT = `DELETE from playlists WHERE id=${id}`
-    // const { rows } = await db.query(queryT);
-    // res.render('./playlists/playlist-deleted');
+    const { id } = req.params;
+    const queryT = `DELETE from playlists WHERE id=${id}`
+    const { rows } = await db.query(queryT);
+    res.render('./playlists/playlist-deleted');
 
     console.log('Delete Playlist By Id');
 
