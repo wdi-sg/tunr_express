@@ -165,6 +165,7 @@ router.get('/:id/songs', async function (req, res) {
   res.render('artistsongs', data);
 });
 
-
+router.get('/:aid/songs/:sid', async function (req, res) {
+});
 
 module.exports = router;
