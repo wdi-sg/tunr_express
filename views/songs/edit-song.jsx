@@ -28,9 +28,9 @@ class EditSongForm extends React.Component {
                                 <p className="edit-form__header-label">Album</p>
                                 <input type="text" name="album" placeholder="Album" defaultValue={`${this.props.singleSong.album}`}/>
                                 <p className="edit-form__header-label">Preview Link</p>
-                                <input type="text" name="preview link" placeholder="Preview Link" value={`${this.props.singleSong['preview_link']}`} />
+                                <input type="text" name="preview link" placeholder="Preview Link" defaultValue={`${this.props.singleSong['preview_link']}`} />
                                 <p className="edit-form__header-label">Artwork Link</p>
-                                <input type="text" name="artwork" placeholder="Artwork Link" default defaultValue={`${this.props.singleSong.artwork}`} />
+                                <input type="text" name="artwork" placeholder="Artwork Link" defaultValue={`${this.props.singleSong.artwork}`} />
                                 <button className="edit-form__submit-btn" type="submit">Edit</button>
 
                             </form>
