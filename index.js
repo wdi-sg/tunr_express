@@ -48,39 +48,167 @@ app.engine("jsx", reactEngine);
  * ===================================
  */
 
-app.get("/artists/:id", (request, response) => {
+//============ add new playlist form ===============
+app.get("/playlist/:id", (req, res) => {
+  if (req.params.id === "new") {
+    res.render("newPlaylist");
+  } else {
+    //============== Get playlist's info ====================
+    const whenQueryDone = (queryErr, result) => {
+      if (queryErr) {
+        console.log(queryErr);
+      } else {
+        console.log(result.rows[0]);
+      }
+      const data = {
+        playlistInfo: result.rows[0],
+      };
+
+      res.render("singlePlaylist", data);
+    };
+    const queryString = "SELECT * FROM playlist WHERE id = " + req.params.id;
+    pool.query(queryString, whenQueryDone);
+  }
+});
+
+//=========== Where data submitted from add-new-playlist form posted to ==============
+app.post("/playlist", (request, response) => {
+  console.log(request.body);
+
   const whenQueryDone = (queryErr, result) => {
     if (queryErr) {
-      console.log(querErr);
+      console.log(queryErr);
     } else {
       console.log(result.rows[0]);
     }
     const data = {
-      artistInfo: result.rows[0],
+      justAddedPlaylist: result.rows[0],
     };
-    // query database for all pokemon
-
-    // respond with HTML page displaying all pokemon
-    response.render("singleArtist", data);
+    response.render("justAddedPlaylist", data);
   };
-  const queryString = "SELECT * FROM artists WHERE id = " + request.params.id;
+  const newlyAddedPlaylist = request.body.newPlaylist;
+
+  const values = [newlyAddedPlaylist];
+  const queryString = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
+  pool.query(queryString, values, whenQueryDone);
+});
+
+//============== Show all playlist ====================
+
+app.get("/playlist", (request, response) => {
+  const whenQueryDone = (queryErr, result) => {
+    if (queryErr) {
+      console.log(queryErr);
+    } else {
+      for (i = 0; i < result.rows.length; i++) {
+        console.log(result.rows[i]);
+      }
+    }
+    const data = {
+      individualPlaylist: result.rows,
+    };
+
+    response.render("allPlaylist", data);
+  };
+
+  const queryString = "SELECT * FROM playlist";
   pool.query(queryString, whenQueryDone);
 });
 
-app.get("/artists/new", (request, response) => {
-  // query database for all pokemon
+//=========== form for adding a song to a playlist==============
+app.get("/playlist/:id/newsong", (req, res) => {
+  const whenQueryDone = (queryErr, result) => {
+    if (queryErr) {
+      console.log(queryErr);
+    } else {
+      console.log(result.rows[0]);
+      const queryString = "SELECT * FROM songs";
+      pool.query(queryString, (songQueryErr, songResult) => {
+        if (songQueryErr) {
+          console.log(songQueryErr);
+        }
+        const data = {
+          playlistInfo: result.rows[0],
+          songlist: songResult.rows,
+        };
+        res.render("addSongToSinglePlaylist", data);
+      });
+      // const data = {
+      //   playlistInfo: result.rows[0],
+      //   songlist: songResult.rows,
+      // };
+    }
 
-  // respond with HTML page displaying all pokemon
-  response.render("new");
+    // const data = {
+    //   playlistInfo: result.rows[0],
+    //   songlist: songResult.rows,
+    // };
+
+    // res.render("addSongToSinglePlaylist", data);
+  };
+  const queryString = "SELECT * FROM playlist WHERE id = " + req.params.id;
+  pool.query(queryString, whenQueryDone);
 });
 
+//============= Posting a song to selected playlist ==============
+app.post("/playlist/:id", (request, response) => {
+  const whenQueryDone = (queryErr, result) => {
+    if (queryErr) {
+      console.log(queryErr);
+    } else {
+      console.log(result.rows[0]);
+    }
+    // const data = {
+    //   playlistNum: request.params.id,
+    // };
+    response.send("Added");
+  };
+  const addedSongId = request.body.songNum;
+  const playlistAddedTo = request.body.playlistNum;
+
+  const values = [addedSongId, playlistAddedTo];
+
+  const queryString =
+    "INSERT INTO playlist_song (song_id , playlist_id) VALUES ($1, $2) RETURNING *";
+  pool.query(queryString, values, whenQueryDone);
+});
+
+//=========== adding a new artist form ================
+
+app.get("/artists/:id", (request, response) => {
+  if (request.params.id === "new") {
+    response.render("new");
+  } else {
+    //============== Get artist's info ====================
+    const whenQueryDone = (queryErr, result) => {
+      if (queryErr) {
+        console.log(queryErr);
+      } else {
+        console.log(result.rows[0]);
+      }
+      const data = {
+        artistInfo: result.rows[0],
+      };
+
+      response.render("singleArtist", data);
+    };
+    const queryString = "SELECT * FROM artists WHERE id = " + request.params.id;
+    pool.query(queryString, whenQueryDone);
+  }
+});
+
+// app.get("/artists/new", (request, response) => {
+//   response.render("new");
+// });
+
+//======= Page showing newly added artist (POSTED from new artist form) ========
 app.post("/artists", (request, response) => {
   // query database for all pokemon
   console.log(request.body);
 
   const whenQueryDone = (queryErr, result) => {
     if (queryErr) {
-      console.log(querErr);
+      console.log(queryErr);
     } else {
       console.log(result.rows[0]);
     }
