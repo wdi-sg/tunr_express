@@ -2,8 +2,8 @@ const Model = require('./model')
 
 class Artist extends Model {
 
-  constructor (name, photo_url, nationality) {
-    super()
+  constructor (id,name, photo_url, nationality) {
+    super(id)
     this._data.name = name;
     this._data.photo_url = photo_url;
     this._data.nationality = nationality

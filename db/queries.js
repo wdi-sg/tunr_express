@@ -16,7 +16,7 @@ const parseWhereClause = ((fields, vals)=> {
 // @return [1,2]
 // select * from table where x = $1 and y = $2
 
-const insert = (tableName,columns,values) => {
+const prepareInsertStmt = (tableName,columns,values) => {
   let text =`insert into ${tableName} (${parseParam(columns)}) `
   text += `values (${makePlaceHolders(values)}) `
   text+=`RETURNING id`
@@ -25,7 +25,7 @@ const insert = (tableName,columns,values) => {
 
 //@param where
 //{ id:1, name:'name'}
-const select = (tableName, selections, where) => {
+const prepareSelectStmt = (tableName, selections, where) => {
   const columns = Object.keys(where)
   const vals = Object.keys(where)
   let text = `select ${parseParam(selections)} from ${tableName} where `
@@ -35,6 +35,6 @@ const select = (tableName, selections, where) => {
 }
 
 module.exports = {
-  insert,
-  select
+  prepareInsertStmt: prepareInsertStmt,
+  prepareSelectStmt: prepareSelectStmt
 }

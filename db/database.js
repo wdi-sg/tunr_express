@@ -1,7 +1,5 @@
-require('dotenv').config()
-const {insert} = require('./queries')
+const conn = require('./connection')
 
-const Model = require('../models/model')
 
 class Database {
   constructor (conn) {
@@ -21,20 +19,24 @@ class Database {
     }
   }
 
-  async save (obj) {
-    if (!obj instanceof Model) {
-      throw Error('Invalid model')
-    }
-    const tableName = obj.getResourceName()
-    const { [obj.getPrimaryKey()]: _, ...data } = obj.data
-    const columns = Object.keys(data)
-    const values = Object.values(data)
-    let text = insert(tableName,columns,values)
-    return this._execute(text, values)
-  }
-
-
+  // async save (obj) {
+  //   if (!obj instanceof Model) {
+  //     throw Error('Invalid model')
+  //   }
+  //   const tableName = obj.getResourceName()
+  //   const { [obj.getPrimaryKey()]: _, ...data } = obj.data
+  //   const columns = Object.keys(data)
+  //   const values = Object.values(data)
+  //   let text = insert(tableName,columns,values)
+  //   return this._execute(text, values)
+  // }
 
 }
 
-module.exports = Database
+const createDB = ((conn) => {
+  const db = new Database(conn);
+  Object.freeze(db)
+  return db
+})(conn)
+
+module.exports = createDB

@@ -1,6 +1,5 @@
 
 const Artist = require('../models/artist.model')
-const db = require('../db/artist.db')
 
 const listArtists = ((req, res) => {
 
@@ -8,20 +7,22 @@ const listArtists = ((req, res) => {
 })
 
 const showCreateArtist = ((req, res) => {
+  // newArtist.select('*', {id})
+  // select * from artist where
   res.json('display artist form')
 })
 
 const addNewArtist =  ((req, res) => {
   const newArtist = new Artist('James')
-  db.save(newArtist)
-    .then(data=>res.json(data))
+  newArtist.save()
+    .then(data=> res.json(data))
     .catch(console.error)
 })
 
 const showArtist = ((req, res) => {
-  const {id} = req.params
-  const artist = db.findByID(id)
-  res.json('show one artist')
+  const {id} = req.params;
+  const result = Artist.select('*',{id})
+  result.then(data=>res.json(data))
 })
 
 const editArtist = ((req, res) => {
