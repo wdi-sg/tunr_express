@@ -8,7 +8,6 @@ class ArtistSongForm extends React.Component {
     let artistId = data.id;
     let backLink = `/artists/${artistId}`;
     let formAction = `${backLink}/songs/new`;
-    console.log(data);
 
     return (
       <html>
