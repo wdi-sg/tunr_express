@@ -25,17 +25,26 @@ router.get('/new', async function (req, res) {
 });
 
 router.get('/:id', async function (req, res) {
+  let value = [req.params.id];
   let playlistQuery =
-      "SELECT songs.title, songs.album, songs.artist_id, artists.name " +
+      "SELECT songs.id, songs.title, songs.album, artists.name " +
       "FROM songs " +
       "INNER JOIN artists " +
       "ON (artists.id = songs.artist_id) " +
       "INNER JOIN playlist_songs " +
       "ON (songs.id = playlist_songs.song_id) " +
       "WHERE playlist_songs.playlist_id = $1";
-  let playlistResults = await makeQuery(playlistQuery, [req.params.id]);
 
-  res.send(playlistResults);
+  let nameQuery = "SELECT name FROM playlists WHERE id = $1";
+  let playlistName = await makeQuery(nameQuery, value);
+  let playlistResults = await makeQuery(playlistQuery, value);
+
+  let data = {
+    listname: playlistName[0].name,
+    playlist: playlistResults
+  };
+
+  res.render('playlistview', data);
 });
 
 module.exports = router;
