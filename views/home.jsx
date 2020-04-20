@@ -1,27 +1,20 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class Home extends React.Component {
-  render() {
+class Home extends Template {
+  constructor(props) {
+    super(props);
+    this.title = "Tunr";
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     return (
-      <html>
-        <Head />
-        <body>
-
-          <div className="container">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
-                <Nav />
-                <p className="h4 text-center text-info">
-                  Welcome to tunr!
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </body>
-      </html>
+      <React.Fragment>
+        <p className="h4 text-center text-info">
+          Welcome to tunr!
+        </p>
+      </React.Fragment>
     );
   }
 }

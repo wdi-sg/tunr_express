@@ -1,9 +1,14 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class ArtistList extends React.Component {
-  render() {
+class ArtistList extends Template {
+  constructor(props) {
+    super(props);
+    this.title = "Artists";
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     let artistdata = this.props.artistlist;
     let artists = artistdata.map(artist => {
       let key = `artist-${artist.id}`;
@@ -15,28 +20,15 @@ class ArtistList extends React.Component {
     });
 
     return (
-      <html>
-        <Head />
-        <body>
-          <div className="container">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
-
-                <Nav />
-
-                <ul className="list-group">
-                  {artists}
-                </ul>
-                <a href="/artists/new"
-                   className="btn btn-info btn-block my-3">
-                  Add New Artist
-                </a>
-
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
+      <React.Fragment>
+        <ul className="list-group">
+          {artists}
+        </ul>
+        <a href="/artists/new"
+           className="btn btn-info btn-block my-3">
+          Add New Artist
+        </a>
+      </React.Fragment>
     );
   }
 }

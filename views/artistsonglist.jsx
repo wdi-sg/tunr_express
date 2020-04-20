@@ -1,9 +1,14 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class ArtistSongs extends React.Component {
-  render() {
+class ArtistSongList extends Template {
+  constructor(props) {
+    super(props);
+    this.title = `${props.name} Songs`;
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     let backLink = `/artists/${this.props.id}`;
     let songs = this.props.songs;
     let count = songs.length;
@@ -53,35 +58,22 @@ class ArtistSongs extends React.Component {
     }
 
     return (
-      <html>
-        <Head />
+      <React.Fragment>
+        {headerText}
+        {songTable}
+        <a href={backLink}
+           className="btn btn-info btn-block my-3">
+          Go Back to Artist Page
+        </a>
 
-        <body>
-          <div className="container">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
+        <a href="songs/new"
+           className="btn btn-info btn-block my-3">
+          Add a Song for this Artist
+        </a>
 
-                <Nav />
-
-                {headerText}
-                {songTable}
-                <a href={backLink}
-                   className="btn btn-info btn-block my-3">
-                  Go Back to Artist Page
-                </a>
-
-                <a href="songs/new"
-                   className="btn btn-info btn-block my-3">
-                  Add a Song for this Artist
-                </a>
-
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
+      </React.Fragment>
     );
   }
 }
 
-module.exports = ArtistSongs;
+module.exports = ArtistSongList;

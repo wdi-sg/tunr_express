@@ -1,9 +1,14 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class PlaylistView extends React.Component {
-  render() {
+class PlaylistView extends Template {
+  constructor(props) {
+    super(props);
+    this.title = props.listname;
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     let listname = this.props.listname;
     let songs = this.props.playlist.map(song => {
       let key = `song-${song.id}`;
@@ -20,46 +25,34 @@ class PlaylistView extends React.Component {
     });
 
     return (
-      <html>
-        <Head />
+      <React.Fragment>
+        <div className="my-3"
+             style={{overflowY: "scroll", maxHeight: "70vh"}}>
+          <table className="table">
+            <thead>
+              <tr>
+                <td className="h5 text-center"
+                    colSpan="3">{listname}
+                </td>
+              </tr>
+              <tr>
+                <td scope="col">Title</td>
+                <td scope="col">Album</td>
+                <td scope="col">Artist</td>
+              </tr>
+            </thead>
+            <tbody>
+              {songs}
+            </tbody>
+          </table>
+        </div>
 
-        <body>
-          <div className="container text-center">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
-                <Nav />
+        <a href="/playlists/new"
+           className="btn btn-info btn-block my-3">
+          Add New Playlist
+        </a>
 
-                <div className="my-3"
-                     style={{overflowY: "scroll", maxHeight: "70vh"}}>
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <td className="h5 text-center"
-                            colSpan="3">{listname}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td scope="col">Title</td>
-                        <td scope="col">Album</td>
-                        <td scope="col">Artist</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {songs}
-                    </tbody>
-                  </table>
-                </div>
-
-                <a href="/playlists/new"
-                   className="btn btn-info btn-block my-3">
-                  Add New Playlist
-                </a>
-
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
+      </React.Fragment>
     );
   }
 }

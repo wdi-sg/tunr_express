@@ -1,9 +1,14 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class PlaylistList extends React.Component {
-  render() {
+class PlaylistList extends Template {
+  constructor(props) {
+    super(props);
+    this.title = "Playlists";
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     let playlistdata = this.props.playlists;
     let playlists = playlistdata.map(list => {
       let key = `list-${list.id}`;
@@ -16,28 +21,15 @@ class PlaylistList extends React.Component {
     });
 
     return (
-      <html>
-        <Head />
-
-        <body>
-          <div className="container text-center">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
-                <Nav />
-
-                <ul className="list-group">
-                  {playlists}
-                </ul>
-                <a href="/playlists/new"
-                   className="btn btn-info btn-block my-3">
-                  Add New Playlist
-                </a>
-
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
+      <React.Fragment>
+        <ul className="list-group">
+          {playlists}
+        </ul>
+        <a href="/playlists/new"
+           className="btn btn-info btn-block my-3">
+          Add New Playlist
+        </a>
+      </React.Fragment>
     );
   }
 }

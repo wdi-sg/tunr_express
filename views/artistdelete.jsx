@@ -1,9 +1,14 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class ArtistDelete extends React.Component {
-  render() {
+class ArtistDelete extends Template {
+  constructor(props) {
+    super(props);
+    this.title = `Delete ${this.props.name}`;
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     let deleteLink = `/artists/${this.props.id}?_method=delete`;
     let backLink = `/artists/${this.props.id}`;
     let songs = this.props.songs;
@@ -12,7 +17,7 @@ class ArtistDelete extends React.Component {
     let songList, songTable, headerText, deleteText;
     if (count === 0) {
       headerText =
-        <h5 class="p-2 bg-success text-white rounded-lg text-center">
+        <h5 className="p-2 bg-success text-white rounded-lg text-center">
           There are no {this.props.name} songs in the database.<br />
         </h5>;
       deleteText = "Delete Artist";
@@ -20,7 +25,7 @@ class ArtistDelete extends React.Component {
 
     } else {
       headerText =
-        <h5 class="p-2 bg-danger text-white rounded-lg text-center">
+        <h5 className="p-2 bg-danger text-white rounded-lg text-center">
           There are {count} {this.props.name} songs in the database. <br />
           Deleting the artist will delete all their songs as well.
         </h5>;
@@ -39,7 +44,7 @@ class ArtistDelete extends React.Component {
 
       songTable =
         <div className="my-3"
-             style={{"overflow-y": "scroll", "max-height": "70vh"}}>
+             style={{"overflowY": "scroll", "maxHeight": "70vh"}}>
           <table className="table">
             <thead>
               <tr>
@@ -56,34 +61,22 @@ class ArtistDelete extends React.Component {
     }
 
     return (
-      <html>
-        <Head />
+      <React.Fragment>
 
-        <body>
-          <div className="container">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
+      {headerText}
+      {songTable}
+      <form action={deleteLink} method="post">
+        <button type="submit"
+                className="btn btn-danger btn-block my-3">
+          {deleteText}
+        </button>
+      </form>
+      <a href={backLink}
+         className="btn btn-info btn-block">
+        Go Back to Artist Page
+      </a>
 
-                <Nav />
-
-                {headerText}
-                {songTable}
-                <form action={deleteLink} method="post">
-                  <button type="submit"
-                          className="btn btn-danger btn-block my-3">
-                    {deleteText}
-                  </button>
-                </form>
-                <a href={backLink}
-                   className="btn btn-info btn-block">
-                  Go Back to Artist Page
-                </a>
-
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
+</React.Fragment>
     );
   }
 }

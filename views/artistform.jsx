@@ -1,9 +1,14 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class ArtistForm extends React.Component {
-  render() {
+class ArtistForm extends Template {
+  constructor(props) {
+    super(props);
+    this.title = props.new ? "Add Artist" : "Update Artist";
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     let data = this.props;
     let artistId = data.id;
     let nameValue = data.name || "";
@@ -14,46 +19,33 @@ class ArtistForm extends React.Component {
     let backLink = `/artists/${data.id}`;
 
     return (
-      <html>
-        <Head />
-
-        <body>
-          <div className="container">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
-
-                <Nav />
-
-                <form action={formAction} method="post">
-                  <div className="form-group">
-                    <input type="hidden" name="id" value={artistId} />
-                    <input className="form-control"
-                           name="name"
-                           defaultValue={nameValue}
-                           placeholder="Artist Name" /><br />
-                    <input className="form-control"
-                           name="photo_url"
-                           defaultValue={photoValue}
-                           placeholder="Photo URL" /><br />
-                    <input className="form-control"
-                           name="nationality"
-                           defaultValue={nationalityValue}
-                           placeholder="Nationality" /><br />
-                    <input className="btn btn-outline-info btn-block"
-                           type="submit"
-                           value={buttonText}/>
-                  </div>
-                </form>
-                <a href={backLink}
-                   className="btn btn-info btn-block">
-                  Go Back to Artist Page
-                </a>
-
-              </div>
-            </div>
+      <React.Fragment>
+        <form action={formAction} method="post">
+          <div className="form-group">
+            <input type="hidden" name="id" value={artistId} />
+            <input className="form-control"
+                   name="name"
+                   defaultValue={nameValue}
+                   placeholder="Artist Name" /><br />
+            <input className="form-control"
+                   name="photo_url"
+                   defaultValue={photoValue}
+                   placeholder="Photo URL" /><br />
+            <input className="form-control"
+                   name="nationality"
+                   defaultValue={nationalityValue}
+                   placeholder="Nationality" /><br />
+            <input className="btn btn-outline-info btn-block"
+                   type="submit"
+                   value={buttonText}/>
           </div>
-        </body>
-      </html>
+        </form>
+        <a href={backLink}
+           className="btn btn-info btn-block">
+          Go Back to Artist Page
+        </a>
+
+      </React.Fragment>
     );
   }
 }

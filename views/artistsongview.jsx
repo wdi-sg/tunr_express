@@ -1,48 +1,40 @@
 const React = require('react');
-const Head = require('./head');
-const Nav = require('./nav');
+const Template = require('./template');
 
-class SongView extends React.Component {
-  render() {
+class ArtistSongView extends Template {
+  constructor(props) {
+    super(props);
+    this.title = `${props.song.title}`;
+    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
+  }
+
+  renderContent() {
     let artistLink = `/artists/${this.props.aid}`;
     let artistSongsLink = `/artists/${this.props.aid}/songs`;
     let song = this.props.song;
 
     return (
-      <html>
-        <Head />
+      <React.Fragment>
+        <h4>{song.title}</h4>
+        <h6>{song.album}</h6>
+        <img src={song.artwork} width="200px" /><br />
+        <audio controls src={song.preview_link}>
+          No audio support.
+        </audio>
 
-        <body>
-          <div className="container text-center">
-            <div className="row my-3">
-              <div className="col-8 offset-2">
+        <a href={artistSongsLink}
+           className="btn btn-info btn-block my-3">
+          Go Back to Artist Songs
+        </a>
 
-                <Nav />
+        <a href={artistLink}
+           className="btn btn-info btn-block">
+          Go Back to Artist Page
+        </a>
 
-                <h4>{song.title}</h4>
-                <h6>{song.album}</h6>
-                <img src={song.artwork} width="200px" /><br />
-                <audio controls src={song.preview_link}>
-                  No audio support.
-                </audio>
-
-                <a href={artistSongsLink}
-                   className="btn btn-info btn-block my-3">
-                  Go Back to Artist Songs
-                </a>
-
-                <a href={artistLink}
-                   className="btn btn-info btn-block">
-                  Go Back to Artist Page
-                </a>
-
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
+      </React.Fragment>
     );
   }
 }
 
-module.exports = SongView;
+module.exports = ArtistSongView;
