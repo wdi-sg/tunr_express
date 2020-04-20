@@ -13,6 +13,8 @@ When the view counter goes up give the user badges:
   - 10 visits: newbie badge
   - 50 visits: repeat badge
   - 100 visits: veteran badge
+  
+You can use these open source badge icons: [https://www.flaticon.com/free-icons/badge](https://www.flaticon.com/free-icons/badge)
 
 #### further
 If the user hasn't visited in a week, drop them back to 50 visits.
