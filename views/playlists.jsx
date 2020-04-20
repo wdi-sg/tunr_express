@@ -2,9 +2,14 @@ var React = require("react");
 
 class Playlists extends React.Component {
   render() {
-    console.log('Playlists.jsx')
-    console.log(this.props.rows);
-    let playlistData = this.props.rows;
+    // console.log('Playlists.jsx')
+
+    let cookiesVisits = parseInt(this.props.cookies.visits);
+    if(isNaN(cookiesVisits)) {
+        cookiesVisits = 1;
+    };
+
+    let playlistData = this.props.playlists.rows;
     let playlistsNameList;
 
     let message="";
@@ -32,6 +37,9 @@ class Playlists extends React.Component {
             <br/>
             <ol>{playlistsNameList}</ol>
             <br/>
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

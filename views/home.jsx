@@ -3,6 +3,12 @@ var React = require("react");
 class Home extends React.Component {
   render() {
         // console.log('home.jsx')
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        } else {
+            cookiesVisits = cookiesVisits+1;
+        }
     return (
       <html>
         <head />
@@ -16,6 +22,10 @@ class Home extends React.Component {
             </div>
             <div>
                 <a href="/playlists">My Playlist</a>
+            </div>
+
+            <div>
+                <p>Visits: {cookiesVisits}</p>
             </div>
         </body>
       </html>

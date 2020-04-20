@@ -3,7 +3,13 @@ var React = require("react");
 class Artists extends React.Component {
   render() {
     // console.log('artists.jsx')
-    const artistsNameList = this.props.rows.map((artist) => {
+
+    let cookiesVisits = parseInt(this.props.cookies.visits);
+    if(isNaN(cookiesVisits)) {
+        cookiesVisits = 1;
+    };
+
+    const artistsNameList = this.props.artists.rows.map((artist) => {
         return <li key={artist.id}><a href={'/artists/'+artist.id}>{artist.name}</a></li>
     })
 
@@ -17,6 +23,9 @@ class Artists extends React.Component {
             <br/>
             <ol>{artistsNameList}</ol>
             <br/>
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

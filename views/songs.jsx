@@ -3,7 +3,12 @@ var React = require("react");
 class Songs extends React.Component {
   render() {
     // console.log('Songs.jsx')
-    const songsNameList = this.props.rows.map((song) => {
+    let cookiesVisits = parseInt(this.props.cookies.visits);
+    if(isNaN(cookiesVisits)) {
+        cookiesVisits = 1;
+    };
+
+    const songsNameList = this.props.songs.rows.map((song) => {
         return <li key={song.id}><a href={'/songs/'+song.id}>{song.title}</a></li>
     })
 
@@ -18,6 +23,9 @@ class Songs extends React.Component {
             <br/>
             <ol>{songsNameList}</ol>
             <br/>
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

@@ -44,6 +44,10 @@ app.set('views', __dirname + '/views');
 // sets react to be the default view engine
 app.set('view engine', 'jsx');
 
+//parse cookie
+const cookieParser = require('cookie-parser')
+app.use(cookieParser());
+
 /**
  * ===================================
  * Routes
@@ -92,7 +96,13 @@ app.get('/artists', (req, res) => {
             res.status(500);
             res.send('db error');
         } else {
-            res.render('artists', allArtistsResult);
+
+            const data = {
+                artists : allArtistsResult,
+                cookies: req.cookies
+            }
+
+            res.render('artists', data);
         }
     }
     pool.query(allArtistsQ, whenQueryDone);
@@ -112,7 +122,11 @@ app.get('/songs', (req, res) => {
             res.status(500);
             res.send('db error');
         } else {
-            res.render('songs', allSongsResult);
+            const data ={
+                songs: allSongsResult,
+                cookies: req.cookies
+            }
+            res.render('songs', data);
         }
     }
     pool.query(allSongsQ, whenQueryDone);
@@ -132,12 +146,16 @@ app.get('/playlists', (req, res) => {
             res.status(500);
             res.send("playlist db error")
         } else {
-            console.log('playlists');
-            console.log(allPlaylistsResult);
-            res.render('playlists', allPlaylistsResult)
-        }
+            // console.log('playlists');
+            // console.log(allPlaylistsResult);
+            const data = {
+                playlists : allPlaylistsResult,
+                cookies: req.cookies
+            }
+            res.render('playlists', data)
+        };
     });
-})
+});
 
 
 //------------------------------------------------------
@@ -586,7 +604,21 @@ app.delete('/songs/:id', (req, res) => {
 // - DONE (to home.jsx) -
 //------------------------------------------------------
 app.get('/', (req, res) => {
-        res.render('home');
+
+    let visits = 1;
+    visits = parseInt(req.cookies.visits);
+
+    if(isNaN(visits) || visits === undefined) {
+        visits = 0;
+    }
+
+    visits = visits + 1;
+    res.cookie('visits', visits);
+    data = {
+        cookies: req.cookies
+    };
+
+    res.render('home', data);
 });
 
 /**

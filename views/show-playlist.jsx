@@ -3,6 +3,7 @@ var React = require("react");
 class ShowPlaylist extends React.Component {
   render() {
         // console.log('show-playlist.jsx')
+
         let playlist = this.props.playlist.rows[0];
         let playlistSong = this.props.playlistSong.rows;
 
