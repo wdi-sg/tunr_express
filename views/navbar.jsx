@@ -72,7 +72,7 @@ class Navbar extends React.Component {
             <p class="my-2 my-sm-0" id="viewcount">View Count:</p>
           </form>
         </div>
-        <script src="/script.js"></script>
+        <script src="/script-viewCt.js"></script>
       </nav>
     );
   }

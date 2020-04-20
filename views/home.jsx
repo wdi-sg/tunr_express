@@ -8,12 +8,17 @@ class Home extends React.Component {
         <div className="row">
           <div className="col mt-5">
             <h1>Welcome to Tunes DB!</h1>
+            <br></br>
+            <h5 id="congrats"></h5>
+            <br></br>
+            <img id="badge-img"></img>
+            <script src="/script-badge.js"></script>
           </div>
         </div>
       </div>
     );
 
-    return <Main children={Home} />;
+    return <Main children={Home}/>;
   }
 }
 
