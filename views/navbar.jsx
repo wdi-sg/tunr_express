@@ -67,6 +67,11 @@ class Navbar extends React.Component {
                 </a>
               </div>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cookieplaylist">
+                The Cookie Playlist
+              </a>
+            </li>
           </ul>
           <form class="form-inline my-2 my-lg-0 text-white">
             <p class="my-2 my-sm-0" id="viewcount">View Count:</p>

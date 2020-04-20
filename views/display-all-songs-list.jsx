@@ -15,6 +15,9 @@ class DisplayAllSongsList extends React.Component {
           <br></br>
           <a className="btn btn-info" href={href2}>
             Add To Playlist
+          </a>{`  `}
+          <a className="btn btn-info text-white cookiepl" id={element.id}>
+            Add To Cookie Playlist
           </a>
           <br></br>
           <br></br>
@@ -30,11 +33,12 @@ class DisplayAllSongsList extends React.Component {
               <h3>
                 <u>All Songs</u>
               </h3>
-              <br></br>
+              <br></br> 
               <ul>{songsArrHtml}</ul>
             </form>
           </div>
         </div>
+        <script src="/script-cookiepl.js"></script>
       </div>
     );
 

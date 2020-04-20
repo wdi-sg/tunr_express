@@ -369,6 +369,11 @@ app.get("/playlist/:plid", (request, response) => {
   });
 });
 
+//DISPLAY COOKIE PLAYLIST
+app.get("/cookieplaylist", (request, response) => {
+
+});
+
 //------------------------------
 //-----LISTEN ON PORT 3000------
 //------------------------------
