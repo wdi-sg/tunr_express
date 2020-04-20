@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS playlist_songs;
+DROP TABLE IF EXISTS playlists;
 DROP TABLE IF EXISTS songs;
 DROP TABLE IF EXISTS artists;
 
@@ -16,3 +18,14 @@ CREATE TABLE songs (
   artwork TEXT,
   artist_id INTEGER REFERENCES artists(id) ON DELETE CASCADE
   );
+
+CREATE TABLE playlists (
+  id SERIAL PRIMARY KEY,
+  name TEXT
+);
+
+CREATE TABLE playlist_songs (
+  id SERIAL PRIMARY KEY,
+  playlist_id INTEGER REFERENCES playlists(id) ON DELETE CASCADE,
+  song_id INTEGER REFERENCES songs(id) ON DELETE CASCADE
+);
