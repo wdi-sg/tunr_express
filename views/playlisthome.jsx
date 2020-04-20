@@ -17,6 +17,9 @@ class Playlisthome extends React.Component {
           <div>
             <a href="/playlist/new">Add a new Playlist</a>
           </div>
+          <div>
+            <a href="/artists">Back to artist page</a>
+          </div>
         </body>
       </html>
     );

@@ -14,7 +14,12 @@ class Home extends React.Component {
           <ul>
             {allArtist}
           </ul>
-          <a href="/artists/new">Add a new Artist</a>
+          <div>
+            <a href="/artists/new">Add a new Artist</a>
+          </div>
+          <div>
+            <a href="/playlist">Visit your playlists!</a>
+          </div>
         </body>
       </html>
     );

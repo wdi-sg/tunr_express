@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -27,7 +28,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
