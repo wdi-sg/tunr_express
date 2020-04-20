@@ -2,7 +2,7 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
-
+    const viewCount = this.props.visits;
     const artistListElements = this.props.artistsArray.map(artist => {
         let artistLink = "/artists/" + artist.id;
         return <li><a href = {artistLink}>{artist.name}</a></li>
@@ -16,6 +16,7 @@ class Home extends React.Component {
           <form method="GET" action="/new" className = "container">
                     <button type="submit" className="btn btn-primary">Add New Artist</button>
           </form>
+          <h1>View Count: {viewCount}</h1>
         </body>
       </html>
     );

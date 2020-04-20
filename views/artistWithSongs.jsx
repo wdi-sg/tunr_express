@@ -16,6 +16,7 @@ class Artist extends React.Component {
     const nationality = this.props.artistInfo.nationality;
     const editLink = "/artists/" + this.props.artistInfo.id + "/edit";
     const addSongLink = "/artists/" + this.props.artistInfo.id + "/songs/new";
+    const viewCount = this.props.visits;
 
     return (
       <html>
@@ -39,6 +40,7 @@ class Artist extends React.Component {
                 <button type="submit" className="btn btn-primary">Add a new song for {name}</button>
           </form>
         </body>
+        <h1>View Count: {viewCount}</h1>
       </html>
     );
   }

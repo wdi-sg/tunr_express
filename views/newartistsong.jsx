@@ -2,8 +2,9 @@ var React = require("react");
 
 class NewArtistSong extends React.Component {
   render() {
-    const artist = this.props.name;
-    const addSongLink = '/artists/' + this.props.id + "/songs"
+    const artist = this.props.artistInfo.name;
+    const addSongLink = '/artists/' + this.props.artistInfo.id + "/songs"
+    const viewCount = this.props.visits;
     return (
       <html>
         <head><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous"></link></head>
@@ -34,6 +35,7 @@ class NewArtistSong extends React.Component {
                 <button type="submit" value="Submit" className="btn btn-primary">Add Song</button>
             </form>
           </div>
+          <h1>View Count: {viewCount}</h1>
         </body>
       </html>
     );

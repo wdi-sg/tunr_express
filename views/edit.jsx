@@ -8,6 +8,7 @@ class Edit extends React.Component {
     const nationality = this.props.artistInfo.nationality;
     const putLink = "/artists/" + id + "?_method=put";
     const deleteLink = "/artists/" + id + "?_method=delete";
+    const viewCount = this.props.visits;
 
     return (
       <html>
@@ -41,6 +42,7 @@ class Edit extends React.Component {
                 <button type="submit" value="Submit" className="btn btn-primary">Edit Artist</button>
             </form>
           </div>
+          <h1>View Count: {viewCount}</h1>
         </body>
       </html>
     );

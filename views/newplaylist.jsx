@@ -2,6 +2,7 @@ var React = require("react");
 
 class NewPlaylist extends React.Component {
   render() {
+    const viewCount = this.props.visits
     return (
       <html>
         <head><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous"></link></head>
@@ -16,6 +17,7 @@ class NewPlaylist extends React.Component {
               <button type="submit" value="Submit" className="btn btn-primary">Add</button>
             </form>
           </div>
+         <h1>View Count: {viewCount}</h1>
         </body>
       </html>
     );

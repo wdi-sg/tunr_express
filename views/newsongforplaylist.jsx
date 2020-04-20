@@ -4,6 +4,7 @@ class NewPlaylistSong extends React.Component {
   render() {
     const name = this.props.playlistInfo.name;
     const addSongLink = "/playlist/" + this.props.playlistInfo.id;
+    const viewCount = this.props.visits;
     const songOptionElements = this.props.songInfoArray.map(song => {
         return <option value={song.songid}>Song: {song.songtitle} &nbsp; || &nbsp; Artist: {song.artistname}  &nbsp;  ||  &nbsp; Album: {song.albumname}</option>
     })
@@ -25,6 +26,7 @@ class NewPlaylistSong extends React.Component {
               <button type="submit" value="Submit" className="btn btn-primary">Add</button>
             </form>
           </div>
+          <h1>View Count: {viewCount}</h1>
         </body>
       </html>
     );

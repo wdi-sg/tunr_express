@@ -2,11 +2,12 @@ var React = require('react');
 
 class Artist extends React.Component {
   render() {
-    const name = this.props.name;
-    const photo_url = this.props.photo_url;
-    const nationality = this.props.nationality;
-    const editLink = "/artists/" + this.props.id + "/edit";
-    const songLink = "/artists/" + this.props.id + "/songs";
+    const name = this.props.artistInfo.name;
+    const photo_url = this.props.artistInfo.photo_url;
+    const nationality = this.props.artistInfo.nationality;
+    const editLink = "/artists/" + this.props.artistInfo.id + "/edit";
+    const songLink = "/artists/" + this.props.artistInfo.id + "/songs";
+    const viewCount = this.props.visits;
 
     return (
       <html>
@@ -24,6 +25,7 @@ class Artist extends React.Component {
           <form method="GET" action={editLink} className = "container">
                 <button type="submit" className="btn btn-primary">Edit Artist Details</button>
           </form>
+          <h1>View Count: {viewCount}</h1>
         </body>
       </html>
     );

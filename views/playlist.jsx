@@ -4,6 +4,7 @@ class Playlist extends React.Component {
   render() {
     const name = this.props.playlistInfo.name;
     const addSongLink = "/playlist/" + this.props.playlistInfo.id + "/newsong";
+    const viewCount = this.props.visits;
     const playlistSongs = this.props.songInfo.map(song =>{
         return <li>Song: {song.title} &nbsp; || &nbsp; Artist: {song.name}  &nbsp;  ||  &nbsp; Album: {song.album}</li>
     })
@@ -25,6 +26,7 @@ class Playlist extends React.Component {
                 <button type="submit" className="btn btn-primary">Add a Song to Playlist</button>
           </form>
           <br />
+          <h1>View Count: {viewCount}</h1>
         </body>
       </html>
     );

@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -35,6 +36,8 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+app.use(cookieParser());
+
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -49,7 +52,18 @@ app.engine('jsx', reactEngine);
  */
 
 //Show Song Index
+
 app.get('/', (req, res) => {
+  //cookie stuff
+  var visits = req.cookies['visits'];
+  if( visits === undefined ){
+      visits = 1;
+    }else{
+        visits = parseInt( visits ) + 1;
+    }
+  res.cookie('visits', visits);
+
+
   const queryString = "SELECT * FROM artists"
   pool.query(queryString, (err, result) => {
         if (err){
@@ -58,7 +72,7 @@ app.get('/', (req, res) => {
             res.send('query error');
         } else {
             let artistsArray = result.rows;
-            const data = {artistsArray}
+            const data = {artistsArray, visits}
             res.render('home', data);
         }
   })
@@ -66,7 +80,8 @@ app.get('/', (req, res) => {
 
 //Add New Artist
 app.get('/new', (request, response) => {
-  response.render('new');
+  const data = {visits: request.cookies['visits']};
+  response.render('new', data);
 });
 
 //Get list of songs
@@ -96,7 +111,7 @@ app.get('/artists/:id/songs', (req, res) => {
                     for (let i = 0; i < result.rows.length; i++){
                         songArray.push(result.rows[i].title)
                     }
-                    const data = {songArray, artistInfo}
+                    const data = {songArray, artistInfo, visits: req.cookies['visits']}
                     res.render('artistWithSongs', data);
                 }
             })
@@ -115,7 +130,7 @@ app.get('/artists/:id/songs/new', (req, res) => {
             res.status(500);
             res.send('query error');
         } else {
-            const data = result.rows[0];
+            const data = {artistInfo : result.rows[0], visits: req.cookies['visits']};
             res.render('newartistsong', data);
         }
     })
@@ -153,7 +168,7 @@ app.get('/artists/:id/edit', (req, res) => {
             artistInfo = result.rows[0];
             const secondValues = [req.params.id]
             const secondQueryString = "SELECT title FROM songs WHERE artist_id = $1";
-            const data = {artistInfo};
+            const data = {artistInfo, visits: req.cookies['visits']};
             res.render('edit', data)
         }
     })
@@ -218,7 +233,7 @@ app.get('/artists/:id', (req, res) => {
             res.status(500);
             res.send('query error');
         } else {
-            const data = result.rows[0];
+            const data = {artistInfo : result.rows[0], visits: req.cookies['visits']};
             res.render('artist', data);
         }
     })
@@ -226,7 +241,8 @@ app.get('/artists/:id', (req, res) => {
 
 //Form for creating new playlist
 app.get('/playlist/new', (req, res) => {
-    res.render('newplaylist')
+    const data = {visits: req.cookies['visits']}
+    res.render('newplaylist', data)
 })
 
 //POST request for adding new playlist
@@ -262,7 +278,7 @@ app.get('/playlist/:id', (req, res) => {
             const secondQueryString = "SELECT songs.title, artists.name, songs.album FROM ((songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) INNER JOIN artists ON (songs.artist_id = artists.id))) WHERE playlist_song.playlist_id = $1"
             pool.query(secondQueryString, values, (err, result2) => {
                 const songInfo = result2.rows;
-                const data = {playlistInfo, songInfo}
+                const data = {playlistInfo, songInfo, visits: req.cookies['visits']}
                 res.render('playlist', data);
             })
         }
@@ -289,7 +305,7 @@ app.get('/playlist/:id/newsong', (req, res) => {
                 } else {
                     const songInfoArray = result2.rows;
                     const playlistInfo = result.rows[0];
-                    const data = {songInfoArray, playlistInfo}
+                    const data = {songInfoArray, playlistInfo, visits: req.cookies['visits']}
                     res.render('newsongforplaylist', data);
                 }
             })
