@@ -37,7 +37,7 @@ class playlistNew extends React.Component {
                   <div class="input-group-prepend">
                     <input type="submit" class="btn btn-dark" value="Add"/>
                   </div>
-                  <input type="name"  name="name" class="form-control" placeholder="Name of the playlist" aria-label="" aria-describedby="basic-addon1"/>
+                  <input name="name" class="form-control" placeholder="Name of the playlist" aria-label="" aria-describedby="basic-addon1"/>
                 </div>
                   <table class="table table-responsive table-sm table-dark rounded-lg" style={{height:"200px"}}>
                   <thead>

@@ -130,7 +130,7 @@ app.get('/playlist/new/', (request, response) => {
 
 });
 
-// Each Playlist
+//Each Playlist
 app.get('/playlist', (request, response) => {
 
     const whenQueryDone = (queryError, result) => {
@@ -143,38 +143,109 @@ app.get('/playlist', (request, response) => {
             //console.log(result)
         }
     }
+
     const queryString="SELECT * from playlist"
     pool.query(queryString, whenQueryDone)
 
 });
 
 //Select playlist
-app.get('/playlist/:id', (request, response) => {
-
+app.post('/playlist/:id', (request, response) => {
+    //console.log(request.body)
     const whenQueryDone = (queryError, result) => {
         if(queryError){
             console.log("======ERROR======")
             console.log(queryError);
             response.send('db error');
         } else {
-            //console.log('playlist',result.rows);
-            //response.send(result.rows)
-            //console.log(result.rows[0].song_id)
-            response.render('playlistID',result)
+
+            data = {
+                id:request.params.id,
+                rows:result.rows,
+                name:request.body.name
+            }
+            console.log(data)
+            response.render('playlistID',data)
         }
     }
     let values = [request.params.id]
-    const queryString= "SELECT * FROM songs "+
+    const queryString="SELECT * FROM songs "+
     "WHERE songs.id IN(SELECT song_id FROM "+
     "playlist INNER JOIN playlist_song ON "+
     "(playlist.id = playlist_id) WHERE playlist_id = $1)"
     pool.query(queryString, values, whenQueryDone)
-
 });
 
+//Adding new song to existing playlist
+app.post('/playlist/:id/newsong', (request, response) => {
+
+    const whenQueryDone = (queryError, result) => {
+        if(queryError){
+
+            console.log("======ERROR======")
+            console.log(queryError);
+            response.send('db error');
+        }
+        else {
+            console.log("testing 12321341234124313")
+            data = {
+                rows: result.rows,
+                id: request.params.id
+            }
+            response.render('playlistAddSong',data)
+        }
+    }
+    const queryString = "SELECT * FROM songs"
+    pool.query(queryString, whenQueryDone)
+})
+
+app.post('/addtoexistplaylist/:id', (request,response) => {
+    let songList = request.body.song
+
+
+    if(songList.length > 1) {
+
+        songList.forEach ((element) => {
+
+            const whenQueryDone = (queryError, result) => {
+                if( queryError ){
+                    console.log("======ERROR======");
+                    console.log(queryError);
+                    response.send('db error');
+                } else {
+                    console.log(result.rows[0]);
+                    //let playlist_id = result.rows[0].id;
+                    //response.send(result.rows)
+                }
+            }
+            console.log("=====adding songs======")
+            const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
+            const insertValues = [element,request.params.id];
+            pool.query(queryString, insertValues, whenQueryDone )
+        })
+        response.redirect('/playlist')
+    } else {
+        const whenQueryDone = (queryError, result) => {
+                if( queryError ){
+                    console.log("======ERROR======");
+                    console.log(queryError);
+                    response.send('db error');
+                } else {
+                    console.log(result.rows[0]);
+                    //let playlist_id = result.rows[0].id;
+                    response.redirect('/playlist')
+                }
+            }
+            console.log("=====adding songs======")
+            const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
+            const insertValues = [songList,request.params.id];
+            pool.query(queryString, insertValues, whenQueryDone )
+    }
+})
 
 
 
+//Add songs to new playlist
 app.post('/addtoplaylist', (request,response) => {
 
     //response.send(request.body)
@@ -220,14 +291,6 @@ app.post('/addtoplaylist', (request,response) => {
     const queryString = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
     const insertValues = [playListName];
     pool.query(queryString, insertValues, whenQueryDone )
-
-    // songList.foreach ((element, index) => {
-
-    //     const insertValues = [songList[index]];
-    //     const queryString = "INSERT INTO (name) VALUES ($1) RETURNING *";
-    //     pool.query(queryString, insertValues, whenQueryDone )
-
-    // })
 })
 
 

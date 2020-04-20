@@ -1,8 +1,8 @@
 var React = require("react");
 
-class playlistID extends React.Component {
+class playlistAddSong extends React.Component {
   render() {
-    //console.log(this.props)
+    console.log("playlistaddsong here-------->")
     let playlist = this.props.rows.map ((element, index) => {
         return (
           <tr>
@@ -15,6 +15,7 @@ class playlistID extends React.Component {
             <th scope="col">{element.id}</th>
             <th scope="col">{element.title}</th>
             <th scope="col">{element.album}</th>
+
           </tr>
           )
         })
@@ -28,10 +29,15 @@ class playlistID extends React.Component {
       crossorigin="anonymous"/>
       </head>
         <body>
-            <div class='container border mt-5' style={{height:"400px"}}>
-              <div class="d-flex justify-content-center mb-3 bg-dark rounded-lg" style={{color:"white"}}><h1><u>{this.props.name}</u></h1>
-              </div>
-                <table class="table table-responsive table-sm table-dark rounded-lg">
+            <div class='container border' style={{height:"400px"}}>
+              <br/>
+              <form action={"/addtoexistplaylist/"+this.props.id} method="POST">
+                <div class="input-group mb-3">
+                  <div>
+                    <input type="submit" class="btn btn-dark" value="Add"/>
+                  </div>
+                </div>
+                  <table class="table table-responsive table-sm table-dark rounded-lg" style={{height:"300px"}}>
                   <thead>
                     <tr>
                       <th scope="col">☑️</th>
@@ -44,14 +50,7 @@ class playlistID extends React.Component {
                     {playlist}
                   </tbody>
                 </table>
-              <div class="d-flex">
-                <form action="/playlist" method="get">
-                  <input type="submit" class="btn btn-dark mr-3" value="Back"/>
-                </form>
-                <form action={"/playlist/"+this.props.id+"/newsong"} method="post">
-                  <input type="submit" class="btn btn-dark" value="Add song to playlist"/>
-                </form>
-              </div>
+              </form>
             </div>
         </body>
       </html>
@@ -59,4 +58,4 @@ class playlistID extends React.Component {
   }
 }
 
-module.exports = playlistID;
+module.exports = playlistAddSong;

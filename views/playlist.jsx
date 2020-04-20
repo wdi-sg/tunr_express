@@ -6,8 +6,8 @@ class playlist extends React.Component {
     let playlist = this.props.rows.map ((element) => {
         return (
             <div>
-                <form method="get" action={"/playlist/"+element.id}>
-                    <input type="submit" class="btn btn-block btn-dark" style={{margin:"0.5px 0"}} value={element.name}/>
+                <form method="post" action={"/playlist/"+element.id}>
+                    <input type="submit" name="name" class="btn btn-block btn-dark" style={{margin:"0.5px 0"}} value={element.name}/>
                 </form>
             </div>
         )
@@ -23,7 +23,7 @@ class playlist extends React.Component {
       crossorigin="anonymous"/>
       </head>
         <body>
-            <div class='container border'>
+            <div class='container border mt-5'>
                 <form method="get" action="/playlist/new">
                     <button type="submit" class="btn btn-dark">Create Playlist</button>
                 </form>
