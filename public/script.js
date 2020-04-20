@@ -1,4 +1,5 @@
 let text = document.cookie;
+console.log(text);
 var numb = text.match(/\d/g);
 numb = numb.join("");
 numb=parseInt(numb);
