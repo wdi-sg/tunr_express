@@ -5,8 +5,8 @@ class playlistID extends React.Component {
     //console.log(this.props)
     let playlist = this.props.rows.map ((element, index) => {
         return (
-          <tr>
-            <th>
+          <tr class="container">
+            <th scope="col">
             <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" name="song" value={element.id} id={"customCheck"+element.id}/>
                   <label class="custom-control-label" for={"customCheck"+element.id}></label>
@@ -37,8 +37,8 @@ class playlistID extends React.Component {
             <div class='container mt-5' style={{height:"400px"}}>
               <div class="d-flex justify-content-center mb-3 bg-dark rounded-lg " style={{color:"white"}}><h1><u>{this.props.name}</u></h1>
               </div>
-              <div class='d-flex justify-content-between'>
-                <table class="table table-responsive table-sm table-dark rounded-lg">
+              <div class="d-flex">
+                <table class="table table-sm table-dark rounded-lg" >
                   <thead>
                     <tr>
                       <th scope="col">☑️</th>
@@ -48,11 +48,11 @@ class playlistID extends React.Component {
                       <th scope="col">Preview</th>
                     </tr>
                   </thead>
-                    <tbody>
+                  <tbody>
                     {playlist}
-                    </tbody>
+                  </tbody>
                 </table>
-                </div>
+              </div>
               <div class="d-flex">
                 <form action="/playlist" method="get">
                   <input type="submit" class="btn btn-dark mr-3" value="Back"/>
@@ -60,6 +60,9 @@ class playlistID extends React.Component {
                 <form action={"/playlist/"+this.props.id+"/newsong"} method="post">
                   <input type="submit" class="btn btn-dark" value="Add song to playlist"/>
                 </form>
+                <div class='ml-auto'>
+                        views: <button class="btn btn-dark rounded-pill" style={{width:"60px"}}>{this.props.visits}</button>
+                </div>
               </div>
             </div>
         </body>

@@ -24,9 +24,16 @@ class playlist extends React.Component {
       </head>
         <body>
             <div class='container mt-5'>
-                <form method="get" action="/playlist/new">
-                    <button type="submit" class="btn btn-dark">Create Playlist</button>
-                </form>
+                <div class='d-flex'>
+                    <div>
+                        <form method="get" action="/playlist/new">
+                            <button type="submit" class="btn btn-dark">Create Playlist</button>
+                        </form>
+                    </div>
+                    <div class='ml-auto'>
+                        views: <button class="btn btn-dark rounded-pill" style={{width:"60px"}}>{this.props.visits}</button>
+                    </div>
+                </div>
                 ~~~Playlist Overhere~~~
                 <div class="nav flex-column">
                     {playlist}

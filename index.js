@@ -167,6 +167,14 @@ app.get('/playlist', (request, response) => {
 //Select playlist
 app.post('/playlist/:id', (request, response) => {
     //console.log(request.body)
+    var visits = request.cookies['visits'+request.params.id];
+    if( visits === undefined ){
+        visits = 1;
+    }else{
+        visits = parseInt( visits ) + 1;
+    }
+    response.cookie('visits'+request.params.id, visits);
+
     const whenQueryDone = (queryError, result) => {
         if(queryError){
             console.log("======ERROR======")
@@ -177,7 +185,8 @@ app.post('/playlist/:id', (request, response) => {
             data = {
                 id:request.params.id,
                 rows:result.rows,
-                name:request.body.name
+                name:request.body.name,
+                visits:visits
             }
             console.log(data)
             response.render('playlistID',data)
