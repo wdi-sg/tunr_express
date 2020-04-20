@@ -9,6 +9,7 @@ class oneArtist extends React.Component {
         <body>
             <div>
                 <h1>The artist name is {name}</h1>
+                <p>The number of page count is: {this.props.cookie}</p>
             </div>
         </body>
       </html>

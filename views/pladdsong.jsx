@@ -20,6 +20,7 @@ class addSong extends React.Component {
                         <input type="submit" value="Add this Artist!"></input>
                     </form>
                 </div>
+                <p>The number of page count is: {this.props.cookie}</p>
             </div>
         </body>
       </html>

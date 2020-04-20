@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -35,6 +36,7 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+app.use(cookieParser());
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -49,15 +51,26 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('main');
+    var visits = request.cookies['visits'];
+    if( visits === undefined ){
+    visits = 1;
+    }else{
+        visits = parseInt( visits ) + 1;
+    }
+    var data = {
+        cookie: visits
+    }
+    response.cookie('visits', visits)
+    response.render('main', data);
 });
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new tune
-  response.render('new');
+  var visits = request.cookies['visits'];
+  var data = {
+      cookie: visits
+  }
+  response.render('new', data);
 });
 
 app.post('/artists', (request, response) => {
@@ -75,6 +88,7 @@ app.post('/artists', (request, response) => {
 });
 
 app.get('/artists/:id', (request, response) => {
+    var visits = request.cookies['visits'];
     let artistId = parseInt(request.params.id);
     let queryString = 'SELECT name FROM artists WHERE id =$1';
     const values=[artistId];
@@ -84,7 +98,8 @@ app.get('/artists/:id', (request, response) => {
             response.send('query error');
         } else {
             var data = {
-                name: result.rows[0].name
+                name: result.rows[0].name,
+                cookie: visits
             }
             console.log('query result: ', result.rows[0].name);
             response.render('oneArtist', data);
@@ -93,6 +108,7 @@ app.get('/artists/:id', (request, response) => {
 });
 
 app.get('/artists/:id/songs', (request, response) => {
+    var visits = request.cookies['visits'];
     let artistId = parseInt(request.params.id);
     let queryString = 'SELECT title FROM songs WHERE artist_id =$1';
     const values=[artistId];
@@ -102,7 +118,8 @@ app.get('/artists/:id/songs', (request, response) => {
             response.send('query error');
         } else {
             var data = {
-                songs: result.rows
+                songs: result.rows,
+                cookie: visits
             }
             console.log('query result: ', result.rows);
             response.render('artistSongs', data);
@@ -112,16 +129,22 @@ app.get('/artists/:id/songs', (request, response) => {
 
 app.get('/playlist/new', (request, response) => {
   // query database for all pokemon
-
+  var visits = request.cookies['visits'];
+  var data = {
+      cookie: visits
+  }
   // respond with HTML page displaying all pokemon
-  response.render('newplaylist');
+  response.render('newplaylist', data);
 });
 
 app.get('/playlist/:id/newsong', (request, response) => {
   // query database for all pokemon
-
+  var visits = request.cookies['visits'];
+  var data = {
+      cookie: visits
+  }
   // respond with HTML page displaying all pokemon
-  response.render('pladdsong');
+  response.render('pladdsong', data);
 });
 
 app.post('/playlist', (request, response) => {
@@ -139,6 +162,7 @@ app.post('/playlist', (request, response) => {
 });
 
 app.get('/playlist/:id', (request, response) => {
+    var visits = request.cookies['visits'];
     let playlistId = parseInt(request.params.id);
     let queryString = 'SELECT title, album, artist_id FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_id =$1';
     const values=[playlistId];
@@ -149,7 +173,8 @@ app.get('/playlist/:id', (request, response) => {
         } else {
             var data = {
                 songs: result.rows,
-                plId: playlistId
+                plId: playlistId,
+                cookie: visits
             }
             console.log('*********************************');
             console.log('query result: ', result.rows);
@@ -174,6 +199,7 @@ app.post('/playlist/:id', (request, response) => {
 });
 
 app.get('/playlist', (request, response) => {
+    var visits = request.cookies['visits'];
     let plId = parseInt(request.params.id);
     let queryString = 'SELECT name FROM playlist';
     // const values=[plId];
@@ -183,7 +209,8 @@ app.get('/playlist', (request, response) => {
             response.send('query error');
         } else {
             var data = {
-                pl: result.rows
+                pl: result.rows,
+                cookie: visits
             }
             console.log('query result: ', result.rows);
             response.render('playlist', data);

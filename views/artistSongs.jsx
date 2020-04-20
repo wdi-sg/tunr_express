@@ -17,6 +17,7 @@ class oneArtist extends React.Component {
                 <ul>
                     {songNames}
                 </ul>
+                <p>The number of page count is: {this.props.cookie}</p>
             </div>
         </body>
       </html>

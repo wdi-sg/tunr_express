@@ -16,6 +16,7 @@ class addPlaylist extends React.Component {
                         <input type="submit" value="Add this Playlist!!"></input>
                     </form>
                 </div>
+                <p>The number of page count is: {this.props.cookie}</p>
             </div>
         </body>
       </html>

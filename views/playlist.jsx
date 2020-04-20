@@ -18,6 +18,7 @@ class Playlist extends React.Component {
                     {plNames}
                 </ul>
             </div>
+            <p>The number of page count is: {this.props.cookie}</p>
         </body>
       </html>
     );

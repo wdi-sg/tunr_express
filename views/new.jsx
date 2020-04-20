@@ -20,6 +20,7 @@ class New extends React.Component {
                             Please enter Artist's NationalityL: <input name="nationality" />
                         </p>
                         <input type="submit" value="Add this Artist!"></input>
+                        <p>The number of page count is: {this.props.cookie}</p>
                     </form>
                 </div>
             </div>
