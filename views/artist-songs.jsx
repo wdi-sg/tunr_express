@@ -5,8 +5,8 @@ class ArtistSongs extends React.Component {
     console.log('artist-songs.jsx')
     let artistData = this.props.artist.rows[0];
     let songsData = this.props.songs.rows;
-    // console.log(artistData);
-    // console.log(songsData);
+    console.log(artistData);
+    console.log(songsData);
 
     //link to Home Page
     let homeLink = "/"
@@ -23,10 +23,16 @@ class ArtistSongs extends React.Component {
 
     // const artistSongsLink = "/artists/" + artistData.id + "/songs"
 
-
     const artistSongsList = songsData.map((artistSong) => {
-        return <li key={artistSong.id}><p><strong>{artistSong.title}</strong> - {artistSong.album}</p></li>
-    })
+        return <li key={artistSong.id}>
+            <a href ={"/songs/"+artistSong.id}><strong>{artistSong.title}</strong></a>
+            <ul>
+                <li>{artistSong.album}</li>
+                <li>{artistSong.preview_link}</li>
+                <li>{artistSong.artwork}</li>
+            </ul>
+        </li>
+    });
 
     return (
       <html>

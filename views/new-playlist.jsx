@@ -8,6 +8,11 @@ class NewPlaylist extends React.Component {
       <html>
         <head />
         <body>
+            <a href='/'>Back to Main</a>
+            <br />
+            <br />
+            <a href='/playlists'>Playlists</a>
+            <br />
           <h3>Add New Playlist</h3>
           <form method="POST" action="/playlists">
             <p>Playlist Name: <input name="name"/></p>

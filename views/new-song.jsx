@@ -17,6 +17,11 @@ class NewSong extends React.Component {
       <html>
         <head />
         <body>
+            <a href='/'>Back to Main</a>
+            <br />
+            <br />
+            <a href='/songs'>All Songs</a>
+            <br />
           <h3>Add New Song</h3>
           <form method="POST" action={songsLink}>
             <p key="title">Title: <input name="title" required /></p>

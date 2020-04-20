@@ -6,6 +6,7 @@ class ShowPlaylist extends React.Component {
         let playlist = this.props.playlist.rows[0];
         let playlistSong = this.props.playlistSong.rows;
 
+
         //link to Home Page
         let homeLink = "/"
 
@@ -13,7 +14,6 @@ class ShowPlaylist extends React.Component {
         let allPlaylistsLink = "/playlists"
 
         //link to edit Artist
-        const playlistEditLink = "/playlists/" + playlist.id + "/edit";
         const playlistAddSongLink = "/playlists/" + playlist.id + "/newsong";
         const playlistDeleteLink = "/playlists/" + playlist.id + "?_method=delete";
 
@@ -27,7 +27,6 @@ class ShowPlaylist extends React.Component {
         <body>
             <p><a href={homeLink}>Back to Main</a></p>
             <p><a href={allPlaylistsLink}>All Playlists</a></p>
-            <p><a href={playlistEditLink}>Edit Playlist</a>(not working yet)</p>
             <h3>Playlist</h3>
             <div>
                 <p>Name: {playlist.name}</p>

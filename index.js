@@ -79,8 +79,6 @@ app.set('view engine', 'jsx');
 // '/' MAIN (HOME PAGE)
 //jsx: home
 
-
-
 //------------------------------------------------------
 // INDEX. List out all ARTIST in HTML.
 // - DONE (to artists.jsx) -
@@ -123,7 +121,7 @@ app.get('/songs', (req, res) => {
 
 //------------------------------------------------------
 // INDEX. List out all Playlists in HTML.
-// - ON GOING -
+// - DONE -
 //------------------------------------------------------
 app.get('/playlists', (req, res) => {
     const allPlaylistsQ = 'SELECT * from playlists';
@@ -200,6 +198,7 @@ app.get('/artists/:id', (req, res) => {
     });
 });
 
+
 //------------------------------------------------------
 // SHOW SONG by ID
 // - DONE (to show-song.jsx) -
@@ -221,7 +220,7 @@ app.get('/songs/:id', (req, res) => {
 
 //------------------------------------------------------
 // SHOW PLAYLIST by ID
-// - ON GOING -
+// - DONE -
 //------------------------------------------------------
 app.get('/playlists/:id', (req, res) => {
     const playlistQ = 'SELECT * FROM playlists WHERE id ='+req.params.id;
@@ -293,7 +292,7 @@ app.post('/songs', (req, res) => {
 
 //------------------------------------------------------?
 // SAVE NEW PLAYLIST from user input
-// - ON GOING  -
+// - DONE  -
 //------------------------------------------------------
 app.post('/playlists', (req, res) => {
     const whenQueryDone = (newPlaylistError, newPlaylistResult) => {
@@ -362,7 +361,7 @@ app.get('/artists/:id/songs/new', (req, res) => {
 
 //-----------------------------------------------------?
 // FORM to add new song to Playlist by id
-// - ON GOING -
+// - DONE -
 //------------------------------------------------------
 app.get('/playlists/:id/newsong', (req, res) => {
     const allSAQ = "SELECT songs.id AS song_id, songs.title, songs.artist_id, artists.name AS artist_name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)";
@@ -414,9 +413,10 @@ app.post('/artists/:id/songs', (req, res) => {
 
 //------------------------------------------------------?
 // SAVE new song to playlist by id
-// - ON GOING -
+// - DONE -
 //------------------------------------------------------
 app.post('/playlists/:id', (req, res) => {
+    console.log(req.body.song_id);
     const whenQueryDone = (newSongTPErr, newSongTPResult) => {
         if (newSongTPErr) {
             res.status(500);
@@ -426,9 +426,31 @@ app.post('/playlists/:id', (req, res) => {
             res.redirect('/playlists/'+req.body.playlist_id);
         };
     };
-    const newSongTP = "INSERT INTO playlist_song (song_id, playlist_id) values ($1, $2) RETURNING *";
-    const newSongTPValues = [req.body.song_id, req.body.playlist_id];
+
+    var valueSongId ="";
+    const newSongTPValues = []
+    for (var i = 0; i < req.body.song_id.length+1; i++){
+        if (i < req.body.song_id.length) {
+            newSongTPValues.push(req.body.song_id[i]);
+        } else {
+            newSongTPValues.push(req.body.playlist_id);
+        }
+    }
+
+    for (var i = 1; i <= req.body.song_id.length; i++){
+        if (i < req.body.song_id.length) {
+            valueSongId += "($"+i+", $"+(req.body.song_id.length+1)+"),";
+        } else {
+            valueSongId += "($"+i+", $"+(req.body.song_id.length+1)+")";
+        }
+    }
+
+
+    const newSongTP = "INSERT INTO playlist_song (song_id, playlist_id) values "+valueSongId;
+
     pool.query(newSongTP, newSongTPValues, whenQueryDone);
+
+
 });
 
 

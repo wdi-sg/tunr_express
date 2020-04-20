@@ -7,7 +7,7 @@ class Home extends React.Component {
       <html>
         <head />
         <body>
-          <h1>Welcome!</h1>
+          <h1>Tunr Express</h1>
             <div>
                 <a href="/artists">Artists</a>
             </div>
