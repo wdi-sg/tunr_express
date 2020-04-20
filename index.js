@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser')
 
 // Initialise postgres client
 const configs = {
@@ -35,6 +36,8 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+app.use(cookieParser());
+
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -49,7 +52,15 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // respond with HTML page displaying all pokemon
+  // set cookie
+  let visits = request.cookies.visits;
+  if (visits === undefined) {
+    visits = 1;
+  } else {
+    visits = parseInt(visits) + 1;
+  }
+  response.cookie('visits', visits);
+
   response.render('home');
 });
 
