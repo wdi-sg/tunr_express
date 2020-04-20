@@ -55,6 +55,11 @@ class Home extends React.Component {
             <div class="row">
                 {artistDetail}
             </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p>{this.props.visitString}</p>
+                </div>
+            </div>
           </div>
 
 

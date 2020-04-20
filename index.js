@@ -42,7 +42,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+//////cookie monster
 
+const cookieParser = require('cookie-parser')
+app.use(cookieParser());
 
 
 /**
@@ -52,10 +55,8 @@ app.engine('jsx', reactEngine);
  */
 ////Blank page
 app.get('/', (request, response) => {
-  // query database for all artist
 
-  // respond with HTML page displaying all arist
-  response.redirect('/index');
+   response.send("Hellow");
 });
 
 ////Blank page
@@ -81,6 +82,30 @@ pool.query(queryString, (err, result) => {
 
     data.artist=result.rows;
     // redirect to home page
+
+    // get the currently set cookie
+var visits = request.cookies['visits'];
+
+// see if there is a cookie
+if( visits === undefined ){
+
+  // set a default value if it doesn't exist
+  visits = 1;
+}else{
+
+  // if a cookie exists, make a value thats 1 bigger
+  visits = parseInt( visits ) + 1;
+}
+
+// set the cookie
+response.cookie('visits', visits);
+  // query database for all artist
+
+  // respond with HTML page displaying all arist
+  const visitString= (`You have visited the site ${visits} times.`)
+data.visitString=visitString;
+data.visitCount=visits;
+
 
     response.render("home",data);
     //response.send( data );
