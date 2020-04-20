@@ -15,7 +15,9 @@ class Artists extends React.Component {
 
     return (
       <html>
-        <head />
+      <head>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+      </head>
         <body>
             <a href="/">Back to Main</a>
             <h1>Artists</h1>
@@ -24,8 +26,11 @@ class Artists extends React.Component {
             <ol>{artistsNameList}</ol>
             <br/>
             <div>
-                <p>Visits: {cookiesVisits}</p>
+                <p>Visits: <span className="cookiesV">{cookiesVisits}</span></p>
+                <p className="badge-title">User's Badge</p>
+                <p className="badge"></p>
             </div>
+            <script src="/script.js"></script>
         </body>
       </html>
     );

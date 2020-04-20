@@ -39,7 +39,9 @@ class EditSong extends React.Component {
 
     return (
       <html>
-        <head />
+      <head>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+      </head>
         <body>
             <p><a href={songLink}>Back to Song Page</a></p>
             <p><a href={songEditLink}>Reset</a></p>
@@ -54,10 +56,13 @@ class EditSong extends React.Component {
                 </select> </p>
                 <p><input type="submit" /></p>
             </form>
-
+            <br/>
             <div>
-                <p>Visits: {cookiesVisits}</p>
+                <p>Visits: <span className="cookiesV">{cookiesVisits}</span></p>
+                <p className="badge-title">User's Badge</p>
+                <p className="badge"></p>
             </div>
+            <script src="/script.js"></script>
         </body>
       </html>
     );

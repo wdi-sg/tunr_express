@@ -42,6 +42,7 @@ class ArtistSongs extends React.Component {
     return (
       <html>
         <head>
+            <link rel="stylesheet" type="text/css" href="style.css" />
         </head>
         <body margin-left="20px">
             <p><a href={homeLink}>Back to Main</a></p>
@@ -56,8 +57,11 @@ class ArtistSongs extends React.Component {
             <br/>
             <br/>
             <div>
-                <p>Visits: {cookiesVisits}</p>
+                <p>Visits: <span className="cookiesV">{cookiesVisits}</span></p>
+                <p className="badge-title">User's Badge</p>
+                <p className="badge"></p>
             </div>
+            <script src="/script.js"></script>
         </body>
       </html>
     );

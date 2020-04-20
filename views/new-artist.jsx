@@ -22,8 +22,9 @@ class NewArtist extends React.Component {
 
     return (
       <html>
-        <head>
-        </head>
+      <head>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+      </head>
         <body>
             <a href={homeLink}>Back to Main</a>
             <br />
@@ -37,8 +38,11 @@ class NewArtist extends React.Component {
             </form>
             <br/>
             <div>
-                <p>Visits: {cookiesVisits}</p>
+                <p>Visits: <span className="cookiesV">{cookiesVisits}</span></p>
+                <p className="badge-title">User's Badge</p>
+                <p className="badge"></p>
             </div>
+            <script src="/script.js"></script>
         </body>
       </html>
     );
