@@ -214,7 +214,7 @@ app.post('/playlists/:id', (request, response) => {
         })
 
         //Generate playlist and song details
-        queryString = 'SELECT songs.id, songs.title, playlist_song.playlist_id, playlist.name AS playlist_name FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) INNER JOIN playlist ON (playlist.id = playlist_song.playlist_id) WHERE playlist_song.playlist_id=' + request.params.id;
+        queryString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link, playlist_song.playlist_id, playlist.name AS playlist_name FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) INNER JOIN playlist ON (playlist.id = playlist_song.playlist_id) WHERE playlist_song.playlist_id=' + request.params.id;
 
         pool.query(queryString, (err, result) => {
             console.log(result.rows)
@@ -229,25 +229,6 @@ app.post('/playlists/:id', (request, response) => {
     })
 })
 
-///////////////////////////
-////  Edit playlist  /////
-/////////////////////////
-app.get('/playlists/:id/edit', (request, response) => {
-    let queryString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
-
-    pool.query(queryString, (err, result) => {
-        if (err) {
-            console.log('dbQuery Error', err.stack);
-            response.send('An error occurred when editing playlist 😢');
-        } else {
-            const data = {
-                playlistId: result.rows[0].id,
-                playlistName: result.rows[0].name
-            }
-            response.render('edit_playlist', data)
-        }
-    })
-})
 
 app.put('/playlists/:id', (request, response) => {
     let updatedPlaylistName = request.body.name;
@@ -269,7 +250,7 @@ app.put('/playlists/:id', (request, response) => {
 ////  Individual playlist  /////
 ///////////////////////////////
 app.get('/playlists/:id', (request, response) => {
-    let queryString = 'SELECT songs.id, songs.title FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id =' + request.params.id;
+    let queryString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id =' + request.params.id;
 
     //Get details of added songs to display on page
     pool.query(queryString, (err, result) => {

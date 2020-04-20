@@ -19,6 +19,10 @@ class All_Playlists extends React.Component {
                     <h2 className='text-center'>List of Playlists</h2>
                     <br/>
                     <div className='row justify-content-center'>
+                        <button className='btn btn-primary'><a className='text-white text-decoration-none' href='/playlists/new'>Add Playlist</a></button>
+                    </div>
+                    <br/>
+                    <div className='row justify-content-center'>
                         <ol>
                             {allPlaylists}
                         </ol>
