@@ -4,7 +4,7 @@ class Home extends React.Component {
   render() {
 
     const artistDetail=this.props.artist.map(artist=>
-        {console.log(artist);
+        {
             const url="/artists/"+artist.id;
             return <div class={"col-4 text-center border"}>
             <div class={"row"} style={{height:"50%"}}>
@@ -25,7 +25,7 @@ class Home extends React.Component {
       <html>
         <head/>
         <link rel={"stylesheet"} href={"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"} integrity={"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"} crossorigin={"anonymous"}></link>
-
+        <link rel={"stylesheet"} href={"./style.css"}></link>
 
 
         <body>
@@ -60,10 +60,19 @@ class Home extends React.Component {
                     <p>{this.props.visitString}</p>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-12 text-center mx-auto">
+                    <img src={"#"} style={{width:"10%"}} id={"visitBadge"} class="hidden"/>
+                    <p id={"visitText"} class="hidden"> Test</p>
+                </div>
+            </div>
           </div>
 
 
+          <script src="/script.js">
 
+
+          </script>
         </body>
       </html>
     );

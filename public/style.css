@@ -70,3 +70,10 @@
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+.hidden{
+	display: none;
+}
+.show{
+	display:block;
+}

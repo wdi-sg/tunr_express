@@ -47,7 +47,14 @@ app.engine('jsx', reactEngine);
 const cookieParser = require('cookie-parser')
 app.use(cookieParser());
 
+///////////public express
+app.use(express.static('public'))
 
+
+
+////////varaibles
+let reset=true;
+let testadd=0;
 /**
  * ===================================
  * Routes
@@ -55,8 +62,29 @@ app.use(cookieParser());
  */
 ////Blank page
 app.get('/', (request, response) => {
+    // get the currently set cookie
+var visits = request.cookies['visits'];
 
-   response.send("Hellow");
+// see if there is a cookie
+if( visits === undefined ){
+
+  // set a default value if it doesn't exist
+  visits = 1;
+}
+else{
+
+  // if a cookie exists, make a value thats 1 bigger
+  visits = parseInt( visits ) + 1;
+}
+console.log(visits);
+// set the cookie
+response.cookie('visits', visits);
+  // query database for all artist
+
+  // respond with HTML page displaying all arist
+  const visitString= (`You have visited the site ${visits} times.`)
+
+   response.send(visitString);
 });
 
 ////Blank page
@@ -69,6 +97,7 @@ app.get('/index', (request, response) => {
 
 ////Show all Artists
 app.get('/artists',(request,response)=>{
+
     const queryString = 'SELECT * from artists';
 
 pool.query(queryString, (err, result) => {
@@ -85,27 +114,55 @@ pool.query(queryString, (err, result) => {
 
     // get the currently set cookie
 var visits = request.cookies['visits'];
-
+var overFifty=request.cookies['fifty'];
 // see if there is a cookie
-if( visits === undefined ){
+if( visits === undefined && reset=== true){
 
   // set a default value if it doesn't exist
   visits = 1;
-}else{
+  reset =false;
+
+}
+if( overFifty===undefined){
+    overFifty=false;
+}
+if(parseInt(visits)<50 && reset === true)
+{
+      visits = 1;
+      reset =false;
+
+} else
+if(parseInt(visits)>=50 && reset === true)
+{
+      visits = 50;
+      reset =false;
+
+}
+else{
 
   // if a cookie exists, make a value thats 1 bigger
   visits = parseInt( visits ) + 1;
-}
+        reset =false;
+  clearTimeout(fiveSecondResetTimeoutReference);
 
-// set the cookie
+}
+response.cookie('fifty',overFifty);
 response.cookie('visits', visits);
   // query database for all artist
+  clearTimeout(fiveSecondResetTimeoutReference);
+
+
+
 
   // respond with HTML page displaying all arist
   const visitString= (`You have visited the site ${visits} times.`)
 data.visitString=visitString;
 data.visitCount=visits;
+var fiveSecondResetTimeoutReference = setTimeout(function() {
 
+  reset=true;
+
+}, 86400000);
 
     response.render("home",data);
     //response.send( data );
