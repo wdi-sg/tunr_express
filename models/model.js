@@ -53,6 +53,7 @@ class Model {
     return data.map(item => new this().data = item)
   }
 
+  // TODO: if any field is null or empty, remove
   // @returns inserted row id
   save () {
     const tableName = this.getResourceName()
@@ -63,6 +64,7 @@ class Model {
     return db._execute(statement, values)
   }
 
+  // TODO: if any field is null or empty, remove
   update () {
     const tableName = this.getResourceName()
     const { [this.getPrimaryKeyName()]: primaryKey, ...data } = this.data

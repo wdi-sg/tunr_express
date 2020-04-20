@@ -15,7 +15,7 @@ class Song extends Model {
     return this._data.title
   }
 
-  set title (name) {
+  set title (title) {
     this._data.title = title
   }
 

@@ -1,9 +1,12 @@
+const Song = require('../models/song.model')
 
 const listSongs = ((req, res) => {
+
   res.json('list Song')
 })
 
 const showCreateSong = ((req, res) => {
+
   res.json('display Song form')
 })
 
@@ -31,6 +34,8 @@ const removeSong = ((req, res) => {
 
   res.json('edit Song')
 })
+
+
 
 module.exports = {
   listSongs,
