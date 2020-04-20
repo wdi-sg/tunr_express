@@ -1,12 +1,12 @@
 const conn = require('./connection')
 
-
 class Database {
   constructor (conn) {
     this.conn = conn
   }
 
   //* func must always returns res
+  // @param {Arr} values [1,2,3,4,'dfd']
   async _execute (text, values, func) {
     let res
     const client = await this.conn.connect()
@@ -34,7 +34,7 @@ class Database {
 }
 
 const createDB = ((conn) => {
-  const db = new Database(conn);
+  const db = new Database(conn)
   Object.freeze(db)
   return db
 })(conn)

@@ -1,7 +1,9 @@
 const db = require('../db/database')
 const {
         prepareInsertStmt,
-        prepareSelectStmt
+        prepareSelectStmt,
+        prepareUpdateStmt,
+        prepareDeleteStmt
       } = require('../db/queries')
 
 class Model {
@@ -16,6 +18,14 @@ class Model {
     this._data.id = id
   }
 
+  get id () {
+    return this.data.id
+  }
+
+  set id (id) {
+    this._data.id = id
+  }
+
   get data () {
     return this._data
   }
@@ -24,9 +34,12 @@ class Model {
     this._data = data
   }
 
-  // returns this
+  // @param fieldsToSelect ['id','name'] || "*"
+  // @param whereParams {id:0, name:'dfd'}
+
+  // @returns this
   static async select (fieldsToSelect, whereParams) {
-    let data,values
+    let data, values
     const tableName = this.name.toLowerCase()
     const statement = prepareSelectStmt(tableName, fieldsToSelect, whereParams)
     if (whereParams) {
@@ -37,19 +50,36 @@ class Model {
   }
 
   static deSerialize (data) {
-    return data.map(item=> new this().data = item)
+    return data.map(item => new this().data = item)
   }
 
-  // @param fieldsToSelect ['id','name'] || "*"
-  // @param whereParams {id:1, name:'dfd'}
-
+  // @returns inserted row id
   save () {
     const tableName = this.getResourceName()
-    const { [this.getPrimaryKey()]: _, ...data } = this.data
+    const { [this.getPrimaryKeyName()]: _, ...data } = this.data
     const columns = Object.keys(data)
     const values = Object.values(data)
     let statement = prepareInsertStmt(tableName, columns, values)
     return db._execute(statement, values)
+  }
+
+  update () {
+    const tableName = this.getResourceName()
+    const { [this.getPrimaryKeyName()]: primaryKey, ...data } = this.data
+    const columns = Object.keys(data)
+    const values = Object.values(data)
+    let statement = prepareUpdateStmt(tableName, columns, values, { id: primaryKey })
+    values.push(primaryKey)
+    return db._execute(statement, values)
+  }
+
+  // @returns deleted item id
+  delete () {
+    const tableName = this.getResourceName()
+    const pk = this.getPrimaryKeyName()
+    const { [this.getPrimaryKeyName()]: primaryKey } = this.data
+    let statement = prepareDeleteStmt(tableName, { [pk]: primaryKey })
+    return db._execute(statement, [primaryKey])
   }
 
   getResourceName () {
@@ -57,7 +87,7 @@ class Model {
     return this.constructor.name.toLowerCase()
   }
 
-  getPrimaryKey () {
+  getPrimaryKeyName () {
     for (let [key, value] of Object.entries(this.fields)) {
       if (value.primary) return key
     }

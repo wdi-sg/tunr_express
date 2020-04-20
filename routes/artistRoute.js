@@ -31,6 +31,6 @@ router.get('/artists/:id/edit', editArtist)
 
 router.put('/artists/:id', updateArtist)
 
-router.delete('/artists:id', removeArtist)
+router.delete('/artists/:id', removeArtist)
 
 module.exports = router

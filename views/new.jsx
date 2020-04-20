@@ -1,16 +1,16 @@
-var React = require("react");
+var React = require('react')
 
 class New extends React.Component {
-  render() {
+  render () {
     return (
       <html>
-        <head />
-        <body>
-          <h3>Form Goes Here!</h3>
-        </body>
+      <head/>
+      <body>
+      <h3>Form Goes Here!</h3>
+      </body>
       </html>
-    );
+    )
   }
 }
 
-module.exports = New;
+module.exports = New

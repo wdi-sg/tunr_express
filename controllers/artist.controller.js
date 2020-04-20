@@ -1,21 +1,24 @@
 const Artist = require('../models/artist.model')
 
-
 const showArtist = ((req, res) => {
   const { id } = req.params
    Artist.select('*', { id })
      .then(artists => res.json(artists))
+     .catch(console.error)
 })
 
 const listArtists = ((req, res) => {
   Artist.select('*')
-    .then(artists=>res.json(artists))
+    .then(artists => res.json(artists))
+    .catch(console.error)
 })
 
 const showCreateArtist = ((req, res) => {
+  // render create
   res.json('display artist form')
 })
 
+// receives an artist?
 const addNewArtist = ((req, res) => {
   const { name, photo_url, nationality } = req.body
   const newArtist = new Artist(-1, name, photo_url, nationality)
@@ -25,18 +28,26 @@ const addNewArtist = ((req, res) => {
 })
 
 const editArtist = ((req, res) => {
-
+  // render edit
   res.json('edit artist')
 })
 
+// receives an artist?
 const updateArtist = ((req, res) => {
-
-  res.json('edit artist')
+  const artist = new Artist()
+  artist.data = req.body
+  artist.update()
+    .then(data => res.json(data))
+    .catch(console.error)
 })
 
+// @returns {Arr} [] if not deleted, else id of deleted
 const removeArtist = ((req, res) => {
-
-  res.json('edit artist')
+  const artist = new Artist()
+  artist.id = req.body.id
+  artist.delete()
+    .then(data => res.json(data.rows))
+    .catch(console.error)
 })
 
 const showArtistSongs = ((req, res) => {
