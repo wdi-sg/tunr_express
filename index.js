@@ -216,6 +216,7 @@ app.get('/playlists/:id/newsong',(request, response)=>{
 
 //Add song to playlist
 //should the route still be /playlists? (same for action in jsx)
+//difference between writing in here and in jsx
 app.post('/playlists',(request, response)=>{
      const whenQueryDone = (queryError, result) => {
     if( queryError ){
