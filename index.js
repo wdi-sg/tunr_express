@@ -304,7 +304,7 @@ app.get('/artists/:id/songs', (request, response) => {
       }
       var mappedId = idMatch[0].id;
       const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS songid, * FROM songs WHERE artist_id = ${mappedId}`;
-      pool.query(queryString, (err, result) => { 
+      pool.query(queryString, (err, result) => {
         if (err) {
           console.error('query error4:', err.stack);
           response.send('query error');
@@ -318,8 +318,8 @@ app.get('/artists/:id/songs', (request, response) => {
 });
 app.get('/artists/:id/songs/new', (request, response) => {
   // respond with HTML page with form to create new ....
-  var id = {'id' : request.params.id};
-  response.render('new-song',id);
+  var id = { 'id': request.params.id };
+  response.render('new-song', id);
 });
 
 app.post('/artists/songs', (request, response) => {
@@ -338,7 +338,7 @@ app.post('/artists/songs', (request, response) => {
       }
       var mappedId = idMatch[0].id;
       const queryString = 'INSERT INTO songs (title, album, preview_link,artwork,artist_id) VALUES ($1, $2, $3, $4, $5)';
-      const values = [request.body.title, request.body.album, request.body.preview_link,request.body.artwork,mappedId];
+      const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork, mappedId];
       pool.query(queryString, values, (err, result) => {
 
         if (err) {
@@ -348,7 +348,7 @@ app.post('/artists/songs', (request, response) => {
           // console.log('query result:', result);
 
           // redirect to home page
- 
+
           response.redirect(`/artists/${request.body.artist_id}/songs`);
           // response.send( output);
         }
@@ -368,19 +368,19 @@ app.get('/artists/:artist_id/songs/edit/:song_id', (request, response) => {
       // console.log('query result:', result);
 
       var output = {
-        'artist':request.params.artist_id,
+        'artist': request.params.artist_id,
         'song': result.rows,
       }
-      response.render('edit-song',output);
+      response.render('edit-song', output);
     }
   });
-  
+
 });
 
 app.put('/artists/:artist_id/songs/:song_id', (request, response) => {
   const queryString = `UPDATE songs SET title = $1, album = $2, preview_link = $3, artwork = $4 WHERE id = ${request.params.song_id}`;
-  const values = [request.body.title,request.body.album,request.body.preview_link,request.body.artwork];
-  pool.query(queryString,values, (err, result) => {
+  const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork];
+  pool.query(queryString, values, (err, result) => {
 
     if (err) {
       console.error('query error3:', err.stack);
@@ -395,7 +395,7 @@ app.put('/artists/:artist_id/songs/:song_id', (request, response) => {
 
     }
   });
-  
+
 });
 
 app.delete('/artists/:artist_id/songs/:song_id', (request, response) => {
@@ -415,7 +415,127 @@ app.delete('/artists/:artist_id/songs/:song_id', (request, response) => {
 
     }
   });
-  
+
+});
+
+app.get('/playlists', (request, response) => {
+  // respond with HTML page with form to create new ....
+  const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS playlistid, * FROM playlist'
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error1:', err.stack);
+      response.send('query error');
+    } else {
+      // console.log('query result:', result);
+
+      // redirect to home page
+      var output = {
+        'playlists': result.rows,
+      }
+      response.render('playlists', output);
+      // response.send( output);
+    }
+  });
+});
+
+app.get('/playlists/new', (request, response) => {
+  // respond with HTML page with form to create new ....
+  response.render('new-playlist');
+});
+
+app.post('/playlists', (request, response) => {
+  const queryString = 'INSERT INTO playlist (name) VALUES ($1)'
+  const values = [request.body.name];
+  pool.query(queryString, values, (err, result) => {
+
+    if (err) {
+      console.error('query error2:', err.stack);
+      response.send('query error');
+    } else {
+
+      var output = {
+        'playlists': result.rows,
+      }
+      response.redirect('/playlists');
+      // response.send( output);
+    }
+  })
+});
+app.post('/playlists/:song_id', (request, response) => {
+  const queryString = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1 , $2)'
+  const values = [request.params.song_id,request.body.playlist];
+  pool.query(queryString, values, (err, result) => {
+
+    if (err) {
+      console.error('query error2:', err.stack);
+      response.send('query error');
+    } else {
+
+      response.redirect(`/playlists/${request.body.playlist}`);
+      // response.send(request.body.playlist);
+    }
+  })
+});
+
+
+app.get('/playlists/:song_id/newsong', (request, response) => {
+  const queryString
+    = `SELECT *,songs.id AS song_id 
+  FROM songs
+  INNER JOIN artists 
+  ON (songs.artist_id = artists.id)
+  WHERE songs.id = ${request.params.song_id}`;
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error3:', err.stack);
+      response.send('query error');
+    } else {
+      var output = {
+        'song': result.rows,
+      }
+    }
+    const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS playlistid, * FROM playlist';
+    pool.query(queryString, (err, result) => {
+
+      if (err) {
+        console.error('query error3:', err.stack);
+        response.send('query error');
+      } else {
+        output.playlists = result.rows;
+        response.render('add-to-playlist', output);
+      }
+    });
+  });
+});
+
+app.get('/playlists/:playlist_id', (request, response) => {
+  // respond with HTML page with form to create new ....
+  const queryString 
+  = `SELECT  ROW_NUMBER() OVER (ORDER BY ps.id ASC) AS trackid, ps.playlist_id, p.name AS playlist_name, ps.song_id, s.title, s.album, a.name AS artist_name, s.artist_id, s.preview_link, s.artwork
+  FROM playlist AS p
+  INNER JOIN playlist_song AS ps ON ps.playlist_id = p.id
+  INNER JOIN songs AS s ON s.id = ps.song_id
+  INNER JOIN artists AS a ON s.artist_id = a.id
+  WHERE p.id = ${request.params.playlist_id}` 
+
+  pool.query(queryString, (err, result) => {
+    if (err) {
+      console.error('query error1:', err.stack);
+      response.send('query error');
+    } else {
+      // console.log('query result:', result);
+
+      // redirect to home page
+      var output = {
+        'playlist': result.rows,
+      }
+      response.render('single-playlist', output);
+      // response.send( output);
+    }
+  });
 });
 /**
  * ===================================

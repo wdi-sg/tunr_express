@@ -1,5 +1,5 @@
 var React = require("react");
-class Artists extends React.Component {
+class Playlists extends React.Component {
   render() {
     const square = {
       // width: '248px',
@@ -20,17 +20,16 @@ class Artists extends React.Component {
       objectFit: 'cover'
     };
 
-    var artists = this.props.artists;
-    if (artists.length == 0) {
-      artists = [];
+    var playlists = this.props.playlists;
+    if (playlists.length == 0) {
+      playlists = [];
     }
     else {
-      artists = artists.map((element) => {
-        return <a key={element.name} className="text-dark" href={`/artists/${element.artistid}`}><div className="card text-center bg-light">
-          <img style={square} className="card-img-top" src={`${element.photo_url}`} alt="Card image cap" />
+      playlists = playlists.map((element) => {
+        return <a key={element.name} className="text-dark" href={`/playlists/${element.playlistid}`}><div className="card text-center bg-light">
+          <img style={square} className="card-img-top" src="https://image.shutterstock.com/image-vector/music-playlist-vector-icon-filled-260nw-1405119938.jpg" alt="Card image cap" />
           <div className="card-body">
-            <h5 className="card-title"> {element.artistid}. {element.name}</h5>
-            <p className="card-text">Nationality: {element.nationality}</p>
+            <h5 className="card-title"> {element.playlistid}. {element.name}</h5>
           </div>
         </div>
         </a>
@@ -54,21 +53,20 @@ class Artists extends React.Component {
             </button>
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div className="navbar-nav">
-                <a className="nav-item nav-link active" href="/artists">Artists <span className="sr-only">(current)</span></a>
-                <a className="nav-item nav-link" href="/playlists">Playlists</a>
+                <a className="nav-item nav-link " href="/artists">Artists </a>
+                <a className="nav-item nav-link active" href="/playlists">Playlists <span className="sr-only">(current)</span></a>
               </div>
             </div>
           </nav>
           
           <div className="container-fluid">
-            <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Artists</u></em></h1>
+            <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Playlists</u></em></h1>
             <div className="row row-cols-3 w-75 ml-auto mr-auto">
-              {artists}
-              <a key="new-artist" className="text-dark" href={`/artists/new`}><div className="card text-center bg-light">
+              {playlists}
+              <a key="new-playlist" className="text-dark" href={`/playlists/new`}><div className="card text-center bg-light">
                 <img style={square} className="card-img-top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRybEoxX-zFDrhiWh8S9UB-ij1uf8jNp87KlIG-g04MYjtKvKMU&usqp=CAU" alt="Card image cap"></img>
                 <div className="card-body">
-                  <h5 className="card-title">Add New Artist</h5>
-                  <p className="card-text">&nbsp;</p>
+                  <h5 className="card-title">Add New Playlist</h5>
                 </div>
               </div>
               </a>
@@ -80,4 +78,4 @@ class Artists extends React.Component {
   }
 }
 
-module.exports = Artists;
+module.exports = Playlists;

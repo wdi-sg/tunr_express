@@ -55,15 +55,15 @@ class SingleArtist extends React.Component {
 
         </head>
         <body className="bg-secondary">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="/artists">Tunr Express</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <a className="navbar-brand" href="/artists">Tunr Express</a>
+            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span className="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-              <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="/artists">Artists <span class="sr-only">(current)</span></a>
-                <a class="nav-item nav-link" href="/playlists">Playlists</a>
+            <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div className="navbar-nav">
+                <a className="nav-item nav-link active" href="/artists">Artists <span className="sr-only">(current)</span></a>
+                <a className="nav-item nav-link" href="/playlists">Playlists</a>
               </div>
             </div>
           </nav>

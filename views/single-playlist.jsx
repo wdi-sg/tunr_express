@@ -1,10 +1,11 @@
 var React = require("react");
 
-class ArtistSongs extends React.Component {
+class SinglePlaylist extends React.Component {
   render() {
+    console.log(this.props);
     const square = {
       width: '250px',
-      height: '250px',
+      height: '200px',
       backgroundImage: 'url(https://www.indiaspora.org/wp-content/uploads/2018/10/image-not-available.jpg)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -20,29 +21,27 @@ class ArtistSongs extends React.Component {
       backgroundRepeat: 'no-repeat',
       objectFit: 'cover'
     };
-    var artists = this.props.artists;
-    artists = artists.map((element) => {
-      return <div key={element.name} className="card text-center bg-light ml-0 mr-0">
+    var playlist = this.props.playlist[0];
+    playlist = <div key={playlist.playlist_name} className="card text-center bg-light ml-0 mr-0">
         <img style={square} className="card-img-top mx-auto"
-          src={`${element.photo_url}`} alt="Card image cap" />
+          src="https://image.shutterstock.com/image-vector/music-playlist-vector-icon-filled-260nw-1405119938.jpg" alt="Card image cap" />
         <div className="card-body">
-          <h2 className="card-title text-dark">{element.name}</h2>
-          <p className="card-text text-dark">Nationality: {element.nationality}</p>
-          <a href={`/artists/${element.artistid}/edit`} className="btn btn-secondary">Edit Details</a>
+          <h2 className="card-title text-dark">{playlist.playlist_name}</h2>
+          <a href={`/playlists/${playlist.playlist_id}/edit`} className="btn btn-secondary">Edit Name</a>
           <br />
         </div>
-      </div>
-    })
+      </div>;
+    
 
-    var songs = this.props.songs;
+    var songs = this.props.playlist;
     songs = songs.map((element) => {
       return <li key={element.title} className="list-group-item list-group-item-action"><a href={`${element.preview_link}`} target="_blank">
         <img style={square2} src={`${element.artwork}`} className="float-left mr-3" />
-        <h6 className = " text-dark"> <strong>{element.songid}. {element.title}</strong> </h6>
-        <h7 className = " text-dark"><strong>Album: </strong>{element.album}</h7>
+        <h6 className = " text-dark"><strong> {element.trackid}. {element.title}</strong></h6>
+        <h7 className = " text-dark"><strong>Artist:</strong> {element.artist_name} | <strong>Album: </strong>{element.album}</h7>
         </a>
-        <a href={`songs/edit/${element.id}`} className="btn btn-warning float-right mr-3">Edit</a>
-        <a href={`/playlists/${element.id}/newsong`} className="btn btn-success text-light  float-right mr-3">Add to Playlist</a>
+        <a href={`songs/edit/${element.song_id}`} className="btn btn-warning float-right mr-3">Edit</a>
+        <a href="" className="btn btn-danger text-light  float-right mr-3">Remove from Playlist</a>
         <br />
       </li>
       
@@ -71,25 +70,25 @@ class ArtistSongs extends React.Component {
             </button>
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div className="navbar-nav">
-                <a className="nav-item nav-link active" href="/artists">Artists <span className="sr-only">(current)</span></a>
-                <a className="nav-item nav-link" href="/playlists">Playlists</a>
+                <a className="nav-item nav-link " href="/artists">Artists </a>
+                <a className="nav-item nav-link active" href="/playlists">Playlists<span class="sr-only">(current)</span></a>
               </div>
             </div>
           </nav>
           <div className="container-fluid">
-            <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Artists</u></em></h1>
+            <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Playlists</u></em></h1>
             <div className="container w-75 ml-auto mr-auto pl-0 pr-0">
-              {artists}
+              {playlist}
             </div>
             <ul className="list-group w-75 ml-auto mr-auto">
               <h4 className="text-center w-100 ml-auto mr-auto mb-0 bg-dark text-light pt-2 pb-2"><em>Songs</em></h4>
-              <a key="add-new" href="songs/new"><li className="list-group-item list-group-item-action">
+              {/* <a key="add-new" href="songs/new"><li className="list-group-item list-group-item-action">
                 <img style={square2} src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRybEoxX-zFDrhiWh8S9UB-ij1uf8jNp87KlIG-g04MYjtKvKMU&usqp=CAU" className="float-left mr-3" />
                 <h6 className="pt-3 align-text-bottom">Add New Song</h6>
                 
                 <br />
               </li>
-              </a>
+              </a> */}
               {songs}
             </ul>
           </div>
@@ -99,4 +98,4 @@ class ArtistSongs extends React.Component {
   }
 }
 
-module.exports = ArtistSongs;
+module.exports = SinglePlaylist;
