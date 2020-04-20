@@ -11,7 +11,7 @@ class Home extends React.Component {
             <br></br>
             <h5 id="congrats"></h5>
             <br></br>
-            <img id="badge-img"></img>
+            <div id="badge-img"></div>
             <script src="/script-badge.js"></script>
           </div>
         </div>

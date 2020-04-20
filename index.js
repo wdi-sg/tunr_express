@@ -33,6 +33,9 @@ app.use(cookieParser());
 
 app.use(express.static('public'))
 
+let viewNoAt50;
+let timeAt50; 
+
 //----------------------------------
 //-------------ROUTES---------------
 //----------------------------------
@@ -48,19 +51,27 @@ function parseSingleQuote(obj) {
 
 //VIEW HOME PAGE
 app.get("/", (request, response) => {
+  //Set view count cookie
   let viewCount;
+  let timestamp = Date.now();
   console.log(request.cookies);
   console.log(request.cookies.viewCountBrow);
-  if (!request.cookies || !request.cookies.viewCountBrow) {
-    viewCount = 1;
-  } else {
+
+  if (!request.cookies || !request.cookies.viewCountBrow || !request.cookies.timestampBrow) {
+    viewCount = 1; 
+  }
+  else if (timestamp > parseInt(request.cookies.timestampBrow) + 604800000 && request.cookies.viewCountBrow >= 50) {
+    viewCount = 50;
+  }
+  else {
     viewCount = parseInt(request.cookies.viewCountBrow);
     viewCount = viewCount + 1;
   }
-  console.log(viewCount);
-  let obj = {viewCount: viewCount};
+
   response.cookie("viewCountBrow", viewCount);
-  response.render("home", obj);
+  response.cookie("timestampBrow", timestamp);
+
+  response.render("home");
 });
 
 //----------------------------------
