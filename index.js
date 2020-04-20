@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser')
 
 // Initialise postgres client
 const configs = {
@@ -34,6 +35,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+app.use(cookieParser());
 
 
 // Set react-views to be the default view engine
@@ -74,11 +76,26 @@ app.get('/artists', (request, response) => {
       response.send('query error');
     } else {
       // console.log('query result:', result);
+      var visits = request.cookies['visits'];
 
-      // redirect to home page
-      var output = {
-        'artists': result.rows,
+      // see if there is a cookie
+      if( visits === undefined ){
+      
+        // set a default value if it doesn't exist
+        visits = 1;
+      }else{
+      
+        // if a cookie exists, make a value thats 1 bigger
+        visits = parseInt( visits ) + 1;
       }
+      
+      // set the cookie
+      response.cookie('visits', visits);
+     
+          var output = {
+            'artists': result.rows,
+            'visits': visits
+          }
       response.render('artists', output);
       // response.send( output);
     }
@@ -109,11 +126,8 @@ app.post('/artists', (request, response) => {
           response.send('query error');
         } else {
           // console.log('query result:', result);
-
-          // redirect to home page
           var output = {
-            'artists': result.rows,
-          }
+            'artists': result.rows          }
           response.redirect('/artists');
           // response.send( output);
         }
@@ -557,3 +571,4 @@ let onClose = function () {
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
