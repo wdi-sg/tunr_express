@@ -4,8 +4,6 @@ const express = require('express');
 const app = express();
 const pg = require('pg');
 
-
-
 // this line below, sets a layout look to your express project
 const reactEngine = require('express-react-views').createEngine();
 app.engine('jsx', reactEngine);
@@ -21,7 +19,7 @@ app.set('view engine', 'jsx');
 const configs = {
   user: 'Mac',
   host: '127.0.0.1',
-  database: 'pokemons',
+  database: 'tunr_db',
   port: 5432,
 };
 
@@ -36,53 +34,121 @@ app.use(express.urlencoded({
   extended: true
 }));
 
+// Express Routes for Playlists
 
-app.get('/', (req, res) => {
-	res.send('hello');
+// renders a form to create new playlist
+app.get('/playlist/new', (req, res) => {
+	res.render('form_create_playlist');
 })
 
-app.get('/hello', (req, res) => {
-  // query database for all pokemon
-	const queryString = 'SELECT * from pokemon'
+// show all playlists
+app.get('/playlist', (req, res) => {
+	const queryString = 'SELECT * FROM playlists;'
 
 	pool.query(queryString, (err, result) => {
-
-	  if (err) {
-	    console.error('query error:', err.stack);
-	    res.send( 'query error' );
-	  } else {
-	    console.log('query result:', result);
-
-	    // redirect to home page
-	    res.send( result.rows );
-	  }
-	});  
-
-// respond with text that lists the names of all the pokemons
-  // res.send('hello');
-});
-
-
-app.get('/create', (req, res) => {
-	res.render('insert');
-})
-
-app.post('/insert', (req, res) => {
- 
-
-	pool.query(queryString, values, (err, result) => {
-
-	  if (err) {
-	    console.error('query error:', err.stack);
-	    res.send( 'query error' );
-	  } else {
-	    console.log('query result:', result);
+		if (err) {
+			console.error('query error:', err.stack);
+			res.send('query error');
+		} else {
+			data = {'playlists': result.rows}
+			res.render('home', data);
 		}
 	})
 })
 
-// boilerplate for listening and ending the program
+// show a specific playlist with id
+app.get('/playlist/:id', (req, res) => {
+	const queryString = `SELECT songs.title
+											 FROM songs
+											 INNER JOIN playlist_song
+											 ON (playlist_song.song_id = songs.id)
+											 WHERE playlist_song.playlist_id = $1;`
+	const values = [req.params.id];
 
+	pool.query(queryString, values, (err, result) => {
+		if (err) {
+			console.error('query error:', err.stack);
+			res.send('query error');
+		} else {
+			data = {'id': req.params.id, 'songs': result.rows}
+			const secondQuery = 'SELECT name FROM playlists WHERE id=$1;'
+			pool.query(secondQuery, values, (err, result) => {
+				if (err) {
+					console.error('query error:', err.stack);
+					res.send('query error');
+				} else {
+					data.name = result.rows[0].name;
+					console.log(data);
+					res.render('show_playlist', data);
+				}
+			})
+		}
+	})
+})
+
+
+// accepts post request to create new playlist in playlist table
+app.post('/playlist', (req, res) => {
+	const queryString = `INSERT INTO playlists (name) VALUES ($1) RETURNING id;`;
+	const values = [req.body.name];
+
+	pool.query(queryString, values, (err, result) => {
+	  if (err) {
+	    console.error('query error:', err.stack);
+	    res.send( 'query error' );
+	  } else {
+	    res.redirect(`/playlist/${result.rows[0].id}`);
+		}
+	})
+})
+
+// renders form to add songs to playlist :id
+app.get('/playlist/:id/newsong', (req, res) => {
+	const queryString = 'SELECT * FROM songs;';
+
+	pool.query(queryString, (err, result) => {
+		if (err) {
+			console.error('querry error:', err.stack);
+			res.send('query error');
+		} else {
+			console.log(result.rows)
+			data = {'id': req.params.id, 'songs': result.rows}
+			const secondQuery = 'SELECT name FROM playlists;'
+			pool.query(secondQuery, (err, result) => {
+				if (err) {
+					console.error('querry error:', err.stack);
+					res.send('query error');
+				} else {
+					data.name = result.rows[0].name;
+					res.render('form_add_song', data)
+				}
+			})
+		}
+	})
+})
+
+// accepts post request to connect songs to playlist
+app.post('/playlist/:id', (req, res) => {
+	const queryString = `INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2);`;
+	const values = [req.body.song_id, req.params.id]
+
+	pool.query(queryString, values, (err, result) => {
+			console.log(result.rows[0])
+		if (err) {
+			console.error('querry error:', err.stack);
+			res.send('query error');
+		} else {
+			res.redirect(`/playlist/${req.params.id}`);
+		}
+	})
+})
+
+// routes for Artists
+
+
+
+
+// boilerplate for listening and ending the program
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
@@ -99,3 +165,6 @@ let onClose = function(){
 
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
+
+
+
