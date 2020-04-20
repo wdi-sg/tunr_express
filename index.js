@@ -33,6 +33,8 @@ app.use(
     extended: true,
   })
 );
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 
 app.use(methodOverride("_method"));
 
@@ -96,6 +98,14 @@ app.post("/playlist", (request, response) => {
 //============== Show all playlist ====================
 
 app.get("/playlist", (request, response) => {
+  let visits = request.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    visits++;
+  }
   const whenQueryDone = (queryErr, result) => {
     if (queryErr) {
       console.log(queryErr);
@@ -107,6 +117,7 @@ app.get("/playlist", (request, response) => {
     const data = {
       individualPlaylist: result.rows,
     };
+    response.cookie("visits", visits);
 
     response.render("allPlaylist", data);
   };
@@ -176,8 +187,21 @@ app.post("/playlist/:id", (request, response) => {
 //=========== adding a new artist form ================
 
 app.get("/artists/:id", (request, response) => {
+  let visits = request.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    console.log(typeof visits);
+    visits++;
+  }
   if (request.params.id === "new") {
-    response.render("new");
+    const data = {
+      counter: visits,
+    };
+    response.cookie("visits", visits);
+    response.render("new", data);
   } else {
     //============== Get artist's info ====================
     const whenQueryDone = (queryErr, result) => {
@@ -188,8 +212,9 @@ app.get("/artists/:id", (request, response) => {
       }
       const data = {
         artistInfo: result.rows[0],
+        counter: visits,
       };
-
+      response.cookie("visits", visits);
       response.render("singleArtist", data);
     };
     const queryString = "SELECT * FROM artists WHERE id = " + request.params.id;
@@ -203,6 +228,15 @@ app.get("/artists/:id", (request, response) => {
 
 //======= Page showing newly added artist (POSTED from new artist form) ========
 app.post("/artists", (request, response) => {
+  let visits = request.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    console.log(typeof visits);
+    visits++;
+  }
   // query database for all pokemon
   console.log(request.body);
 
@@ -214,7 +248,9 @@ app.post("/artists", (request, response) => {
     }
     const data = {
       artist: result.rows[0],
+      counter: visits,
     };
+    response.cookie("visits", visits);
     response.render("artists", data);
   };
   const newlyAddedName = request.body.name;
@@ -231,10 +267,18 @@ app.post("/artists", (request, response) => {
 });
 
 app.get("/", (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render("home");
+  let visits = request.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    console.log(typeof visits);
+    visits++;
+  }
+  const data = { counter: visits };
+  response.cookie("visits", visits);
+  response.render("home", data);
 });
 
 app.get("/new", (request, response) => {

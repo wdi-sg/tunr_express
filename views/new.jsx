@@ -16,6 +16,7 @@ class New extends React.Component {
             <br />
             <button type="submit">Add Artist</button>
           </form>
+          <footer>Number of visits: {this.props.counter}</footer>
         </body>
       </html>
     );

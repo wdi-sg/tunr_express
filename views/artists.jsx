@@ -12,6 +12,7 @@ class Artists extends React.Component {
           <p>{this.props.artist.photo_url}</p>
           <h5>Artist's Nationality: </h5>
           <p>{this.props.artist.nationality}</p>
+          <footer>Number of visits: {this.props.counter}</footer>
         </body>
       </html>
     );

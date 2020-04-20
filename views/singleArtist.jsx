@@ -13,6 +13,7 @@ class SingleArtist extends React.Component {
           <p>{this.props.artistInfo.photo_url}</p>
           <p>Artist's Nationality: </p>
           <p>{this.props.artistInfo.nationality}</p>
+          <footer>Number of visits: {this.props.counter}</footer>
         </body>
       </html>
     );

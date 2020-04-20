@@ -7,6 +7,7 @@ class Home extends React.Component {
         <head />
         <body>
           <h1>Hello World!</h1>
+          <footer>Number of visits: {this.props.counter}</footer>
         </body>
       </html>
     );
