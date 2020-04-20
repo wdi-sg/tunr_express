@@ -1,35 +1,28 @@
 var React = require("react");
-
-class addSongToArtist extends React.Component {
-  render() {
-
-    let url = "/artist/"+this.props.id+'/songs';
-    return (
-      <html>
-        <head/>
-        <body>
-          <h3>Create new Song</h3>
-            <form action= {url} method="POST">
-                <p>
-                    Title<input name="title" type ="text"/>
-                </p>
-                <p>
-                    Album<input name="album" type ="text"/>
-                </p>
-                <p>
-                    Preview Link<input name="preview_link" type ="text"/>
-                </p>
-                <p>
-                    Artwork<input name="artwork" type ="text"/>
-                </p>
-
-
-                <button type = "submit">Submit</button>
-            </form>
-        </body>
-      </html>
-    );
-  }
-}
-
-module.exports = addSongToArtist;
+class AddSongToArtist extends React.Component {
+   render() {
+     const artist = this.props.artist;
+     return (
+       <html>
+       <head />
+         <body>
+           <h3>Add Song to {artist.name}</h3>
+           <form method='POST' action={`/artists/${artist.id}/songs`}>
+             <h4>Title</h4>
+             <input type='text' name='title'/>
+             <h4>Album Name</h4>
+             <input type='text' name='album'/>
+             <h4>Preview Link</h4>
+             <input type='text' name='preview_link'/>
+             <h4>Artwork</h4>
+             <input type='text' name='artwork'/>
+             <input type='hidden' name='artist_id' value={artist.id}/>
+             <br/><br/>
+             <input type='submit' value='Submit'/>
+           </form>
+         </body>
+       </html>
+       );
+   }
+ }
+ module.exports = AddSongToArtist;

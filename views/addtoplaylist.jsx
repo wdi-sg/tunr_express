@@ -1,28 +1,30 @@
 var React = require("react");
 
+ class AddToPlaylist extends React.Component {
+   render() {
+     const name = this.props.playlistInfo.name;
+     const addSongLink = "/playlist/" + this.props.playlistInfo.id;
+     const songOptionElements = this.props.songInfoArray.map(song => {
+         return <option value={song.songid}>Song: {song.songtitle} </option>
+     })
 
-class AddToPlayList extends React.Component {
-    render() {
-        let url = '/playlist/'+ this.props.id;
-        const songList = this.props.songs.map(song => {
-         return <option value={song.id}>{song.title}--{song.album}</option>
-       });
+     return (
+       <html>
+         <body>
 
-         return (<html>
-                    <body>
-                        <h1>Add song to playlist</h1>
-                        <form action={url} method="POST">
-                            <p>Name:
-                                <select name="songs">
-                                {songList}
-                                </select>
-                            </p>
-                            <button type = "submit">Submit</button>
-                        </form>
-                    </body>
-                </html>
-                );
-    }
-}
+             <form method="POST" action={addSongLink}>
 
- module.exports = AddToPlayList;
+                     <select  name="songid">
+                         {songOptionElements}
+                     </select>
+
+               <button type="submit" value="Submit" className="btn btn-primary">Add</button>
+             </form>
+
+         </body>
+       </html>
+     );
+   }
+ }
+
+ module.exports = AddToPlaylist;
