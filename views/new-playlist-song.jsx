@@ -2,20 +2,22 @@ var React = require("react");
 
 class NewPlaylistSong extends React.Component {
   render() {
-    //     let songArr = this.props.ingredientsJson;
-    //     let songNameArrOption = songArr.map((element) => {
-    //     return <option>{element.name}</option>;
-    // });
+    const songs = this.props.songs.map(result =>{
+        return (<option value={result.id}>{result.title}</option>)
+    })
+    const link = '/playlists/' + this.props.id + "/newsong"
+        console.log(link)
     return (
       <html>
         <head />
         <body>
           <h3>Add song to playlist</h3>
-          <form method='POST' action='/playlists'>
-            <p>Playlist Name</p>
-            <input type='text' name='playlist name' placeholder="playlist name"/>
+          <form method='POST' action={link}>
+            <p></p>
             <p>Song</p>
-            <input type='text' name='song name' placeholder="song"/>
+            <select name="songs">
+            {songs}
+            </select>
             <input type='submit' value='Submit'/>
           </form>
         </body>

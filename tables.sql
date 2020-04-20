@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS artists (
 
 CREATE TABLE IF NOT EXISTS playlist (
     id SERIAL PRIMARY KEY,
-    name TEXT,
+    name TEXT
 );
 
 CREATE TABLE IF NOT EXISTS playlist_song (

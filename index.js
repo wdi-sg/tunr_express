@@ -135,6 +135,29 @@ app.post('/artists',(request, response)=>{
 
 });
 
+//See a single playlist
+app.get('/playlists/:id', (request, response) => {
+
+  const whenQueryDone = (queryError, result) => {
+    console.log("hello");
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      console.log(result.rows[0]);
+      const data = {
+        playlistName : result.rows[0].title,
+      }
+      response.render('show-playlist', data);
+  };
+  };
+  const queryString = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_song.id="+request.params.id;
+  pool.query(queryString, whenQueryDone )
+
+});
+
 //***** Display a form for adding new playlists ******
 app.get('/playlists/new',(request, response)=>{
   const whenQueryDone = (queryError, result) => {
@@ -174,27 +197,6 @@ app.post('/playlists',(request, response)=>{
 
 });
 
-//See a single playlist
-app.get('/playlists/:id', (request, response) => {
-
-  const whenQueryDone = (queryError, result) => {
-    if( queryError ){
-      console.log("Error");
-      console.log(queryError);
-      response.status(500);
-      response.send('db error');
-    }else{
-      console.log(result.rows[0]);
-      const data = {
-        playlistName : result.rows[0].name,
-      }
-      response.render('show', data);
-  };
-  const queryString = "SELECT * FROM playlist WHERE id="+request.params.id;
-  pool.query(queryString, whenQueryDone )
-};
-});
-
 //***** Display a form for adding songs to a playlist ******
 app.get('/playlists/:id/newsong',(request, response)=>{
   const whenQueryDone = (queryError, result) => {
@@ -204,20 +206,22 @@ app.get('/playlists/:id/newsong',(request, response)=>{
       response.status(500);
       response.send('db error');
     }else{
-      response.render('new-playlist-song');
+      const data = {
+        songs : result.rows,
+        id : request.params.id
+      }
+      response.render('new-playlist-song', data);
     }
   };
 
-  const queryString = "SELECT * FROM playlist_song";
+  const queryString = "SELECT * FROM songs";
 
   pool.query(queryString, whenQueryDone )
 
 });
 
 //Add song to playlist
-//should the route still be /playlists? (same for action in jsx)
-//difference between writing in here and in jsx
-app.post('/playlists',(request, response)=>{
+app.post('/playlists/:id/newsong',(request, response)=>{
      const whenQueryDone = (queryError, result) => {
     if( queryError ){
       console.log("Error");
@@ -225,32 +229,21 @@ app.post('/playlists',(request, response)=>{
       response.status(500);
       response.send('db error');
     }else{
-      response.redirect('/playlists/')
+      response.render('/playlists/')
     }
   };
 
-  const queryString = "INSERT INTO playlist (name) VALUES ($1) RETURNING *";
-  const insertValues = [request.body.name];
+  const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
+  console.log("******************************")
+  console.log(request.body.songs)
+  console.log("******************************")
+  const insertValues = [request.body.songs, request.params.id];
 
   pool.query(queryString, insertValues, whenQueryDone )
 
 });
-// //show particular artist's page
-// app.get('/artists/:id', (request, response) => {
-//   const whenQueryDone = (queryError, result) => {
-//       if( queryError ){
-//         console.log("Error");
-//         console.log(queryError);
-//         response.send('An error has occurred');
-//     }else{
-//      const data = {
-//         artists: results.row
-//         }
-//       // if the query ran without errors
-//      response.render('new-artist', data);
-//     }
-//     };
-// });
+
+
 
 
 /**

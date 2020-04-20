@@ -6,8 +6,9 @@ class ShowPlaylist extends React.Component {
       <html>
         <head />
         <body>
-          <h1>Artist Information</h1>
+          <h1>Playlist</h1>
           <p>{this.props.playlistName}</p>
+          <p>
         </body>
       </html>
     );
