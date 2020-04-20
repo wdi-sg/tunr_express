@@ -41,23 +41,32 @@ app.use(cookieParser());
 
 //welcome page
 app.get('/', (request, response) => {
-  var visits = request.cookies['visits'];
-
+    var visits = request.cookies['visits'];
+    var visits_badge;
 // see if there is a cookie
-if( visits === undefined ){
-
+    if( visits === undefined ){
   // set a default value if it doesn't exist
-  visits = 1;
-}else{
-
+        visits = 1;
+    }else{
   // if a cookie exists, make a value thats 1 bigger
-  visits = parseInt( visits ) + 1;
-}
-response.cookie('visits', visits);
-const data = {
-    badge: visits
-}
-  response.render('home',data);
+        visits = parseInt( visits ) + 1;
+        if(visits === 50){
+            visits_badge = "newbie";
+            response.send('<html><img src = "https://d1yn1kh78jj1rr.cloudfront.net/image/preview/rDtN98Qoishumwih/ribbon-badge-award_zk6uMLOd_SB_PM.jpg"/></html>');
+
+        }else if(visits === 50 ){
+            visits_badge = "repeat"
+            response.send('<html><img src = "https://cdn1.iconfinder.com/data/icons/web-design-18/50/86-512.png"/></html>');
+        }else if(visits === 100){
+            visits_badge = "veteran";
+            response.send('<html><img src = "https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/11/1415490092badge.png"/></html>');
+        }
+    }
+    response.cookie('visits', visits);
+    const data = {
+        badge: visits
+    }
+    response.render('home',data);
   //response.send('visits ' + visits);
 });
 
