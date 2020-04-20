@@ -3,6 +3,8 @@
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require("cookie-parser");
+
 
 // Initialise postgres client
 const configs = {
@@ -26,7 +28,7 @@ pool.on('error', function (err) {
 
 // Init express app
 const app = express();
-
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -48,6 +50,35 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+//See a single artist
+app.get('/artists/:id', (request, response) => {
+  const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      let visits = request.cookies["visits"];
+      if (visits === undefined){
+            visits = 1;
+      } else {
+            visits++;
+      }
+        response.cookie(`visits`, visits)
+        console.log(result.rows[0]);
+        const data = {
+        artistName : result.rows[0].name,
+        photo : result.rows[0].photo_url,
+        nationality : result.rows[0].nationality,
+        count : visits
+      }
+      response.render('show', data);
+  };
+  const queryString = "SELECT * FROM artists WHERE id="+request.params.id;
+  pool.query(queryString, whenQueryDone )
+};
+});
 
 //***** Display home page where all the artists are ******
 app.get('/artists',(request, response)=>{
@@ -58,13 +89,23 @@ app.get('/artists',(request, response)=>{
       response.status(500);
       response.send('db error');
     }else{
+      let visits = request.cookies["visits"];
+      if (visits === undefined){
+            visits = 1;
+      } else {
+            visits++;
+      }
+      response.cookie(`visits`, visits)
+
       const data = {
-        artistsInformation : result.rows
+        artistsInformation : result.rows,
+        count : visits
       }
       console.log(result.rows);
       response.render('home', data);
     }
   };
+
 
   const queryString = "SELECT * FROM artists";
 
@@ -81,7 +122,18 @@ app.get('/artists/new',(request, response)=>{
       response.status(500);
       response.send('db error');
     }else{
-      response.render('new-artist');
+        let visits = request.cookies["visits"];
+      if (visits === undefined){
+            visits = 1;
+      } else {
+            visits++;
+      }
+      response.cookie(`visits`, visits)
+
+      const data = {
+        count : visits
+      }
+      response.render('new-artist', data);
     }
   };
 
@@ -91,28 +143,7 @@ app.get('/artists/new',(request, response)=>{
 
 });
 
-//See a single artist
-app.get('/artists/:id', (request, response) => {
 
-  const whenQueryDone = (queryError, result) => {
-    if( queryError ){
-      console.log("Error");
-      console.log(queryError);
-      response.status(500);
-      response.send('db error');
-    }else{
-      console.log(result.rows[0]);
-      const data = {
-        artistName : result.rows[0].name,
-        photo : result.rows[0].photo_url,
-        nationality : result.rows[0].nationality
-      }
-      response.render('show', data);
-  };
-  const queryString = "SELECT * FROM artists WHERE id="+request.params.id;
-  pool.query(queryString, whenQueryDone )
-};
-});
 
 
 //Create a new artist

@@ -10,6 +10,7 @@ class Show extends React.Component {
           <p>{this.props.artistName}</p>
           <p>{this.props.photo}</p>
           <p>{this.props.nationality}</p>
+          <footer>Number of visits to page: {this.props.count}</footer>
         </body>
       </html>
     );

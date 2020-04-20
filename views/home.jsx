@@ -11,6 +11,7 @@ class Home extends React.Component {
         <body>
           <h1>Artist Information</h1>
           <p>{artists}</p>
+          <footer>Number of visits to page: {this.props.count}</footer>
         </body>
       </html>
     );

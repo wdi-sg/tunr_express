@@ -16,6 +16,7 @@ class New extends React.Component {
             <input type='text' name='nationality' placeholder="nationality"/>
             <input type='submit' value='Submit'/>
           </form>
+          <footer>Number of visits to page: {this.props.count}</footer>
         </body>
       </html>
     );
