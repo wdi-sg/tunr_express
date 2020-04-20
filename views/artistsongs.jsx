@@ -23,7 +23,7 @@ class ArtistSongs extends React.Component {
         </h5>;
 
       songList = songs.map(song => {
-        let key = song.id;
+        let key = `song-${song.id}`;
         let link = `/artists/${this.props.id}/songs/${song.id}`;
 
         return (
