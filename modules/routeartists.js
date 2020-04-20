@@ -157,7 +157,7 @@ router.get('/:id/songs', async function (req, res) {
     songs: songResults
   };
 
-  res.render('artistsongs', data);
+  res.render('artistsonglist', data);
 });
 
 router.get('/:aid/songs/new', async function (req, res) {
