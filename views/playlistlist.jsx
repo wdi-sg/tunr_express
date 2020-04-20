@@ -6,7 +6,7 @@ class PlaylistList extends React.Component {
   render() {
     let playlistdata = this.props.playlists;
     let playlists = playlistdata.map(list => {
-      let key = `list`;
+      let key = `list-${list.id}`;
       let link = `/playlists/${list.id}`;
 
       return (
@@ -20,7 +20,7 @@ class PlaylistList extends React.Component {
         <Head />
 
         <body>
-          <div className="container">
+          <div className="container text-center">
             <div className="row my-3">
               <div className="col-8 offset-2">
                 <Nav />
