@@ -2,6 +2,9 @@ var React = require("react");
 
 class Navbar extends React.Component {
   render() {
+
+    let viewCount = this.props.viewCount;
+
     return (
       <nav class="navbar navbar-expand navbar-dark bg-dark">
         <a class="navbar-brand">TUNES</a>
@@ -60,6 +63,9 @@ class Navbar extends React.Component {
               </div>
             </li>
           </ul>
+          <form class="form-inline my-2 my-lg-0 text-white">
+            <p class="my-2 my-sm-0" id="viewcount">View Count:</p>
+          </form>
         </div>
       </nav>
     );

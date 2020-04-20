@@ -14,7 +14,7 @@ class Main extends React.Component {
           />
         </head>
         <body>
-          <Navbar />
+          <Navbar viewCount={this.props.viewCount}/>
           {this.props.children}
         </body>
         <script
@@ -32,6 +32,7 @@ class Main extends React.Component {
           integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
           crossorigin="anonymous"
         ></script>
+        <script src="/script.js"></script>
       </html>
     );
   }

@@ -13,7 +13,7 @@ class Home extends React.Component {
       </div>
     );
 
-    return <Main children={Home} />;
+    return <Main children={Home} viewCount={this.props.viewCount} />;
   }
 }
 

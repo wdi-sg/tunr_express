@@ -28,6 +28,11 @@ pool.on("error", function (err) {
   console.log("IDLE CLIENT ERROR", err.message, err.stack);
 });
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+app.use(express.static('public'))
+
 //----------------------------------
 //-------------ROUTES---------------
 //----------------------------------
@@ -39,9 +44,23 @@ function parseSingleQuote(obj) {
   return obj;
 }
 
+
+
 //VIEW HOME PAGE
 app.get("/", (request, response) => {
-  response.render("home");
+  let viewCount;
+  console.log(request.cookies);
+  console.log(request.cookies.viewCountBrow);
+  if (!request.cookies || !request.cookies.viewCountBrow) {
+    viewCount = 1;
+  } else {
+    viewCount = parseInt(request.cookies.viewCountBrow);
+    viewCount = viewCount + 1;
+  }
+  console.log(viewCount);
+  let obj = {viewCount: viewCount};
+  response.cookie("viewCountBrow", viewCount);
+  response.render("home", obj);
 });
 
 //----------------------------------
