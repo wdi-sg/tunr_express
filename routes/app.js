@@ -4,6 +4,8 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
+
 
 // Initialise postgres client
 
@@ -20,6 +22,8 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
+
+app.use(cookieParser());
 
 app.use(methodOverride('_method'));
 
@@ -47,20 +51,40 @@ app.engine('jsx', reactEngine);
 const artistsRoutes = require('./artists-routes.js');
 const playlistsRoutes = require('./playlists-routes.js');
 const authRoutes = require('./auth-routes.js');
+const authController = require('../controllers/auth-controller.js');
 const errorController = require('../controllers/404-controller.js');
 
 const db = require('../util/database.js');
 
 app.use(express.static(path.join(__dirname, '../public/')));
 
+app.use('/', async (req, res, next) => {
+    const queryT = `SELECT * FROM artists WHERE id=3`
+    const { rows } = await db.query(queryT);
+    req.featuredArtist = rows[0];
+    next();
+})
+
+const visitsCookie = require('../util/visits-cookie.js');
+
 app.use('/auth', authRoutes);
 
 app.get('/', async (req, res) => {
 
-    const queryT = `SELECT * FROM artists WHERE id=3`
-    const { rows } = await db.query(queryT);
-    res.render('home', { 'singleArtist': rows[0] });
+    visitsCookie.visitsCookieCounter(req, res);
+
+    //redirect to homepage with auth routes if user is not logged in
+
+    if (req.session.userId) {
+        authController.getUserInfo(req.session.userId);
+        res.render('home', { 'singleArtist': req.featuredArtist });
+    } else {
+        res.redirect('/auth');
+    }
+
 });
+
+
 
 app.use('/artists', artistsRoutes);
 
