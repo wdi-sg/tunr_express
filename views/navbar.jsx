@@ -21,6 +21,11 @@ class Navbar extends React.Component {
         </button>
         <div class="collapse navbar-collapse" id="navbarsExample02">
           <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+              <a class="nav-link" href="/">
+                Home
+              </a>
+            </li>
             <li class="nav-item active">
               <a class="nav-link" href="/artists">
                 Artists
@@ -67,6 +72,7 @@ class Navbar extends React.Component {
             <p class="my-2 my-sm-0" id="viewcount">View Count:</p>
           </form>
         </div>
+        <script src="/script.js"></script>
       </nav>
     );
   }

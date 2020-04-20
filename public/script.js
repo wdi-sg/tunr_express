@@ -1,9 +1,7 @@
 console.log("hello world");
+let viewCountDiv = document.getElementById("viewcount");
 
-if (document.cookie === "") {
-
-} else {
-  let countStr = document.cookie;
-  let countStrArr = countStr.split("=");
-  
-}
+let countStr = document.cookie;
+let countStrArr = countStr.split("=");
+let count = parseInt(countStrArr[1]);
+viewCountDiv.innerText = "Home Page View Count: " + count;
