@@ -148,6 +148,47 @@ main {
 		transition: all .2s linear;
 }
 
+/*login-register*/
+
+.login-register__wrapper {
+		margin-top: 28px;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		width: 100%;
+		max-width: 600px;
+		height: 3rem;
+		/*		background-color: rgba(1, 1, 1, 0.2);*/
+}
+
+.login-register__wrapper>a {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		box-sizing: border-box;
+		height: 100%;
+		padding: 2%;
+		width: 30%;
+		text-decoration: none;
+		color: rgba(1, 1, 1, 0.6);
+		letter-spacing: 0.1rem;
+		font-weight: 500;
+		/*background-color: rgba(1, 1, 1, 0.1);*/
+		text-align: center;
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		border: 2px solid lightgrey;
+}
+
+.login-register__wrapper>a:hover {
+		color: darkred;
+}
+
+.login-register__wrapper>a:active {
+		color: red;
+		letter-spacing: 0.12rem;
+}
+
 /*home*/
 
 .featured-artist {
@@ -171,6 +212,10 @@ main {
 		text-transform: uppercase;
 		text-align: center;
 		text-indent: 0.2rem;
+}
+
+.featured-artist__header.login-register-page {
+		margin-top: 0;
 }
 
 .featured-artist__name {
