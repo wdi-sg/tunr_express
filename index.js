@@ -42,6 +42,11 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+
+
 /**
  * =========================================================
  * =========================================================
@@ -92,9 +97,7 @@ app.get(`/artists/:id/edit`, (req, res) => {
 
 app.get(`/artists/:id`, (req, res) => {
     const query = parseInt(req.params.id);
-
     let command = `SELECT * FROM artists WHERE id = ${query}`;
-
     pool.query(command, (err, result) => {
         if (err) {
             console.log(`Error in query!!!`, err);
@@ -104,7 +107,6 @@ app.get(`/artists/:id`, (req, res) => {
             const data = {
                 artistData: foundArtist,
             };
-
             res.render("artist", data);
         }
     });
@@ -487,7 +489,7 @@ app.get(`/playlists/:id`, (req, res) => {
     const playlistId = parseInt(req.params.id);
 
     let command = `SELECT * FROM playlist_song INNER JOIN playlists ON playlist_song.playlist_id = playlists.id INNER JOIN songs ON playlist_song.song_id = songs.id WHERE playlists.id = ${playlistId}`;
-    
+
     pool.query(command, (err, result) => {
         if (err) {
             console.log(`Error in query!!!`, err);
@@ -501,19 +503,19 @@ app.get(`/playlists/:id`, (req, res) => {
 });
 
 app.post(`/playlists/:id`, (req, res) => {
-  const playlistId = parseInt(req.params.id)
-  const songId = parseInt(req.body.songId)
-  let command = `INSERT INTO playlist_song (song_id, playlist_id) VALUES (${songId}, ${playlistId}) RETURNING *`;
-  pool.query(command, (err, result) => {
-    if (err) {
-      console.log(`Error in query!!!`, err);
-    } else {
-      const data = {
-        playlist: result.rows[0],
-      };
-      res.redirect(`/playlists/${playlistId}`);
-    }
-  });
+    const playlistId = parseInt(req.params.id)
+    const songId = parseInt(req.body.songId)
+    let command = `INSERT INTO playlist_song (song_id, playlist_id) VALUES (${songId}, ${playlistId}) RETURNING *`;
+    pool.query(command, (err, result) => {
+        if (err) {
+            console.log(`Error in query!!!`, err);
+        } else {
+            const data = {
+                playlist: result.rows[0],
+            };
+            res.redirect(`/playlists/${playlistId}`);
+        }
+    });
 });
 
 app.get(`/playlists`, (req, res) => {
@@ -523,14 +525,13 @@ app.get(`/playlists`, (req, res) => {
             console.log(`Error in query!!!`, err);
         } else {
             const data = {
-                playlists: result.rows
-            }
+                playlists: result.rows,
+                visits: req.cookies.visits
+            };
             res.render(`all-playlists`, data)
         }
     });
 });
-
-
 
 /**
  * ===================================
@@ -538,8 +539,21 @@ app.get(`/playlists`, (req, res) => {
  * ===================================
  */
 
-app.get('/', (request, response) => {
-    response.render('home');
+app.get("/", (req, res) => {
+    let visitCount = req.cookies["visits"];
+
+    if (visitCount === undefined) {
+        visitCount = 1;
+    } else {
+        visitCount++;
+    }
+
+    res.cookie(`visits`, visitCount);
+
+    const data = {
+        visits: visitCount,
+    };
+    res.render("home", data);
 });
 /**
  * ===================================

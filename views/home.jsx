@@ -35,6 +35,7 @@ class Home extends React.Component {
           <a href="/playlists/new">
             <button className="btn btn-light">Add A Playlist</button>
           </a>
+          <button className="btn btn-light">Viewcount: {this.props.visits}</button>
         </body>
       </html>
     );

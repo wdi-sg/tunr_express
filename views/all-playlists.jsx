@@ -7,7 +7,7 @@ class AllPlaylists extends React.Component {
     const playlistLinks = playlistArr.map((playlist) => {
       return (
         <li key={playlist.id}>
-          <a href={`/artists/${playlist.id}`}>{playlist.name}</a>
+          <a href={`/playlists/${playlist.id}`}>{playlist.name}</a>
         </li>
       );
     });
