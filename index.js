@@ -53,6 +53,13 @@ app.engine('jsx', reactEngine);
 
 app.get('/artists', (request, response) => {
   // query database for all artist
+  var visits = request.cookies['visits'];
+  if(visits === undefined) {
+    visits = 1;
+  }else {
+    visits = parseInt(visits) + 1;
+  }
+  response.cookie('visits', visits);
   let queryString = "SELECT * FROM artists";
   pool.query(queryString, (err, res) => {
     if(err){
