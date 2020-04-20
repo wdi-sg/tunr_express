@@ -7,6 +7,26 @@ class Show_Playlist extends React.Component {
         const updatedSongs = this.props.updatedSongs;
         const visitCounter = this.props.visitCounter;
 
+        //Render page visit badges
+        const visitCounterImageList = {
+            "ten": "https://image.flaticon.com/icons/svg/744/744929.svg",
+            "fifty": "https://image.flaticon.com/icons/svg/744/744922.svg",
+            "hundred": "https://image.flaticon.com/icons/svg/744/744918.svg"
+        }
+
+        let visitCounterImage;;
+        let visitCounterMessage = '';
+        if (visitCounter >= 10 && visitCounter < 50) {
+            visitCounterImage = visitCounterImageList.ten;
+            visitCounterMessage = 'Newbie badge unlocked';
+        } else if (visitCounter >= 50 && visitCounter < 100) {
+            visitCounterImage = visitCounterImageList.fifty;
+            visitCounterMessage = 'Novice badge unlocked';
+        } else if (visitCounter >= 100) {
+            visitCounterImage = visitCounterImageList.hundred;
+            visitCounterMessage = 'Veteran badge unlocked';
+        }
+
         const updatedSongsList = updatedSongs.map(updatedSong => {
             return (<div className='row justify-content-center'>
                         <div className='col-3'>
@@ -65,6 +85,12 @@ class Show_Playlist extends React.Component {
                 <br/><br/><br/>
                 <div className='row justify-content-center'>
                     <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
+                </div>
+                <div className='row justify-content-center'>
+                    <img src={visitCounterImage} style={{width: "50px", padding: "0 0 8px 0"}}/>
+                </div>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey"}}>{visitCounterMessage}</p>
                 </div>
             </body>
             </html>
