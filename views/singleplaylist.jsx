@@ -6,6 +6,8 @@ class Singleplaylist extends React.Component {
 
 
     // Javascript stuff
+    const visits = this.props.visits;
+
     const playlistDetails = this.props.playlistDetails[0];
 
     const playlistName = playlistDetails.playlist_name;
@@ -43,6 +45,9 @@ class Singleplaylist extends React.Component {
           <div>
             <div>
             <h1>{playlistName}</h1>
+            </div>
+            <div>
+              <p>You've been here {visits} times</p>
             </div>
             <div>
                 <a href={newSongURL}>+</a>

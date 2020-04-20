@@ -7,6 +7,8 @@ class Addsong extends React.Component {
     // Javascript stuff
     // Would be good if can incorporate autocomplete form for songs from the database
 
+    const visits = this.props.visits;
+
     // Get details of playlist that song is added to
     const playlistDetails = this.props.playlistDetails[0];
 
@@ -41,6 +43,9 @@ class Addsong extends React.Component {
         </head>
         <body>
           <h1>Add New Song</h1>
+          <div>
+            <p>You've been here {visits} times</p>
+          </div>
           <div>
             <form action={url} method="post">
               <input type="text" name="title" placeholder="title"></input><br></br>

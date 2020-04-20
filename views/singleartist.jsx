@@ -38,6 +38,8 @@ class Singleartist extends React.Component {
 
     //Javascript stuff
 
+    const visits = this.props.visits;
+
     ///////Artist stuff
     const artist = this.props.artistDetails[0];
 
@@ -76,6 +78,9 @@ class Singleartist extends React.Component {
         </head>
         <body style={background}>
           <h1 style={title}>{artistName}</h1>
+          <div>
+            <p>You've been here {visits} times</p>
+          </div>
           <div style={imageStyle}>
             {artistImage}
           </div>

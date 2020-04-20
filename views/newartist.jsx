@@ -20,12 +20,17 @@ class Newartist extends React.Component {
                     }
 
     // Javascript stuff
+    const visits = this.props.visits;
+
 
     return (
       <html>
         <head />
         <body>
           <h1 style={title}>Add a New Artist</h1>
+          <div>
+            <p>You've been here {visits} times</p>
+          </div>
           <div style={formStyle}>
             <form action="/artists" method="post">
                 <input type="text" name="name" placeholder="Artist Name" style={inputStyle}></input><br></br>

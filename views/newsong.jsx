@@ -9,6 +9,8 @@ class New extends React.Component {
     // Javascript Stuff
     const artistID = this.props.artistID;
 
+    const visits = this.props.visits;
+
     const url = `/artists/${artistID}/songs`
 
     return (
@@ -16,6 +18,9 @@ class New extends React.Component {
         <head />
         <body>
           <h3>Add a new Song</h3>
+          <div>
+            <p>You've been here {visits} times</p>
+          </div>
           <div>
             <form action={url} method="post">
               <input type="text" name="title" placeholder="title"></input><br></br>

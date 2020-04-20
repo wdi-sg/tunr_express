@@ -54,6 +54,7 @@ app.engine('jsx', reactEngine);
 app.get('/', (request, response) => {
   // set cookie
   let visits = request.cookies.visits;
+
   if (visits === undefined) {
     visits = 1;
   } else {
@@ -61,11 +62,14 @@ app.get('/', (request, response) => {
   }
   response.cookie('visits', visits);
 
-  response.render('home');
+  const data = {"visits" : visits}
+  response.render('home', data);
 });
 
 // Show all artists
 app.get('/artists', (request, response) => {
+  let visits = request.cookies.visits;
+
   // query database for all artists
   const queryString = 'select * from artists'
 
@@ -75,7 +79,7 @@ app.get('/artists', (request, response) => {
         response.send('query error');
     }
     else{
-        const data = {"result" : result.rows};
+        const data = {"result" : result.rows, "visits" : visits};
         response.render('allartists', data);
     }
   })
@@ -83,6 +87,8 @@ app.get('/artists', (request, response) => {
 
 // Show single artist
 app.get('/artists/:id/songs', (request, response) => {
+    let visits = request.cookies.visits;
+
     console.log('redirect works');
     // Get ID of artist
     const id = request.params.id;
@@ -125,7 +131,7 @@ app.get('/artists/:id/songs', (request, response) => {
     })
 
     Promise.all([getArtistDetails, getSongDetails]).then(() => {
-        const data = {"artistDetails" : artistDetails, "allSongDetails" : allSongDetails};
+        const data = {"artistDetails" : artistDetails, "allSongDetails" : allSongDetails, "visits" : visits};
         response.render('singleartist', data);
     })
 
@@ -138,14 +144,17 @@ Creating a new Song
 */
 
 app.get('/artists/:id/songs/new', (request, response) => {
+    let visits = request.cookies.visits;
 
-    const data = {"artistID" : request.params.id};
+    const data = {"artistID" : request.params.id, "visits" : visits};
 
     response.render('newsong', data);
 })
 
 // Add song into database
 app.post('/artists/:id/songs', (request, response) => {
+    let visits = request.cookies.visits;
+
     const id = request.params.id;
 
     const songDetails = request.body;
@@ -224,11 +233,16 @@ Creating a new Artist
 */
 
 app.get('/artists/new', (request, response) => {
+    let visits = request.cookies.visits;
 
-    response.render('newartist');
+    const data = {'visits' : visits};
+
+    response.render('newartist', data);
 })
 
 app.post('/artists', (request, response) => {
+    let visits = request.cookies.visits;
+
     // query database for all artists
     let queryString = 'insert into artists (name, photo_url, nationality) values ($1, $2, $3) returning *';
 
@@ -270,7 +284,7 @@ app.get('/playlist', (request,response) => {
             response.send('query error');
         }
         else{
-            const data = {"result" : result.rows};
+            const data = {"result" : result.rows, 'visits' : visits};
             response.render('allplaylists', data);
         }
     })
@@ -280,10 +294,14 @@ app.get('/playlist', (request,response) => {
 ////////////
 //////////// Creating new Playlist
 app.get('/playlist/new', (request, response) => {
+    let visits = request.cookies.visits;
+
+    const data = {'visits' : visits};
     response.render('newplaylist');
 })
 
 app.post('/playlists/show', (request, response) => {
+    let visits = request.cookies.visits;
     const artistName = request.body.playlist;
 
     let queryString = 'insert into playlist (playlist_name) values ($1) returning *'
@@ -312,6 +330,8 @@ Add song to playlist from exisitng database
 ********************/
 
 app.get('/playlist/:id/newsong', (request, response) => {
+    let visits = request.cookies.visits;
+
     const id = request.params.id;
 
     let playlistDetails;
@@ -373,7 +393,7 @@ app.get('/playlist/:id/newsong', (request, response) => {
 
         await Promise.all([getPlaylistDetails, getAllSongs, getAllArtists]);
 
-        const data = {"playlistDetails" : playlistDetails, "songsDetails" : allSongsDetails, "artistsDetails" : allArtistsDetails };
+        const data = {"playlistDetails" : playlistDetails, "songsDetails" : allSongsDetails, "artistsDetails" : allArtistsDetails, 'visits' : visits };
 
         response.render('addsong', data);
     }
@@ -383,6 +403,7 @@ app.get('/playlist/:id/newsong', (request, response) => {
 
 
 app.post('/playlist/:id', (request, response) => {
+    let visits = request.cookies.visits;
 
     const id = request.params.id;
 
@@ -450,7 +471,7 @@ app.post('/playlist/:id', (request, response) => {
                     response.send('query error');
                 }
                 else{
-                    const data = {"playlistSongs" : result.rows, "playlistDetails" : playlistDetails};
+                    const data = {"playlistSongs" : result.rows, "playlistDetails" : playlistDetails, 'visits' : visits};
                     response.render('singleplaylist', data);
                 }
             })
@@ -475,6 +496,8 @@ Show individual playlist
 ==========================
 ***********************/
 app.get('/playlist/:id', (request, response) => {
+    let visits = request.cookies.visits;
+
     const id = request.params.id;
 
     let playlistDetails;
@@ -529,7 +552,7 @@ app.get('/playlist/:id', (request, response) => {
         })
 
         Promise.all([getPlaylistDetails, getSongDetails]).then(() => {
-            const data = {"playlistSongs" : songDetails, "playlistDetails" : playlistDetails};
+            const data = {"playlistSongs" : songDetails, "playlistDetails" : playlistDetails, 'visits' : visits};
 
             response.render('singleplaylist', data);
         });

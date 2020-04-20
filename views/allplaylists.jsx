@@ -8,6 +8,8 @@ class Allplaylists extends React.Component {
     // Javascript stuff
     const data = this.props.result;
 
+    const visits = this.props.visits;
+
     const allPlaylist = data.map((el, i) => {
       const url = `/playlist/${el.id}`
 
@@ -27,6 +29,9 @@ class Allplaylists extends React.Component {
         <body>
           <div>
             <h1>All Playlists</h1>
+          </div>
+          <div>
+            <p>You've been here {visits} times</p>
           </div>
           <div>
             <table class="table table-dark">

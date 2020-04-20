@@ -43,6 +43,7 @@ class Allartists extends React.Component {
                         "color" : "black"
                     };
     // Javascript stuff
+    const visits = this.props.visits;
 
     const allArtists = this.props.result.map(el => {
 
@@ -65,8 +66,15 @@ class Allartists extends React.Component {
         <head />
         <body style={background}>
           <div style={heading}>
+            <div>
             <h1 style={title}>All Artists</h1>
+            </div>
+            <div>
+              <p>You've been here {visits} times</p>
+            </div>
+            <div>
             {newArtist}
+            </div>
           </div>
           <div style={artistLayout}>
             {allArtists}
