@@ -6,7 +6,7 @@ class NewPlaylistSong extends React.Component {
     const addSongLink = "/playlist/" + this.props.playlistInfo.id;
     const viewCount = this.props.visits;
     const songOptionElements = this.props.songInfoArray.map(song => {
-        return <option value={song.songid}>Song: {song.songtitle} &nbsp; || &nbsp; Artist: {song.artistname}  &nbsp;  ||  &nbsp; Album: {song.albumname}</option>
+        return <option value={[song.songid, song.songtitle]}>Song: {song.songtitle} &nbsp; || &nbsp; Artist: {song.artistname}  &nbsp;  ||  &nbsp; Album: {song.albumname}</option>
     })
 
     return (

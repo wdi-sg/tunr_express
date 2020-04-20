@@ -262,6 +262,12 @@ app.post('/playlist', (req, res) => {
     })
 })
 
+//Display user's playlist
+app.get('/playlist/user', (req, res) => {
+    const data = {songArray: JSON.parse(req.cookies['userPlaylist'])}
+    res.render('userplaylist', data)
+})
+
 //Display playlist
 app.get('/playlist/:id', (req, res) => {
     const values = [req.params.id]
@@ -317,7 +323,19 @@ app.get('/playlist/:id/newsong', (req, res) => {
 
 //POST request for adding a song to a playlist
 app.post('/playlist/:id', (req, res) => {
-    const values = [req.body.songid, req.params.id]
+    var body = req.body.songid.split(',')
+
+    let userPlaylist = req.cookies['userPlaylist'];
+    console.log(userPlaylist)
+    if( userPlaylist === undefined ){
+        userPlaylist = []
+    } else {
+        userPlaylist = JSON.parse(userPlaylist)
+    }
+    userPlaylist.push(body[1])
+    res.cookie('userPlaylist', JSON.stringify(userPlaylist));
+
+    const values = [body[0], req.params.id]
     const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)"
 
     pool.query(queryString, values, (err, result) => {
@@ -330,6 +348,7 @@ app.post('/playlist/:id', (req, res) => {
         }
     })
 })
+
 
 /**
  * ===================================
