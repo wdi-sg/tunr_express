@@ -38,6 +38,9 @@ app.get('/', (req, res) => {
 const artists = require('./modules/routeartists.js');
 app.use('/artists', artists);
 
+const playlists = require('./modules/routeplaylists.js');
+app.use('/playlists', playlists);
+
 // start server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Listening on port " + PORT));
