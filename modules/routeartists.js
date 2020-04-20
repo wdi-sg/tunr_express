@@ -34,6 +34,17 @@ router.post('/new', async function (req, res) {
   res.redirect(`/artists/${newArtistId[0].id}`);
 });
 
+router.get('/testerror', (req, res) => {
+  let data = {
+    errorinfo: {
+      line1: "HERE",
+      line2: "ANOTHER",
+      line3: "YEAH OKAY"
+    }
+  };
+  res.render('errorpage', data);
+});
+
 router.get('/:id', async function (req, res) {
   let artistId = [req.params.id];
   let artistQuery =
