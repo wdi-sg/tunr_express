@@ -10,17 +10,19 @@ class ArtistDB extends Database {
   }
 
   async findByID(id) {
-    const res = this.findByColumn({id})
+
+    const selections = "*";
+    const where = {id}
+    const res = this.findByColumns({id})
   }
 
   /*
-  @param  {number} id
-  @return {Artist}
+  @param {id:1, name:'dfd'}
+  @return this
   */
-  async findByColumn ([{ column, val }]) {
+  async findByColumns (selections,where) {
     const tableName = Artist.constructor.name.toLowerCase()
-    let text = select(tableName, '*',  )
-
+    let text = select(tableName, selections, where )
   }
 }
 
