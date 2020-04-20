@@ -7,6 +7,7 @@ class Head extends React.Component {
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/bootstrap-checkbox-radio-list-group-item.min.css" />
+        <title>{this.props.title}</title>
       </head>
     );
   }
