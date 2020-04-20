@@ -20,7 +20,7 @@ const addNewArtist =  ((req, res) => {
 
 const showArtist = ((req, res) => {
   const {id} = req.params
-  const artist = db.find(id)
+  const artist = db.findByID(id)
   res.json('show one artist')
 })
 

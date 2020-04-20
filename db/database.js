@@ -33,9 +33,7 @@ class Database {
     return this._execute(text, values)
   }
 
-  _makePlaceHolders (vals) {
-    return vals.map((v, i) => `\$${i + 1}`)
-  }
+
 
 }
 
