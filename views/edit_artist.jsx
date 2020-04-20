@@ -37,7 +37,7 @@ class Edit_Artist extends React.Component {
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                        <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                     </div>
                 </form>
             </div>

@@ -10,7 +10,9 @@ class Show_Playlist extends React.Component {
             return (<li>{updatedSong.title}</li>)
         })
 
-        const editPlaylist = '/playlists/' + playlistId + '/newsong';
+        const addRemoveSongsToPlaylist = '/playlists/' + playlistId + '/newsong';
+        const deletePlaylist = '/playlists/' + playlistId + '?_method=delete';
+        const playlistPage = '/playlists/' + playlistId;
 
         return (
             <html>
@@ -25,7 +27,7 @@ class Show_Playlist extends React.Component {
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-info'><a href={editPlaylist} className='text-white'>Add/ Remove Songs</a></button>
+                        <button className='btn btn-primary'><a href={addRemoveSongsToPlaylist} className='text-white'>Add/ Remove Songs</a></button>
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
@@ -39,10 +41,15 @@ class Show_Playlist extends React.Component {
                     <br/>
                     <div className='row justify-content-center'>
                         <div className='col-3 d-flex justify-content-end'>
-                            <button className='btn btn-dark'><a href='/playlists/' className='text-white text-decoration-none'>Back to Playlist List</a></button>
+                            <button className='btn btn-secondary'><a href='/playlists/' className='text-white text-decoration-none'>Back to Playlist List</a></button>
+                        </div>
+                        <div className='col-2 d-flex justify-content-center'>
+                            <form method='POST' action={deletePlaylist}>
+                                <input className='btn btn-danger' type='submit' value='Delete Playlist'/>
+                            </form>
                         </div>
                         <div className='col-3'>
-                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                            <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                         </div>
                     </div>
                 </div>

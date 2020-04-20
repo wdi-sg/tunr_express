@@ -22,7 +22,7 @@ class All_Songs extends React.Component {
                         </div>
                         <br/>
                         <div className='row justify-content-center'>
-                            <button className='btn btn-success'><a href='#' className='text-white text-decoration-none'>Add to Playlist</a></button>
+                            <button className='btn btn-secondary'><a href='/playlists/addsong' className='text-white text-decoration-none'>Add to Playlist</a></button>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@ class All_Songs extends React.Component {
                             <button className='btn btn-warning'><a href='/artists/list' className='text-dark text-decoration-none'>List of Artists</a></button>
                         </div>
                         <div className='col-6'>
-                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                            <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                         </div>
                     </div>
                     <br/>
@@ -53,7 +53,7 @@ class All_Songs extends React.Component {
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                        <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                     </div>
                     <br/>
                 </div>

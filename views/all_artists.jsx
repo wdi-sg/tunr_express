@@ -41,7 +41,7 @@ class All_Artists extends React.Component {
                             <button className='btn btn-warning'><a href='/artists/songs/' className='text-dark text-decoration-none'>List of Songs</a></button>
                         </div>
                         <div className='col-2'>
-                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                            <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                         </div>
                     </div>
                     <br/>

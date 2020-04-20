@@ -123,7 +123,6 @@ app.get('/playlists/new', (request, response) => {
 })
 
 app.post('/playlists/', (request, response) => {
-    console.log(request.body)
     const newPlaylistName = request.body.name;
     let queryInsertString = "INSERT INTO playlist (name) VALUES ('" + newPlaylistName + "')";
 
@@ -150,9 +149,9 @@ app.post('/playlists/', (request, response) => {
     })
 })
 
-/////////////////////////////////
-////  Add song to playlist  ////
-///////////////////////////////
+////////////////////////////////////////////////
+////  Add / Remove songs to/from playlist  ////
+//////////////////////////////////////////////
 app.get('/playlists/:id/newsong', (request, response) => {
     let queryPlaylistString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
 
@@ -205,7 +204,6 @@ app.post('/playlists/:id', (request, response) => {
     let queryString = 'DELETE FROM playlist_song WHERE playlist_id=' + request.params.id;
 
     pool.query(queryString, (err, result) => {
-
         selectedSongsId.forEach(selectedSongId => {
             queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ('" + selectedSongId + "', " + "'" + request.params.id + "')"
 
@@ -230,6 +228,42 @@ app.post('/playlists/:id', (request, response) => {
         })
     })
 })
+
+///////////////////////////
+////  Edit playlist  /////
+/////////////////////////
+app.get('/playlists/:id/edit', (request, response) => {
+    let queryString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when editing playlist 😢');
+        } else {
+            const data = {
+                playlistId: result.rows[0].id,
+                playlistName: result.rows[0].name
+            }
+            response.render('edit_playlist', data)
+        }
+    })
+})
+
+app.put('/playlists/:id', (request, response) => {
+    let updatedPlaylistName = request.body.name;
+
+    let queryString = "UPDATE playlist SET name='" + updatedPlaylistName + "' WHERE id=" + request.params.id;
+
+    pool.query(queryString, (err, result) => {
+        if (err) {
+            console.log('dbQuery Error', err.stack);
+            response.send('An error occurred when updating playlist name 😢');
+        } else {
+            response.render('show_playlist');
+        }
+    })
+})
+
 
 /////////////////////////////////
 ////  Individual playlist  /////
@@ -262,6 +296,17 @@ app.get('/playlists/:id', (request, response) => {
                 }
             })
         }
+    })
+})
+
+///////////////////////////
+////  Delete playlist  ///
+/////////////////////////
+app.delete('/playlists/:id', (request, response) => {
+    let queryString = 'DELETE FROM playlist WHERE id=' + request.params.id;
+
+    pool.query(queryString, (err, result) => {
+        response.redirect('/playlists/');
     })
 })
 

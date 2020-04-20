@@ -35,10 +35,10 @@ class Song extends React.Component {
                     <br/>
                     <div className='row justify-content-center'>
                         <div className='col-2 d-flex justify-content-center'>
-                            <button className='btn btn-dark'><a href={artistPage} className='text-white text-decoration-none'>Artist Songs</a></button>
+                            <button className='btn btn-secondary'><a href={artistPage} className='text-white text-decoration-none'>Artist Songs</a></button>
                         </div>
                         <div className='col-2'>
-                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                            <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                         </div>
                     </div>
                     <br/>

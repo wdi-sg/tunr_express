@@ -1,56 +1,46 @@
-const React = require('react');
+const React = require("react");
+
 class Edit_Playlist extends React.Component {
-    render () {
+  render() {
 
-        const playlistId = this.props.playlistId;
-        const playlistName = this.props.playlistName;
-        const addedSongs = this.props.addedSongs;
+    const playlistId = this.props.playlistId;
+    const playlistName = this.props.playlistName;
 
-        const addedSongsList = addedSongs.map(addedSong => {
-            return (<li>{addedSong.title}</li>)
-        })
+    const updatePlaylistName = '/playlists/' + playlistId + '?_method=put';
+    const playlistPage = '/playlists/' + playlistId;
 
-        const addSongToPlaylist = '/playlists/' + playlistId + '/newsong';
-        const editPlaylist = '/playlists/' + playlistId + '/edit';
-
-        return (
-            <html>
-            <head>
-            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous"/>
-            </head>
-            <body>
+    return (
+      <html>
+        <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous"/>
+        </head>
+        <body>
+            <br/>
+            <div className='container'>
+                <h1 className='text-center'>Edit Playlist</h1>
                 <br/>
-                <div className='container'>
+                <form method='POST' action={updatePlaylistName}>
                     <div className='row justify-content-center'>
-                        <h1 className='text-center'>Edit {playlistName}</h1>
+                        <p>Name <input type='text' name='name' value={playlistName} placeholder='Enter name'/>
+                        </p>
+                    </div>
+                    <div className='row justify-content-center'>
+                        <p className='text-center text-secondary'>You can add or remove songs from the playlist page.</p>
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-info'><a href={addSongToPlaylist} className='text-white'>Add/ Remove Songs</a></button>
+                        <input type='submit' className='btn btn-primary' value='Submit'/>
                     </div>
-                    <br/>
-                    <div className='row justify-content-center'>
-                        <h2 className='text-center'>Songs</h2>
-                    </div>
-                    <div className='row justify-content-center'>
-                        <ol>
-                            {addedSongsList}
-                        </ol>
-                    </div>
-                    <br/>
-                    <div className='row justify-content-center'>
-                        <div className='col-3 d-flex justify-content-end'>
-                            <button className='btn btn-dark'><a href='/playlists/' className='text-white text-decoration-none'>Back to Playlist List</a></button>
-                        </div>
-                        <div className='col-3'>
-                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
-                        </div>
-                    </div>
+                </form>
+                <br/>
+                <div className='row justify-content-center'>
+                    <button className='btn btn-secondary'><a href={playlistPage} className='text-white text-decoration-none'>Back to Playlist</a></button>
                 </div>
-            </body>
-            </html>
-        )
-    }
+            </div>
+        </body>
+      </html>
+    );
+  }
 }
 
 module.exports = Edit_Playlist;

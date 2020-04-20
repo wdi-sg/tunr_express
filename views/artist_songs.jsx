@@ -39,13 +39,13 @@ class Artist_Songs extends React.Component {
                     <br/>
                     <div className='row justify-content-center'>
                         <div className='col-2 d-flex justify-content-end'>
-                            <button className='btn btn-dark'><a href='/artists/list' className='text-white text-decoration-none'>Back to Artists List</a></button>
+                            <button className='btn btn-secondary'><a href='/artists/list' className='text-white text-decoration-none'>Back to Artists List</a></button>
                         </div>
                         <div className='col-2 d-flex justify-content-center'>
-                            <button className='btn btn-primary'><a href={addSongPage} className='text-white text-decoration-none'>Add Song</a></button>
+                            <button className='btn btn-warning'><a href={addSongPage} className='text-dark text-decoration-none'>Add Song</a></button>
                         </div>
                         <div className='col-2 d-flex justify-content-start'>
-                            <button className='btn btn-secondary'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                            <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                         </div>
                     </div>
                     <br/>

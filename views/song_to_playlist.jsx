@@ -64,7 +64,7 @@ class Song_To_Playlist extends React.Component {
                             <br/>
                             <div className='row justify-content-center'>
                                 <div className='col-2 d-flex justify-content-end'>
-                                    <button className='btn btn-dark'><a href={playlistPage} className='text-white'>Back to Playlist</a></button>
+                                    <button className='btn btn-secondary'><a href={playlistPage} className='text-white'>Back to Playlist</a></button>
                                 </div>
                                 <div className='col-2'>
                                     <input type="submit" className='btn btn-primary' value="Submit"/>
