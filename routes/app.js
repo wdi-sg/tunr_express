@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const session = require('express-session');
 
 // Initialise postgres client
 
@@ -22,6 +23,18 @@ app.use(express.urlencoded({
 
 app.use(methodOverride('_method'));
 
+// Set session
+app.use(session({
+    secret: 'tunr!secret',
+    resave: false,
+    saveUninitialized: false,
+    name: 'sid',
+    cookie: {
+        maxAge: 86400000,
+        sameSite: true
+    }
+}))
+
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -33,11 +46,14 @@ app.engine('jsx', reactEngine);
 
 const artistsRoutes = require('./artists-routes.js');
 const playlistsRoutes = require('./playlists-routes.js');
+const authRoutes = require('./auth-routes.js');
 const errorController = require('../controllers/404-controller.js');
 
 const db = require('../util/database.js');
 
 app.use(express.static(path.join(__dirname, '../public/')));
+
+app.use(authRoutes);
 
 app.get('/', async (req, res) => {
 

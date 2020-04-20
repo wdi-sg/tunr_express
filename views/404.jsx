@@ -4,7 +4,9 @@ import Head from './page-components/head-component';
 import Header from './page-components/header-component';
 
 class NotFoundPage extends React.Component {
+
     render() {
+
         return (
             <html>
                 <Head />
