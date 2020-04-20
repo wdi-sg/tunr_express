@@ -21,11 +21,10 @@ class SongView extends React.Component {
 
                 <h4>{song.title}</h4>
                 <h6>{song.album}</h6>
-                <img src={song.artwork} width="200px" />
-                <a href={song.preview_link} target="_blank"
-                   className="btn btn-info btn-block my-3">
-                  Preview Song
-                </a>
+                <img src={song.artwork} width="200px" /><br />
+                <audio controls src={song.preview_link}>
+                  No audio support.
+                </audio>
 
                 <a href={artistSongsLink}
                    className="btn btn-info btn-block my-3">
