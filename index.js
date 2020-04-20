@@ -28,13 +28,13 @@ pool.on("error", function (err) {
   console.log("IDLE CLIENT ERROR", err.message, err.stack);
 });
 
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
-app.use(express.static('public'))
+app.use(express.static("public"));
 
 let viewNoAt50;
-let timeAt50; 
+let timeAt50;
 
 //----------------------------------
 //-------------ROUTES---------------
@@ -47,8 +47,6 @@ function parseSingleQuote(obj) {
   return obj;
 }
 
-
-
 //VIEW HOME PAGE
 app.get("/", (request, response) => {
   //Set view count cookie
@@ -57,13 +55,18 @@ app.get("/", (request, response) => {
   console.log(request.cookies);
   console.log(request.cookies.viewCountBrow);
 
-  if (!request.cookies || !request.cookies.viewCountBrow || !request.cookies.timestampBrow) {
-    viewCount = 1; 
-  }
-  else if (timestamp > parseInt(request.cookies.timestampBrow) + 604800000 && request.cookies.viewCountBrow >= 50) {
+  if (
+    !request.cookies ||
+    !request.cookies.viewCountBrow ||
+    !request.cookies.timestampBrow
+  ) {
+    viewCount = 1;
+  } else if (
+    timestamp > parseInt(request.cookies.timestampBrow) + 604800000 &&
+    request.cookies.viewCountBrow >= 50
+  ) {
     viewCount = 50;
-  }
-  else {
+  } else {
     viewCount = parseInt(request.cookies.viewCountBrow);
     viewCount = viewCount + 1;
   }
@@ -214,7 +217,7 @@ app.get("/songs/:sid/add", (request, response) => {
       pool.query(queryText, (err, result) => {
         let obj = {
           plArr: result.rows,
-          songId: songId
+          songId: songId,
         };
         response.render("song-add-playlist", obj);
       });
@@ -223,7 +226,7 @@ app.get("/songs/:sid/add", (request, response) => {
       pool.query(queryText, (err, result) => {
         let obj = {
           plArr: result.rows,
-          songId: songId
+          songId: songId,
         };
         console.log(obj);
         response.render("song-add-playlist", obj);
@@ -250,7 +253,7 @@ app.get("/songs/:sid", (request, response) => {
 app.post("/playlist", (request, response) => {
   console.log(request.body);
   let obj = request.body;
-  for (let i=0; i<obj.playlist_id.length; i++) {
+  for (let i = 0; i < obj.playlist_id.length; i++) {
     let queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${obj.playlist_id[i]}, ${obj.song_id}) RETURNING *`;
     pool.query(queryText, (err, result) => {
       console.log(result.rows);
@@ -371,7 +374,26 @@ app.get("/playlist/:plid", (request, response) => {
 
 //DISPLAY COOKIE PLAYLIST
 app.get("/cookieplaylist", (request, response) => {
-
+  if (!request.cookies || !request.cookies.cookiepl) {
+    response.send("The cookie playlist has no songs yet.");
+  } else {
+    let cookiepl = request.cookies.cookiepl;
+    console.log(cookiepl);
+    let cookieplArr = cookiepl.split("-");
+    let string = `id = ${parseInt(cookieplArr[1])}`;
+    for (let i = 2; i < cookieplArr.length; i++) {
+      string = string + ` OR id = ${parseInt(cookieplArr[i])}`;
+    }
+    queryText = `SELECT * FROM songs WHERE ${string}`;
+    console.log(queryText);
+    pool.query(queryText, (err, result) => {
+      console.log(result.rows);
+      let obj = {
+        songsArr: result.rows
+      };
+      response.render("display-cookiepl", obj);
+    });
+  }
 });
 
 //------------------------------
