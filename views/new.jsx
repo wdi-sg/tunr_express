@@ -19,6 +19,8 @@ class New extends React.Component {
                 </p>
                 <button type = "submit">Submit</button>
             </form>
+            <p>Number of visits:</p>
+                 <p>{this.props.badge}</p>
         </body>
       </html>
     );

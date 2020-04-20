@@ -12,6 +12,8 @@ class IndexSong extends React.Component {
              <body>
                  <h1>Song Title:</h1>
                  <ol>{songList}</ol>
+                 <p>Number of visits:</p>
+                 <p>{this.props.badge}</p>
              </body>
          </html>);
      }

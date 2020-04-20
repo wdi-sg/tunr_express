@@ -20,7 +20,8 @@ var React = require("react");
 
                <button type="submit" value="Submit" className="btn btn-primary">Add</button>
              </form>
-
+             <p>Number of visits:</p>
+            <p>{this.props.badge}</p>
          </body>
        </html>
      );

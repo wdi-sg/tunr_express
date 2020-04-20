@@ -12,6 +12,8 @@ class IndexPlaylist extends React.Component {
              <body>
                  <h1>Playlist Name:</h1>
                  <ol>{playlistList}</ol>
+                 <p>Number of visits:</p>
+                 <p>{this.props.badge}</p>
              </body>
          </html>);
      }

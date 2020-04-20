@@ -13,6 +13,8 @@ class Index extends React.Component {
              <body>
                  <h1>Artists:</h1>
                  <ul>{artistList}</ul>
+                 <p>Number of visits:</p>
+                 <p>{this.props.badge}</p>
              </body>
          </html>);
      }

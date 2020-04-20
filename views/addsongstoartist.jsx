@@ -20,6 +20,8 @@ class AddSongToArtist extends React.Component {
              <br/><br/>
              <input type='submit' value='Submit'/>
            </form>
+           <p>Number of visits:</p>
+            <p>{this.props.badge}</p>
          </body>
        </html>
        );

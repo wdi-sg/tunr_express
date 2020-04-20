@@ -24,7 +24,12 @@ var React = require("react");
                      <h3>Nationality</h3>
                      <p>{this.props.nationality}</p>
                  </div>
+
            </div>
+           <div>
+                    <p>Number of visits:</p>
+                    <p>{this.props.badge}</p>
+                </div>
          </body>
        </html>
      );

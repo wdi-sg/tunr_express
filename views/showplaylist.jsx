@@ -17,6 +17,8 @@ var React = require("react");
                      <p>{this.props.name}</p>
                  </div>
             </div>
+            <p>Number of visits:</p>
+            <p>{this.props.badge}</p>
          </body>
        </html>
      );

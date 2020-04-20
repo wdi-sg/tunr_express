@@ -13,6 +13,8 @@ var React = require("react");
          <ul>
          {listSongs}
          </ul>
+         <p>Number of visits:</p>
+                    <p>{this.props.badge}</p>
          </body>
        </html>
      );

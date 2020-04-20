@@ -34,19 +34,39 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // Routes
 
 //welcome page
 app.get('/', (request, response) => {
+  var visits = request.cookies['visits'];
 
-  response.render('home');
+// see if there is a cookie
+if( visits === undefined ){
+
+  // set a default value if it doesn't exist
+  visits = 1;
+}else{
+
+  // if a cookie exists, make a value thats 1 bigger
+  visits = parseInt( visits ) + 1;
+}
+response.cookie('visits', visits);
+const data = {
+    badge: visits
+}
+  response.render('home',data);
+  //response.send('visits ' + visits);
 });
 
 //ARTITS
 
 //display all arists
 app.get('/artists/',(request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
     const queryString = 'SELECT name from artists';
     pool.query(queryString, (err, indexResult) => {
 
@@ -57,8 +77,10 @@ app.get('/artists/',(request,response)=>{
         console.log('query result:', indexResult);
         //response.send(indexResult.rows);
         const indexData = {
-            artists: indexResult.rows
+            artists: indexResult.rows,
+            badge: visits
         };
+
         response.render('index',indexData);
 
 
@@ -69,13 +91,23 @@ app.get('/artists/',(request,response)=>{
 
 //create form for adding new artist
 app.get('/artists/new', (request, response) => {
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
+
+response.cookie('visits', visits);
+const data = {
+    badge: visits
+}
   // respond with HTML page with form to create new song
-  response.render('new');
+  response.render('new',data);
 });
 
 //list single artist by id
 app.get('/artists/:id',(request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
     const queryString = 'SELECT * from artists WHERE id=' + request.params.id;
+
     pool.query(queryString, (serr, singleResult) => {
 
       if (serr) {
@@ -83,11 +115,13 @@ app.get('/artists/:id',(request,response)=>{
         response.send( 'query error' );
       } else {
         console.log('query result:', singleResult);
+        console.log(visits);
         //response.send(singleResult.rows);
         const singleData = {
             name: singleResult.rows[0].name,
             photo_url: singleResult.rows[0].photo_url,
-            nationality: singleResult.rows[0].nationality
+            nationality: singleResult.rows[0].nationality,
+            badge: visits
         };
         response.render('show',singleData);
       }
@@ -95,11 +129,14 @@ app.get('/artists/:id',(request,response)=>{
 });
 
 app.get('/artists/:id/songs', (request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
     let queryText = 'SELECT * FROM songs WHERE artist_id=$1';
     let values = [request.params.id];
     pool.query(queryText, values, (err, artistSongResult)=>{
         const data = {
-            songs: artistSongResult.rows
+            songs: artistSongResult.rows,
+            badge: visits
         }
         response.render('artistsongs', data);
     })
@@ -126,6 +163,8 @@ app.post('/artists',(request,response)=>{
 
 //render form to add songs to artist
 app.get('/artists/:id/songs/new', (request, response) => {
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
   const values = [request.params.id];
   const query = 'SELECT * FROM artists WHERE id=$1';
     pool.query(query, values, (error, artistSongResult) => {
@@ -134,7 +173,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
             response.send( 'query error' );
         } else {
            const artist = artistSongResult.rows[0];
-           response.render('addsongstoartist', {'artist': artist});
+           response.render('addsongstoartist', {'artist': artist, badge: visits});
         }
     })
 });
@@ -165,6 +204,8 @@ app.post('/artists/:id/songs', (request, response) => {
 
 //list all songs
 app.get('/songs/',(request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
     const queryString = 'SELECT title from songs';
     pool.query(queryString, (serr, indexsongResult) => {
 
@@ -175,7 +216,8 @@ app.get('/songs/',(request,response)=>{
         console.log('query result:', indexsongResult);
         //response.send(indexResult.rows);
         const indexData = {
-            songs: indexsongResult.rows
+            songs: indexsongResult.rows,
+            badge: visits
         };
         response.render('indexsong',indexData);
 
@@ -186,12 +228,19 @@ app.get('/songs/',(request,response)=>{
 
 //create form for adding new song
 app.get('/songs/new', (request, response) => {
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
+    const data = {
+        badge: visits
+    }
   // respond with HTML page with form to create new song
-  response.render('newsong');
+  response.render('newsong',data);
 });
 
 //list single song by id
 app.get('/songs/:id',(request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
     const queryString = 'SELECT title,album from songs WHERE id=' + request.params.id;
     pool.query(queryString, (serr, singleSongResult) => {
 
@@ -203,7 +252,8 @@ app.get('/songs/:id',(request,response)=>{
         //response.send(singleResult.rows);
         const singleData = {
             title: singleSongResult.rows[0].title,
-            album: singleSongResult.rows[0].album
+            album: singleSongResult.rows[0].album,
+            badge: visits
         };
         response.render('showsong',singleData);
       }
@@ -231,6 +281,8 @@ app.post('/songs',(request,response)=>{
 
 //list all playlists
 app.get('/playlist/',(request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
     const queryString = 'SELECT name from playlist';
     pool.query(queryString, (serr, indexPlaylistResult) => {
 
@@ -241,7 +293,8 @@ app.get('/playlist/',(request,response)=>{
         console.log('query result:', indexPlaylistResult);
         //response.send(indexResult.rows);
         const indexData = {
-            playlists: indexPlaylistResult.rows
+            playlists: indexPlaylistResult.rows,
+            badge: visits
         };
         response.render('indexplaylist',indexData);
       }
@@ -252,8 +305,13 @@ app.get('/playlist/',(request,response)=>{
 
 // form to add new playlist
 app.get('/playlist/new', (request, response) => {
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
+    const data = {
+        badge: visits
+    }
   // respond with HTML page with form to create new song
-  response.render('newplaylist');
+  response.render('newplaylist',data);
 });
 /*
 //add a new song to playlist by id
@@ -294,6 +352,8 @@ app.post('/playlist/:id', (request, response) => {
 
 //Form to add a song to the playlist
  app.get('/playlist/:id/newsong', (req, res) => {
+    var visits = req.cookies['visits'];
+    res.cookie('visits', visits);
      const values = [req.params.id]
      const queryString = "SELECT * FROM playlist WHERE id = $1"
 
@@ -304,6 +364,7 @@ app.post('/playlist/:id', (request, response) => {
              res.send('query error');
          } else {
              const secondQueryString = "SELECT songs.id AS songid, songs.title AS songtitle, songs.album AS albumname, artists.name AS artistname FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)"
+
              pool.query(secondQueryString, (err, result2) => {
                  if (err){
                      console.error('query error', err.stack);
@@ -312,7 +373,7 @@ app.post('/playlist/:id', (request, response) => {
                  } else {
                      const songInfoArray = result2.rows;
                      const playlistInfo = result.rows[0];
-                     const data = {songInfoArray, playlistInfo}
+                     const data = {songInfoArray, playlistInfo,badge:visits}
                      res.render('addtoplaylist', data);
                  }
              })
@@ -356,6 +417,8 @@ app.post('/playlist',(request,response)=>{
 
 //list single playlist by id
 app.get('/playlist/:id',(request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
     const queryString = 'SELECT name from playlist WHERE id=' + request.params.id;
     pool.query(queryString, (serr, singlePlaylistResult) => {
 
@@ -366,7 +429,8 @@ app.get('/playlist/:id',(request,response)=>{
         console.log('query result:', singlePlaylistResult);
         //response.send(singleResult.rows);
         const singleData = {
-            name: singlePlaylistResult.rows[0].name
+            name: singlePlaylistResult.rows[0].name,
+            badge: visits
         };
         response.render('showplaylist',singleData);
       }
