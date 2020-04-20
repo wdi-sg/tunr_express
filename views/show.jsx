@@ -29,7 +29,7 @@ var React = require("react");
            <div>
                     <p>Number of visits:</p>
                     <p>{this.props.badge}</p>
-                </div>
+            </div>
          </body>
        </html>
      );
