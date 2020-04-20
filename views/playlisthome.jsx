@@ -20,6 +20,7 @@ class Playlisthome extends React.Component {
           <div>
             <a href="/artists">Back to artist page</a>
           </div>
+          Visit Counter: {String(this.props.visits)}
         </body>
       </html>
     );

@@ -67,7 +67,8 @@ app.get('/artists', (request, response) => {
     }else {
       console.log(res.rows);
       let data = {
-        "artists": res.rows
+        "artists": res.rows,
+        "visits": visits
       };
       response.render('home', data);
     }
@@ -109,7 +110,8 @@ app.get('/artists/:id/songs', (request, response) => {
     }else {
       console.log(result.rows);
       let data = {
-        "songs": result.rows
+        "songs": result.rows,
+        "visits": request.cookies['visits']
       };
       response.render('songs', data);
     }
@@ -127,7 +129,8 @@ app.get('/artists/:id', (request, response) => {
     }else {
       console.log(result.rows);
       let data = {
-        "artist": result.rows
+        "artist": result.rows,
+        "visits": request.cookies['visits']
       }
       response.render('id', data);
     }
@@ -151,7 +154,7 @@ app.get('/playlist/:id/newsong', (request, response) => {
       console.log(result.rows);
       let data = {
         "songs": result.rows,
-        "id": id
+        "id": id,
       };
       response.render('playlistsongsadd', data);
     }
@@ -170,7 +173,8 @@ app.get('/playlist/:id/', (request, response) => {
       console.log(result.rows);
       let data = {
         "songs": result.rows,
-        "id": id
+        "id": id,
+        "visits": request.cookies['visits']
       };
       response.render('playlistsongs', data);
     }
@@ -187,7 +191,8 @@ app.get('/playlist', (request, response) => {
     }else {
       console.log(res.rows);
       let data = {
-        "playlists": res.rows
+        "playlists": res.rows,
+        "visits": request.cookies['visits']
       };
       response.render('playlisthome', data);
     }

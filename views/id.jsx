@@ -17,7 +17,9 @@ class Id extends React.Component {
               <p>Nationality: { this.props.artist[0].nationality}</p>
               <div><a href={songLink}>All songs by artist</a></div>
               <div><a href={editLink}>Edit Artist Details</a></div>
+              <a href="/artists">Back to home page</a>
             </div>
+            Visit Counter: {String(this.props.visits)}
           </div>
         </body>
       </html>

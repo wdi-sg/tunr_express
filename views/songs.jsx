@@ -13,6 +13,7 @@ class Songs extends React.Component {
           <ul>
             {allSongs}
           </ul>
+            Visit Counter: {String(this.props.visits)}
         </body>
       </html>
     );

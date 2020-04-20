@@ -20,6 +20,7 @@ class Home extends React.Component {
           <div>
             <a href="/playlist">Visit your playlists!</a>
           </div>
+          Visit Counter: {String(this.props.visits)}
         </body>
       </html>
     );

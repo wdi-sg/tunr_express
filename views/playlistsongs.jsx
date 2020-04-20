@@ -14,7 +14,13 @@ class Playlistsongs extends React.Component {
           <ul>
             {allSongs}
           </ul>
-          <a href={addSongLink}>Add a new song into playlist</a>
+          <div>
+            <a href={addSongLink}>Add a new song into playlist</a>
+          </div>
+          <div>
+            <a href="/playlist">Back to playlist</a>
+          </div>
+          Visit Counter: {String(this.props.visits)}
         </body>
       </html>
     );
