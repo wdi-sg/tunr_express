@@ -188,5 +188,163 @@ let onClose = function(){
   })
 };
 
+app.get('/playlists/', (request, response) => {
+  response.send('under construciton');
+});
+
+app.get('/playlists/new', (request, response) => {
+  pool.query('SELECT * FROM songs', (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const songList = result.rows;
+      response.render('new-playlist', {"songList": songList});
+    }
+  })
+});
+
+app.get('/playlists/:id/', (request, response) => {
+  const playlistId = request.params.id;
+
+  pool.query('SELECT * FROM playlist_song WHERE playlist_id=$1', [playlistId], (error, result) => {
+    if (error) {
+      console.log('playlist songs query error: ', error.message, error.stack);
+    } else {
+      const playlistSongs = result.rows;
+      const songs = [];
+
+      const playlistSongsQuery = async () => {
+        await asyncForEach(playlistSongs, async playlistSong => {
+          await waitFor(50);
+          pool.query('SELECT * FROM songs WHERE id=$1', [playlistSong.song_id], (error, result) => {
+            if (error) {
+              console.log('song query error: ', error.message, error.stack);
+            } else {
+              songs.push(result.rows[0]);
+            }
+          })
+        })
+
+        pool.query('SELECT * FROM playlist WHERE id=$1', [playlistId], (error, result) => {
+          if (error) {
+            console.log('playlist query error: ', error.message, error.stack);
+          } else {
+            const playlist = result.rows[0];
+            response.render('playlist', {"playlist": playlist, "songs": songs});
+          }
+        })
+      };
+
+      playlistSongsQuery();
+    }
+  })
+});
+
+app.get('/playlists/:id/newsong', (request, response) => {
+  const playlistId = request.params.id;
+
+  pool.query('SELECT * FROM playlist WHERE id=$1', [playlistId], (error, result) => {
+    if (error) {
+      console.log('playlist query error: ', error.message. stack);
+    } else {
+      const playlist = result.rows[0];
+
+      pool.query('SELECT * FROM songs', (error, result) => {
+        if (error) {
+          console.log('query error: ', error.message, error.stack);
+        } else {
+          const songList = result.rows;
+          response.render('playlist-addsong', {'playlist': playlist, 'songList': songList});
+        }
+      })
+    }
+  })
+});
+
+
+
+/**
+* ===================================
+* POST Routes
+* ===================================
+*/
+
+app.post('/artists', (request, response) => {
+  const name = request.body.name;
+  const photo_url = request.body.photo_url;
+  const nationality = request.body.nationality;
+
+  const values = [name, photo_url, nationality];
+
+  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
+
+  pool.query(queryString, values, (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      response.render('success');
+    }
+  });
+});
+
+app.post('/artists/:id/songs', (request, response) => {
+  const title = request.body.title;
+  const album = request.body.album;
+  const preview_link = request.body.preview_link;
+  const artwork = request.body.artwork;
+  const artist_id = request.body.artist_id;
+
+  const values = [title, album, preview_link, artwork, artist_id];
+
+  pool.query('INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ($1, $2, $3, $4, $5)', values, (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      response.render('success');
+    }
+  })
+});
+
+app.post('/playlists', (request, response) => {
+  const name = request.body.name;
+  const songs = request.body.songs;
+
+  pool.query('INSERT INTO playlist (name) VALUES ($1) RETURNING id', [name], (error, result) => {
+    if (error) {
+      console.log('playlist insery error: ', error.message, error.stack);
+    } else {
+      const playlistId = result.rows[0].id;
+
+      pool.query('SELECT id, title FROM songs', (error, result) => {
+        if (error) {
+          console.log('query error: ', error.message, error.stack);
+        } else {
+          const songList = result.rows;
+
+          const songsId = songs.map(song => {
+            for (let i = 0; i < songList.length; i++) {
+              if (songList[i].title === song) {
+                return songList[i].id;
+              }
+            }
+          })
+
+          songsId.forEach(songId => {
+            pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlistId], (error, result) => {
+              if (error) {
+                console.log(`error inserting song_id ${songId}: `, error.message, error.stack);
+              } else {
+                console.log('done!');
+              }
+            })
+          })
+
+          response.render('success');
+        }
+      })
+    }
+  })
+});
+
 process.on('SIGTERM', onClose);
 process.on('SIGINT', onClose);
