@@ -26,15 +26,17 @@ const prepareInsertStmt = (tableName,columns,values) => {
 //@param where
 //{ id:1, name:'name'}
 const prepareSelectStmt = (tableName, selections, where) => {
-  const columns = Object.keys(where)
-  const vals = Object.keys(where)
-  let text = `select ${parseParam(selections)} from ${tableName} where `
-  text+=`${parseWhereClause(columns,vals)}`
-  return text
+  let statement = `select ${parseParam(selections)} from ${tableName}`
+  if (where) {
+    const columns = Object.keys(where)
+    const vals = Object.keys(where)
+    statement+= ` where ${parseWhereClause(columns,vals)}`
+  }
+  return statement
 
 }
 
 module.exports = {
-  prepareInsertStmt: prepareInsertStmt,
-  prepareSelectStmt: prepareSelectStmt
+  prepareInsertStmt,
+  prepareSelectStmt
 }

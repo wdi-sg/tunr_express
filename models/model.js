@@ -26,20 +26,18 @@ class Model {
 
   // returns this
   static async select (fieldsToSelect, whereParams) {
+    let data,values
     const tableName = this.name.toLowerCase()
     const statement = prepareSelectStmt(tableName, fieldsToSelect, whereParams)
-    const values = Object.values(whereParams)
-    const data = await db._execute(statement, values)
+    if (whereParams) {
+      values = Object.values(whereParams)
+    }
+    data = await db._execute(statement, values)
     return this.deSerialize(data.rows)
   }
 
   static deSerialize (data) {
-    data.map(item=> {
-      const newObj = new this()
-      newObj.data = item
-      console.log(newObj)
-      return newObj
-    })
+    return data.map(item=> new this().data = item)
   }
 
   // @param fieldsToSelect ['id','name'] || "*"
