@@ -1,11 +1,13 @@
 const React = require('react');
 class All_Artists extends React.Component {
     render () {
-        const artists = this.props.list;
-        const displayArtist = artists.map(artist => {
-        let idPage = '/artists/' + artist.id;
-        let songPage= '/artists/' + artist.id + '/songs'
 
+        const artists = this.props.list;
+        const visitCounter = this.props.visitCounter;
+
+        const displayArtist = artists.map(artist => {
+            let idPage = '/artists/' + artist.id;
+            let songPage= '/artists/' + artist.id + '/songs'
             return (
                 <div className="card" style={{width: "15rem"}}>
                     <img className="card-img-top" src={artist.photo_url} alt={artist.name} style={{height: "12rem"}}/>
@@ -48,6 +50,10 @@ class All_Artists extends React.Component {
                     <div className='row justify-content-center '>
                         {displayArtist}
                     </div>
+                </div>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
                 </div>
             </body>
             </html>

@@ -3,6 +3,8 @@ const React = require("react");
 class New_Playlist extends React.Component {
   render() {
 
+    const visitCounter = this.props.visitCounter;
+
     return (
       <html>
         <head>
@@ -30,6 +32,10 @@ class New_Playlist extends React.Component {
                 <div className='row justify-content-center'>
                     <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                 </div>
+            </div>
+            <br/><br/><br/>
+            <div className='row justify-content-center'>
+                <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
             </div>
         </body>
       </html>

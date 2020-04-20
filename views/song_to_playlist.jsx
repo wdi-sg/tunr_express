@@ -9,6 +9,7 @@ class Song_To_Playlist extends React.Component {
         const allSongs = this.props.allSongs;
         const existingSongs = this.props.existingSongs;
         const playlistPage = '/playlists/' + playlistId;
+        const visitCounter = this.props.visitCounter;
 
         const allSongsList = allSongs.map(song => {
             let songExists = false;
@@ -73,6 +74,10 @@ class Song_To_Playlist extends React.Component {
                         </form>
                         <br/>
                     </div>
+                </div>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
                 </div>
             </body>
             </html>

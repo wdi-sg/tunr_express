@@ -5,6 +5,7 @@ class Edit_Playlist extends React.Component {
 
     const playlistId = this.props.playlistId;
     const playlistName = this.props.playlistName;
+    const visitCounter = this.props.visitCounter;
 
     const updatePlaylistName = '/playlists/' + playlistId + '?_method=put';
     const playlistPage = '/playlists/' + playlistId;
@@ -36,6 +37,10 @@ class Edit_Playlist extends React.Component {
                 <div className='row justify-content-center'>
                     <button className='btn btn-secondary'><a href={playlistPage} className='text-white text-decoration-none'>Back to Playlist</a></button>
                 </div>
+            </div>
+            <br/><br/><br/>
+            <div className='row justify-content-center'>
+                <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
             </div>
         </body>
       </html>

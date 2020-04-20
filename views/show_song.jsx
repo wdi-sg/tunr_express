@@ -9,6 +9,7 @@ class Show_Song extends React.Component {
         const artwork = this.props.song.artwork;
         const artist_id = this.props.song.artist_id;
         const artistName = this.props.song.name;
+        const visitCounter = this.props.visitCounter;
 
         const editSongPage = '/artists/' + artist_id + '/songs/' + song_id + '/edit';
         const deleteSongPage = '/artists/' + artist_id + '/songs/' + song_id + '?_method=delete';
@@ -55,6 +56,10 @@ class Show_Song extends React.Component {
                         </div>
                     </div>
                     <br/>
+                </div>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
                 </div>
             </body>
             </html>

@@ -3,6 +3,8 @@ class All_Playlists extends React.Component {
     render () {
 
         const playlists = this.props.playlists;
+        const visitCounter = this.props.visitCounter;
+
         const allPlaylists = playlists.map(playlist => {
             let playlistIdPage = '/playlists/' + playlist.id;
             return (<h5><li><a href={playlistIdPage}>{playlist.name}</a></li></h5>)
@@ -32,6 +34,10 @@ class All_Playlists extends React.Component {
                         <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                     </div>
                     <br/>
+                </div>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
                 </div>
             </body>
             </html>

@@ -2,6 +2,9 @@ var React = require("react");
 
 class New_Artist extends React.Component {
   render() {
+
+    const visitCounter = this.props.visitCounter;
+
     return (
       <html>
         <head>
@@ -34,6 +37,10 @@ class New_Artist extends React.Component {
                         <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                     </div>
                 </form>
+            </div>
+            <br/><br/><br/>
+            <div className='row justify-content-center'>
+                <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
             </div>
         </body>
       </html>

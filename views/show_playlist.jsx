@@ -5,7 +5,7 @@ class Show_Playlist extends React.Component {
         const playlistId = this.props.playlistId;
         const playlistName = this.props.playlistName;
         const updatedSongs = this.props.updatedSongs;
-        console.log(updatedSongs)
+        const visitCounter = this.props.visitCounter;
 
         const updatedSongsList = updatedSongs.map(updatedSong => {
             return (<div className='row justify-content-center'>
@@ -62,6 +62,10 @@ class Show_Playlist extends React.Component {
                     </div>
                 </div>
                 <br/>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
+                </div>
             </body>
             </html>
         )

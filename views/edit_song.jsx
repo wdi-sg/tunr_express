@@ -10,6 +10,7 @@ class Edit_Song extends React.Component {
     const artwork = this.props.song.artwork;
     const artist_id = this.props.song.artist_id;
     const artistName = this.props.song.name;
+    const visitCounter = this.props.visitCounter;
 
     let songPage = '/artists/' + artist_id + '/songs/' + song_id;
     let editSongPage = '/artists/' + artist_id + '/songs/' + song_id + '?_method=put';
@@ -62,6 +63,10 @@ class Edit_Song extends React.Component {
                 <div className='row justify-content-center'>
                     <button className='btn btn-secondary'><a href={songPage} className='text-white text-decoration-none'>Back to Song Page</a></button>
                 </div>
+            </div>
+            <br/><br/><br/>
+            <div className='row justify-content-center'>
+                <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
             </div>
         </body>
       </html>

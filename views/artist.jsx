@@ -5,6 +5,7 @@ class Artist extends React.Component {
         const name = this.props.name;
         const photoUrl = this.props.photo_url;
         const nationality = this.props.nationality;
+        const visitCounter = this.props.visitCounter;
 
         return (
             <html>
@@ -33,6 +34,10 @@ class Artist extends React.Component {
                         </div>
                         <br/>
                     </div>
+                </div>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
                 </div>
             </body>
             </html>

@@ -8,6 +8,7 @@ class Song extends React.Component {
         const artwork = this.props.artwork;
         const artist_id = this.props.artist_id;
         const artist_name = this.props.artist_name;
+        const visitCounter = this.props.visitCounter;
 
         const artistPage = '/artists/' + artist_id + '/songs';
 
@@ -42,6 +43,10 @@ class Song extends React.Component {
                         </div>
                     </div>
                     <br/>
+                </div>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
                 </div>
             </body>
             </html>

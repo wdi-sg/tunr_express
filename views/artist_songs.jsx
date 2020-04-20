@@ -5,6 +5,7 @@ class Artist_Songs extends React.Component {
         let artistName = this.props.artist[0].name;
         const songsList = this.props.songs;
         const addSongPage = '/artists/' + this.props.id + '/songs/new'
+        const visitCounter = this.props.visitCounter;
 
         const displaySongs = songsList.map(song => {
             let songDetailsId = '/artists/' + this.props.id + '/songs/' + song.id;
@@ -52,6 +53,10 @@ class Artist_Songs extends React.Component {
                     <div className='row justify-content-center'>
                         {displaySongs}
                     </div>
+                </div>
+                <br/><br/><br/>
+                <div className='row justify-content-center'>
+                    <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
                 </div>
             </body>
             </html>

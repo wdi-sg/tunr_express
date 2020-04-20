@@ -2,6 +2,9 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
+
+    const visitCounter = this.props.visitCounter;
+
     return (
       <html>
         <head>
@@ -40,7 +43,12 @@ class Home extends React.Component {
                     </div>
                 </div>
             </div>
+            <br/><br/><br/>
+            <div className='row justify-content-center'>
+                <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
+            </div>
         </body>
+
       </html>
     );
   }

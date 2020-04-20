@@ -7,6 +7,7 @@ class Edit_Artist extends React.Component {
     const photoUrl = this.props.artist[0].photo_url;
     const nationality = this.props.artist[0].nationality;
     const idPage = '/artists/' + this.props.artist[0].id + '?_method=put';
+    const visitCounter = this.props.visitCounter;
 
     return (
       <html>
@@ -40,6 +41,10 @@ class Edit_Artist extends React.Component {
                         <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                     </div>
                 </form>
+            </div>
+            <br/><br/><br/>
+            <div className='row justify-content-center'>
+                <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
             </div>
         </body>
       </html>

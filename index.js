@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -40,6 +41,9 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
 
+//Set configuration to tell express to use the cookie parser.
+app.use(cookieParser());
+
 /**
  * ===================================
  * Routes
@@ -50,7 +54,17 @@ app.engine('jsx', reactEngine);
 ////   Home     ////
 ///////////////////
 app.get('/artists/', (request, response) => {
-    response.render('home');
+    let visitCounter = request.cookies['visitCounter'];
+    if (visitCounter === undefined) {
+        visitCounter = 1;
+    } else {
+        visitCounter = parseInt(visitCounter) + 1;
+    }
+    const data = {
+        visitCounter: visitCounter
+    }
+    response.cookie('visitCounter', visitCounter, {maxAge: 10 * 36000});
+    response.render('home', data);
 });
 
 ///////////////////////////////////
@@ -65,7 +79,8 @@ app.get('/artists/list', (request, response) => {
             response.send('An error occurred when displaying list of artists 😢');
         } else {
             const data = {
-                list: result.rows
+                list: result.rows,
+                visitCounter: request.cookies['visitCounter']
             }
 
         response.render('all_artists', data);
@@ -81,7 +96,8 @@ app.get('/artists/songs/', (request, response) => {
 
     pool.query(queryString, (err, result) => {
         const data = {
-            allSongs: result.rows
+            allSongs: result.rows,
+            visitCounter: request.cookies['visitCounter']
         }
     response.render('all_songs', data)
     })
@@ -99,7 +115,8 @@ app.get('/playlists/', (request, response) => {
             response.send('An error occurred when posting new playlist 😢');
         } else {
             const data = {
-                playlists: result.rows
+                playlists: result.rows,
+                visitCounter: request.cookies['visitCounter']
             }
         response.render('all_playlists', data)
         }
@@ -117,7 +134,10 @@ app.get('/playlists/new', (request, response) => {
             console.log('dbQuery Error', err.stack);
             response.send('An error occurred when creating new artist 😢');
         } else {
-            response.render('new_playlist');
+            const data = {
+                visitCounter: request.cookies['visitCounter']
+            }
+            response.render('new_playlist', data);
         }
     })
 })
@@ -139,7 +159,8 @@ app.post('/playlists/', (request, response) => {
                     response.send('An error occurred when posting new playlist 😢');
                 } else {
                     const data = {
-                        playlists: result.rows
+                        playlists: result.rows,
+                        visitCounter: request.cookies['visitCounter']
                     }
 
                 response.render('all_playlists', data)
@@ -180,7 +201,8 @@ app.get('/playlists/:id/newsong', (request, response) => {
                             playlistId: playlistId,
                             playlistName: playlistName,
                             allSongs: allSongs,
-                            existingSongs: result.rows
+                            existingSongs: result.rows,
+                            visitCounter: request.cookies['visitCounter']
                         }
 
                     response.render('song_to_playlist', data)
@@ -221,7 +243,8 @@ app.post('/playlists/:id', (request, response) => {
             const data = {
                 playlistId: result.rows[0].playlist_id,
                 playlistName: result.rows[0].playlist_name,
-                updatedSongs: result.rows
+                updatedSongs: result.rows,
+                visitCounter: request.cookies['visitCounter']
             }
 
         response.render('show_playlist', data);
@@ -240,7 +263,10 @@ app.put('/playlists/:id', (request, response) => {
             console.log('dbQuery Error', err.stack);
             response.send('An error occurred when updating playlist name 😢');
         } else {
-            response.render('show_playlist');
+            const data = {
+                visitCounter: request.cookies['visitCounter']
+            }
+            response.render('show_playlist', data);
         }
     })
 })
@@ -270,7 +296,8 @@ app.get('/playlists/:id', (request, response) => {
                     const data = {
                         playlistId: result.rows[0].id,
                         playlistName: result.rows[0].name,
-                        updatedSongs: updatedSongs
+                        updatedSongs: updatedSongs,
+                        visitCounter: request.cookies['visitCounter']
                     }
 
                 response.render('show_playlist', data)
@@ -295,7 +322,10 @@ app.delete('/playlists/:id', (request, response) => {
 ////  Create new artist (from home)  ///
 ///////////////////////////////////////
 app.get('/artists/new', (request, response) => {
-    response.render('new_artist');
+    const data = {
+        visitCounter: visitCounter
+    }
+    response.render('new_artist', data);
 });
 
 app.post('/artists', (request, response) => {
@@ -312,7 +342,8 @@ app.post('/artists', (request, response) => {
             const data = {
                 name: newArtist.name,
                 photo_url: newArtist.photo_url,
-                nationality: newArtist.nationality
+                nationality: newArtist.nationality,
+                visitCounter: request.cookies['visitCounter']
             }
 
         response.render('artist', data);
@@ -332,7 +363,8 @@ app.get('/artists/songs/new', (request, response) => {
             response.send("An error occurred when displaying artist's songs 😢");
         } else {
             const data = {
-                allArtists: result.rows
+                allArtists: result.rows,
+                visitCounter: request.cookies['visitCounter']
             }
 
         response.render('new_song', data);
@@ -364,7 +396,8 @@ app.post('/artists/songs', (request, response) => {
                         preview_link: newSong.preview_link,
                         artwork: newSong.artwork,
                         artist_id: artistId,
-                        artist_name: newSong.artist
+                        artist_name: newSong.artist,
+                        visitCounter: request.cookies['visitCounter']
                     }
                 response.render('song', data);
                 }
@@ -396,7 +429,8 @@ app.get('/artists/:id/songs/:songId/edit', (request, response) => {
                 } else {
                     const data = {
                         song: songDetails,
-                        artists: result.rows
+                        artists: result.rows,
+                        visitCounter: request.cookies['visitCounter']
                     }
 
                 response.render('edit_song', data);
@@ -448,7 +482,8 @@ app.get('/artists/:id/songs/new', (request, response) => {
             response.send("An error occurred when displaying artist's songs 😢");
         } else {
             const data = {
-                artist: result.rows[0]
+                artist: result.rows[0],
+                visitCounter: request.cookies['visitCounter']
             }
 
         response.render('new_artist_song', data);
@@ -470,7 +505,8 @@ app.get('/artists/:id/songs/:songId', (request, response) => {
             response.send("An error occurred when editing artist's songs 😢");
         } else {
             const data = {
-                song: result.rows[0]
+                song: result.rows[0],
+                visitCounter: request.cookies['visitCounter']
             }
 
         response.render('show_song', data);
@@ -521,7 +557,8 @@ app.get('/artists/:id/songs', (request, response) => {
                     const data = {
                         id: id,
                         songs: songs,
-                        artist: result.rows
+                        artist: result.rows,
+                        visitCounter: request.cookies['visitCounter']
                     }
                 response.render('artist_songs', data);
                 }
@@ -543,7 +580,8 @@ app.get('/artists/:id/edit', (request, response) => {
             response.send("An error occurred when displaying artist's page 😢");
         } else {
             const data = {
-                artist: result.rows
+                artist: result.rows,
+                visitCounter: request.cookies['visitCounter']
             }
         response.render('edit_artist', data);
         }
@@ -600,7 +638,8 @@ app.get('/artists/:id', (request, response) => {
                         id: result.rows[index].id,
                         name: result.rows[index].name,
                         photo_url: result.rows[index].photo_url,
-                        nationality: result.rows[index].nationality
+                        nationality: result.rows[index].nationality,
+                        visitCounter: request.cookies['visitCounter']
                     }
 
                 response.render('show_artist', data);

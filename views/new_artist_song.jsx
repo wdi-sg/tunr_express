@@ -4,6 +4,8 @@ class New_Artist_Song extends React.Component {
   render() {
 
     const artistName = this.props.artist.name;
+    const visitCounter = this.props.visitCounter;
+
     const backToArtistPage = '/artists/' + this.props.artist.id + '/songs';
 
     return (
@@ -48,6 +50,10 @@ class New_Artist_Song extends React.Component {
                 <div className='row justify-content-center'>
                     <button className='btn btn-secondary'><a href={backToArtistPage} className='text-white text-decoration-none'>Back to Songs Page</a></button>
                 </div>
+            </div>
+            <br/><br/><br/>
+            <div className='row justify-content-center'>
+                <p style={{color: "grey", borderTop: "1px solid gainsboro", borderBottom:"1px solid gainsboro", padding: "5px 20px"}}>Page Visits: {visitCounter}</p>
             </div>
         </body>
       </html>
