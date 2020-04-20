@@ -93,7 +93,7 @@ app.post('/artists', (request, response) => {
 
   pool.query(queryString, values, (error, result) => {
     if (error) {
-      console.log('query error: ', error.message, error.stack);
+      console.log('query error');
     } else {
       response.render('success');
     }
@@ -107,13 +107,77 @@ app.get('/artists/:id', (request, response) => {
 
   pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
     if (error) {
-      console.log('query error: ', error.message, error.stack);
+      console.log('query error');
     } else {
       const artist = result.rows[0];
       response.render('single', {'artist': artist});
     }
   });
 });
+
+/**
+ * ===================================
+ * Part 2 Playlists Stuff
+ * ===================================
+ */
+
+app.get('/playlists/', (request, response) => {
+  response.render('playlists');
+});
+
+app.get('/playlists/new', (request, response) => {
+  pool.query('SELECT * FROM songs', (error, result) => {
+    if (error) {
+      console.log('query error');
+    } else {
+      const songList = result.rows;
+      response.render('new_playlist', {"songList": songList});
+    }
+  })
+})
+
+app.post('/playlists', (request, response) => {
+  const name = request.body.name;
+  const songs = request.body.songs;
+
+  pool.query('INSERT INTO playlist (name) VALUES ($1) RETURNING id', [name], (error, result) => {
+    if (error) {
+      console.log('playlist insery error');
+    } else {
+      const playlist_id = result.rows[0].id;
+
+      pool.query('SELECT id, title FROM songs', (error, result) => {
+        if (error) {
+          console.log('query error');
+        } else {
+          const songList = result.rows;
+
+          const songId = songs.map(song => {
+            for (let i = 0; i < songList.length; i++) {
+              if (songList[i].title === song) {
+                return songList[i].id;
+              }
+            }
+          })
+
+          songId.forEach(songId => {
+            pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlist_id], (error, result) => {
+              if (error) {
+                console.log('error inserting');
+              } else {
+                console.log('done!');
+              }
+            })
+          })
+
+          response.render('success');
+        }
+      })
+    }
+  })
+})
+
+
 
 /**
  * ===================================
