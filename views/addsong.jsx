@@ -7,7 +7,26 @@ class Addsong extends React.Component {
     // Javascript stuff
     // Would be good if can incorporate autocomplete form for songs from the database
 
-    const visits = this.props.visits;
+    let visits = this.props.visits;
+
+    let visitbadge;
+
+    if(visits < 5){
+        visitbadge = <figure>
+                        <img src="/newbie_badge.jpg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 4 && visits < 10) {
+        visitbadge = <figure>
+                        <img src="/silver_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 9){
+        visitbadge = <figure>
+                        <img src="/gold_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    }
 
     // Get details of playlist that song is added to
     const playlistDetails = this.props.playlistDetails[0];
@@ -44,7 +63,7 @@ class Addsong extends React.Component {
         <body>
           <h1>Add New Song</h1>
           <div>
-            <p>You've been here {visits} times</p>
+            {visitbadge}
           </div>
           <div>
             <form action={url} method="post">

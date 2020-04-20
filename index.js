@@ -38,6 +38,7 @@ app.use(methodOverride('_method'));
 
 app.use(cookieParser());
 
+app.use(express.static('public'))
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -276,6 +277,8 @@ Playlist Part
 
 ////////////Show All playlists
 app.get('/playlist', (request,response) => {
+    let visits = request.cookies.visits;
+
     let queryString = `select * from playlist`
 
     pool.query(queryString, (err, result) => {
