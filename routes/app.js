@@ -53,7 +53,7 @@ const db = require('../util/database.js');
 
 app.use(express.static(path.join(__dirname, '../public/')));
 
-app.use(authRoutes);
+app.use('/auth', authRoutes);
 
 app.get('/', async (req, res) => {
 

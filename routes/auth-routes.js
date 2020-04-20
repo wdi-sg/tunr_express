@@ -1,7 +1,10 @@
 const express = require('express');
 const Router = require('express-promise-router');
 const router = new Router();
+const path = require('path');
 const session = require('express-session');
+
+router.use('/:route', express.static(path.join(__dirname, '..', '/public/')));
 
 const authController = require('../controllers/auth-controller.js')
 
