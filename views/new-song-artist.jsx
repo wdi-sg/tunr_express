@@ -21,7 +21,7 @@ class NewSongTArtist extends React.Component {
     return (
       <html>
       <head>
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="/style.css" />
       </head>
         <body>
           <h3>Add New Song to Artist</h3>

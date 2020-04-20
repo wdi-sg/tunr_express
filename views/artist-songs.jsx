@@ -42,7 +42,7 @@ class ArtistSongs extends React.Component {
     return (
       <html>
         <head>
-            <link rel="stylesheet" type="text/css" href="style.css" />
+            <link rel="stylesheet" type="text/css" href="/style.css" />
         </head>
         <body margin-left="20px">
             <p><a href={homeLink}>Back to Main</a></p>
