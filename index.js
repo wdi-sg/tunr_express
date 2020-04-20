@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 
 // Initialise postgres client
 const configs = {
-  user: 'dwu',
+  user: 'weepinsoh',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,40 +49,6 @@ app.engine('jsx', reactEngine);
  * Routes
  * ===================================
  */
-
-//See a single artist
-app.get('/artists/:id', (request, response) => {
-  const whenQueryDone = (queryError, result) => {
-    if (queryError) {
-      console.log("Error");
-      console.log(queryError);
-      response.status(500);
-      response.send('db error');
-    } else {
-
-      let visits = request.cookies["visits"];
-      if (visits === undefined) {
-        visits = 1;
-      } else {
-        visits++;
-      }
-      response.cookie('visits', visits);
-
-      console.log(result.rows[0]);
-      const data = {
-        artistName : result.rows[0].name,
-        photo : result.rows[0].photo_url,
-        nationality : result.rows[0].nationality,
-        count : visits
-      };
-
-      response.render('show', data);
-    }
-  };
-
-  const queryString = "SELECT * FROM artists WHERE id="+request.params.id;
-  pool.query(queryString, whenQueryDone);
-});
 
 //***** Display home page where all the artists are ******
 app.get('/artists',(request, response)=>{
@@ -147,7 +113,39 @@ app.get('/artists/new',(request, response)=>{
 
 });
 
+//See a single artist
+app.get('/artists/:id', (request, response) => {
+  const whenQueryDone = (queryError, result) => {
+    if (queryError) {
+      console.log("Error");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    } else {
 
+      let visits = request.cookies["visits"];
+      if (visits === undefined) {
+        visits = 1;
+      } else {
+        visits++;
+      }
+      response.cookie('visits', visits);
+
+      console.log(result.rows[0]);
+      const data = {
+        artistName : result.rows[0].name,
+        photo : result.rows[0].photo_url,
+        nationality : result.rows[0].nationality,
+        count : visits
+      };
+
+      response.render('show', data);
+    }
+  };
+
+  const queryString = "SELECT * FROM artists WHERE id="+request.params.id;
+  pool.query(queryString, whenQueryDone);
+});
 
 
 //Create a new artist
@@ -172,20 +170,18 @@ app.post('/artists',(request, response)=>{
 
 //See a single playlist
 app.get('/playlists/:id', (request, response) => {
-
   const whenQueryDone = (queryError, result) => {
-    console.log("hello");
     if( queryError ){
       console.log("Error");
       console.log(queryError);
       response.status(500);
       response.send('db error');
     }else{
-      console.log(result.rows[0]);
+      console.log(result);
       const data = {
         playlistName : result.rows[0].title,
       }
-      response.render('show-playlist', data);
+      response.render('show-playlist',data);
     };
   };
   const queryString = "SELECT songs.title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_song.id="+request.params.id;
@@ -269,9 +265,6 @@ app.post('/playlists/:id/newsong',(request, response)=>{
   };
 
   const queryString = "INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2) RETURNING *";
-  console.log("******************************")
-  console.log(request.body.songs)
-  console.log("******************************")
   const insertValues = [request.body.songs, request.params.id];
 
   pool.query(queryString, insertValues, whenQueryDone )
