@@ -57,6 +57,7 @@ class Model {
   // @returns inserted row id
   save () {
     const tableName = this.getResourceName()
+    console.log(this.getPrimaryKeyName())
     const { [this.getPrimaryKeyName()]: _, ...data } = this.data
     const columns = Object.keys(data)
     const values = Object.values(data)

@@ -52,7 +52,7 @@ class Song extends Model {
   }
 
   // initially intended for pars
-  fields () {
+  get fields () {
     return {
       id: {
         type   : 'int',
