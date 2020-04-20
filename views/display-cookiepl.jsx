@@ -1,7 +1,7 @@
 var React = require("react");
 var Main = require("./main");
 
-class DisplayOnePlaylist extends React.Component {
+class DisplayCookiePlaylist extends React.Component {
   render() {
     
     let songsArr = this.props.songsArr;
@@ -14,7 +14,7 @@ class DisplayOnePlaylist extends React.Component {
       );
     });
 
-    const displayOnePlaylist = (
+    const displayCookiePlaylist = (
       <div className="container">
         <div className="row">
           <div className="col mt-5">
@@ -35,8 +35,8 @@ class DisplayOnePlaylist extends React.Component {
       </div>
     );
 
-    return <Main children={displayOnePlaylist} />;
+    return <Main children={displayCookiePlaylist} />;
   }
 }
 
-module.exports = DisplayOnePlaylist;
+module.exports = DisplayCookiePlaylist;
