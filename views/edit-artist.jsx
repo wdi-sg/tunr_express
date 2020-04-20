@@ -35,7 +35,7 @@ class EditArtist extends React.Component {
                         <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Edit Artist</u></em></h1>
                         <div className="container w-75 ml-auto mr-auto pl-0 pr-0 card bg-light pl-5 pr-5 pt-5 pb-5">
                             <br />
-                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5 border-0" method="POST" action={`/artists/${artist.artistid}?_method=put`}>
+                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5 border-0" method="POST" action={`/artists/${artist.id}?_method=put`}>
                                 Name:&emsp;
                     <input type="text" name="name" defaultValue={artist.name} />
                                 <br /><br />
@@ -50,7 +50,7 @@ class EditArtist extends React.Component {
                                 <button className="btn btn-success w-50 ml-auto mr-auto" type="submit"> Submit </button>
 
                             </form>
-                            <form className="card bg-light pl-5 pr-5 pt-2  border-0" method="POST" action={`/artists/${artist.artistid}?_method=delete`}>
+                            <form className="card bg-light pl-5 pr-5 pt-2  border-0" method="POST" action={`/artists/${artist.id}?_method=delete`}>
                                 <button className="btn btn-danger w-50 mr-auto ml-auto" type="submit"> Delete </button>
                             </form>
                         </div>
@@ -58,7 +58,9 @@ class EditArtist extends React.Component {
                     </div>
 
 
-
+                    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossOrigin="anonymous"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossOrigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossOrigin="anonymous"></script>
                 </body>
             </html>
         );
