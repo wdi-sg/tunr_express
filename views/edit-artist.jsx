@@ -6,6 +6,11 @@ class EditArtist extends React.Component {
         // console.log("new-artists.jsx");
         let artistData = this.props.artist;
 
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
+
         //back to Artist page
         const artistPageLink = "/artists/" + artistData.id
 
@@ -33,6 +38,10 @@ class EditArtist extends React.Component {
                 {artistFormInput}
                 <p><input type="submit" /></p>
             </form>
+            <br/>
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

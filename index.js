@@ -122,7 +122,7 @@ app.get('/songs', (req, res) => {
             res.status(500);
             res.send('db error');
         } else {
-            const data ={
+            const data = {
                 songs: allSongsResult,
                 cookies: req.cookies
             }
@@ -164,7 +164,10 @@ app.get('/playlists', (req, res) => {
 //------------------------------------------------------
 app.get('/artists/new', (req, res) => {
     //FORM to add new artists
-    res.render('new-artist')
+    const data = {
+        cookies: req.cookies
+    }
+    res.render('new-artist', data)
 });
 
 
@@ -181,8 +184,11 @@ app.get('/songs/new', (req, res) => {
             response.status(500);
             response.send('new songs db error');
         } else {
-            console.log(allArtistsQResult)
-            res.render('new-song', allArtistsQResult);
+            const data = {
+                allArtists : allArtistsQResult,
+                cookies: req.cookies
+            }
+            res.render('new-song', data);
         };
     };
     pool.query(allArtistsQ, whenQueryDone);
@@ -194,7 +200,10 @@ app.get('/songs/new', (req, res) => {
 //------------------------------------------------------
 app.get('/playlists/new', (req, res) => {
     //FORM to add new playlist
-        res.render('new-playlist');
+    const data = {
+        cookies: req.cookies
+    }
+    res.render('new-playlist', data);
 });
 
 
@@ -211,7 +220,11 @@ app.get('/artists/:id', (req, res) => {
             res.send('ERR');
         } else {
             // console.log('query result:', artistProfileResult);
-            res.render('show-artist', artistProfileResult);
+            const data = {
+                artist: artistProfileResult,
+                cookies: req.cookies
+            }
+            res.render('show-artist', data);
         };
     });
 });
@@ -230,7 +243,11 @@ app.get('/songs/:id', (req, res) => {
             res.send('ERR');
         } else {
             // console.log('query result:', songProfileResult);
-            res.render('show-song', songProfileResult);
+            const data = {
+                song : songProfileResult,
+                cookies: req.cookies
+            }
+            res.render('show-song', data);
         };
     });
 });
@@ -257,7 +274,8 @@ app.get('/playlists/:id', (req, res) => {
                 } else {
                     data = {
                         playlist : playlistQResult,
-                        playlistSong : playlistSongQResult
+                        playlistSong : playlistSongQResult,
+                        cookies: req.cookies
                     }
                     // console.log('query result:', playlistQResult);
                     res.render('show-playlist', data);
@@ -349,7 +367,8 @@ app.get('/artists/:id/songs', (req, res) => {
                     } else {
                         const artistSongsData = {
                             artist: artistProfileResult,
-                            songs: artistSongsResult
+                            songs: artistSongsResult,
+                            cookies: req.cookies
                         }
                         res.render('artist-songs', artistSongsData);
                     }
@@ -371,7 +390,11 @@ app.get('/artists/:id/songs/new', (req, res) => {
             res.status(500);
             res.send('ERR');
         } else {
-            res.render('new-song-artist', artistProfileResult);
+            const data = {
+                artist : artistProfileResult,
+                cookies : req.cookies
+            }
+            res.render('new-song-artist', data);
         };
     });
 });
@@ -398,7 +421,8 @@ app.get('/playlists/:id/newsong', (req, res) => {
                 } else {
                     const data = {
                         playlist : playlistQResult,
-                        allsongs : allSAQResult
+                        allsongs : allSAQResult,
+                        cookies : req.cookies
                     }
                     res.render('new-playlist-song', data);
                 };
@@ -462,13 +486,8 @@ app.post('/playlists/:id', (req, res) => {
             valueSongId += "($"+i+", $"+(req.body.song_id.length+1)+")";
         }
     }
-
-
     const newSongTP = "INSERT INTO playlist_song (song_id, playlist_id) values "+valueSongId;
-
     pool.query(newSongTP, newSongTPValues, whenQueryDone);
-
-
 });
 
 
@@ -485,7 +504,8 @@ app.get('/artists/:id/edit', (req, res) => {
             res.send('ERR');
         } else {
             const data = {
-                artist : editArtistProfileResult.rows[0]
+                artist : editArtistProfileResult.rows[0],
+                cookies : req.cookies
             };
             // console.log(data);
             res.render('edit-artist', data);
@@ -510,7 +530,8 @@ app.get('/songs/:id/edit', (req, res) => {
             pool.query(allArtistsProfile, (allArtistsProfileErr, allArtistsProfileResult) => {
                 const data = {
                     artist : allArtistsProfileResult.rows,
-                    song : editSongProfileResult.rows[0]
+                    song : editSongProfileResult.rows[0],
+                    cookies : req.cookies
                 };
                 // console.log(data);
                 res.render('edit-song', data);

@@ -8,6 +8,11 @@ class EditSong extends React.Component {
         console.log(artistsData);
         let songData = this.props.song;
 
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
+
         //back to Songs page
         const songPageLink = "/songs/" + songData.id
 
@@ -49,6 +54,10 @@ class EditSong extends React.Component {
                 </select> </p>
                 <p><input type="submit" /></p>
             </form>
+
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

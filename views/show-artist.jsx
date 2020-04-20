@@ -3,9 +3,13 @@ var React = require("react");
 class ShowArtist extends React.Component {
   render() {
         // console.log('show-artist.jsx')
-        let artistData = this.props.rows[0];
-        // let songsData = this.props.songs;
-        // console.log(artistData.id);
+        let artistData = this.props.artist.rows[0];
+
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
+
 
         //link to Home Page
         let homeLink = "/"
@@ -37,7 +41,10 @@ class ShowArtist extends React.Component {
             <form method="POST" action={artistDeleteLink}>
                 <input type="submit" value="delete Artist"/>
             </form>
-
+            <br/>
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

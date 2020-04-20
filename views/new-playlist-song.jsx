@@ -8,11 +8,14 @@ class NewPlaylist extends React.Component {
         // console.log(this.props.rows)
         let allSAData = this.props.allsongs.rows;
         let playlistData = this.props.playlist.rows[0];
-        console.log("allSAData")
-        console.log(allSAData)
-        console.log("playlistData")
-        console.log(playlistData)
-
+        // console.log("allSAData")
+        // console.log(allSAData)
+        // console.log("playlistData")
+        // console.log(playlistData)
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
 
         let playlistLink = "/playlists/"+playlistData.id;
 
@@ -31,6 +34,10 @@ class NewPlaylist extends React.Component {
             <p>Songs List</p>
             {playlistsOptionsElements}
           </form>
+          <br/>
+          <div>
+              <p>Visits: {cookiesVisits}</p>
+          </div>
         </body>
       </html>
     );

@@ -2,7 +2,12 @@ var React = require("react");
 
 class NewPlaylist extends React.Component {
   render() {
-        console.log("new-playlist.jsx");
+        // console.log("new-playlist.jsx");
+
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
 
     return (
       <html>
@@ -18,6 +23,10 @@ class NewPlaylist extends React.Component {
             <p>Playlist Name: <input name="name"/></p>
             <p><input type="submit" value="Add Playlist"/></p>
           </form>
+          <br/>
+          <div>
+              <p>Visits: {cookiesVisits}</p>
+          </div>
         </body>
       </html>
     );

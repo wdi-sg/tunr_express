@@ -4,6 +4,11 @@ class NewArtist extends React.Component {
   render() {
         // console.log("new-artists.jsx");
 
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
+
         //link to Home Page
         let homeLink = "/"
 
@@ -30,6 +35,10 @@ class NewArtist extends React.Component {
                 {formInputArtist}
                 <p><input type="submit" /></p>
             </form>
+            <br/>
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

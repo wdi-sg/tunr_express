@@ -5,8 +5,13 @@ class ArtistSongs extends React.Component {
     console.log('artist-songs.jsx')
     let artistData = this.props.artist.rows[0];
     let songsData = this.props.songs.rows;
-    console.log(artistData);
-    console.log(songsData);
+    // console.log(artistData);
+    // console.log(songsData);
+
+    let cookiesVisits = parseInt(this.props.cookies.visits);
+    if(isNaN(cookiesVisits)) {
+        cookiesVisits = 1;
+    };
 
     //link to Home Page
     let homeLink = "/"
@@ -50,6 +55,9 @@ class ArtistSongs extends React.Component {
             <ol>{artistSongsList}</ol>
             <br/>
             <br/>
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

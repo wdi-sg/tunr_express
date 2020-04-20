@@ -6,6 +6,10 @@ class ShowPlaylist extends React.Component {
 
         let playlist = this.props.playlist.rows[0];
         let playlistSong = this.props.playlistSong.rows;
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
 
 
         //link to Home Page
@@ -39,7 +43,10 @@ class ShowPlaylist extends React.Component {
             <form method="POST" action={playlistDeleteLink}>
                 <input type="submit" value="delete Playlist"/>
             </form>
-
+            <br />
+            <div>
+                <p>Visits: {cookiesVisits}</p>
+            </div>
         </body>
       </html>
     );

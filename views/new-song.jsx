@@ -2,9 +2,15 @@ var React = require("react");
 
 class NewSong extends React.Component {
   render() {
-        console.log("new-song.jsx");
+        // console.log("new-song.jsx");
         // console.log(this.props.rows)
-        let artistsData = this.props.rows;
+
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
+
+        let artistsData = this.props.allArtists.rows;
         // console.log(artistsData)
         let songsLink = "/songs";
         // console.log(songsLink);
@@ -33,6 +39,10 @@ class NewSong extends React.Component {
             </select> </p>
             <p><input type="submit" /></p>
           </form>
+          <br />
+          <div>
+              <p>Visits: {cookiesVisits}</p>
+          </div>
         </body>
       </html>
     );

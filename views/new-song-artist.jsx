@@ -4,9 +4,13 @@ class NewSongTArtist extends React.Component {
   render() {
         console.log("new-song.jsx");
         // console.log(this.props.rows)
-        let artistData = this.props.rows[0];
+        let artistData = this.props.artist.rows[0];
         let songsLink = "/artists/"+artistData.id+"/songs";
-        console.log(songsLink);
+
+        let cookiesVisits = parseInt(this.props.cookies.visits);
+        if(isNaN(cookiesVisits)) {
+            cookiesVisits = 1;
+        };
 
         const songsKeys = ['Title', 'Album', 'Preview_link', 'Artwork'];
         const formInputSong = songsKeys.map((songsKey) => {
@@ -26,6 +30,10 @@ class NewSongTArtist extends React.Component {
             <p><input name="artist_id" type="hidden" value={artistData.id} readOnly/></p>
             <p><input type="submit" /></p>
           </form>
+          <br/>
+          <div>
+              <p>Visits: {cookiesVisits}</p>
+          </div>
         </body>
       </html>
     );
