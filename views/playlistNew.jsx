@@ -15,7 +15,12 @@ class playlistNew extends React.Component {
             <th scope="col">{element.id}</th>
             <th scope="col">{element.title}</th>
             <th scope="col">{element.album}</th>
-
+            <th scope="col">
+            <audio controls style={{height:"20px"}}>
+                <source src={element.preview_link} type="audio/mp3"></source>
+                Your browser does not support the audio element.
+              </audio>
+              </th>
           </tr>
           )
         })
@@ -30,7 +35,7 @@ class playlistNew extends React.Component {
       crossorigin="anonymous"/>
       </head>
         <body>
-            <div class='container border' style={{height:"400px"}}>
+            <div class='container' style={{height:"400px"}}>
               <br/>
               <form action="/addtoplaylist" method="POST">
                 <div class="input-group mb-3">
@@ -39,13 +44,14 @@ class playlistNew extends React.Component {
                   </div>
                   <input name="name" class="form-control" placeholder="Name of the playlist" aria-label="" aria-describedby="basic-addon1"/>
                 </div>
-                  <table class="table table-responsive table-sm table-dark rounded-lg" style={{height:"200px"}}>
+                  <table class="table table-responsive table-sm table-dark rounded-lg" style={{height:"400px"}}>
                   <thead>
                     <tr>
                       <th scope="col">☑️</th>
                       <th scope="col">#</th>
                       <th scope="col">Title</th>
                       <th scope="col">Album</th>
+                      <th scope="col">Preview</th>
                     </tr>
                   </thead>
                   <tbody>

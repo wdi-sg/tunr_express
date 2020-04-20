@@ -15,6 +15,12 @@ class playlistID extends React.Component {
             <th scope="col">{element.id}</th>
             <th scope="col">{element.title}</th>
             <th scope="col">{element.album}</th>
+            <th scope="col">
+              <audio controls style={{height:"20px"}}>
+                <source src={element.preview_link} type="audio/mp3"></source>
+                Your browser does not support the audio element.
+              </audio>
+            </th>
           </tr>
           )
         })
@@ -28,9 +34,10 @@ class playlistID extends React.Component {
       crossorigin="anonymous"/>
       </head>
         <body>
-            <div class='container border mt-5' style={{height:"400px"}}>
-              <div class="d-flex justify-content-center mb-3 bg-dark rounded-lg" style={{color:"white"}}><h1><u>{this.props.name}</u></h1>
+            <div class='container mt-5' style={{height:"400px"}}>
+              <div class="d-flex justify-content-center mb-3 bg-dark rounded-lg " style={{color:"white"}}><h1><u>{this.props.name}</u></h1>
               </div>
+              <div class='d-flex justify-content-between'>
                 <table class="table table-responsive table-sm table-dark rounded-lg">
                   <thead>
                     <tr>
@@ -38,12 +45,14 @@ class playlistID extends React.Component {
                       <th scope="col">#</th>
                       <th scope="col">Title</th>
                       <th scope="col">Album</th>
+                      <th scope="col">Preview</th>
                     </tr>
                   </thead>
-                  <tbody>
+                    <tbody>
                     {playlist}
-                  </tbody>
+                    </tbody>
                 </table>
+                </div>
               <div class="d-flex">
                 <form action="/playlist" method="get">
                   <input type="submit" class="btn btn-dark mr-3" value="Back"/>

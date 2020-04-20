@@ -1,5 +1,6 @@
 console.log("starting up!!");
 
+const cookieParser = require('cookie-parser')
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -27,7 +28,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -49,7 +50,10 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  response.send("Hello World");
+    html = "<form method='get' action='/playlist/'>"+
+            "<button type='submit' class='btn btn-dark'>Playlist</button>"+
+                "</form>"
+  response.send(html);
 });
 
 //Artists
@@ -133,14 +137,25 @@ app.get('/playlist/new/', (request, response) => {
 //Each Playlist
 app.get('/playlist', (request, response) => {
 
+    var visits = request.cookies['visits'];
+    if( visits === undefined ){
+        visits = 1;
+    }else{
+        visits = parseInt( visits ) + 1;
+    }
+    response.cookie('visits', visits);
+
     const whenQueryDone = (queryError, result) => {
         if(queryError){
             console.log("======ERROR======")
             console.log(queryError);
             response.send('db error');
         } else {
-            response.render('playlist',result);
-            //console.log(result)
+            data = {
+                rows: result.rows,
+                visits: visits
+            }
+            response.render('playlist',data);
         }
     }
 

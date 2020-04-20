@@ -23,7 +23,7 @@ class playlist extends React.Component {
       crossorigin="anonymous"/>
       </head>
         <body>
-            <div class='container border mt-5'>
+            <div class='container mt-5'>
                 <form method="get" action="/playlist/new">
                     <button type="submit" class="btn btn-dark">Create Playlist</button>
                 </form>
