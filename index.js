@@ -1,12 +1,11 @@
-console.log("starting up!!");
-
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const pg = require('pg');
-
+const func = require('./function');
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'jessica',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -41,26 +40,39 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
-
+app.use(cookieParser());
 /**
  * ===================================
  * Routes
  * ===================================
  */
-
-app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
-});
-
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
-
-
+//Artist
+app.get('/', func.showArtists);
+app.get('/new', func.addArtistPage);
+app.post('/', func.addArtist);
+app.get('/artist/:id/songs/new', func.displaySongsToAddArtist);
+app.post('/artist/:id/songs', func.addSongsToArtist);
+app.get('/artists/:id/songs',func.showArtistSongs);
+app.get('/artists/:id/edit',func.editArtist);
+app.put('/artists/:id',func.storeEditArtist);
+app.get('/artists/:id',func.showArtist);
+app.delete('/artists/:id', func.deleteArtist);
+//////////////////PLAYLIST/////////////////
+app.get('/playlists/new', func.addPlayListPage);
+app.get('/playlists/:id', func.showPlayList)
+app.get('/playlists', func.showPlayLists)
+app.post('/playlists', func.addPlayList );
+app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
+app.get('/playlists/:id/newsong', func.newPlaylistSongPage);
+app.post('/playlists/:id', func.addPlayListSongs);
+//////////////////USER/////////////////
+app.get('/register', func.registerUserPage);
+app.post('/register', func.registerUser);
+app.get('/login', func.loginPage);
+app.post('/login', func.loginUser);
+app.get('/favorites/new', func.newFavorites);
+app.post('/favorites', func.addFavorites);
+app.get('/favorites', func.favoriteSongs);
 /**
  * ===================================
  * Listen to requests on port 3000
@@ -69,13 +81,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
