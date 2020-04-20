@@ -40,7 +40,6 @@ class SinglePlaylist extends React.Component {
         <h6 className = " text-dark"><strong> {element.trackid}. {element.title}</strong></h6>
         <h7 className = " text-dark"><strong>Artist:</strong> {element.artist_name} | <strong>Album: </strong>{element.album}</h7>
         </a>
-        <a href={`songs/edit/${element.song_id}`} className="btn btn-warning float-right mr-3">Edit</a>
         <a href="" className="btn btn-danger text-light  float-right mr-3">Remove from Playlist</a>
         <br />
       </li>
