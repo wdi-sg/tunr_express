@@ -12,6 +12,7 @@ class Home extends React.Component {
         <body>
           <h1>All Artists:</h1>
           <p>{artistNames}</p>
+          <p>Total Visits to site: {this.props.num}</p>
         </body>
       </html>
     );

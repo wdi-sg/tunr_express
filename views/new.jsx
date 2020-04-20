@@ -1,6 +1,7 @@
 var React = require("react");
 class New extends React.Component {
   render() {
+    var total = parseInt(this.props.num);
     return (
       <html>
         <body>
@@ -13,6 +14,7 @@ class New extends React.Component {
                   <p>Artist Nationality:</p>
                   <input type="text" name="nationality"/>
                   <p><button type="submit">Submit</button></p>
+                  <p>Total Visits to page: {total}</p>
               </form>
             </div>
         </body>

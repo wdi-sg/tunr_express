@@ -2,7 +2,7 @@ var React = require("react");
 class Artist extends React.Component {
 
   render() {
-    console.log(this.props.artist)
+    // console.log(this.props.artist)
     return (
       <html>
         <head />
@@ -11,6 +11,7 @@ class Artist extends React.Component {
             <p><img src = '{this.props.artist[0],photo_url}'></img></p>
             <p>Artist Image Link : {this.props.artist[0].photo_url}</p>
             <p>Artist Nationality : {this.props.artist[0].nationality}</p>
+            <p>Total Visits to site: {this.props.num}</p>
         </body>
       </html>
     );
