@@ -34,6 +34,10 @@ app.get('/', (req, res) => {
   res.render('home');
 });
 
+app.get('/testpage', (req, res) => {
+  res.render('template-content');
+});
+
 // route modules
 const artists = require('./modules/routeartists.js');
 app.use('/artists', artists);
