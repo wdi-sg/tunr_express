@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
 
 // Initialise postgres client
 const configs = {
@@ -34,6 +35,9 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+app.use(cookieParser());
+app.use(express.static('public'));
+
 
 
 // Set react-views to be the default view engine
@@ -57,7 +61,14 @@ const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 */
 
 app.get('/', (request, response) => {
-  response.render('home');
+  if (request.cookies && request.cookies.counter) {
+    counter = parseInt(request.cookies.counter) + 1;
+    response.cookie('counter', counter);
+  } else {
+    var counter = 1;
+    response.cookie('counter', counter);
+  }
+  response.render('home', {'counter': counter});
 });
 
 app.get('/artists/', (request, response) => {
