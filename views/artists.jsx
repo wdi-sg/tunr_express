@@ -26,10 +26,10 @@ class Artists extends React.Component {
     }
     else {
       artists = artists.map((element) => {
-        return <a key={element.name} className="text-dark" href={`/artists/${element.artistid}`}><div className="card text-center bg-light">
+        return <a key={element.name} className="text-dark" href={`/artists/${element.id}`}><div className="card text-center bg-light">
           <img style={square} className="card-img-top" src={`${element.photo_url}`} alt="Card image cap" />
           <div className="card-body">
-            <h5 className="card-title"> {element.artistid}. {element.name}</h5>
+            <h5 className="card-title"> {element.name}</h5>
             <p className="card-text">Nationality: {element.nationality}</p>
           </div>
         </div>

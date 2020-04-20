@@ -38,10 +38,10 @@ class SingleArtist extends React.Component {
         <div className="card-body">
           <h2 className="card-title text-dark">{element.name}</h2>
           <p className="card-text text-dark">Nationality: {element.nationality}</p>
-          <a href={`/artists/${element.artistid}/edit`} className = "btn btn-secondary">Edit Details</a>
+          <a href={`/artists/${element.id}/edit`} className = "btn btn-secondary">Edit Details</a>
           <br/>
         </div>
-        <a className="btn btn-block btn-dark pl-0 pr-0 ml-0 mr-0" href={`/artists/${element.artistid}/songs`}><h4 >View Songs</h4></a>
+        <a className="btn btn-block btn-dark pl-0 pr-0 ml-0 mr-0" href={`/artists/${element.id}/songs`}><h4 >View Songs</h4></a>
       </div>
       })
     }

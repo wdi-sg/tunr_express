@@ -135,7 +135,7 @@ app.get('/artists/:id', (request, response) => {
       var idMatch = [];
       // console.log(result.rows)
       for (id in result.rows) {
-        if (result.rows[id].artistid == artistId) {
+        if (result.rows[id].id == artistId) {
           idMatch.push(result.rows[id]);
         }
       }
@@ -165,7 +165,7 @@ app.get('/artists/:id/edit', (request, response) => {
       var idMatch = [];
       // console.log(result.rows)
       for (id in result.rows) {
-        if (result.rows[id].artistid == artistId) {
+        if (result.rows[id].id == artistId) {
           idMatch.push(result.rows[id]);
         }
       }
@@ -193,22 +193,22 @@ app.put('/artists/:id', (request, response) => {
       var idMatch = [];
       // console.log(result.rows)
       for (id in result.rows) {
-        if (result.rows[id].artistid == artistId) {
+        if (result.rows[id].id == artistId) {
           idMatch.push(result.rows[id]);
         }
       }
 
-      var mappedId = idMatch[0].id;
+      // var mappedId = idMatch[0].id;
       const queryString =
         `UPDATE artists SET name = $1, photo_url = $2, nationality = $3 WHERE id = $4`;
-      const values = [request.body.name, request.body.photo_url, request.body.nationality, mappedId];
+      const values = [request.body.name, request.body.photo_url, request.body.nationality, artistId];
       pool.query(queryString, values, (err, result) => {
 
         if (err) {
           console.error('query error7:', err.stack);
           response.send('query error');
         } else {
-          const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists WHERE id = ${mappedId}`;
+          const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists WHERE id = ${artistId}`;
           pool.query(queryString, (err, result) => {
 
             if (err) {
@@ -249,9 +249,9 @@ app.delete('/artists/:id', (request, response) => {
         }
       }
 
-      var mappedId = idMatch[0].id;
+      // var mappedId = idMatch[0].id;
       const queryString =
-        `DELETE FROM artists WHERE id = ${mappedId}`;
+        `DELETE FROM artists WHERE id = ${artistId}`;
       pool.query(queryString, (err, result) => {
 
         if (err) {
@@ -294,7 +294,7 @@ app.get('/artists/:id/songs', (request, response) => {
       var idMatch = [];
       // console.log(result.rows)
       for (id in result.rows) {
-        if (result.rows[id].artistid == artistId) {
+        if (result.rows[id].id == artistId) {
           idMatch.push(result.rows[id]);
         }
       }
@@ -302,8 +302,8 @@ app.get('/artists/:id/songs', (request, response) => {
       var output = {
         'artists': idMatch,
       }
-      var mappedId = idMatch[0].id;
-      const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS songid, * FROM songs WHERE artist_id = ${mappedId}`;
+      // var mappedId = idMatch[0].id;
+      const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS songid, * FROM songs WHERE artist_id = ${artistId}`;
       pool.query(queryString, (err, result) => {
         if (err) {
           console.error('query error4:', err.stack);
@@ -332,7 +332,7 @@ app.post('/artists/songs', (request, response) => {
       var idMatch = [];
       // console.log(result.rows)
       for (id in result.rows) {
-        if (result.rows[id].artistid == request.body.artist_id) {
+        if (result.rows[id].id == request.body.artist_id) {
           idMatch.push(result.rows[id]);
         }
       }

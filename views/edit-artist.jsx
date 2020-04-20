@@ -35,7 +35,7 @@ class EditArtist extends React.Component {
                         <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Edit Artist</u></em></h1>
                         <div className="container w-75 ml-auto mr-auto pl-0 pr-0 card bg-light pl-5 pr-5 pt-5 pb-5">
                             <br />
-                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5 border-0" method="POST" action={`/artists/${artist.artistid}?_method=put`}>
+                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5 border-0" method="POST" action={`/artists/${artist.id}?_method=put`}>
                                 Name:&emsp;
                     <input type="text" name="name" defaultValue={artist.name} />
                                 <br /><br />
@@ -50,7 +50,7 @@ class EditArtist extends React.Component {
                                 <button className="btn btn-success w-50 ml-auto mr-auto" type="submit"> Submit </button>
 
                             </form>
-                            <form className="card bg-light pl-5 pr-5 pt-2  border-0" method="POST" action={`/artists/${artist.artistid}?_method=delete`}>
+                            <form className="card bg-light pl-5 pr-5 pt-2  border-0" method="POST" action={`/artists/${artist.id}?_method=delete`}>
                                 <button className="btn btn-danger w-50 mr-auto ml-auto" type="submit"> Delete </button>
                             </form>
                         </div>
