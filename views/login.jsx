@@ -1,15 +1,11 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Register extends React.Component {
   render() {
-
     return (
       <html>
-        <head/>
-        <link rel={"stylesheet"} href={"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"} integrity={"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"} crossorigin={"anonymous"}></link>
-        <link rel={"stylesheet"} href={"./style.css"}></link>
-
-
+        <head />
+                <link rel={"stylesheet"} href={"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"} integrity={"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"} crossorigin={"anonymous"}></link>
         <body>
         <nav class={"navbar navbar-expand-lg navbar-light bg-light"}>
 
@@ -28,27 +24,26 @@ class Home extends React.Component {
                 </div>
               </div>
         </nav>
-        <div class={"container border mt-5"}>
-            <div class={"row text-center mt-3"}>
-                <div class={"col-12 text-center"}>
-                <h1>Error Message</h1>
-                </div>
-            </div>
+          <h3>Login form Goes Here!</h3>
+            <form method="POST" action="/login"  style={{textAlign: "Center"}}>
+                <span>Enter Login Name: </span>
+                    <input  id= "loginname" type="text" name="loginname" placeholder="Enter Login Name" required
+                            oninvalid="this.setCustomValidity('Enter Valid Login Name Here')"
+                            oninput="this.setCustomValidity('')" ></input>
+                    <br></br><br></br>
 
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p>{this.props.errorMessage}</p>
-                </div>
-            </div>
+                    <span>Enter Password: </span>
+                    <input type="text" name="password" placeholder="Enter Strong Password" required
+    oninvalid="this.setCustomValidity('Enter Password Here')"
+    oninput="this.setCustomValidity('')"></input>
 
-          </div>
-
-
-
+                    <br></br><br></br>
+                    <input type="submit" value="Submit"></input>
+                </form>
         </body>
       </html>
     );
   }
 }
 
-module.exports = Home;
+module.exports = Register;

@@ -182,7 +182,98 @@ app.get('/login', (request, response) => {
   // query database for all artist
 
   // respond with HTML page displaying all arist
-  response.send('Login');
+  response.render('login');
+  //response.render('register');
+});
+
+////Go to Login Form
+app.post('/login', (request, response) => {
+  // query database for all artist
+
+  // respond with HTML page displaying all arist
+          const queryString = 'SELECT * from users';
+
+
+          pool.query(queryString,  (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+
+                        const data={};
+                        let userFind=false;
+                        for (keys in result.rows)
+                        {
+
+                            if(request.body.loginname===result.rows[keys].name)
+                            {
+
+                                userFind=true;
+
+                            }
+                            //console.log(result.rows[keys].name);
+                        }
+                        if(!userFind)
+                        {
+
+                                data.errorMessage= "User does not exists"
+                                response.render('error', data);
+                                return
+
+                        }
+                        const queryPasswordString = 'SELECT * from users WHERE name=($1)';
+                        console.log(request.body.loginname);
+
+                            const inputString=[request.body.loginname];
+                            pool.query(queryPasswordString, inputString, (Passworderr, Passwordresult) =>
+                            {
+
+                                if (err)
+                                    {
+                                        console.error('query error:', Passworderr.stack);
+                                        response.send( 'query error' );
+                                    }
+                                else
+                                    {
+                                        console.log("here");
+                                        const data={};
+                                        let userFind=false;
+                                        console.log(result.rows);
+                                        console.log(Passwordresult.rows);
+                                        if( Passwordresult.rows[0].password === request.body.password)
+                                        {
+
+                                                  var username = request.cookies['username'];
+                                            var password=request.cookies['password'];
+
+
+                                              username = request.body.loginname;
+
+
+                                              password = sha256(request.body.password);
+
+                                            response.cookie('username',username);
+                                            response.cookie('password', password);
+                                            response.redirect('/');
+                                            return;
+
+                                        }
+                                        const data2 = {};
+                                        data2.errorMessage="Wrong Password"
+                                            response.render('error', data2);
+
+
+
+
+                                     }
+                             });
+                        }
+            });
   //response.render('register');
 });
 ////Show all Artists
