@@ -25,7 +25,7 @@ class Register extends React.Component {
                 </div>
                 <br/>
                 <div className='row justify-content-center'>
-                    <button className='btn btn-dark'><a href='/' className='text-white text-decoration-none'>Back to Log In</a></button>
+                    <button className='btn btn-dark'><a href='/' className='text-white text-decoration-none'>Back to Main Page</a></button>
                 </div>
             </div>
         </body>

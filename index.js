@@ -788,9 +788,11 @@ app.post('/login', (request, response) => {
             console.log('Query Error', err.stack);
             response.send('An error occurred with username 😢');
         } else {
+            //Check that username is exists
             if (result.rows.length === 0) {
                 response.send('Username not found.')
             } else if (result.rows[0].username === username) {
+                //Check if password is correct
                 if (result.rows[0].password === hash) {
                     response.cookie('logged in', true)
                     response.redirect('/artists/');
@@ -810,20 +812,45 @@ app.get('/register/', (request, response) => {
 })
 
 app.post('/register', (request, response) => {
-    let hash = sha256(request.body.password)
+    let usernameInput = request.body.username;
+    let hash = sha256(request.body.password);
 
-    let values = [request.body.username, hash];
-    let queryString = 'INSERT INTO accounts (username, password) VALUES ($1, $2)';
+    let usernameExists = false;
+    let queryString = 'SELECT * FROM accounts';
 
-    pool.query(queryString, values, (err, result) => {
+    //Check if username already exists
+    pool.query(queryString, (err, result) => {
         if (err) {
             console.log('Query Error', err.stack);
             response.send('An error occurred when creating account 😢');
         } else {
-            response.render('welcome');
+            const accounts = result.rows;
+            accounts.forEach(account => {
+                if (account.username === usernameInput) {
+                    usernameExists = true;
+                }
+            })
+
+            if (usernameExists === true) {
+                response.send('Username already exists.')
+            } else {
+                let values = [usernameInput, hash];
+                let queryString = 'INSERT INTO accounts (username, password) VALUES ($1, $2)';
+
+                //Add new account to database
+                pool.query(queryString, values, (err, result) => {
+                    if (err) {
+                        console.log('Query Error', err.stack);
+                        response.send('An error occurred when creating account 😢');
+                    } else {
+                        response.render('welcome');
+                    }
+                })
+            }
         }
     })
 })
+
 
 /////////////////////////
 ////  Sign in page  ////

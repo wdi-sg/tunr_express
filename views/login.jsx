@@ -25,6 +25,10 @@ class Login extends React.Component {
                         </div>
                     </form>
                 </div>
+                <br/>
+                <div className='row justify-content-center'>
+                    <button className='btn btn-dark'><a href='/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                </div>
             </div>
         </body>
       </html>
