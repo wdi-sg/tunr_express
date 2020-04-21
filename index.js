@@ -235,7 +235,8 @@ app.post('/register', (request, response) => {
             response.send('query error');
         } else {
             console.log('query result: ', result);
-            response.redirect('/home');
+            response.cookie('loggedin', true)
+            response.redirect('/');
         }
     })
 });
