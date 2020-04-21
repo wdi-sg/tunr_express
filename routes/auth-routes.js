@@ -3,10 +3,13 @@ const Router = require('express-promise-router');
 const router = new Router();
 const path = require('path');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
+
+router.use(cookieParser());
 
 router.use('/:route', express.static(path.join(__dirname, '..', '/public/')));
 
-const authController = require('../controllers/auth-controller.js')
+const authController = require('../controllers/auth-controller.js');
 
 router.get('/login', authController.getLogin);
 
@@ -17,5 +20,7 @@ router.post('/login', authController.postLogin);
 router.post('/register', authController.postRegister);
 
 router.post('/logout', authController.postLogout);
+
+router.get('/', authController.getLoginRegister);
 
 module.exports = router;

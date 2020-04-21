@@ -151,7 +151,7 @@ main {
 /*login-register*/
 
 .login-register__wrapper {
-		margin-top: 28px;
+		padding: 18px 0;
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
@@ -197,7 +197,7 @@ main {
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		flex-grow: 1;
+		flex-grow: 0;
 		z-index: 2;
 }
 
@@ -212,6 +212,10 @@ main {
 		text-transform: uppercase;
 		text-align: center;
 		text-indent: 0.2rem;
+}
+
+.featured-artist.login-register-page {
+		flex-grow: 0;
 }
 
 .featured-artist__header.login-register-page {

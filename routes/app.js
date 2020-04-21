@@ -65,18 +65,29 @@ app.use('/', async (req, res, next) => {
     next();
 })
 
-const visitsCookie = require('../util/visits-cookie.js');
-
 app.use('/auth', authRoutes);
 
-app.get('/', async (req, res) => {
+app.get('/', (req, res, next) => {
 
-    visitsCookie.visitsCookieCounter(req, res);
+    if (req.session.userId) {
+
+        const currentUser = authController.getUserInfo(req.session.userId);
+
+        res.cookie('userId', req.session.userId);
+
+        authController.visitsCookieCounter(req, res);
+    }
+
+    next();
+
+
+})
+
+app.get('/', (req, res) => {
 
     //redirect to homepage with auth routes if user is not logged in
 
     if (req.session.userId) {
-        authController.getUserInfo(req.session.userId);
         res.render('home', { 'singleArtist': req.featuredArtist });
     } else {
         res.redirect('/auth');
