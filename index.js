@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -216,6 +217,27 @@ app.get('/playlist', (request, response) => {
             response.render('playlist', data);
         };
     });
+});
+
+app.get('/register', (request, response) => {
+    response.render('register');
+});
+
+app.post('/register', (request, response) => {
+    let encPw = sha256(request.body.password);
+    console.log('**************this is the hashed password*********');
+    console.log(encPw);
+    let queryString1 = 'INSERT INTO users (user_id, password) VALUES ($1,$2)'
+    const values1 = [request.body.userId, encPw];
+    pool.query(queryString1, values1, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            console.log('query result: ', result);
+            response.redirect('/home');
+        }
+    })
 });
 
 /**
