@@ -34,6 +34,8 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
+app.use(cookieParser());
+app.use(express.static('public'));
 
 
 // Set react-views to be the default view engine
@@ -49,8 +51,16 @@ app.engine('jsx', reactEngine);
 */
 
 app.get('/', (request, response) => {
-  response.render('home');
+  if (request.cookies && request.cookies.counter) {
+    counter = parseInt(request.cookies.counter) + 1;
+    response.cookie('counter', counter);
+  } else {
+    var counter = 1;
+    response.cookie('counter', counter);
+  }
+  response.render('home', {'counter': counter});
 });
+
 
 app.get('/artists/', (request, response) => {
   pool.query('SELECT * FROM artists', (error, result) => {
@@ -113,6 +123,9 @@ app.get('/artists/:id/songs', (request, response) => {
     }
   })
 });
+
+
+
 
 
 
