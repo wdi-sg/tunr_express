@@ -3,7 +3,7 @@ const Artist = require('../models/artist.model')
 const showArtist = ((req, res) => {
   const { id } = req.params
    Artist.select('*', { id })
-     .then(artists => res.json(artists))
+     .then(artist => res.json(artist))
      .catch(console.error)
 })
 
@@ -23,7 +23,7 @@ const addNewArtist = ((req, res) => {
   const { name, photo_url, nationality } = req.body
   const newArtist = new Artist(-1, name, photo_url, nationality)
   newArtist.save()
-    .then(data => res.json(data))
+    .then(result => res.json(result))
     .catch(console.error)
 })
 
@@ -46,7 +46,7 @@ const removeArtist = ((req, res) => {
   const artist = new Artist()
   artist.id = req.body.id
   artist.delete()
-    .then(data => res.json(data.rows))
+    .then(result => res.json(result.rows))
     .catch(console.error)
 })
 
@@ -54,18 +54,19 @@ const removeArtist = ((req, res) => {
 // @returns {Artist} with relns
 const showArtistSongs = ((req, res) => {
   const {id} = req.params
-  // Artist.fetchChild('*')
   const artist = new Artist(id)
   artist.fetchChild('song')
-    .then(artistWithSongs=>res.json(artistWithSongs.data))
+    .then(artistWithSongs=>res.json(artistWithSongs))
     .catch(console.error)
 })
 
 const createNewArtistSong = ((res, req) => {
-  res.json('show create new artist songs')
+
+  res.json('create new artist songs')
 })
 
 const showCreateNewArtistSong = ((res, req) => {
+
   res.json('show create new artist song form')
 })
 

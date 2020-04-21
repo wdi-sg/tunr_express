@@ -20,7 +20,7 @@ class Song extends Model {
   }
 
   get album () {
-    return this.data.album
+    return this._data.album
   }
 
   set album (album) {
