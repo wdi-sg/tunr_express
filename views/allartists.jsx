@@ -45,6 +45,25 @@ class Allartists extends React.Component {
     // Javascript stuff
     const visits = this.props.visits;
 
+    let visitbadge;
+
+    if(visits < 5){
+        visitbadge = <figure>
+                        <img src="/newbie_badge.jpg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 4 && visits < 10) {
+        visitbadge = <figure>
+                        <img src="/silver_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 9){
+        visitbadge = <figure>
+                        <img src="/gold_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    }
+
     const allArtists = this.props.result.map(el => {
 
       const artistURL = `/artists/${el.id}/songs`
@@ -63,14 +82,17 @@ class Allartists extends React.Component {
 
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" href="/css/allartists.css"/>
+
+        </head>
         <body style={background}>
           <div style={heading}>
             <div>
             <h1 style={title}>All Artists</h1>
             </div>
-            <div>
-              <p>You've been here {visits} times</p>
+            <div className="visits">
+              {visitbadge}
             </div>
             <div>
             {newArtist}

@@ -1,0 +1,13 @@
+img{
+	max-width: 30px;
+	max-height: 30px;
+}
+
+h1{
+	display: inline;
+}
+
+.visits{
+	display: inline;
+	float : right;
+}

@@ -22,14 +22,35 @@ class Newartist extends React.Component {
     // Javascript stuff
     const visits = this.props.visits;
 
+    let visitbadge;
+
+    if(visits < 5){
+        visitbadge = <figure>
+                        <img src="/newbie_badge.jpg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 4 && visits < 10) {
+        visitbadge = <figure>
+                        <img src="/silver_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 9){
+        visitbadge = <figure>
+                        <img src="/gold_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    }
+
 
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" href="/css/newartist.css"/>
+        </head>
         <body>
           <h1 style={title}>Add a New Artist</h1>
-          <div>
-            <p>You've been here {visits} times</p>
+          <div className="visits">
+            {visitbadge}
           </div>
           <div style={formStyle}>
             <form action="/artists" method="post">

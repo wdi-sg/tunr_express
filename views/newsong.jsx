@@ -11,15 +11,38 @@ class New extends React.Component {
 
     const visits = this.props.visits;
 
+    console.log(visits)
+
+    let visitbadge;
+
+    if(visits < 5){
+        visitbadge = <figure>
+                        <img src="/newbie_badge.jpg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 4 && visits < 10) {
+        visitbadge = <figure>
+                        <img src="/silver_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    } else if (visits > 9){
+        visitbadge = <figure>
+                        <img src="/gold_badge.svg"></img>
+                        <figcaption>Visits: {visits}</figcaption>
+                    </figure>
+    }
+
     const url = `/artists/${artistID}/songs`
 
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" href="/css/newsong.css"/>
+        </head>
         <body>
           <h3>Add a new Song</h3>
-          <div>
-            <p>You've been here {visits} times</p>
+          <div className="visits">
+            {visitbadge}
           </div>
           <div>
             <form action={url} method="post">

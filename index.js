@@ -125,7 +125,6 @@ app.get('/artists/:id/songs', (request, response) => {
             }
             else{
                 allSongDetails = result.rows;
-                console.log(allSongDetails);
                 resolve();
             }
         })
@@ -300,7 +299,7 @@ app.get('/playlist/new', (request, response) => {
     let visits = request.cookies.visits;
 
     const data = {'visits' : visits};
-    response.render('newplaylist');
+    response.render('newplaylist', data);
 })
 
 app.post('/playlists/show', (request, response) => {
