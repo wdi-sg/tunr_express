@@ -138,7 +138,7 @@ app.get('/artists/:id/edit', (request, response) => {
 });
 
 app.post('/artists/:id', (request, response) => {
-  // respond with HTML page with created artist
+  // respond with HTML page with edited artist
 
   console.log(request.body);
 
@@ -164,6 +164,24 @@ app.post('/artists/:id', (request, response) => {
 // app.delete("/artists/:id", (request, response) => {
 //   //read the file in and write out to it
 // });
+
+app.get('/artists/:id/songs', (request, response) => {
+  // respond with HTML page with artist songs
+  const queryString = 'SELECT artists.name, artists.photo_url, artists.nationality, songs.title, songs.album FROM artists INNER JOIN songs ON (songs.artist_id = artists.id) WHERE artists.id = ' + request.params.id + 'ORDER BY songs.album ASC';
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      console.log('query result:', result.rows);
+
+      response.render('songs', result);
+    }
+  });
+  // response.render('edit-artist',);
+});
 
 /**
  * ===================================
