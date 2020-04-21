@@ -1,10 +1,11 @@
 const React = require('react');
-class All_Playlists extends React.Component {
+class Song_To_Playlist_Direct extends React.Component {
     render () {
 
         const playlists = this.props.playlists;
         const visitCounter = this.props.visitCounter;
         const songId = this.props.songId;
+
 
         //Render page visit badges
         const visitCounterImageList = {
@@ -27,8 +28,7 @@ class All_Playlists extends React.Component {
         }
 
         const allPlaylists = playlists.map(playlist => {
-            let playlistIdPage = '/playlists/' + playlist.id;
-            return (<h5><li><a href={playlistIdPage}>{playlist.name}</a></li></h5>)
+            return (<option>{playlist.name}</option>)
         })
 
         return (
@@ -39,20 +39,24 @@ class All_Playlists extends React.Component {
             <body>
                 <br/>
                 <div className='container'>
-                    <h2 className='text-center'>List of Playlists</h2>
+                    <h2 className='text-center'>Add to Playlist</h2>
+                    <h5 className='text-center'>Select a playlist to add the song to.</h5>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-primary'><a className='text-white text-decoration-none' href='/playlists/new'>Add Playlist</a></button>
+                        <form method='POST' action='/playlists/:id'>
+                            <select>
+                                <option></option>
+                                {allPlaylists}
+                            </select>
+                            <br/><br/>
+                            <div className='row justify-content-center'>
+                                <input type='submit' className='btn btn-primary' value='Submit'/>
+                            </div>
+                        </form>
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <ol>
-                            {allPlaylists}
-                        </ol>
-                    </div>
-                    <br/>
-                    <div className='row justify-content-center'>
-                        <button className='btn btn-dark'><a href='/artists/' className='text-white text-decoration-none'>Back to Main Page</a></button>
+                        <button className='btn btn-secondary'><a href='/artists/songs' className='text-white text-decoration-none'>Back to Song List</a></button>
                     </div>
                     <br/>
                 </div>
@@ -72,4 +76,4 @@ class All_Playlists extends React.Component {
     }
 }
 
-module.exports = All_Playlists;
+module.exports = Song_To_Playlist_Direct;

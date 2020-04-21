@@ -13,6 +13,7 @@ class Show_Song extends React.Component {
 
         const editSongPage = '/artists/' + artist_id + '/songs/' + song_id + '/edit';
         const deleteSongPage = '/artists/' + artist_id + '/songs/' + song_id + '?_method=delete';
+        const addToPlaylist = '/artists/' + artist_id + '/songs/' + song_id + '/playlists';
         const backToArtistSongList = '/artists/' + artist_id + '/songs/';
 
         //Render page visit badges
@@ -50,7 +51,12 @@ class Show_Song extends React.Component {
                                 <h4 className="card-title text-center">{title}</h4>
                                 <p className="card-text text-center">{artistName}</p>
                                 <div className='row justify-content-center'>
-                                    <button className='btn btn-info'><a href={preview_link} className='text-white text-decoration-none'>Preview</a></button>
+                                    <div className='col-5 d-flex justify-content-center'>
+                                        <button className='btn btn-info'><a href={preview_link} className='text-white text-decoration-none'>Preview</a></button>
+                                    </div>
+                                    <div className='col-6'>
+                                        <button className='btn btn-warning'><a href={addToPlaylist} className='text-dark text-decoration-none'>Add to Playlist</a></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

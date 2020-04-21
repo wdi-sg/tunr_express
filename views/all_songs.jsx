@@ -43,7 +43,7 @@ class All_Songs extends React.Component {
                         </div>
                         <br/>
                         <div className='row justify-content-center'>
-                            <button className='btn btn-secondary'><a href='/playlists/addsong' className='text-white text-decoration-none'>Add to Playlist</a></button>
+
                         </div>
                     </div>
                 </div>

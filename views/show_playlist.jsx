@@ -47,6 +47,7 @@ class Show_Playlist extends React.Component {
 
         const addRemoveSongsToPlaylist = '/playlists/' + playlistId + '/newsong';
         const deletePlaylist = '/playlists/' + playlistId + '?_method=delete';
+        const editPlaylist = '/playlists/' + playlistId + '/edit';
         const playlistPage = '/playlists/' + playlistId;
 
         return (
@@ -62,7 +63,12 @@ class Show_Playlist extends React.Component {
                     </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <button className='btn btn-primary'><a href={addRemoveSongsToPlaylist} className='text-white'>Add/ Remove Songs</a></button>
+                        <div className='col-3 d-flex justify-content-end'>
+                            <button className='btn btn-primary'><a href={addRemoveSongsToPlaylist} className='text-white'>Add/ Remove Songs</a></button>
+                        </div>
+                        <div className='col-3'>
+                            <button className='btn btn-warning'><a href={editPlaylist} className='text-dark'>Edit Playlist</a></button>
+                        </div>
                     </div>
                     <br/>
                         {updatedSongsList}
