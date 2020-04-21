@@ -34,3 +34,9 @@ FROM playlist AS p
 INNER JOIN playlist_song AS ps ON ps.playlist_id = p.id
 INNER JOIN songs AS s ON s.id = ps.song_id
 INNER JOIN artists AS a ON s.artist_id = a.id; 
+
+SELECT ps.playlist_id, ps.song_id, s.title, s.album, a.name, s.artist_id, s.preview_link, s.artwork
+FROM playlist AS p
+LEFT JOIN playlist_song AS ps ON ps.playlist_id = p.id
+LEFT JOIN songs AS s ON s.id = ps.song_id
+LEFT JOIN artists AS a ON s.artist_id = a.id; 
