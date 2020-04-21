@@ -3,7 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
-
+const sha256 = require('js-sha256');
 // Initialise postgres client
 const configs = {
   user: 'kenneththesheep',
@@ -95,6 +95,96 @@ app.get('/index', (request, response) => {
   response.send('hello world');
 });
 
+////Go to Register Form
+app.get('/register', (request, response) => {
+  // query database for all artist
+
+  // respond with HTML page displaying all arist
+  response.render('register');
+});
+
+
+////Process Registration
+app.post('/register', (request, response) => {
+    const whenQueryDone = (queryError, result) => {
+    if( queryError ){
+      console.log("EERRRRRRRROR");
+      console.log(queryError);
+      response.status(500);
+      response.send('db error');
+    }else{
+      // if the query ran wiothout errors
+      console.log(result.rows[0]);
+      var username = request.cookies['username'];
+    var password=request.cookies['password'];
+    if( username === undefined ){
+
+      username = request.body.loginname;
+
+    }
+        if( password === undefined ){
+
+      password = sha256(request.body.password);
+
+    }
+    response.cookie('username',username);
+    response.cookie('password', password);
+    const data = {};
+          data.successMessage= "Congratulation on your successful login"
+                                response.render('success', data);
+    }
+  };
+        const queryString = 'SELECT * from users';
+
+        pool.query(queryString,  (err, result) =>
+            {
+
+                if (err)
+                    {
+                        console.error('query error:', err.stack);
+                        response.send( 'query error' );
+                    }
+                else
+                    {
+
+                        const data={};
+
+                        for (keys in result.rows)
+                        {
+                            if(request.body.loginname===result.rows[keys].name)
+                            {
+                                data.errorMessage= "User exists"
+                                response.render('error', data);
+                                return
+                            }
+                            //console.log(result.rows[keys].name);
+                        }
+                        //response.render("artist",data);
+                            const encryptedPassword = sha256(request.body.password);
+                            const queryString = "INSERT INTO users (name, password, encryptPassword) VALUES ($1, $2, $3) RETURNING id";
+
+                            const input=[request.body.loginname, request.body.password, encryptedPassword];
+
+                            console.log(input);
+                            //response.send(input);
+
+                            pool.query(queryString, input, whenQueryDone);
+                    }
+            });
+
+
+
+
+});
+
+////Go to Login Form
+app.get('/login', (request, response) => {
+  // query database for all artist
+
+  // respond with HTML page displaying all arist
+  response.send('Login');
+  //response.render('register');
+});
 ////Show all Artists
 app.get('/artists',(request,response)=>{
 
