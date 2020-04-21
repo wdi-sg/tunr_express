@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const makeQuery = require('./makequery');
 const cookieParser = require('cookie-parser');
 router.use(cookieParser());
 
-// cookie functions
+// helper functions
+const makeQuery = require('./makequery');
 const increaseVisits = require('./cookies.jsx');
 
 router.get('/', (req, res) => {
