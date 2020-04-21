@@ -112,6 +112,29 @@ class Nav extends React.Component {
                         </a>
                       </div>
                     </li>
+                    <li className="nav-item dropdown">
+                      <a
+                        className="nav-link dropdown-toggle"
+                        href="#"
+                        id="navbarDropdownMenuLink"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        Favourites
+                      </a>
+                      <div
+                        className="dropdown-menu"
+                        aria-labelledby="navbarDropdownMenuLink"
+                      >
+                        <a className="dropdown-item" href="/favourites">
+                          All Favourites
+                        </a>
+                        <a className="dropdown-item" href="/favourites/new">
+                          Add A Favourite
+                        </a>
+                      </div>
+                    </li>
                   </ul>
                 </div>
               </nav>

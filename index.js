@@ -611,6 +611,30 @@ app.post(`/register`, (req, res) => {
 });
 
 
+
+app.get(`/favourites`, (req, res) => {
+
+    const data = {
+        isLoggedIn: req.cookies.isLoggedIn,
+        errorMsg: ""
+    }
+    if (req.cookies.isLoggedIn === 'false') {
+        data.errorMsg = `You are not logged in. Please login first.`;
+        res.render(`favourites/all-favourites`, data);
+    } else {
+        const userId = req.cookies.currentUserId
+        let command = `SELECT songs.* FROM favourites INNER JOIN songs ON favourites.song_id = songs.id WHERE favourites.user_id = ${userId} ;`;
+        pool.query(command, (err, result) => {
+            if (err) {
+                return console.log(`Query error:`, err);
+            } else {
+                data.faves = result.rows;
+                return res.render(`favourites/all-favourites`, data);
+            }
+        });
+    }
+});
+
 /**
  * ===================================
  * |||||||||| HOME ROUTE |||||||||||||

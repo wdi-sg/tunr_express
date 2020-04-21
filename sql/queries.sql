@@ -1,6 +1,1 @@
-SELECT *
-FROM playlist_song
-INNER JOIN playlists
-ON playlist_song.playlist_id = playlists.id
-INNER JOIN songs ON playlist_song.song_id = songs.id
-WHERE playlists.id = 1;
+SELECT songs.* FROM favourites INNER JOIN songs ON favourites.song_id = songs.id WHERE favourites.user_id = 3;

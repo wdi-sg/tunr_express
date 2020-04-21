@@ -27,8 +27,14 @@
 --     playlist_id INTEGER
 -- );
 
-CREATE TABLE IF NOT EXISTS users (
+-- CREATE TABLE IF NOT EXISTS users (
+--     id SERIAL PRIMARY KEY,
+--     username TEXT,
+--     password TEXT
+-- );
+
+CREATE TABLE IF NOT EXISTS favourites (
     id SERIAL PRIMARY KEY,
-    username TEXT,
-    password TEXT
+    song_id INTEGER,
+    user_id INTEGER
 );
