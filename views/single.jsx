@@ -13,6 +13,7 @@ class Single extends React.Component {
           <p>{artist.nationality}</p>          
           <img src={artist.photo_url}/>
         </body>
+        <footer>Number of visits to page: {this.props.count}</footer>
       </html>
     );
   }

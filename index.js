@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require("cookie-parser");
 
 // Initialise postgres client
 const configs = {
@@ -41,6 +42,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(cookieParser());
 
 /**
  * ===================================
@@ -49,10 +51,23 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
+
   // query database for all pokemon
 
+    let visits = request.cookies["visits"];
+    if (visits === undefined){
+      visits = 1;
+    } else {
+      visits++;
+    }
+    response.cookie(`visits`, visits)
+
+    const data = {
+      count : visits
+    }
+
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  response.render('home', data);
 });
 
 // Show all artists 
@@ -65,6 +80,7 @@ app.get('/artists/', (request, response) => {
     if (error) {
       console.log('query error');
     } else {
+   
       const artists = result.rows;
       // respond with HTML page displaying all artist
       response.render('artists', {"artists": artists});
@@ -77,7 +93,19 @@ app.get('/artists/', (request, response) => {
 
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new artist
-  response.render('new');
+
+  let visits = request.cookies["visits"];
+  if (visits === undefined){
+    visits = 1;
+  } else {
+    visits++;
+  }
+  response.cookie(`visits`, visits)
+
+  const data = {
+    count : visits
+  }
+  response.render('new', data);
 });
 
 // Create a new artist
@@ -109,8 +137,20 @@ app.get('/artists/:id', (request, response) => {
     if (error) {
       console.log('query error');
     } else {
-      const artist = result.rows[0];
-      response.render('single', {'artist': artist});
+      let visits = request.cookies["visits"];
+      if (visits === undefined){
+        visits = 1;
+      } else {
+        visits++;
+      }
+      response.cookie(`visits`, visits)
+  
+      const data = {
+        count : visits,
+        artist : result.rows[0]
+      }
+  
+      response.render('single', data);
     }
   });
 });
