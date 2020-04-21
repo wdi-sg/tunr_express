@@ -57,7 +57,7 @@ class EditSongs extends React.Component {
                         </div>
                     </div>
                     <footer className="footer">
-            <div className="container-fluid bg-dark  text-center h4 mb-0 mt-5 pt-2 pb-2 position-absolute fixed-bottom">
+            <div className="container-fluid bg-dark  text-center h4 mb-0 mt-5 pt-2 pb-2 position-sticky sticky-bottom">
               <span className="text-light">Visited {this.props.visits} times</span>
             </div>
           </footer>

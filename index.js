@@ -79,23 +79,23 @@ app.get('/artists', (request, response) => {
       var visits = request.cookies['visits'];
 
       // see if there is a cookie
-      if( visits === undefined ){
-      
+      if (visits === undefined) {
+
         // set a default value if it doesn't exist
         visits = 1;
-      }else{
-      
+      } else {
+
         // if a cookie exists, make a value thats 1 bigger
-        visits = parseInt( visits ) + 1;
+        visits = parseInt(visits) + 1;
       }
-      
+
       // set the cookie
       response.cookie('visits', visits);
-     
-          var output = {
-            'artists': result.rows,
-            'visits': visits
-          }
+
+      var output = {
+        'artists': result.rows,
+        'visits': visits
+      }
       response.render('artists', output);
       // response.send( output);
     }
@@ -105,7 +105,12 @@ app.get('/artists', (request, response) => {
 // View new artist form page
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new ....
-  response.render('new-artist');
+  var visits = request.cookies['visits'];
+
+      var output = {
+        'visits': visits
+      }
+  response.render('new-artist',output);
 });
 
 app.post('/artists', (request, response) => {
@@ -127,7 +132,8 @@ app.post('/artists', (request, response) => {
         } else {
           // console.log('query result:', result);
           var output = {
-            'artists': result.rows          }
+            'artists': result.rows
+          }
           response.redirect('/artists');
           // response.send( output);
         }
@@ -153,9 +159,11 @@ app.get('/artists/:id', (request, response) => {
           idMatch.push(result.rows[id]);
         }
       }
-      // redirect to home page
+      var visits = request.cookies['visits'];
+
       var output = {
         'artists': idMatch,
+        'visits': visits
       }
 
       response.render('single-artist', output);
@@ -183,9 +191,11 @@ app.get('/artists/:id/edit', (request, response) => {
           idMatch.push(result.rows[id]);
         }
       }
-      // redirect to home page
+      var visits = request.cookies['visits'];
+
       var output = {
         'artists': idMatch,
+        'visits': visits
       }
 
       response.render('edit-artist', output);
@@ -324,6 +334,9 @@ app.get('/artists/:id/songs', (request, response) => {
           response.send('query error');
         } else {
           output.songs = result.rows;
+          var visits = request.cookies['visits'];
+
+          output.visits = visits;
           response.render('artist-songs', output);
         }
       })
@@ -333,6 +346,22 @@ app.get('/artists/:id/songs', (request, response) => {
 app.get('/artists/:id/songs/new', (request, response) => {
   // respond with HTML page with form to create new ....
   var id = { 'id': request.params.id };
+  var visits = request.cookies['visits'];
+
+  // see if there is a cookie
+  if (visits === undefined) {
+
+    // set a default value if it doesn't exist
+    visits = 1;
+  } else {
+
+    // if a cookie exists, make a value thats 1 bigger
+    visits = parseInt(visits) + 1;
+  }
+
+  // set the cookie
+  response.cookie('visits', visits);
+  id.visits = visits;
   response.render('new-song', id);
 });
 
@@ -380,11 +409,14 @@ app.get('/artists/:artist_id/songs/edit/:song_id', (request, response) => {
       response.send('query error');
     } else {
       // console.log('query result:', result);
+      var visits = request.cookies['visits'];
 
       var output = {
         'artist': request.params.artist_id,
         'song': result.rows,
+        'visits': visits
       }
+
       response.render('edit-song', output);
     }
   });
@@ -444,9 +476,11 @@ app.get('/playlists', (request, response) => {
     } else {
       // console.log('query result:', result);
 
-      // redirect to home page
+      var visits = request.cookies['visits'];
+
       var output = {
         'playlists': result.rows,
+        'visits': visits
       }
       response.render('playlists', output);
       // response.send( output);
@@ -456,7 +490,11 @@ app.get('/playlists', (request, response) => {
 
 app.get('/playlists/new', (request, response) => {
   // respond with HTML page with form to create new ....
-  response.render('new-playlist');
+  var visits = request.cookies['visits'];
+  var output = {
+    'visits': visits
+  }
+  response.render('new-playlist',output);
 });
 
 app.post('/playlists', (request, response) => {
@@ -479,7 +517,7 @@ app.post('/playlists', (request, response) => {
 });
 app.post('/playlists/:song_id', (request, response) => {
   const queryString = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1 , $2)'
-  const values = [request.params.song_id,request.body.playlist];
+  const values = [request.params.song_id, request.body.playlist];
   pool.query(queryString, values, (err, result) => {
 
     if (err) {
@@ -519,6 +557,10 @@ app.get('/playlists/:song_id/newsong', (request, response) => {
         response.send('query error');
       } else {
         output.playlists = result.rows;
+        var visits = request.cookies['visits'];
+
+
+      output.visits = visits;
         response.render('add-to-playlist', output);
       }
     });
@@ -527,13 +569,13 @@ app.get('/playlists/:song_id/newsong', (request, response) => {
 
 app.get('/playlists/:playlist_id', (request, response) => {
   // respond with HTML page with form to create new ....
-  const queryString 
-  = `SELECT  ROW_NUMBER() OVER (ORDER BY ps.id ASC) AS trackid, ps.playlist_id, p.name AS playlist_name, ps.song_id, s.title, s.album, a.name AS artist_name, s.artist_id, s.preview_link, s.artwork
+  const queryString
+    = `SELECT  ROW_NUMBER() OVER (ORDER BY ps.id ASC) AS trackid, ps.playlist_id, p.name AS playlist_name, ps.song_id, s.title, s.album, a.name AS artist_name, s.artist_id, s.preview_link, s.artwork
   FROM playlist AS p
   INNER JOIN playlist_song AS ps ON ps.playlist_id = p.id
   INNER JOIN songs AS s ON s.id = ps.song_id
   INNER JOIN artists AS a ON s.artist_id = a.id
-  WHERE p.id = ${request.params.playlist_id}` 
+  WHERE p.id = ${request.params.playlist_id}`
 
   pool.query(queryString, (err, result) => {
     if (err) {
@@ -542,9 +584,11 @@ app.get('/playlists/:playlist_id', (request, response) => {
     } else {
       // console.log('query result:', result);
 
-      // redirect to home page
+      var visits = request.cookies['visits'];
+
       var output = {
         'playlist': result.rows,
+        'visits': visits
       }
       response.render('single-playlist', output);
       // response.send( output);
