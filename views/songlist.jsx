@@ -11,7 +11,6 @@ class SongList extends Template {
   renderContent() {
 
     let songs = this.props.songs;
-    console.log(songs);
     let count = songs.length;
 
     let songList, songTable, headerText, deleteText;
@@ -64,7 +63,7 @@ class SongList extends Template {
         {headerText}
         {songTable}
 
-        <a href="#"
+        <a href="songs/new"
            className="btn btn-info btn-block my-3">
           Add a Song
         </a>
