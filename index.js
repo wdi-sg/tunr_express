@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -61,14 +62,28 @@ const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 */
 
 app.get('/', (request, response) => {
-  if (request.cookies && request.cookies.counter) {
-    counter = parseInt(request.cookies.counter) + 1;
-    response.cookie('counter', counter);
+  if (request.cookies) {
+    if (request.cookies.counter) {
+      counter = parseInt(request.cookies.counter) + 1;
+      response.cookie('counter', counter);
+    } else {
+      var counter = 1;
+      response.cookie('counter', counter);
+    }
+
+    if (request.cookies.loggedIn === 'true') {
+      const loggedIn = request.cookies.loggedIn;
+      response.render('home', {'loggedIn': loggedIn, 'counter': counter});
+    } else {
+      response.render('home', {'loggedIn': 'false', 'counter': counter});
+    }
   } else {
     var counter = 1;
     response.cookie('counter', counter);
+    response.cookie('loggedIn', 'false');
+
+    response.render('home', {'loggedIn': 'false', 'counter': counter});
   }
-  response.render('home', {'counter': counter});
 });
 
 app.get('/artists/', (request, response) => {
@@ -231,6 +246,32 @@ app.get('/playlists/:id/newsong', (request, response) => {
 
 /**
 * ===================================
+* GET Routes Registration
+* ===================================
+*/
+
+app.get('/register', (request, response) => {
+  if (request.cookies && request.cookies.loggedIn === 'true') {
+    response.send('you are already logged in');
+  } else {
+    response.cookie('loggedIn', 'false');
+    response.render('register');
+  }
+});
+
+app.get('/login', (request, response) => {
+  if (request.cookies && request.cookies.loggedIn === 'true') {
+    response.send('you are already logged in');
+  } else {
+    response.cookie('loggedIn', 'false');
+    response.render('login');
+  }
+});
+
+
+
+/**
+* ===================================
 * POST Routes
 * ===================================
 */
@@ -343,6 +384,49 @@ app.post('/playlists/:id', (request, response) => {
       response.render('success');
     }
   })
+});
+
+app.post('/register', (request, response) => {
+  const username = request.body.username;
+  const password = sha256(request.body.password);
+
+  pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password], (error, result) => {
+    if (error) {
+      console.log('registration error: ', error.message, error.stack);
+    } else {
+      response.cookie('loggedIn', 'true');
+      response.redirect(302, '/');
+    }
+  })
+});
+
+app.post('/login', (request, response) => {
+  const username = request.body.username;
+  const password = sha256(request.body.password);
+
+  pool.query('SELECT * FROM users WHERE username=$1', [username], (error, result) => {
+    if (error) {
+      console.log('log in error: ', error.message, error.stack);
+    } else {
+      if (result.rows[0]) {
+        const hash = result.rows[0].password;
+
+        if (password === hash) {
+          response.cookie('loggedIn', 'true');
+          response.redirect(302, '/');
+        } else {
+          response.send('incorrect password, please try again');
+        }
+      } else {
+        response.send('incorrect username, please try again');
+      }
+    }
+  })
+});
+
+app.post('/logout', (request, response) => {
+  response.cookie('loggedIn', 'false');
+  response.redirect(302, '/');
 });
 
 
