@@ -44,7 +44,7 @@ class ArtistDelete extends Template {
 
       songTable =
         <div className="my-3"
-             style={{"overflowY": "scroll", "maxHeight": "70vh"}}>
+             style={{"overflowY": "scroll", "maxHeight": "60vh"}}>
           <table className="table">
             <thead>
               <tr>

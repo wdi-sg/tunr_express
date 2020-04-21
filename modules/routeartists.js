@@ -2,19 +2,29 @@ const express = require('express');
 const router = express.Router();
 const makeQuery = require('./makequery');
 
+// cookie functions
+const increaseVisits = require('./cookies.jsx');
+
 router.get('/', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let artistQuery = "SELECT * FROM artists ORDER BY id";
   let artists = await makeQuery(artistQuery);
-  res.render('artistlist', {artistlist: artists});
+  res.render('artistlist', {artistlist: artists, sitecount: visitCount});
 });
 
 router.get('/new', (req, res) => {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let data = {
     id: 0,
     name: "",
     photo_url: "",
     nationality: "",
-    new: true
+    new: true,
+    sitecount: visitCount
   };
   res.render('artistform', data);
 });
@@ -35,17 +45,24 @@ router.post('/new', async function (req, res) {
 });
 
 router.get('/testerror', (req, res) => {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let data = {
     errorinfo: {
       line1: "HERE",
       line2: "ANOTHER",
-      line3: "YEAH OKAY"
+      line3: "YEAH OKAY",
+      sitecount: visitCount
     }
   };
   res.render('errorpage', data);
 });
 
 router.get('/:id', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let artistId = [req.params.id];
   let artistQuery =
       "SELECT * FROM artists " +
@@ -65,13 +82,17 @@ router.get('/:id', async function (req, res) {
   let data = {
     artist: artistResult[0],
     prevArtistId: prevArtist,
-    nextArtistId: nextArtist
+    nextArtistId: nextArtist,
+    sitecount: visitCount
   };
 
   res.render('artistview', data);
 });
 
 router.get('/:id/edit', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let artistId = [req.params.id];
   let artistQuery =
       "SELECT * FROM artists " +
@@ -82,7 +103,8 @@ router.get('/:id/edit', async function (req, res) {
     name: artistResult[0].name,
     photo_url: artistResult[0].photo_url,
     nationality: artistResult[0].nationality,
-    new: false
+    new: false,
+    sitecount: visitCount
   };
 
   res.render('artistform', data);
@@ -107,6 +129,9 @@ router.put('/:id', async function (req, res) {
 });
 
 router.get('/:id/delete', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let artistId = [req.params.id];
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
   let artistName = await makeQuery(artistQuery, artistId);
@@ -122,7 +147,8 @@ router.get('/:id/delete', async function (req, res) {
   let data = {
     name: artistName[0].name,
     id: req.params.id,
-    songs: songResults
+    songs: songResults,
+    sitecount: visitCount
   };
 
   res.render('artistdelete', data);
@@ -150,6 +176,9 @@ router.delete('/:id', async function (req, res) {
 });
 
 router.get('/:id/songs', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let artistId = [req.params.id];
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
   let artistName = await makeQuery(artistQuery, artistId);
@@ -165,20 +194,25 @@ router.get('/:id/songs', async function (req, res) {
   let data = {
     name: artistName[0].name,
     id: req.params.id,
-    songs: songResults
+    songs: songResults,
+    sitecount: visitCount
   };
 
   res.render('artistsonglist', data);
 });
 
 router.get('/:aid/songs/new', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let artistId = req.params.aid;
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
   let artistName = await makeQuery(artistQuery, [artistId]);
 
   let data = {
     id: artistId,
-    name: artistName[0].name
+    name: artistName[0].name,
+    sitecount: visitCount
   };
 
   res.render('artistsongform', data);
@@ -189,6 +223,9 @@ router.post('/:aid/songs/new', async function (req, res) {
 });
 
 router.get('/:aid/songs/:sid', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
   let songId = req.params.sid;
 
   let songQuery =
@@ -199,7 +236,8 @@ router.get('/:aid/songs/:sid', async function (req, res) {
 
   let data = {
     aid: req.params.aid,
-    song: songInfo[0]
+    song: songInfo[0],
+    sitecount: visitCount
   };
 
   res.render('artistsongview', data);
