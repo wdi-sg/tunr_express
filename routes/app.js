@@ -51,6 +51,7 @@ app.engine('jsx', reactEngine);
 const artistsRoutes = require('./artists-routes.js');
 const playlistsRoutes = require('./playlists-routes.js');
 const authRoutes = require('./auth-routes.js');
+const favouritesRoutes = require('./favourites-routes.js');
 const authController = require('../controllers/auth-controller.js');
 const errorController = require('../controllers/404-controller.js');
 
@@ -67,7 +68,20 @@ app.use('/', async (req, res, next) => {
 
 app.use('/auth', authRoutes);
 
-app.get('/', async (req, res, next) => {
+app.use('/', async (req, res, next) => {
+
+    if (req.session.userId) {
+
+        req.currentUser = await authController.getUserInfo(req.session.userId);
+
+    }
+
+    next();
+})
+
+app.get('/', async (req, res) => {
+
+    //redirect to homepage with auth routes if user is not logged in
 
     if (req.session.userId) {
 
@@ -76,17 +90,6 @@ app.get('/', async (req, res, next) => {
         res.cookie('userId', req.session.userId);
 
         await authController.visitsCookieCounter(req, res);
-
-    }
-
-    next();
-})
-
-app.get('/', (req, res) => {
-
-    //redirect to homepage with auth routes if user is not logged in
-
-    if (req.session.userId) {
 
         res.render('home', {
             'singleArtist': req.featuredArtist,
@@ -100,6 +103,8 @@ app.get('/', (req, res) => {
     }
 
 });
+
+app.use('/favourites', favouritesRoutes);
 
 
 

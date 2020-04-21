@@ -5,6 +5,8 @@ const User = require('../models/user.js');
 
 module.exports.getLoginRegister = async (req, res) => {
 
+    req.session.invalidMsg = "";
+
     res.render('./auth/login-register', { singleArtist: req.featuredArtist });
 
 }
@@ -17,7 +19,7 @@ module.exports.getLogin = async (req, res) => {
 
 module.exports.getRegister = async (req, res) => {
 
-    res.render('./auth/register');
+    res.render('./auth/register', { invalidMsg: req.session.invalidMsg });
 
 }
 
@@ -55,7 +57,7 @@ module.exports.postLogin = async (req, res) => {
         }
 
         req.session.userId = rows[0].id;
-        req.sessions.invalidMsg = "";
+        req.session.invalidMsg = "";
         res.clearCookie('visits');
         res.clearCookie('userId');
         console.log(req.session.userId);

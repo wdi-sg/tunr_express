@@ -13,9 +13,12 @@ module.exports.getAllSongsOfArtist = async (req, res) => {
 
         const rows = await Song.getAll(req.artist.id);
 
+        console.log(req.currentUser);
+
         res.render('./songs/song-all.jsx', {
             'allSongs': rows,
-            'artist': req.artist
+            'artist': req.artist,
+            'currentUser': req.currentUser
         });
 
     } catch (e) {

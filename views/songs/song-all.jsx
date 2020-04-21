@@ -7,7 +7,19 @@ class AllSongs extends React.Component {
 
     render() {
 
-        console.log(this.props.allSongs[0]);
+        const displayFavouriteButton = (song) => {
+            if (this.props.currentUser) {
+                return (
+                    <form method="POST" type="hidden" action={`/favourites/new`}>
+                    <input name="songId" type="hidden" defaultValue={song.id} />
+                    <button className="single-song__favourite-btn">Add to Favourites</button>
+                    </form>
+                )
+            } else {
+                return;
+            }
+        }
+
 
         const songInfo = this.props.allSongs.map(song =>
 
@@ -17,6 +29,7 @@ class AllSongs extends React.Component {
                 </div>
                 <a href={`./${this.props.allSongs.indexOf(song)}`} className="single-song__title">{song.title}</a>
                 <p className="single-song__album">{song.album}</p>
+                {displayFavouriteButton(song)}
             </div>
         )
 
