@@ -17,8 +17,10 @@
     "express": "^4.16.3",
     "express-react-views": "^0.10.5",
     "method-override": "^3.0.0",
+    "node_hash": "^0.2.0",
     "pg": "^7.4.3",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react-dom": "^16.5.2",
+    "secure-random-string": "^1.1.3"
   }
 }
