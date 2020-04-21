@@ -33,8 +33,7 @@ app.use(cookieParser());
 
 app.use(express.static("public"));
 
-let viewNoAt50;
-let timeAt50;
+const sha256 = require("js-sha256");
 
 //----------------------------------
 //-------------ROUTES---------------
@@ -47,8 +46,65 @@ function parseSingleQuote(obj) {
   return obj;
 }
 
-//VIEW HOME PAGE
+//----------------------------------
+//-----------AUTHENTICATION---------
+//----------------------------------
+
+app.get("/register", (request, response) => {
+  response.render("register");
+});
+
+app.post("/", (request, response) => {
+  console.log(request.body);
+  let newUsername = request.body.username;
+  let newPw = sha256(request.body.password);
+  let queryText = `INSERT INTO users (username, pw) VALUES ('${newUsername}' , '${newPw}') RETURNING *`;
+  pool.query(queryText, (err, result) => {
+    console.log(result.rows);
+    let obj = {
+      comments: "Registration successful! Please proceed to log-in.",
+    };
+    response.render("login-MAIN", obj);
+  });
+});
+
 app.get("/", (request, response) => {
+  let obj = {
+    comments: "",
+  };
+  response.render("login-MAIN", obj);
+});
+
+app.get("/logout", (request, response) => {});
+
+app.post("/home", (request, response) => {
+  console.log(request.body);
+  if (!!request.body.username && !!request.body.password) {
+    let loginUsername = request.body.username;
+    let loginPw = sha256(request.body.password);
+    let queryText = `SELECT id FROM users WHERE username='${loginUsername}' AND pw='${loginPw}'`;
+    pool.query(queryText, (err, result) => {
+      console.log(result.rows);
+      if (result.rows.length > 0) {
+        response.cookie("loggedin", true);
+        response.render("home");
+      } else {
+        let obj = {
+          comments: "Sorry, user not found. Please try again.",
+        };
+        response.render("login-MAIN", obj);
+      }
+    });
+  } else {
+    let obj = {
+      comments: "Please complete all log-in fields.",
+    };
+    response.render("login-MAIN", obj);
+  }
+});
+
+//VIEW HOME PAGE/ DASHBOARD
+app.get("/home", (request, response) => {
   //Set view count cookie
   let viewCount;
   let timestamp = Date.now();
@@ -70,10 +126,8 @@ app.get("/", (request, response) => {
     viewCount = parseInt(request.cookies.viewCountBrow);
     viewCount = viewCount + 1;
   }
-
   response.cookie("viewCountBrow", viewCount);
   response.cookie("timestampBrow", timestamp);
-
   response.render("home");
 });
 
@@ -384,12 +438,12 @@ app.get("/cookieplaylist", (request, response) => {
     for (let i = 2; i < cookieplArr.length; i++) {
       string = string + ` OR id = ${parseInt(cookieplArr[i])}`;
     }
-    queryText = `SELECT * FROM songs WHERE ${string}`;
+    let queryText = `SELECT * FROM songs WHERE ${string}`;
     console.log(queryText);
     pool.query(queryText, (err, result) => {
       console.log(result.rows);
       let obj = {
-        songsArr: result.rows
+        songsArr: result.rows,
       };
       response.render("display-cookiepl", obj);
     });

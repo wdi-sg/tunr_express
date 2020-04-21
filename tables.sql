@@ -24,3 +24,15 @@ CREATE TABLE IF NOT EXISTS songs (
      playlist_id integer,
      song_id integer
  );
+
+ create table if not exists users (
+     id serial primary key,
+     username text,
+     pw text
+ );
+
+ create table if not exists favorites (
+     id serial primary key,
+     song_id integer,
+     user_id integer
+ );

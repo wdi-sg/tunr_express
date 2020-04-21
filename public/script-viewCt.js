@@ -1,5 +1,6 @@
 console.log("hello world - view count script");
 
+//Get cookie by cookie name
 function getCookie(cname) {
   var name = cname + "=";
   var ca = document.cookie.split(';');
@@ -15,12 +16,14 @@ function getCookie(cname) {
   return "";
 }
 
+//Get value of view count cookie
 let getViewCount = () => {
   let count = parseInt(getCookie("viewCountBrow"));
   console.log(count);
   return count;
 };
 
+//Set the value of view count cookie
 let setViewCount = () => {
   const viewCountDiv = document.getElementById("viewcount");
   viewCountDiv.innerText = "Home Page View Count: " + getViewCount();

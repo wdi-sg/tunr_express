@@ -22,7 +22,7 @@ class Navbar extends React.Component {
         <div class="collapse navbar-collapse" id="navbarsExample02">
           <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-              <a class="nav-link" href="/">
+              <a class="nav-link" href="/home">
                 Home
               </a>
             </li>
