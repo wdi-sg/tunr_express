@@ -29,27 +29,10 @@ let options = {
   }
 };
 
-// enable cookie usage
-const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-
-// cookie functions
-const increaseVisits = require('./modules/cookies.jsx');
-
-// uncategorised routes
-app.get('/', (req, res) => {
-  let visitCount = increaseVisits(req.cookies['visits'], true);
-  res.cookie('visits', visitCount);
-  res.render('home', {sitecount: visitCount});
-});
-
-app.get('/testpage', (req, res) => {
-  let visitCount = increaseVisits(req.cookies['visits']);
-  res.cookie('visits', visitCount);
-  res.render('template-content', {sitecount: visitCount});
-});
-
 // route modules
+const root = require('./modules/routes.js');
+app.use('/', root);
+
 const artists = require('./modules/routeartists.js');
 app.use('/artists', artists);
 
