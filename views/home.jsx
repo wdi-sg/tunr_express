@@ -17,13 +17,18 @@ class Home extends React.Component {
                     <p><a href="/login">login</a></p>
                 </div>
                 );
-
+        let message = "";
         if(this.props.cookies['logged in'] === "true"){
             userButtons = (
-                <form action="/logout?_method=delete" method="POST">
-                    <input type="submit" value="log-out"/>
-                </form>
+                <div>
+                    <p><a href="/favourites">Favourite</a></p>
+                    <form action="/logout?_method=delete" method="POST">
+                        <input type="submit" value="log-out"/>
+                    </form>
+                </div>
                 );
+        } else {
+            message = "You are not logged in.";
         };
 
     return (
@@ -38,6 +43,7 @@ class Home extends React.Component {
                 <p><a href="/songs">Songs</a></p>
                 <p><a href="/playlists">My Playlist</a></p>
             </div>
+            <p>{message}</p>
             <br />
             {userButtons}
             <br/>

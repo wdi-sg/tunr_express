@@ -205,11 +205,74 @@ app.get('/playlists', (req, res) => {
             const data = {
                 playlists : allPlaylistsResult,
                 cookies: req.cookies
-            }
+            };
             res.render('playlists', data)
         };
     });
 });
+
+
+app.get('/favourites', (req, res) => {
+    if(req.cookies["logged in"] === "true") {
+        const userIdQ = "SELECT id FROM users where name = "+"'"+req.cookies.user+"'";
+        pool.query(userIdQ, (userIdQErr, userIdQResult) => {
+            if(userIdQErr) {
+                res.status(500);
+                res.send("userIdQ Err")
+            } else {
+
+                const userFavouriteQ = "SELECT * FROM favourites where user_id =" + userIdQResult.rows[0].id;
+                pool.query(userFavouriteQ, (userFavouriteQErr, userFavouriteQResult) => {
+                    if (userFavouriteQErr) {
+                        res.status(500);
+                        res.send("userFavouriteQ db error");
+                    } else {
+                        const data = {
+                            userFavourite : userFavouriteQResult.rows,
+                            cookies : req.cookies
+                        }
+                        res.render('show-favourite', data);
+                    };
+                });
+            }
+        });
+    } else {
+        res.status(403);
+        res.redirect('/');
+    };
+});
+
+
+app.get('/favourites/new', (req, res) => {
+    const userQ = "SELECT * FROM users WHERE name = "+"'"+req.cookies.user+"'";
+    pool.query(userQ, (userQErr, userQResult) => {
+        if (userQErr) {
+            res.status(500);
+            res.send("userQ db error");
+        } else {
+            const data = {
+                user: userQResult.rows[0],
+                cookies : req.cookies
+            };
+            res.render('new-favourites', data);
+        };
+    });
+});
+
+app.post('/favourites', (req, res) => {
+    const favouriteQ = "INSERT INTO favourites (song_id, user_id) values ($1, $2)";
+    const favouriteQValues = [req.body.song_id, req.body.user_id];
+    pool.query(favouriteQ, favouriteQValues, (favouriteQErr, favouriteQResult) => {
+        if (favouriteQErr) {
+            res.status(500);
+            res.send("favouriteQ db error");
+        } else {
+            res.redirect('/favourites');
+        };
+    });
+});
+
+
 
 
 //------------------------------------------------------
