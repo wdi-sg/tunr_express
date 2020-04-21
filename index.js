@@ -611,8 +611,30 @@ app.post(`/register`, (req, res) => {
 });
 
 
+app.get(`/favourites/new`, (req, res) => {
+    const data = {
+        isLoggedIn: req.cookies.isLoggedIn,
+        errorMsg: "",
+    };
+    if (req.cookies.isLoggedIn === "false") {
+        data.errorMsg = `You are not logged in. Please login first.`;
+        res.render(`favourites/all-favourites`, data);
+    } else {
+        let command = `SELECT * FROM songs`;
+        pool.query(command, (err, result) => {
+            if (err) {
+                return console.log(`Query error:`, err);
+            } else {
+                data.songs = result.rows;
+                return res.render(`favourites/add-favourite`, data);
+            }
+        });
+    }
+});
 
 app.get(`/favourites`, (req, res) => {
+
+    console.log(req.cookies.currentUserId)
 
     const data = {
         isLoggedIn: req.cookies.isLoggedIn,
@@ -634,6 +656,20 @@ app.get(`/favourites`, (req, res) => {
         });
     }
 });
+
+app.post(`/favourites`, (req,res)=> {
+
+    const song = parseInt(req.body.songId);
+
+    let command = `INSERT INTO favourites (user_id, song_id) VALUES (${req.cookies.currentUserId}, ${song})`
+    pool.query(command, (err, result)=> {
+        if (err) {
+            return console.log(`Query error:`,err)
+        } else {
+            res.redirect(`favourites/all-favourites`)
+        }
+    })
+})
 
 /**
  * ===================================
