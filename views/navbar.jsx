@@ -78,7 +78,7 @@ class Navbar extends React.Component {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/logout">
+              <a class="nav-link text-white" href="/logout">
                 Logout
               </a>
             </li>
@@ -87,7 +87,7 @@ class Navbar extends React.Component {
             <p class="my-2 my-sm-0" id="viewcount">View Count:</p>
           </form>
         </div>
-        <script src="/script-viewCt-logout.js"></script>
+        <script src="/script-viewCt.js"></script>
       </nav>
     );
   }

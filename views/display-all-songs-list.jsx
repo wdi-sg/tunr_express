@@ -13,12 +13,26 @@ class DisplayAllSongsList extends React.Component {
         <li>
           <a href={href}>{text}</a>
           <br></br>
-          <a className="btn btn-info" href={href2}>
+          <a className="btn btn-secondary" href={href2}>
             Add To Playlist
-          </a>{`  `}
-          <a className="btn btn-info text-white cookiepl" id={element.id}>
+          </a>
+          {`  `}
+          <a
+            className="btn btn-secondary text-white cookiepl"
+            id={element.id}
+          >
             Add To Cookie Playlist
           </a>
+          {/* <br></br>
+          <div className="ml-4">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              name="playlist_id"
+              value={element.id}
+            />
+            <label>Favorite This!</label>
+          </div> */}
           <br></br>
           <br></br>
         </li>
@@ -33,8 +47,18 @@ class DisplayAllSongsList extends React.Component {
               <h3>
                 <u>All Songs</u>
               </h3>
-              <br></br> 
+              <br></br>
+
               <ul>{songsArrHtml}</ul>
+            {/* </form>
+            <form method="POST" action="/favorites">
+              <input
+                className="btn btn-primary"
+                type="submit"
+                value="Submit Favourite Songs"
+              /> */}
+              <br></br>
+              <br></br>
             </form>
           </div>
         </div>

@@ -34,6 +34,18 @@ class DisplayOneSong extends React.Component {
             <a className="btn btn-info" href={href2}>
               Add To Playlist
             </a>
+            <br></br>
+            <form method="POST" action="/favorites">
+              <input
+                type="hidden"
+                name="songid"
+                value={song.id}
+                className="form-control"
+              />
+              <br></br>
+              <input className="btn btn-info" type="submit" value="Add To Favorites" />
+              <br></br>
+            </form>
           </div>
         </div>
       </div>

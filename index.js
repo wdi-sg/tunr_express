@@ -246,7 +246,7 @@ app.get("/songs", (request, response) => {
   let queryText =
     "SELECT songs.id, songs.title, artists.name FROM songs JOIN artists ON (artists.id = songs.artist_id) ORDER BY songs.title ASC";
   pool.query(queryText, (err, result) => {
-    console.log(result.rows);
+    // console.log(result.rows);
     let obj = {
       songsArr: result.rows,
     };
@@ -320,7 +320,7 @@ app.get("/songs/:sid", (request, response) => {
   let songId = parseInt(request.params.sid);
   let queryText = `SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name FROM songs JOIN artists ON (songs.artist_id = artists.id) WHERE songs.id=${songId}`;
   pool.query(queryText, (err, result) => {
-    console.log(result.rows);
+    // console.log(result.rows);
     response.render("display-one-song", result.rows[0]);
   });
 });
@@ -474,6 +474,14 @@ app.get("/cookieplaylist", (request, response) => {
       response.render("display-cookiepl", obj);
     });
   }
+});
+
+app.get("/favourites", (request, response) => {
+
+});
+
+app.post("/favorites", (request, response) => {
+  console.log(request.body);
 });
 
 //------------------------------
