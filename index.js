@@ -56,6 +56,9 @@ app.use('/artists', artists);
 const playlists = require('./modules/routeplaylists.js');
 app.use('/playlists', playlists);
 
+const songs = require('./modules/routesongs.js');
+app.use('/songs', songs);
+
 // start server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Listening on port " + PORT));
