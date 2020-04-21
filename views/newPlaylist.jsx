@@ -1,11 +1,12 @@
 var React = require("react");
 
-class New extends React.Component {
+class newPlayList extends React.Component {
   render() {
     return (
       <html>
         <head />
-                <link rel={"stylesheet"} href={"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"} integrity={"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"} crossorigin={"anonymous"}></link>
+                        <link rel={"stylesheet"} href={"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"} integrity={"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"} crossorigin={"anonymous"}></link>
+
         <body>
         <nav class={"navbar navbar-expand-lg navbar-light bg-light"}>
 
@@ -25,23 +26,13 @@ class New extends React.Component {
               </div>
         </nav>
           <h3>Form Goes Here!</h3>
-            <form method="POST" action="/artists"  style={{textAlign: "Center"}}>
-                <span>Name: </span>
-                    <input  id= "name" type="text" name="name" placeholder="Enter Name" required
-                            oninvalid="this.setCustomValidity('Enter Valid Name Here')"
+            <form method="POST" action="/playlist"  style={{textAlign: "Center"}}>
+                <span>Name Of Playlist: </span>
+                    <input  id= "name" type="text" name="name" placeholder="Enter Play List Name" required
+                            oninvalid="this.setCustomValidity('Enter Valid Play List Name Here')"
                             oninput="this.setCustomValidity('')" ></input>
                     <br></br><br></br>
-                <span>Imgage Source: </span>
-                    <input type="text" name="img" placeholder="Enter link" required
-    oninvalid="this.setCustomValidity('Enter Valid link Here')"
-    oninput="this.setCustomValidity('')"></input>
-                    <br></br><br></br>
-                    <span>Nationality: </span>
-                    <input type="text" name="nationality" placeholder="Enter Nationality" required
-    oninvalid="this.setCustomValidity('Enter Nationality Here')"
-    oninput="this.setCustomValidity('')"></input>
 
-                    <br></br><br></br>
                     <input type="submit" value="Submit"></input>
                 </form>
         </body>
@@ -50,4 +41,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = newPlayList;

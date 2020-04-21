@@ -1,6 +1,6 @@
 var React = require("react");
 
-class New extends React.Component {
+class Register extends React.Component {
   render() {
     return (
       <html>
@@ -24,21 +24,17 @@ class New extends React.Component {
                 </div>
               </div>
         </nav>
-          <h3>Form Goes Here!</h3>
-            <form method="POST" action="/artists"  style={{textAlign: "Center"}}>
-                <span>Name: </span>
-                    <input  id= "name" type="text" name="name" placeholder="Enter Name" required
-                            oninvalid="this.setCustomValidity('Enter Valid Name Here')"
+          <h3>Register form Goes Here!</h3>
+            <form method="POST" action="/register"  style={{textAlign: "Center"}}>
+                <span>Enter Login Name: </span>
+                    <input  id= "loginname" type="text" name="loginname" placeholder="Enter Login Name" required
+                            oninvalid="this.setCustomValidity('Enter Valid Login Name Here')"
                             oninput="this.setCustomValidity('')" ></input>
                     <br></br><br></br>
-                <span>Imgage Source: </span>
-                    <input type="text" name="img" placeholder="Enter link" required
-    oninvalid="this.setCustomValidity('Enter Valid link Here')"
-    oninput="this.setCustomValidity('')"></input>
-                    <br></br><br></br>
-                    <span>Nationality: </span>
-                    <input type="text" name="nationality" placeholder="Enter Nationality" required
-    oninvalid="this.setCustomValidity('Enter Nationality Here')"
+
+                    <span>Enter Password: </span>
+                    <input type="text" name="password" placeholder="Enter Strong Password" required
+    oninvalid="this.setCustomValidity('Enter Password Here')"
     oninput="this.setCustomValidity('')"></input>
 
                     <br></br><br></br>
@@ -50,4 +46,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Register;

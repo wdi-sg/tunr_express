@@ -1,11 +1,20 @@
 var React = require("react");
 
-class New extends React.Component {
+class newSong extends React.Component {
   render() {
+        const artistOption=this.props.artist.map(artist=>
+        {
+            //console.log(song);
+            return <option value={artist.id}>{artist.name}</option>
+
+
+        });
     return (
       <html>
         <head />
+        <head>
                 <link rel={"stylesheet"} href={"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"} integrity={"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"} crossorigin={"anonymous"}></link>
+                </head>
         <body>
         <nav class={"navbar navbar-expand-lg navbar-light bg-light"}>
 
@@ -25,23 +34,37 @@ class New extends React.Component {
               </div>
         </nav>
           <h3>Form Goes Here!</h3>
-            <form method="POST" action="/artists"  style={{textAlign: "Center"}}>
+            <form method="POST" action="/songs"  style={{textAlign: "Center"}}>
                 <span>Name: </span>
-                    <input  id= "name" type="text" name="name" placeholder="Enter Name" required
-                            oninvalid="this.setCustomValidity('Enter Valid Name Here')"
+                    <input  id= "title" type="text" name="title" placeholder="Enter Title" required
+                            oninvalid="this.setCustomValidity('Enter Valid Title Here')"
                             oninput="this.setCustomValidity('')" ></input>
                     <br></br><br></br>
-                <span>Imgage Source: </span>
+
+                <span>Album: </span>
+                    <input  id= "album" type="text" name="album" placeholder="Enter album" required
+                            oninvalid="this.setCustomValidity('Enter Valid album Here')"
+                            oninput="this.setCustomValidity('')" ></input>
+                    <br></br><br></br>
+
+                <span>Artwork Source: </span>
                     <input type="text" name="img" placeholder="Enter link" required
     oninvalid="this.setCustomValidity('Enter Valid link Here')"
     oninput="this.setCustomValidity('')"></input>
                     <br></br><br></br>
-                    <span>Nationality: </span>
-                    <input type="text" name="nationality" placeholder="Enter Nationality" required
-    oninvalid="this.setCustomValidity('Enter Nationality Here')"
+
+                    <span>Preview Link: </span>
+                    <input type="text" name="preview_link" placeholder="Enter Preview Link here" required
+    oninvalid="this.setCustomValidity('Enter preview link Here')"
     oninput="this.setCustomValidity('')"></input>
 
                     <br></br><br></br>
+
+                    <label for="Artist">Choose an artist:</label>
+                    <select id="Artist" name="artist_id">
+                    {artistOption}
+                    </select>
+
                     <input type="submit" value="Submit"></input>
                 </form>
         </body>
@@ -50,4 +73,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = newSong;
