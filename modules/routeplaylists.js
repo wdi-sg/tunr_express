@@ -1,46 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const cookieParser = require('cookie-parser');
-router.use(cookieParser());
 
 // helper functions
 const makeQuery = require('./makequery');
-const increaseVisits = require('./cookies.jsx');
 
 router.get('/', async function (req, res) {
-  let visitCount = increaseVisits(req.cookies['visits']);
-  res.cookie('visits', visitCount);
-
   let playlistQuery = "SELECT * FROM playlists";
   let playlistResults = await makeQuery(playlistQuery);
 
   let data = {
     playlists: playlistResults,
-    sitecount: visitCount
+    sitecount: req.visitCount
   };
 
   res.render('playlistlist', data);
 });
 
 router.get('/new', async function (req, res) {
-  let visitCount = increaseVisits(req.cookies['visits']);
-  res.cookie('visits', visitCount);
-
   let data = {
     id: 0,
     name: "",
     photo_url: "",
     nationality: "",
     new: true,
-    sitecount: visitCount
+    sitecount: req.visitCount
   };
   res.render('playlistform', data);
 });
 
 router.get('/:id', async function (req, res) {
-  let visitCount = increaseVisits(req.cookies['visits']);
-  res.cookie('visits', visitCount);
-
   let value = [req.params.id];
   let playlistQuery =
       "SELECT songs.id, songs.title, songs.album, artists.name " +
@@ -58,7 +46,7 @@ router.get('/:id', async function (req, res) {
   let data = {
     listname: playlistName[0].name,
     playlist: playlistResults,
-    sitecount: visitCount
+    sitecount: req.visitCount
   };
 
   res.render('playlistview', data);

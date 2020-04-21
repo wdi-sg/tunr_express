@@ -1,16 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const cookieParser = require('cookie-parser');
-router.use(cookieParser());
 
 // helper functions
 const makeQuery = require('./makequery');
-const increaseVisits = require('./cookies.jsx');
 
 router.get('/', async function (req, res) {
-  let visitCount = increaseVisits(req.cookies['visits']);
-  res.cookie('visits', visitCount);
-
   let songQuery =
       "SELECT songs.title, songs.album, artists.name FROM songs " +
       "INNER JOIN artists " +
@@ -19,17 +13,14 @@ router.get('/', async function (req, res) {
 
   let data = {
     songs: songResults,
-    sitecount: visitCount
+    sitecount: req.visitCount
   };
 
   res.render('songlist', data);
 });
 
 router.get('/new', async function (req, res) {
-  let visitCount = increaseVisits(req.cookies['visits']);
-  res.cookie('visits', visitCount);
-
-  res.render('songform', {sitecount: visitCount});
+  res.render('songform', {sitecount: req.visitCount});
 });
 
 module.exports = router;

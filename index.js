@@ -1,6 +1,8 @@
 // init an express app
 const express = require('express');
 const app = express();
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // let forms override methods with "?_method=put"
 const methodOverride = require('method-override');
@@ -29,6 +31,9 @@ let options = {
   }
 };
 
+// handle visit counter
+const twiddleVisitCount = require('./modules/visitcounter.js');
+app.use(twiddleVisitCount);
 // route modules
 const root = require('./modules/routes.js');
 app.use('/', root);
