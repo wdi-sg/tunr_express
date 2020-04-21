@@ -5,14 +5,22 @@ import Footer from "../components/footer";
 
 class Song extends React.Component {
   render() {
-
     const song = this.props.songData;
+    let addFaveBtn;
+    if (this.props.isLoggedIn==='true') {
+      addFaveBtn = <form method="post" action='/favourites'>
+              <input type="hidden" name="songId" value={song.id}/>
+              <button type="submit" className="btn btn-success">
+                Add To Favourites
+              </button>
+            </form>
+    }
 
     return (
       <html>
-        <Head/>
+        <Head />
         <body>
-        <Nav/>
+          <Nav />
           <div className="artist">
             <h1>
               {song.id}) {song.title}
@@ -37,12 +45,12 @@ class Song extends React.Component {
                 Delete song
               </button>
             </form>
-
+            {addFaveBtn}
             <a href="/songs">
               <button className="btn btn-primary">Back To Songs</button>
             </a>
           </div>
-          <Footer/>
+          <Footer />
         </body>
       </html>
     );
