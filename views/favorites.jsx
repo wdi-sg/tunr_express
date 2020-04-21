@@ -22,6 +22,10 @@ class Favorites extends React.Component {
           <form method='GET' action='/favorites/new'>
             <input type='submit' value='Add Favorite'/>
           </form>
+          <br/>
+          <form method='GET' action='/'>
+            <input type='submit' value='Home'/>
+          </form>
         </body>
       </html>
       );

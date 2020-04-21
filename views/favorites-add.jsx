@@ -2,8 +2,8 @@ var React = require('react');
 
 class FavoritesAdd extends React.Component {
   render() {
-    const playlist = this.props.playlist;
     const songs = this.props.songList;
+    const user = this.props.user;
 
     const options = songs.map(song => {
         return (
@@ -18,11 +18,8 @@ class FavoritesAdd extends React.Component {
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
       </head>
       <body>
-      <h3>Add Songs To Playlist</h3>
-      <form method="POST" action={`/playlist/${playlist.id}`}>
-      <h4>Name</h4>
-      <p>{playlist.name}</p>
-      <h4>Add Songs</h4>
+      <h3>Add Songs to {user.username}'s Favorites</h3>
+      <form method="POST" action='/favorites'>
       <select className="selectpicker" multiple data-live-search="true" name="songs">
       {options}
       </select>

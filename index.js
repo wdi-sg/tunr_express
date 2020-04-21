@@ -251,27 +251,45 @@ app.get('/playlists/:id/newsong', (request, response) => {
 */
 
 app.get('/favorites', (request, response) => {
+  if (request.cookies.loggedIn === 'true') {
+    const username = request.cookies.username;
+    const user_id = request.cookies.user_id;
+
+    const user = {
+      username: username,
+      user_id: user_id
+    }
+
+    pool.query('SELECT songs.title FROM songs INNER JOIN favorites ON (favorites.song_id = songs.id) WHERE user_id=$1', [user_id], (error, result) => {
+      if (error) {
+        console.log('query error: ', error.message, error.stack);
+      } else {
+        const songList = result.rows;
+        response.render('favorites', {'songList': songList, 'user': user});
+      }
+    });
+  } else {
+    response.send('please log in');
+  }
+})
+
+app.get('/favorites/new', (request, response) => {
   const username = request.cookies.username;
   const user_id = request.cookies.user_id;
 
   const user = {
     username: username,
     user_id: user_id
-  }
+  };
 
-  pool.query('SELECT songs.title FROM songs INNER JOIN favorites ON (favorites.song_id = songs.id) WHERE user_id=$1', [user_id], (error, result) => {
+  pool.query('SELECT * FROM songs', (error, result) => {
     if (error) {
       console.log('query error: ', error.message, error.stack);
     } else {
       const songList = result.rows;
-      response.render('favorites', {'songList': songList, 'user': user});
+      response.render('favorites-add', {'songList': songList, 'user': user});
     }
   });
-})
-
-app.get('/favorites/new', (request, response) => {
-  const username = request.cookies.username;
-  const user_id = request.cookies.user_id;
 });
 
 
@@ -467,6 +485,40 @@ app.post('/logout', (request, response) => {
   response.clearCookie('user_id');
   response.cookie('loggedIn', 'false');
   response.redirect(302, '/');
+});
+
+app.post('/favorites', (request, response) => {
+  const username = request.cookies.username;
+  const user_id = request.cookies.user_id;
+  const songs = request.body.songs;
+
+  pool.query('SELECT id, title FROM songs', (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const songList = result.rows;
+
+      const songsId = songs.map(song => {
+        for (let i = 0; i < songList.length; i++) {
+          if (songList[i].title === song) {
+            return songList[i].id;
+          }
+        }
+      })
+
+      songsId.forEach(songId => {
+        pool.query('INSERT INTO favorites (song_id, user_id) VALUES ($1, $2)', [songId, user_id], (error, result) => {
+          if (error) {
+            console.log(`error inserting song_id ${songId}: `, error.message, error.stack);
+          } else {
+            console.log('done!');
+          }
+        })
+      })
+
+      response.render('success')
+    }
+  });
 });
 
 

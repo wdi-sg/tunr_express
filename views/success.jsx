@@ -7,9 +7,12 @@ class Success extends React.Component {
         <head />
         <body>
           <h1>Successfully updated database!</h1>
+          <form method='GET' action='/'>
+            <input type='submit' value='Home'/>
+          </form>
         </body>
       </html>
-    );
+      );
   }
 }
 
