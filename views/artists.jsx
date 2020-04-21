@@ -1,13 +1,10 @@
 var React = require("react");
 
-console.log('r');
-// console.log(this.props.artist);
+console.log("Artists List Page Accessed");
+console.log("------------------");
 
 class Artists extends React.Component {
     render() {
-
-        console.log("Artists List Page Accessed");
-        console.log("------------------");
 
         var artists = this.props.rows;
         var output = artists.map(artist => {

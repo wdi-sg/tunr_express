@@ -49,7 +49,6 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // UPDATE HOME PAGE
   // respond with app home page
   response.render('home');
 });
@@ -77,6 +76,8 @@ app.get('/artists/new', (request, response) => {
 });
 
 app.post('/artists', (request, response) => {
+  // respond with HTML page with created artist
+
   console.log(request.body);
 
   const whenQueryDone = (queryError, result) => {
@@ -86,7 +87,6 @@ app.post('/artists', (request, response) => {
       console.log(queryError)
     } else {
       console.log("New Artist Added!");
-
     }
   };
 
@@ -97,6 +97,73 @@ app.post('/artists', (request, response) => {
 
   response.render('artist-added', request.body);
 });
+
+app.get('/artists/:id', (request, response) => {
+  // respond with HTML page with corresponding artist id
+  // update jsx to include delete and edit button
+
+  const queryString = 'SELECT * from artists WHERE id = ' + request.params.id;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      console.log('query result:', result.rows);
+
+      response.render('artists', result);
+    }
+  });
+
+});
+
+/* to execute upon click of edit button */
+app.get('/artists/:id/edit', (request, response) => {
+  // respond with HTML page with form to edit artist
+  const queryString = 'SELECT * from artists WHERE id = ' + request.params.id;
+
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error:', err.stack);
+      response.send('query error');
+    } else {
+      console.log('query result:', result.rows);
+
+      response.render('edit-artist', result);
+    }
+  });
+  // response.render('edit-artist',);
+});
+
+app.post('/artists/:id', (request, response) => {
+  // respond with HTML page with created artist
+
+  console.log(request.body);
+
+  const whenQueryDone = (queryError, result) => {
+    if (queryError) {
+      console.log("Query Error Detected!");
+      console.log("------------------");
+      console.log(queryError)
+    } else {
+      console.log("Artist Edit Complete!");
+    }
+  };
+
+  const queryString = "UPDATE artists SET name = ($1), photo_url = ($2), nationality = ($3) WHERE id =" + request.params.id;
+  const insertValues = [request.body.name, request.body.photo_url, request.body.nationality];
+
+  pool.query(queryString, insertValues, whenQueryDone)
+
+  response.render('artist-edited', request.body);
+});
+
+/* to execute upon click of delete button */
+// app.delete("/artists/:id", (request, response) => {
+//   //read the file in and write out to it
+// });
 
 /**
  * ===================================
