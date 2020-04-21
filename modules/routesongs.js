@@ -23,4 +23,11 @@ router.get('/', async function (req, res) {
   res.render('songlist', data);
 });
 
+router.get('/new', async function (req, res) {
+  let visitCount = increaseVisits(req.cookies['visits']);
+  res.cookie('visits', visitCount);
+
+  res.render('songform', {sitecount: visitCount});
+});
+
 module.exports = router;
