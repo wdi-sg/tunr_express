@@ -38,7 +38,7 @@ class playlistID extends React.Component {
               <div class="d-flex justify-content-center mb-3 bg-dark rounded-lg " style={{color:"white"}}><h1><u>{this.props.playlist}</u></h1>
               </div>
               <div class="d-flex">
-                <table class="table table-sm table-dark rounded-lg" >
+                <table class="table table-responsive table-sm table-dark rounded-lg" >
                   <thead>
                     <tr>
                       <th scope="col">☑️</th>

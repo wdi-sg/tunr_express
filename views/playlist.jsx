@@ -38,6 +38,11 @@ class playlist extends React.Component {
                             <button type="submit" class="btn btn-dark">Create Playlist</button>
                         </form>
                     </div>
+                    <div class="ml-2">
+                        <form method="get" action="/favorites/new">
+                            <button type="submit" class="btn btn-dark">Create Favorite Playlist</button>
+                        </form>
+                    </div>
                     <form method="post" action="/logout?_method=delete">
                     </form>
                     <div class='ml-auto'>
@@ -46,6 +51,11 @@ class playlist extends React.Component {
                 </div>
                 ~~~Playlist Overhere~~~
                 <div class="nav flex-column">
+                    <div>
+                        <form method="get" action="/favorites">
+                            <input type="submit" class="btn btn-block btn-dark" style={{margin:"0.5px 0"}} value="Favorite Playlist"/>
+                        </form>
+                    </div>
                     {playlist}
                 </div>
             </div>

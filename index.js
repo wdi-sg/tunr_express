@@ -144,7 +144,107 @@ app.delete('/logout', (request, response)=>{
 });
 
 //favorites
-app.get('/favorites')
+// app.get('/favorites', (request, response)=>{
+//     //if not log in dont show
+//     response.send('favorites leh')
+// })
+
+app.get('/favorites/new', (request, response)=>{
+
+    var username = request.cookies['username'];
+
+    const whenQueryDone = (error, result) => {
+        if(error){
+            console.log("======ERROR======")
+            console.log(error);
+            response.send('db error');
+        } else {
+            // console.log(result)
+            //insert songs into data
+            response.render('favoriteCreate',result)
+        }
+    }
+    const queryString="SELECT * from songs"
+    pool.query(queryString, whenQueryDone)
+
+});
+
+app.get('/favorites', (request, response)=>{
+
+    var username = request.cookies['username']
+    var visits = request.cookies['visits'+request.params.id];
+    var userid = request.cookies['userid']
+    if( visits === undefined ){
+        visits = 1;
+    }else{
+        visits = parseInt( visits ) + 1;
+    }
+    response.cookie('visits'+request.params.id, visits);
+
+    const whenQueryDone = (queryError, result) => {
+        if(queryError){
+            console.log("======ERROR======")
+            console.log(queryError);
+            response.send('db error');
+        }
+        else{
+            const whenQueryDone = (queryError, result2) => {
+                if(queryError){
+                    console.log("======ERROR======")
+                    console.log(queryError);
+                    response.send('db error');
+                } else {
+                    data = {
+                        id:request.params.id,
+                        rows:result.rows,
+                        name:request.body.name,
+                        visits:visits,
+                        playlist:result2.rows[0].name,
+                        username:username
+                    }
+                        console.log(result2.rows)
+                        response.render('favoriteSongs',data)
+                }
+            }
+            values = [userid];
+            const queryString = "SELECT * FROM favorites where id = $1";
+            pool.query(queryString, values, whenQueryDone)
+        }
+    }
+    let values = [userid]
+    const queryString="SELECT * FROM songs inner join favorites on (song_id = songs.id) where user_id = $1";
+    // const queryString="SELECT * FROM songs "+
+    // "WHERE songs.id IN(SELECT song_id FROM "+
+    // "playlist INNER JOIN favorites ON "+
+    // "(playlist.id = playlist_id) WHERE playlist_id = $1)"
+    pool.query(queryString, values, whenQueryDone)
+});
+
+//Add songs to new playlist
+app.post('/addtofavorite', (request,response) => {
+
+    var userid = request.cookies['userid'];
+    var songList = request.body.song;
+
+    songList.forEach ((element, index) => {
+
+        const whenQueryDone = (queryError, result) => {
+            if( queryError ){
+                console.log("======ERROR======");
+                console.log(queryError);
+                response.send('db error');
+            } else {
+                console.log(result.rows[0]);
+            }
+        }
+        console.log("=====adding songs======")
+        const queryString = "INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *";
+        const insertValues = [element,userid];
+        console.log(songList)
+        pool.query(queryString,insertValues, whenQueryDone )
+    })
+    response.redirect('/playlist')
+})
 
 //Artists
 app.get('/artists', (request, response) => {
@@ -216,7 +316,7 @@ app.get('/playlist/new/', (request, response) => {
         } else {
             // console.log(result)
             //insert songs into data
-            response.render('playlistNew',result)
+            response.render('playlistCreate',result)
         }
     }
     const queryString="SELECT * from songs"
@@ -288,7 +388,7 @@ app.get('/playlist/:id', (request, response) => {
                         playlist:result2.rows[0].name
                     }
                         console.log(result2.rows)
-                        response.render('playlistID',data)
+                        response.render('playlistSongs',data)
                 }
             }
             values = [request.params.id];
@@ -315,12 +415,11 @@ app.post('/playlist/:id/newsong', (request, response) => {
             response.send('db error');
         }
         else {
-            console.log("testing 12321341234124313")
             data = {
                 rows: result.rows,
                 id: request.params.id
             }
-            response.render('playlistAddSong',data)
+            response.render('playlistAdd',data)
         }
     }
     const queryString = "SELECT * FROM songs"
@@ -332,7 +431,6 @@ app.post('/addtoexistplaylist/:id', (request,response) => {
 
 
     if(songList.length > 1) {
-
         songList.forEach ((element) => {
 
             const whenQueryDone = (queryError, result) => {
