@@ -50,8 +50,15 @@ const removeArtist = ((req, res) => {
     .catch(console.error)
 })
 
+// @param artist id
+// @returns {Artist} with relns
 const showArtistSongs = ((req, res) => {
-  res.json('show artist songs')
+  const {id} = req.params
+  // Artist.fetchChild('*')
+  const artist = new Artist(id)
+  artist.fetchChild('song')
+    .then(artistWithSongs=>res.json(artistWithSongs.data))
+    .catch(console.error)
 })
 
 const createNewArtistSong = ((res, req) => {

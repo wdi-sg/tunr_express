@@ -38,9 +38,9 @@ class Model {
   // @param whereParams {id:0, name:'dfd'}
 
   // @returns this
-  static async select (fieldsToSelect, whereParams) {
+  static async select (fieldsToSelect, whereParams,
+    tableName = this.name.toLowerCase()) {
     let data, values
-    const tableName = this.name.toLowerCase()
     const statement = prepareSelectStmt(tableName, fieldsToSelect, whereParams)
     if (whereParams) {
       values = Object.values(whereParams)
@@ -50,20 +50,32 @@ class Model {
   }
 
   static deSerialize (data) {
-    return data.map(item => new this().data = item)
+    return data.map(item => {
+      const newObj =new this()
+      newObj.data = item
+      return newObj
+    })
   }
 
-
+  // fetch a single relation into this.data.{relationname}
   // params: {String} name of relationship defined in this.relations()
-  // effect: this.data.relation
-  fetchChild(childName){
-
+  // effect: this.data.{childName} contains [ obj1, obj2, obj3 ]
+  async fetchChild (childName) {
+    const relation = this.relations[childName]
+    if (!relation) throw new Error('relation not found.')
+    if (relation.type === 'hasMany') {
+      const where = { [relation.fk]: this.data[this.getPrimaryKeyName()] }
+      const res = await Model.select('*', where, childName)
+      const relationClass = relation.create()
+      this.data[childName] = relationClass.constructor.deSerialize(res)
+      return this
+    }
 
   }
 
   // TODO: if any field is null or empty, remove
   // @returns inserted row id
-  save () {
+  async save () {
     const tableName = this.getResourceName()
     console.log(this.getPrimaryKeyName())
     const { [this.getPrimaryKeyName()]: _, ...data } = this.data
@@ -75,7 +87,7 @@ class Model {
 
 
   // TODO: if any field is null or empty, remove
-  update () {
+  async update () {
     const tableName = this.getResourceName()
     const { [this.getPrimaryKeyName()]: primaryKey, ...data } = this.data
     const columns = Object.keys(data)
@@ -86,7 +98,7 @@ class Model {
   }
 
   // @returns deleted item id
-  delete () {
+  async delete () {
     const tableName = this.getResourceName()
     const pk = this.getPrimaryKeyName()
     const { [this.getPrimaryKeyName()]: primaryKey } = this.data

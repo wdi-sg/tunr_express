@@ -1,4 +1,5 @@
 const Model = require('./model')
+const Song = require('./song.model')
 
 class Artist extends Model {
 
@@ -45,12 +46,22 @@ class Artist extends Model {
         type: 'text'
       },
 
-      photo_url : {
+      photo_url: {
         type: 'text'
       },
 
       nationality: {
         type: 'text'
+      }
+    }
+  }
+
+  get relations () {
+    return {
+      'song': {
+        type  : 'hasMany',
+        fk    : 'artist_id',
+        create : () => new Song()
       }
     }
   }
