@@ -96,7 +96,6 @@ app.post('/register', (req, res) => {
             res.status(500);
             res.send('usersQ db Error');
         } else {
-            req.cookies.user = req.body.name;
             res.redirect('/');
         }
     }
@@ -106,6 +105,37 @@ app.post('/register', (req, res) => {
     const usersValues = [req.body.name, hash];
     pool.query(usersQ, usersValues, whenQueryDone);
 });
+
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+app.post('/login', (req, res) => {
+    let reqName = req.body.name;
+    const loginQ = "SELECT * FROM users WHERE name = "+"'"+reqName+"'";
+    let hashPassword = sha256(req.body.password);
+    pool.query(loginQ, (loginQErr, loginQResult) => {
+        if (loginQErr) {
+            res.status(500);
+            res.send('users db error');
+        } else {
+            if (loginQResult.rows.length > 0) {
+                if (hashPassword === loginQResult.rows[0].password) {
+                    res.cookie('user', reqName);
+                    res.cookie('logged in', 'true');
+                    res.redirect('/');
+                } else {
+                    res.status(403);
+                    res.redirect('/login');
+                }
+            } else {
+                res.status(403);
+                res.redirect('/login');
+            }
+        }
+    });
+})
+
 
 
 //------------------------------------------------------

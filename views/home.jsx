@@ -27,7 +27,7 @@ class Home extends React.Component {
             </div>
             <br />
             <p><a href="/register">Register</a></p>
-            <p><a href="/login">Log in</a></p>
+            <p><a href="/login">Log-in</a></p>
             <br/>
             <div>
                 <p>Visits: <span className="cookiesV">{cookiesVisits}</span></p>
