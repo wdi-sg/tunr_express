@@ -666,7 +666,7 @@ app.post(`/favourites`, (req,res)=> {
         if (err) {
             return console.log(`Query error:`,err)
         } else {
-            res.redirect(`favourites/all-favourites`)
+            res.redirect(`/favourites`)
         }
     })
 })
