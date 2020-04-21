@@ -1,6 +1,8 @@
 const util = require('util');
 const srs = require('secure-random-string');
-const promiseRandString = util.promisify(srs);
+const srsP = util.promisify(srs);
+
+const hash = require('node_hash');
 
 const makeRandString = async function (num) {
   let opts = {
@@ -8,7 +10,7 @@ const makeRandString = async function (num) {
     length: num
   };
 
-  return promiseRandString(opts);
+  return srsP(opts);
 };
 
 module.exports = makeRandString;
