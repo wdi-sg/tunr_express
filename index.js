@@ -555,8 +555,6 @@ app.post(`/login`, (req, res) => {
     let hashedPassword = sha256(req.body.password)
 
     let command = `SELECT * FROM users WHERE username = '${usernameInput}' AND password = '${hashedPassword}'`;
-
-    console.log(command)
     pool.query(command, (err, result) => {
         if (err) {
             return console.log(`Query error:`, err);
@@ -685,18 +683,18 @@ app.get("/", (req, res) => {
     }
 
     res.cookie(`visits`, visitCount, {
-        expire: new Date() + 180000
+        maxAge: 10000
     });
 
     const data = {
         visits: visitCount,
     };
     if (visitCount > 100) {
-        data.badge = `Veteran`
+        data.badge = `🦖 Veteran`
     } else if (visitCount > 50) {
-        data.badge = `Repeat`
+        data.badge = `🐸 Repeat`
     } else if (visitCount > 10) {
-        data.badge = `Newbie`
+        data.badge = `🐣 Newbie`
     }
 
     res.render("home", data);

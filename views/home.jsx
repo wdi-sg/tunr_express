@@ -17,15 +17,24 @@ class Home extends React.Component {
 
     return (
       <html>
-      <Head/>
+        <Head />
         <body>
-        <Nav/>
+          <Nav />
 
-          <button className="btn btn-light">
-            Viewcount: {this.props.visits}
-          </button>
-          {badge}
-        <Footer/>
+          <div className="container-fluid">
+            <div className="jumbotron">
+              <h1>Welcome to Tunr DB!</h1>
+              <p>Use the navigation above to view all our songs and artists.</p>
+            </div>
+          </div>
+
+          <div className="viewcount">
+            <button className="btn btn-light">
+              Viewcount: {this.props.visits}
+            </button>
+            <br/>{badge}
+          </div>
+          <Footer />
         </body>
       </html>
     );
