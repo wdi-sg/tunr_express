@@ -11,6 +11,7 @@ class SongList extends Template {
   renderContent() {
 
     let songs = this.props.songs;
+    console.log(songs);
     let count = songs.length;
 
     let songList, songTable, headerText, deleteText;
@@ -35,7 +36,7 @@ class SongList extends Template {
           <tr key={key}>
             <td><a href="#" className="text-info">{song.title}</a></td>
             <td>{song.album}</td>
-            <td>{song.artist_id}</td>
+            <td>{song.name}</td>
           </tr>
         )
       });

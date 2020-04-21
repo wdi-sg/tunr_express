@@ -9,7 +9,10 @@ router.get('/', async function (req, res) {
   let visitCount = increaseVisits(req.cookies['visits']);
   res.cookie('visits', visitCount);
 
-  let songQuery = "SELECT * FROM songs";
+  let songQuery =
+      "SELECT songs.title, songs.album, artists.name FROM songs " +
+      "INNER JOIN artists " +
+      "ON (songs.artist_id = artists.id)";
   let songResults = await makeQuery(songQuery);
 
   let data = {
