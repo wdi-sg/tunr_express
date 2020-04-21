@@ -54,7 +54,7 @@ app.get("/register", (request, response) => {
   response.render("register");
 });
 
-app.post("/", (request, response) => {
+app.post("/register", (request, response) => {
   console.log(request.body);
   let newUsername = request.body.username;
   let newPw = sha256(request.body.password);
@@ -64,22 +64,17 @@ app.post("/", (request, response) => {
     let obj = {
       comments: "Registration successful! Please proceed to log-in.",
     };
-    response.render("login-MAIN", obj);
+    response.render("register-success", obj);
   });
 });
 
 app.get("/", (request, response) => {
-  let obj = {
-    comments: "",
-  };
-  response.render("login-MAIN", obj);
+  response.render("auth-MAIN");
 });
 
-app.get("/logout", (request, response) => {});
-
-app.post("/home", (request, response) => {
+app.post("/", (request, response) => {
   console.log(request.body);
-  if (!!request.body.username && !!request.body.password) {
+  if (request.body.username !== "" && request.body.password !== "") {
     let loginUsername = request.body.username;
     let loginPw = sha256(request.body.password);
     let queryText = `SELECT id FROM users WHERE username='${loginUsername}' AND pw='${loginPw}'`;
@@ -92,16 +87,18 @@ app.post("/home", (request, response) => {
         let obj = {
           comments: "Sorry, user not found. Please try again.",
         };
-        response.render("login-MAIN", obj);
+        response.render("auth-MAIN", obj);
       }
     });
   } else {
     let obj = {
       comments: "Please complete all log-in fields.",
     };
-    response.render("login-MAIN", obj);
+    response.render("auth-MAIN", obj);
   }
 });
+
+app.get("/logout", (request, response) => {});
 
 //VIEW HOME PAGE/ DASHBOARD
 app.get("/home", (request, response) => {
