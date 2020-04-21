@@ -6,30 +6,37 @@ class playlist extends React.Component {
     let playlist = this.props.rows.map ((element) => {
         return (
             <div>
-                <form method="post" action={"/playlist/"+element.id}>
-                    <input type="submit" name="name" class="btn btn-block btn-dark" style={{margin:"0.5px 0"}} value={element.name}/>
+                <form method="get" action={"/playlist/"+element.id}>
+                    <input type="submit" class="btn btn-block btn-dark" style={{margin:"0.5px 0"}} value={element.name}/>
                 </form>
             </div>
         )
     })
 
     return (
-      <html>
-      <head>
-      <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"/>
-      </head>
+        <html>
+        <head>
+        <link
+          rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous"/>
+        </head>
         <body>
-            <div class='container mt-5'>
+            <div class='container'>
+                <div class='d-flex mb-5 mt-3'><h2><u>Welcome, {this.props.username}</u></h2>
+                    <div class='ml-auto'>
+                        <button class="btn btn-dark rounded-pill" style={{width:"100px"}}>Log out</button>
+                    </div>
+                </div>
                 <div class='d-flex'>
                     <div>
                         <form method="get" action="/playlist/new">
                             <button type="submit" class="btn btn-dark">Create Playlist</button>
                         </form>
                     </div>
+                    <form method="post" action="/logout?_method=delete">
+                    </form>
                     <div class='ml-auto'>
                         views: <button class="btn btn-dark rounded-pill" style={{width:"60px"}}>{this.props.visits}</button>
                     </div>

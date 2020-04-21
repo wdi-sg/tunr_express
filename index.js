@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser')
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const sha256 = require('js-sha256');
+
 
 // Initialise postgres client
 const configs = {
@@ -50,11 +52,93 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-    html = "<form method='get' action='/playlist/'>"+
-            "<button type='submit' class='btn btn-dark'>Playlist</button>"+
-                "</form>"
-  response.send(html);
+    const data = {
+        loggedIn : false
+    };
+
+    if( request.cookies['logged in'] === 'true'){
+        data.loggedIn = true;
+    }
+    // send response with some data (a string)
+    response.render('home', data);
 });
+
+//Registration
+app.get('/register', (request, response) => {
+    response.render('register');
+});
+
+app.post('/register', (request, response) => {
+
+    let registerQuery = "INSERT INTO users (name, password) VALUES ($1, $2) returning *";
+    var hashedPassword = sha256(request.body.password);
+    const values = [request.body.name, hashedPassword];
+
+    pool.query(registerQuery, values, (error, result)=>{
+        if( error ){
+          console.log("ERRRRRRRRRROR");
+          console.log(error);
+        }
+        console.log("YAAAYYYYY");
+        response.cookie('logged in', 'true');
+        response.cookie('username',result.rows[0].name)
+        response.cookie('userid',result.rows[0].id)
+        response.redirect('/playlist');
+    })
+});
+
+app.get('/login', (request, response) => {
+  // send response with some data (a string)
+  response.render('login');
+});
+
+app.post('/login', (request, response) => {
+  console.log(request.body)
+
+  let getUserQuery = "SELECT * FROM users WHERE name=$1";
+
+  const values = [request.body.name];
+
+  pool.query(getUserQuery, values, (error, result)=>{
+    if( error ){
+      console.log("ERRRRRRRRRROR");
+      console.log(error);
+    }
+    console.log("YAAAYYUUUUUUUYYYYYY");
+    console.log("SELECT RESULT:")
+    console.log(result.rows);
+
+    // if there is a result in the array
+    if( result.rows.length > 0 ){
+      // we have a match with the name
+      // response.send("heeeyyyy");heeeyyyy
+
+      let requestPassword = request.body.password;
+
+      if(sha256( requestPassword) === result.rows[0].password){
+        response.cookie('logged in', 'true');
+        response.redirect('/playlist')
+      }else{
+
+        response.status(403);
+        response.send("sorry!!!!!!!");
+      }
+
+    }else{
+      // nothing matched
+      response.status(403);
+      response.send("sorry!");
+    }
+
+  })
+  // send response with some data (a string)
+});
+
+app.delete('/logout', (request, response)=>{
+    response.clearCookie('logged in');
+    response.redirect('/')
+});
+
 
 //Artists
 app.get('/artists', (request, response) => {
@@ -137,6 +221,7 @@ app.get('/playlist/new/', (request, response) => {
 //Each Playlist
 app.get('/playlist', (request, response) => {
 
+    var username = request.cookies['username'];
     var visits = request.cookies['visits'];
     if( visits === undefined ){
         visits = 1;
@@ -153,7 +238,8 @@ app.get('/playlist', (request, response) => {
         } else {
             data = {
                 rows: result.rows,
-                visits: visits
+                visits: visits,
+                username: username
             }
             response.render('playlist',data);
         }
@@ -165,7 +251,7 @@ app.get('/playlist', (request, response) => {
 });
 
 //Select playlist
-app.post('/playlist/:id', (request, response) => {
+app.get('/playlist/:id', (request, response) => {
     //console.log(request.body)
     var visits = request.cookies['visits'+request.params.id];
     if( visits === undefined ){
@@ -180,16 +266,28 @@ app.post('/playlist/:id', (request, response) => {
             console.log("======ERROR======")
             console.log(queryError);
             response.send('db error');
-        } else {
-
-            data = {
-                id:request.params.id,
-                rows:result.rows,
-                name:request.body.name,
-                visits:visits
+        }
+        else{
+            const whenQueryDone = (queryError, result2) => {
+                if(queryError){
+                    console.log("======ERROR======")
+                    console.log(queryError);
+                    response.send('db error');
+                } else {
+                    data = {
+                        id:request.params.id,
+                        rows:result.rows,
+                        name:request.body.name,
+                        visits:visits,
+                        playlist:result2.rows[0].name
+                    }
+                        console.log(result2.rows)
+                        response.render('playlistID',data)
+                }
             }
-            console.log(data)
-            response.render('playlistID',data)
+            values = [request.params.id];
+            const queryString = "SELECT * FROM playlist where id = $1";
+            pool.query(queryString, values, whenQueryDone)
         }
     }
     let values = [request.params.id]
