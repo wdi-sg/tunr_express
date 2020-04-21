@@ -12,7 +12,11 @@ const errorController = require('../controllers/404-controller.js');
 router.use('/', express.static(path.join(__dirname, '..', '/public/')));
 router.use('/:id', express.static(path.join(__dirname, '..', '/public/')));
 
-router.post('/new', favouritesController.postFavourites)
+router.post('/new', favouritesController.postFavourites);
+
+router.delete('/delete', favouritesController.deleteFavourites);
+
+router.get('/', favouritesController.getAllFavourites);
 
 router.use(errorController.get404Page);
 
