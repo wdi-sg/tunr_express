@@ -81,7 +81,26 @@ app.post("/", (request, response) => {
     pool.query(queryText, (err, result) => {
       console.log(result.rows);
       if (result.rows.length > 0) {
+        let viewCount;
+        let timestamp = Date.now();
+        if (
+          !request.cookies ||
+          !request.cookies.viewCountBrow ||
+          !request.cookies.timestampBrow
+        ) {
+          viewCount = 1;
+        } else if (
+          timestamp > parseInt(request.cookies.timestampBrow) + 604800000 &&
+          request.cookies.viewCountBrow >= 50
+        ) {
+          viewCount = 50;
+        } else {
+          viewCount = parseInt(request.cookies.viewCountBrow);
+          viewCount = viewCount + 1;
+        }
         response.cookie("loggedin", true);
+        response.cookie("viewCountBrow", viewCount);
+        response.cookie("timestampBrow", timestamp);
         response.render("home");
       } else {
         let obj = {
@@ -98,7 +117,13 @@ app.post("/", (request, response) => {
   }
 });
 
-app.get("/logout", (request, response) => {});
+app.get("/logout", (request, response) => {
+  let obj = {
+    comments: "Logout success!",
+  };
+  response.clearCookie("loggedin");
+  response.render("logout", obj);
+});
 
 //VIEW HOME PAGE/ DASHBOARD
 app.get("/home", (request, response) => {
