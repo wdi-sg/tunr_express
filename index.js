@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -349,6 +350,125 @@ app.post('/playlist/:id', (req, res) => {
     })
 })
 
+//Form to register a user
+app.get('/register', (req, res) => {
+    res.render('registration')
+})
+
+//POST request for registration of user
+app.post('/register', (req, res) => {
+    const values = [req.body.username, sha256(req.body.password)]
+    const queryString = "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            res.cookie('username', req.body.username)
+            res.cookie('loggedin', true);
+            res.cookie('user_id', result.rows[0].id)
+            res.redirect('/')
+        }
+    })
+})
+
+//Form for log in
+app.get('/login', (req, res) => {
+    res.render('login')
+})
+
+//POST request to verify log in
+app.post('/login', (req, res) => {
+    const values = [req.body.username]
+    const queryString = "SELECT * FROM users WHERE name = $1"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            if (result.rows[0].password === sha256(req.body.password)){
+                    res.cookie('username', result.rows[0].name)
+                    res.cookie('loggedin', true);
+                    res.cookie('user_id', result.rows[0].id)
+                    res.redirect('/')
+            } else{
+                const data = {failedAttempt: true}
+                res.render('login', data)
+            }
+        }
+    })
+})
+
+//Favorite song
+app.get('/favorites', (req, res) => {
+    let userId = req.cookies["user_id"]
+    const values = [userId]
+    const queryString = "SELECT song_id FROM favorites WHERE user_id = $1"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            if (req.cookies["loggedin"]){
+                const songIdArray = result.rows.map(song => song.song_id)
+                let queryStringEnd = "";
+                for (let i = 1; i <= songIdArray.length; i++){
+                    if (i < songIdArray.length){
+                        queryStringEnd = queryStringEnd + "songs.id = $" + i + " OR ";
+                    } else {
+                        queryStringEnd = queryStringEnd + "songs.id = $" + i;
+                    }
+                }
+                //console.log(queryStringEnd)
+                const secondQueryString = "SELECT title, album, artists.name FROM songs " + "INNER JOIN artists ON artists.id = songs.artist_id WHERE " + queryStringEnd
+                pool.query(secondQueryString, songIdArray, (err2, result2) => {
+                    if (err2) {
+                        console.error('query err', err2.stack);
+                        res.status(500);
+                        res.send('query error');
+                    } else {
+                        let songInfoArray = result2.rows
+                        const data = {songInfoArray}
+                        res.render('getfav', data)
+                    }
+                })
+            } else {
+                res.send("error, please log in first")
+            }
+
+        }
+    })
+})
+
+//Adding favorite song
+app.get('/favorites/new', (req, res) => {
+    res.render('addfav')
+})
+
+//POST request for favorite song
+app.post('/favorites', (req, res) => {
+    let songId = req.body.songid
+    let userId = req.cookies["user_id"]
+
+    const values = [songId, userId]
+    const queryString = "INSERT INTO favorites (song_id, user_id) VALUES ($1, $2)"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            res.redirect('/favorites')
+        }
+    })
+})
 
 /**
  * ===================================
