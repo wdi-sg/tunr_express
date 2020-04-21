@@ -573,26 +573,80 @@ app.get('/songs/:id', (request, response) =>
     {
         // respond with HTML page with form to create new pokemon
         console.log(typeof request.params.id);
-        const queryString = 'SELECT * from songs WHERE id = ($1)';
-        const input = [request.params.id]
-        pool.query(queryString, input, (err, result) =>
-            {
 
-                if (err)
-                    {
-                        console.error('query error:', err.stack);
-                        response.send( 'query error' );
-                    }
-                else
-                    {
+        const data={};
+        var username = request.cookies['username'];
+                        var password=request.cookies['password'];
+                        const queryString = 'SELECT * from users WHERE name=($1)';
+                        const inputString=[username];
+                        let userId="";
+                            pool.query(queryString, inputString, (err, result) =>
+                            {
 
-                        const data={};
-                        data.song=result.rows;
-                        response.render("song",data);
-                        //response.send( data );
-                    }
-            });
+                                if (err)
+                                    {
+                                        console.error('query error:', err.stack);
+                                        response.send( 'query error' );
+                                    }
+                                else
+                                    {
+                                            data.userId=result.rows[0].id;
+
+                                            //response.send(data);
+
+
+                                    const querySongString = 'SELECT * from songs WHERE id = ($1)';
+                                    const input = [request.params.id]
+                                    pool.query(querySongString, input, (Songerr, Songresult) =>
+                                        {
+
+                                            if (err)
+                                                {
+                                                    console.error('query error:', Songerr.stack);
+                                                    response.send( 'query error' );
+                                                }
+                                            else
+                                                {
+
+
+                                                    data.song=Songresult.rows;
+                                                    response.render("song",data);
+                                                    //response.send( data );
+
+                                                }
+                                        });
+
+                                     }
+                             });
     });
+
+// add solo song
+app.post('/addSoloSong',(request,response)=>{
+    //response.send(request.body);
+
+       const whenQueryDone = (queryError, result) => {
+            if( queryError ){
+              console.log("EERRRRRRRROR");
+              console.log(queryError);
+              response.status(500);
+              response.send('db error');
+            }else{
+              // if the query ran wiothout errors
+
+
+              response.redirect("/favorites");
+            }
+          };
+            const user_id = parseInt(request.body.user_id);
+            const song_id = parseInt(request.body.song_id);
+            const input = [user_id, song_id];
+            let queryString = "INSERT INTO favorites (user_id, song_id) VALUES ($1, $2)";
+
+
+            pool.query(queryString, input, whenQueryDone);
+
+})
+
 
 ///form to edit
 app.get('/songs/:id/edit',(request,response)=>{
@@ -1091,7 +1145,142 @@ app.post('/playlist/:id', (request, response) =>
 
             pool.query(queryString, input, whenQueryDone);
     });
+app.get('/favorites',(request, response) =>{
+                            var data={};
+                        var username = request.cookies['username'];
+                        data.userName=username;
+                        var password=request.cookies['password'];
+                            if( username === undefined ){
 
+                              response.send("Please log in");
+                              return;
+                                }
+                        const queryString = 'SELECT * from users WHERE name=($1)';
+                        const inputString=[username];
+                        let userId="";
+                            pool.query(queryString, inputString, (err, result) =>
+                            {
+
+                                if (err)
+                                    {
+                                        console.error('query error:', err.stack);
+                                        response.send( 'query error' );
+                                    }
+                                else
+                                    {
+                                            data.userId=result.rows[0].id;
+
+
+                                            //response.send(data);
+                                            const queryJoinString = 'SELECT * FROM songs INNER JOIN favorites ON ( songs.id = favorites.song_id ) WHERE favorites.user_id=($1)';
+                                            const inputString=[data.userId];
+                                            let userId="";
+                                                pool.query(queryJoinString, inputString, (Joinerr, Joinresult) =>
+                                                {
+
+                                                    if (err)
+                                                        {
+                                                            console.error('query error:', Joinerr.stack);
+                                                            response.send( 'query error' );
+                                                        }
+                                                    else
+                                                        {
+                                                                //data.userId=Joinresult.rows[0].id;
+                                                                data.songs= Joinresult.rows;
+                                                                //response.send(data);
+                                                                response.render('favlist',data);
+
+
+
+                                                         }
+                                                 });
+
+
+
+                                     }
+                             });
+    });
+app.get('/favorites/new',(request,response)=>{
+                        var data={};
+                        var username = request.cookies['username'];
+                        var password=request.cookies['password'];
+                        const queryString = 'SELECT * from users WHERE name=($1)';
+                        const inputString=[username];
+                        let userId="";
+                            pool.query(queryString, inputString, (err, result) =>
+                            {
+
+                                if (err)
+                                    {
+                                        console.error('query error:', err.stack);
+                                        response.send( 'query error' );
+                                    }
+                                else
+                                    {
+                                            data.userId=result.rows[0].id;
+
+                                            //response.send(data);
+
+
+                                            const querySongString = 'SELECT * from songs';
+
+                                            pool.query(querySongString, (Songerr, Songresult) => {
+
+                                              if (Songerr) {
+                                                console.error('query error:', Songerr.stack);
+                                                response.send( 'query error' );
+                                              } else {
+                                                //console.log('query result:', result);
+
+
+                                                data.song=Songresult.rows;
+                                                // redirect to home page
+
+                                                response.render("songsToFavorite",data);
+                                                //response.send( data );
+                                              }
+                                            });
+
+                                     }
+                             });
+});
+
+
+app.post('/favorites',(request, response) =>{
+
+    //response.send(request.body);
+
+
+
+    const whenQueryDone = (queryError, result) => {
+            if( queryError ){
+              console.log("EERRRRRRRROR");
+              console.log(queryError);
+              response.status(500);
+              response.send('db error');
+            }else{
+              // if the query ran wiothout errors
+
+
+              response.redirect("/favorites");
+            }
+          };
+            const id = parseInt(request.body.user_id);
+            const input = [id];
+            let queryString = "INSERT INTO favorites (user_id, song_id) VALUES ";
+            for (let songCount =0; songCount < request.body.songid.length; songCount++)
+            {
+                //console.log(request.body.songid[songCount]);
+
+                queryString += `($1, $${songCount+2}),`;
+                input.push(parseInt(request.body.songid[songCount]));
+            }
+            queryString=queryString.slice(0,-1);
+            console.log(queryString)
+            console.log(input);
+
+            pool.query(queryString, input, whenQueryDone);
+})
 
 
 /**

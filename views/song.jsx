@@ -70,7 +70,21 @@ class song extends React.Component {
                 <div style={{backgroundColor:"#7C8F8E"}} class={"col-6 border text-center p-3"}>
                         <a style={{fontSize:"40px", color:"white"}} href={editLink}>Edit</a>
                     </div>
+
+
+
             </div>
+                            <div class="row">
+                <div class={"col-4 border text-center p-0 mx-auto"} style={{marginLeft:"0", padding:"0", backgroundColor:"#7C8F8E"}}>
+                          <form method="POST" action="/addSoloSong">
+
+                    <input name="user_id" value={this.props.userId} style={{display:"none"}}/>
+                    <input name = "song_id" value = {this.props.song[0].id} style={{display:"none"}}/>
+
+                    <input  style={{fontSize:"40px", color:"white", backgroundColor:"#7C8F8E", borderColor:"#7C8F8E", width:"95%", marginTop:"10px"}} type="submit" value="Add"/>
+                 </form>
+                </div>
+                </div>
           </div>
         </body>
       </html>
