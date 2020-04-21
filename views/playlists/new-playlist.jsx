@@ -1,22 +1,14 @@
 var React = require("react");
-
+import Nav from "../components/nav";
+import Head from "../components/header";
+import Footer from "../components/footer";
 class NewPlaylist extends React.Component {
   render() {
     return (
       <html>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-            crossOrigin="anonymous"
-          />
-          <link rel="stylesheet" href="/styles.css" />
-        </head>
+        <Head/>
         <body>
-          <a href="/">
-            <button className="btn btn-primary">Back To Home</button>
-          </a>
+        <Nav/>
           <h3>Create A New Playlist</h3>
           <form action="/playlists" method="post">
             <input name="name" placeholder="Name of Playlist" />
@@ -24,6 +16,7 @@ class NewPlaylist extends React.Component {
               Submit
             </button>
           </form>
+          <Footer/>
         </body>
       </html>
     );

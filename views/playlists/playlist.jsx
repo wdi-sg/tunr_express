@@ -1,5 +1,7 @@
 var React = require("react");
-
+import Nav from "../components/nav";
+import Head from "../components/header";
+import Footer from "../components/footer";
 class Playlist extends React.Component {
   render() {
 
@@ -23,16 +25,9 @@ class Playlist extends React.Component {
 
     return (
       <html>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-            crossOrigin="anonymous"
-          />
-          <link rel="stylesheet" href="/styles.css" />
-        </head>
+        <Head/>
         <body>
+        <Nav/>
           <h1>
             {playlist.id}) {playlist.name}
           </h1>
@@ -60,6 +55,7 @@ class Playlist extends React.Component {
           <a href="/playlists">
             <button className="btn btn-primary">Back To Playlists</button>
           </a>
+          <Footer/>
         </body>
       </html>
     );

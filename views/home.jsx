@@ -1,42 +1,31 @@
 var React = require("react");
+import Nav from "./components/nav";
+import Head from "./components/header";
+import Footer from "./components/footer"
 
 class Home extends React.Component {
   render() {
 
+    let badge;
+    if (this.props.badge!==undefined) {
+      badge = (
+        <button className="btn btn-primary">
+          Your Badge: {this.props.badge} Viewer
+        </button>
+      );
+    }
+
     return (
       <html>
-        <head>
-          <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-            crossOrigin="anonymous"
-          />
-          <link rel="stylesheet" href="/styles.css" />
-        </head>
+      <Head/>
         <body>
-          <h1>Welcome to TUNER DB</h1>
+        <Nav/>
 
-          <a href="/artists">
-            <button className="btn btn-primary">View All Artists</button>
-          </a>
-          <a href="/artists/new">
-            <button className="btn btn-primary">Add An Artist</button>
-          </a>
-          <a href="/songs">
-            <button className="btn btn-secondary">View All Songs</button>
-          </a>
-          <a href="/songs/new">
-            <button className="btn btn-secondary">Add A Song</button>
-          </a>
-          <a href="/playlists">
-            <button className="btn btn-light">View All Playlists</button>
-          </a>
-          <a href="/playlists/new">
-            <button className="btn btn-light">Add A Playlist</button>
-          </a>
-          <button className="btn btn-light">Viewcount: {this.props.visits}</button>
-          <button className="btn btn-primary">Your Badge: {this.props.badge} Viewer</button>
+          <button className="btn btn-light">
+            Viewcount: {this.props.visits}
+          </button>
+          {badge}
+        <Footer/>
         </body>
       </html>
     );

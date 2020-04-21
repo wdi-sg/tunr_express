@@ -34,6 +34,7 @@ app.use(express.static(__dirname + "/public/"));
 
 
 app.use(methodOverride('_method'));
+const sha256 = require("js-sha256");
 
 
 // Set react-views to be the default view engine
@@ -62,7 +63,7 @@ app.use(cookieParser());
  */
 
 app.get(`/artists/new`, (req, res) => {
-    res.render("new-artist");
+    res.render("artists/new-artist");
 });
 
 /**
@@ -84,7 +85,7 @@ app.get(`/artists/:id/edit`, (req, res) => {
             const data = {
                 artistData: foundArtist,
             };
-            res.render("edit-artist", data);
+            res.render("artists/edit-artist", data);
         }
     });
 });
@@ -107,7 +108,7 @@ app.get(`/artists/:id`, (req, res) => {
             const data = {
                 artistData: foundArtist,
             };
-            res.render("artist", data);
+            res.render("artists/artist", data);
         }
     });
 });
@@ -132,7 +133,7 @@ app.get(`/artists/:id/songs`, (req, res) => {
             const data = {
                 songs: foundSongs,
             };
-            res.render("artists-songs", data);
+            res.render("artists/artists-songs", data);
         }
     });
 });
@@ -156,7 +157,7 @@ app.get(`/artists/:id/songs/new`, (req, res) => {
             const data = {
                 artistData: artist,
             };
-            res.render(`new-song-byartist`, data);
+            res.render(`artists/new-song-byartist`, data);
         }
     });
 });
@@ -250,7 +251,7 @@ app.get(`/artists`, (req, res) => {
                 artists: artistArr
             }
 
-            res.render('all-artists', artistData)
+            res.render('artists/all-artists', artistData)
 
         }
     })
@@ -281,7 +282,7 @@ app.get(`/songs/new`, (req, res) => {
             const data = {
                 artistData: result.rows,
             };
-            res.render("new-song", data);
+            res.render("songs/new-song", data);
         }
     });
 });
@@ -313,7 +314,7 @@ app.get(`/songs/:id/edit`, (req, res) => {
                         console.log(err.message);
                     } else {
                         data.artistsData = result.rows;
-                        res.render("edit-song", data);
+                        res.render("songs/edit-song", data);
                     }
                 });
         }
@@ -338,7 +339,7 @@ app.get(`/songs/:id`, (req, res) => {
                 songData: foundSong,
             };
 
-            res.render("song", data);
+            res.render("songs/song", data);
         }
     });
 });
@@ -400,7 +401,7 @@ app.get(`/songs`, (req, res) => {
             const data = {
                 songs: songData,
             };
-            res.render("all-songs", data);
+            res.render("songs/all-songs", data);
         }
     });
 });
@@ -443,7 +444,7 @@ app.post(`/songs`, (req, res) => {
  */
 
 app.get(`/playlists/new`, (req, res) => {
-    res.render('new-playlist');
+    res.render('playlists/new-playlist');
 })
 
 /**
@@ -478,7 +479,7 @@ app.get(`/playlists/:id/newsong`, (req, res) => {
 
             pool.query(command2, (err, result) => {
                 data.playlist = result.rows[0];
-                res.render(`addto-playlist`, data)
+                res.render(`playlists/addto-playlist`, data)
             })
         }
     });
@@ -496,7 +497,7 @@ app.get(`/playlists/:id`, (req, res) => {
             const data = {
                 playListData: result.rows,
             };
-            res.render(`playlist`, data);
+            res.render(`playlists/playlist`, data);
         }
     });
 });
@@ -527,10 +528,37 @@ app.get(`/playlists`, (req, res) => {
                 playlists: result.rows,
                 visits: req.cookies.visits
             };
-            res.render(`all-playlists`, data)
+            res.render(`playlists/all-playlists`, data)
         }
     });
 });
+
+app.get(`/register`, (req,res)=> {
+    res.render(`register`)
+})
+
+app.post(`/register`, (req, res) => {
+    let values = [req.body.username, sha256(req.body.password)]
+    let usernameInput = req.body.username;
+
+    if (usernameInput.includes(' ')) {
+        return res.send(`Sorry, please do not use spaces. <a href="/register">Try again.</a>`)
+    }
+    let command = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`
+
+    pool.query(command, values, (err, result)=> {
+
+        if (err){
+            return console.log(`Query error:`, err)
+        } else {
+            console.log(result.rows[0]);
+            res.redirect(`/`)
+        }
+
+    });
+
+});
+
 
 /**
  * ===================================
