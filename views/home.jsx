@@ -1,14 +1,12 @@
 var React = require("react");
+var DefaultLayout = require("./layouts/default");
 
 class Home extends React.Component {
   render() {
     return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
+        <DefaultLayout title={this.props.message} loggedIn={this.props.loggedIn}>
+            <h1>{this.props.message}</h1>
+        </DefaultLayout>
     );
   }
 }
