@@ -24,3 +24,9 @@ CREATE TABLE IF NOT EXISTS playlist_song (
 	song_id INTEGER,
 	playlist_id INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS favorites (
+	id SERIAL PRIMARY KEY,
+	song_id INTEGER,
+	user_id INTEGER
+);

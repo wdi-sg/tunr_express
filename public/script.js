@@ -23,10 +23,16 @@ logout.innerHTML = `<input type='submit' value='Log Out'></input>`;
 logout.setAttribute('method', 'POST');
 logout.setAttribute('action', '/logout');
 
+const favorites = document.createElement('form');
+favorites.innerHTML = `<input type='submit' value='Favorites'></input><br/><br/>`;
+favorites.setAttribute('method', 'GET');
+favorites.setAttribute('action', '/favorites');
+
 console.log(loggedIn)
 
 if (loggedIn === 'true') {
   console.log('hello')
   document.body.removeChild(login);
   document.body.insertBefore(logout, footer);
+  document.body.insertBefore(favorites, logout);
 }

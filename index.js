@@ -237,9 +237,41 @@ app.get('/playlists/:id/newsong', (request, response) => {
           const songList = result.rows;
           response.render('playlist-addsong', {'playlist': playlist, 'songList': songList});
         }
-      })
+      });
     }
-  })
+  });
+});
+
+
+
+/**
+* ===================================
+* GET Routes Favorites
+* ===================================
+*/
+
+app.get('/favorites', (request, response) => {
+  const username = request.cookies.username;
+  const user_id = request.cookies.user_id;
+
+  const user = {
+    username: username,
+    user_id: user_id
+  }
+
+  pool.query('SELECT songs.title FROM songs INNER JOIN favorites ON (favorites.song_id = songs.id) WHERE user_id=$1', [user_id], (error, result) => {
+    if (error) {
+      console.log('query error: ', error.message, error.stack);
+    } else {
+      const songList = result.rows;
+      response.render('favorites', {'songList': songList, 'user': user});
+    }
+  });
+})
+
+app.get('/favorites/new', (request, response) => {
+  const username = request.cookies.username;
+  const user_id = request.cookies.user_id;
 });
 
 
@@ -390,10 +422,13 @@ app.post('/register', (request, response) => {
   const username = request.body.username;
   const password = sha256(request.body.password);
 
-  pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password], (error, result) => {
+  pool.query('INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id', [username, password], (error, result) => {
     if (error) {
       console.log('registration error: ', error.message, error.stack);
     } else {
+      const user_id = result.rows[0].id;
+      response.cookie('username', username);
+      response.cookie('user_id', user_id);
       response.cookie('loggedIn', 'true');
       response.redirect(302, '/');
     }
@@ -409,9 +444,12 @@ app.post('/login', (request, response) => {
       console.log('log in error: ', error.message, error.stack);
     } else {
       if (result.rows[0]) {
-        const hash = result.rows[0].password;
+        const user = result.rows[0];
+        const hash = user.password;
 
         if (password === hash) {
+          response.cookie('username', username);
+          response.cookie('user_id', user.id);
           response.cookie('loggedIn', 'true');
           response.redirect(302, '/');
         } else {
@@ -425,6 +463,8 @@ app.post('/login', (request, response) => {
 });
 
 app.post('/logout', (request, response) => {
+  response.clearCookie('username');
+  response.clearCookie('user_id');
   response.cookie('loggedIn', 'false');
   response.redirect(302, '/');
 });
