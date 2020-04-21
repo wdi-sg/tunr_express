@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -200,6 +201,10 @@ app.get('/playlist', (request, response) => {
 });
 
 
+app.get('/register', (request, response) => {
+  response.render('register');
+});
+
 //POST requests
 app.post('/artists', (request, response) => {
   let queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
@@ -238,6 +243,23 @@ app.post("/playlist/:id", (request, response) => {
       response.send('query error');
     }else {
       response.redirect('/playlist/' + request.params.id);
+    }
+  });
+});
+
+
+app.post('/register', (request, response) => {
+  let username = request.body.username;
+  let password = sha256(request.body.password);
+  let queryString = "INSERT INTO users (username, password) VALUES ($1, $2)";
+  let values = [username, password];
+  pool.query(queryString, values, (error, result) => {
+    if(error) {
+      console.log('Query error: ', error.stack);
+      response.send('query error');
+    }else {
+      response.cookie('username', username);
+      response.redirect('/artists');
     }
   });
 });
