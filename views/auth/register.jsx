@@ -7,6 +7,21 @@ class RegisterForm extends React.Component {
 
     render() {
 
+        const displayInvalidMsg = () => {
+
+            if (this.props.invalidMsg) {
+                return (
+                    <div className="invalid-msg__wrapper">
+                        <p className="invalid-msg">{this.props.invalidMsg}</p>
+                    </div>
+                )
+
+            } else {
+                return;
+            }
+
+        }
+
         return (
 
             <html>
@@ -21,6 +36,7 @@ class RegisterForm extends React.Component {
                     <main>
                         <div className="form__wrapper">
                             <form method="POST" action={`/auth/register`} className="add-form">
+                                {displayInvalidMsg()}
                                 <h2 className="add-form__header">Sign Up</h2>
                                 <label htmlFor="email">Email</label>
                                 <input type="email" name="email" placeholder="email"></input>

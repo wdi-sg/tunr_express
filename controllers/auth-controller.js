@@ -11,7 +11,7 @@ module.exports.getLoginRegister = async (req, res) => {
 
 module.exports.getLogin = async (req, res) => {
 
-    res.render('./auth/login');
+    res.render('./auth/login', { invalidMsg: req.session.invalidMsg });
 
 }
 
@@ -26,7 +26,10 @@ module.exports.postLogin = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        res.render('.auth/login', { 'invalidMsg': 'Please enter user email and password' })
+
+        req.session.invalidMsg = 'Please enter user email and password';
+
+        res.redirect('./login');
     }
 
     const queryT1 = `SELECT * FROM users WHERE email ='${email}'`
@@ -34,14 +37,15 @@ module.exports.postLogin = async (req, res) => {
 
     if (!rows[0]) {
 
-        res.render('./auth/login', {
-            'user': email,
-            'invalidMsg': 'Email is not registered'
-        });
+        req.session.invalidMsg = 'Email is not registered'
+
+        res.redirect('./login');
 
     } else if (rows[0].password !== sha256(password)) {
 
-        res.render('./auth/login', { 'invalidMsg': 'Wrong password!' });
+        req.session.invalidMsg = 'Wrong password'
+
+        res.redirect('./login');
 
     } else if (rows[0]['email'] == email && rows[0]['password'] == sha256(password)) {
 
@@ -51,6 +55,7 @@ module.exports.postLogin = async (req, res) => {
         }
 
         req.session.userId = rows[0].id;
+        req.sessions.invalidMsg = "";
         res.clearCookie('visits');
         res.clearCookie('userId');
         console.log(req.session.userId);
@@ -61,6 +66,13 @@ module.exports.postLogin = async (req, res) => {
 module.exports.postRegister = async (req, res) => {
 
     const { email, password } = req.body;
+
+    if (!email || !password) {
+
+        req.session.invalidMsg = 'Please enter your email and password';
+
+        res.redirect('./register');
+    }
 
     const queryT1 = `SELECT * FROM users`
     const { rows } = await db.query(queryT1);
@@ -88,7 +100,9 @@ module.exports.postRegister = async (req, res) => {
 
         } else {
 
-            res.send('User Exists!');
+            req.session.invalidMsg = 'User already exists. Please Login.';
+
+            res.redirect('./login');
 
         }
     }
@@ -121,7 +135,7 @@ module.exports.getUserInfo = async (userId) => {
 
     console.log(`Currently Logged In as ${rows[0].email}`)
 
-    return rows[0].email;
+    return rows[0];
 }
 
 module.exports.visitsCookieCounter = async (req, res) => {

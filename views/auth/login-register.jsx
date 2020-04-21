@@ -5,6 +5,23 @@ import Header from '../page-components/header-component';
 
 class LoginRegister extends React.Component {
     render() {
+
+        const displayInvalidMsg = () => {
+            if (this.props.invalidMsg) {
+
+                return (
+                    <div className="invalid-msg__wrapper">
+                        <p className="invalid-msg">{this.props.invalidMsg}</p>
+                    </div>
+                )
+
+            } else {
+
+                return;
+
+            }
+        }
+
         return (
             <html>
                 <Head />

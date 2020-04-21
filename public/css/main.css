@@ -161,6 +161,27 @@ main {
 		/*		background-color: rgba(1, 1, 1, 0.2);*/
 }
 
+.login-register__wrapper.home {
+		flex-direction: column;
+}
+
+.login-register__wrapper>.user__wrapper {
+		width: 100%;
+		height: auto;
+		padding: 12px 0;
+		display: flex;
+		justify-content: center;
+}
+
+.user__wrapper>p {
+		width: 100%;
+		font-size: 0.8rem;
+		text-align: center;
+		color: #49494b
+}
+
+
+
 .login-register__wrapper>a {
 		display: flex;
 		justify-content: center;

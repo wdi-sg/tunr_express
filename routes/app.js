@@ -71,11 +71,12 @@ app.get('/', async (req, res, next) => {
 
     if (req.session.userId) {
 
-        const currentUser = authController.getUserInfo(req.session.userId);
+        req.currentUser = await authController.getUserInfo(req.session.userId);
+
+        res.cookie('userId', req.session.userId);
 
         await authController.visitsCookieCounter(req, res);
 
-        res.cookie('userId', req.session.userId);
     }
 
     next();
@@ -87,7 +88,10 @@ app.get('/', (req, res) => {
 
     if (req.session.userId) {
 
-        res.render('home', { 'singleArtist': req.featuredArtist });
+        res.render('home', {
+            'singleArtist': req.featuredArtist,
+            'currentUser': req.currentUser
+        });
 
     } else {
 
