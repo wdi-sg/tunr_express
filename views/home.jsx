@@ -36,6 +36,7 @@ class Home extends React.Component {
             <button className="btn btn-light">Add A Playlist</button>
           </a>
           <button className="btn btn-light">Viewcount: {this.props.visits}</button>
+          <button className="btn btn-primary">Your Badge: {this.props.badge} Viewer</button>
         </body>
       </html>
     );

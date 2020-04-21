@@ -400,7 +400,6 @@ app.get(`/songs`, (req, res) => {
             const data = {
                 songs: songData,
             };
-
             res.render("all-songs", data);
         }
     });
@@ -503,8 +502,8 @@ app.get(`/playlists/:id`, (req, res) => {
 });
 
 app.post(`/playlists/:id`, (req, res) => {
-    const playlistId = parseInt(req.params.id)
-    const songId = parseInt(req.body.songId)
+    const playlistId = parseInt(req.params.id);
+    const songId = parseInt(req.body.songId);
     let command = `INSERT INTO playlist_song (song_id, playlist_id) VALUES (${songId}, ${playlistId}) RETURNING *`;
     pool.query(command, (err, result) => {
         if (err) {
@@ -548,11 +547,19 @@ app.get("/", (req, res) => {
         visitCount++;
     }
 
-    res.cookie(`visits`, visitCount);
+    res.cookie(`visits`, visitCount, { expire: new Date() + 180000 });
 
     const data = {
         visits: visitCount,
     };
+    if (visitCount > 100) {
+        data.badge =  `Veteran`
+    } else if (visitCount > 50) {
+        data.badge = `Repeat`
+    } else if (visitCount > 10) {
+        data.badge = `Newbie`
+    }
+
     res.render("home", data);
 });
 /**
