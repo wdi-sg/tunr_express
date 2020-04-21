@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser')
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -52,8 +53,9 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// Home Page
 app.get('/', (request, response) => {
-  // set cookie
+  // set cookie for visits
   let visits = request.cookies.visits;
 
   if (visits === undefined) {
@@ -63,9 +65,131 @@ app.get('/', (request, response) => {
   }
   response.cookie('visits', visits);
 
-  const data = {"visits" : visits}
+  // Get login status
+  const loggedIn = request.cookies.loggedIn;
+
+  // Get username if logged in
+  let data;
+  if(loggedIn === 'true'){
+    const username = request.cookies.username;
+    data = {"visits" : visits, "username" : username}
+  }else{
+    data = {"visits" : visits, "username" : false}
+  }
+
   response.render('home', data);
 });
+
+// Login
+app.get('/login', (request, response) => {
+
+    // Get username and password
+    const username = request.query.user;
+
+    const password = request.query.password;
+
+    let userID;
+
+    let userStatus = false;
+
+    let promise = new Promise((resolve, reject) => {
+        // Check if username exists
+        const queryString = `select * from users where username='${username}'`
+
+        pool.query(queryString, (err, results) => {
+            if(err) {
+                console.error('query error: ', err.stack);
+                response.send('query error');
+            }
+            else if(results.rows.length > 0){
+                userStatus = true;
+                userID = results.rows[0].id
+                resolve();
+            }
+            else{
+                response.send('wrong username');
+            }
+        })
+    })
+
+    // Check if password is correct if username exists
+    promise.then(() => {
+        // hash password input
+        hashPassword = sha256(password);
+
+        const queryString2 = `select password from users where username = '${username}'`
+        if (userStatus){
+            pool.query(queryString2, (err, results) => {
+                if(err) {
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else if(results.rows.length > 0 && hashPassword === results.rows[0].password){
+                    response.cookie('username', results.rows[0].username);
+                    response.cookie('loggedIn', 'true');
+                    response.cookie('user_id', userID);
+                    response.redirect("/");
+                }
+                else{
+                    response.send('wrong password, try again!');
+                }
+            })
+        }
+    })
+
+})
+
+// Account registration
+app.get('/register', (request, response) => {
+    response.render('register');
+})
+
+app.post('/register', (request, response) => {
+    const username = request.body.username;
+
+    const password = request.body.password;
+
+    const password2 = request.body.password2;
+
+    // Convert password into hash
+    let hashPassword;
+
+    if (password === password2) {
+        hashPassword = sha256(password);
+    }else{
+        response.send('Wrong password entered for 2nd password')
+    }
+
+    // Insert user and pass into database
+    let queryString = `insert into users (username, password) values ($1, $2) returning id`
+
+    values = [username, hashPassword];
+
+    let userID;
+
+    pool.query(queryString, values, (err, results) => {
+        if(err) {
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        }
+        else{
+            userID = results.rows[0].id;
+            console.log(userID);
+            response.cookie('username', username);
+            response.cookie('loggedIn', 'true');
+            response.cookie('user_id', userID);
+            response.redirect('/');
+        }
+    })
+
+})
+
+
+/********************
+====================
+Artist stuff
+====================
+********************/
 
 // Show all artists
 app.get('/artists', (request, response) => {
