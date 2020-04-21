@@ -532,8 +532,49 @@ app.get(`/playlists`, (req, res) => {
         }
     });
 });
+app.get(`/login`, (req, res) => {
+    res.render(`login`);
+});
 
-app.get(`/register`, (req,res)=> {
+app.get(`/logout`, (req, res) => {
+
+    req.cookies.isLoggedIn = false;
+    req.cookies.currentUser = "";
+    res.cookie(`isLoggedIn`, false);
+    res.cookie(`currentUser`, "")
+
+    res.redirect(`/`)
+
+})
+
+app.post(`/login`, (req, res) => {
+    let usernameInput = req.body.username;
+    let hashedPassword = sha256(req.body.password)
+
+    let command = `SELECT * FROM users WHERE username = '${usernameInput}' AND password = '${hashedPassword}'`;
+
+    console.log(command)
+    pool.query(command, (err, result) => {
+        if (err) {
+            return console.log(`Query error:`, err);
+        } else {
+            let data = {
+                errorMsg: ""
+            }
+            if (result.rows[0] === undefined) {
+                data.errorMsg = `Sorry, you have given an incorrect username or password.`
+                res.render(`login`, data)
+            } else {
+                res.cookie(`currentUser`, usernameInput);
+                res.cookie(`isLoggedIn`, true);
+                res.redirect(`/`);
+            }
+
+        }
+    });
+});
+
+app.get(`/register`, (req, res) => {
     res.render(`register`)
 })
 
@@ -541,17 +582,23 @@ app.post(`/register`, (req, res) => {
     let values = [req.body.username, sha256(req.body.password)]
     let usernameInput = req.body.username;
 
+    // VALIDATION CHECK.
     if (usernameInput.includes(' ')) {
-        return res.send(`Sorry, please do not use spaces. <a href="/register">Try again.</a>`)
+        const data = {
+            errorMsg: `Username should not have any spaces`
+        }
+        return res.render(`register`, data)
     }
+
     let command = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *`
 
-    pool.query(command, values, (err, result)=> {
+    pool.query(command, values, (err, result) => {
 
-        if (err){
+        if (err) {
             return console.log(`Query error:`, err)
         } else {
-            console.log(result.rows[0]);
+            res.cookie(`currentUser`, usernameInput);
+            res.cookie(`isLoggedIn`, true);
             res.redirect(`/`)
         }
 
@@ -575,13 +622,15 @@ app.get("/", (req, res) => {
         visitCount++;
     }
 
-    res.cookie(`visits`, visitCount, { expire: new Date() + 180000 });
+    res.cookie(`visits`, visitCount, {
+        expire: new Date() + 180000
+    });
 
     const data = {
         visits: visitCount,
     };
     if (visitCount > 100) {
-        data.badge =  `Veteran`
+        data.badge = `Veteran`
     } else if (visitCount > 50) {
         data.badge = `Repeat`
     } else if (visitCount > 10) {
