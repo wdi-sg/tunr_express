@@ -3,6 +3,8 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
+
 
 // Initialise postgres client
 const configs = {
@@ -27,6 +29,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -34,7 +37,7 @@ app.use(express.urlencoded({
 }));
 
 app.use(methodOverride('_method'));
-
+app.use(express.static('public'));
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -53,14 +56,41 @@ app.get('/', (req, res) => {
 });
 
 app.get('/artists', (req, res) => {
-    res.render('home');
+// get the currently set cookie
+  var visits = req.cookies['visits'];
+
+  // see if there is a cookie
+  if(visits === undefined) {
+    //set default value if it doesn't exist
+    visits = 1;
+  } else {
+    //if a cookie exists, make a value thats 1 bigger
+    visits = parseInt(visits) + 1;
+
+      //set the cookie
+      res.cookie('visits', visits);
+
+    const data = {
+        cookieCount: visits
+    }
+    res.render('home', data);
+  }
+
+
+
+
+
+
 })
+
 
 //###########################################################
 //################### MANY TO MANY #############################
 app.get('/playlists/new', (req, res) => {
     res.render('new-playlist');
 })
+
+
 
 app.post('/playlists/newsong', (req, res) => {
 
@@ -103,6 +133,41 @@ app.post('/playlists/newsong', (req, res) => {
 
 })
 
+app.get("/playlist-index", (req, res) => {
+
+    const whenQueryDone = (queryError, playlistResult) => {
+        if (queryError) {
+            console.log('ERROOOOR');
+            console.log(queryError);
+            res.status(500);
+            res.send("DB ERROR");
+        } else {
+
+          console.log(playlistResult.rows[0]);
+
+            // get the currently set cookie
+          var visits = req.cookies['visits'];
+          // see if there is a cookie
+          if(visits === undefined) {
+            //set default value if it doesn't exist
+            visits = 1;
+            } else {
+            //if a cookie exists, make a value thats 1 bigger
+            visits = parseInt(visits) + 1;
+              //set the cookie
+              res.cookie('visits', visits);
+            const data = {
+                playlists: playlistResult.rows,
+                cookieCount: visits
+            }
+            res.render('playlist-index', data);
+        }
+    }
+}
+    const queryString = "SELECT * FROM playlist";
+    pool.query(queryString, whenQueryDone);
+})
+
 app.get('/playlists/:id', (req, res) => {
 
     const whenQueryDone = (queryError, result) => {
@@ -112,33 +177,45 @@ app.get('/playlists/:id', (req, res) => {
                 res.status(500);
                 res.send("DATABASE ERROR");
             } else {
-                console.log("DISPLAYED PLAYLIST!");
+
+            console.log("DISPLAYED PLAYLIST!");
 
             var playlistId = parseInt(req.params.id);
             //Make second query
             const songs = "SELECT * FROM songs";
 
             pool.query(songs, (queryError, allSongs) => {
-
                 if(queryError) {
                     console.log("QUERY ERROR where request for all SONGS made");
                 }
-
                 console.log("SENDING PLAYLIST AND SONGS DATA");
+                 // get the currently set cookie
+                  var visits = req.cookies['visits'];
+                  // see if there is a cookie
+                  if(visits === undefined) {
+                    //set default value if it doesn't exist
+                    visits = 1;
+                    } else {
+                    //if a cookie exists, make a value thats 1 bigger
+                  visits = parseInt(visits) + 1;
+                    //set the cookie
+                    res.cookie('visits', visits);
+
+
                 const data = {
                 playlistIndex: playlistId,
                 songs: allSongs.rows,
-                playlistTitle: result.rows[0].name
-
+                playlistTitle: result.rows[0].name,
+                cookieCount: visits
             }
                 res.render('new-song', data);
-            });
-
-        }
-        }
+            };
+        })
+    }
+}
             const showPlaylist = "SELECT * FROM playlist WHERE id="+ req.params.id;
 
-    pool.query(showPlaylist, whenQueryDone);
+            pool.query(showPlaylist, whenQueryDone);
 })
 
 //Add new playlist.
@@ -183,13 +260,8 @@ app.get("/artists/:id", (req, res) => {
             res.status(500);
             res.send("DATABASE ERROR");
         } else {
-
-
-
             const queryJoinString = "SELECT songs.title, songs.artist_id FROM songs INNER JOIN artists ON(artists.id = songs.artist_id) WHERE artists.id ="+req.params.id;
-
             pool.query(queryJoinString, (songQueryError, songResult) => {
-
                 if(songQueryError) {
                     console.log(songQueryError);
             }
@@ -197,7 +269,6 @@ app.get("/artists/:id", (req, res) => {
                     songs: songResult.rows,
                     artists: artistResult.rows
                 }
-
                 res.render('show', data);
             });
           }
@@ -207,6 +278,31 @@ app.get("/artists/:id", (req, res) => {
     const queryString = "SELECT * FROM artists WHERE id="+index+"";
 
     pool.query(queryString, whenQueryDone);
+})
+
+app.get('/display-artists', (req, res) => {
+
+    const whenQueryDone = (queryError, artistResult) => {
+        if(queryError) {
+            console.log("ERROR: COULD NOT ADD SONG TO ARTIST!");
+            console.log(queryError);
+            res.status(500);
+            res.send("ALL ARTISTS " + artistResult);
+        } else {
+           const data = {
+            artists: artistResult.rows
+           }
+           res.render('display-artists', data);
+        }
+    }
+
+
+    const queryString = "SELECT * FROM artists";
+
+    pool.query(queryString, whenQueryDone);
+
+
+
 })
 
 app.post("/artist/new", (req, res) => {
@@ -219,6 +315,7 @@ app.post("/artist/new", (req, res) => {
             res.send("NEW ARTIST IN THE HOUSE: " + artistResult);
         } else {
             console.log("SONG ADDED" + artistResult);
+            res.redirect("/artists/" + parseInt(req.body.songId));
         }
     }
 

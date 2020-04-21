@@ -5,10 +5,11 @@ class Show extends React.Component {
 
     console.log(this.props.songs.id);
          const songsByArtist = this.props.songs.map( song => {
-            let songId = parseInt(song.artist_id);
-
         return <li>{song.title}</li>
     })
+
+
+
 
 
 let artistInfo = this.props.artists.map(artist => {
@@ -22,7 +23,7 @@ let artistInfo = this.props.artists.map(artist => {
         </p>
         <p>
         Add Album Name <input type="text" name="album" />
-                        <input type="hidden" name="songId" />
+                        <input type="hidden" value={artist.id} name="songId" />
         </p>
         <p>
             <button type="submit">Add Song Details</button>
@@ -38,7 +39,9 @@ let artistInfo = this.props.artists.map(artist => {
 
     return (
       <html>
-        <head />
+      <head>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous" />
+        </head>
         <body>
         {artistInfo}
         </body>

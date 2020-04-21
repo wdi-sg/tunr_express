@@ -1,11 +1,11 @@
 var React = require("react");
 
-class PlaylistSongs extends React.Component {
+class DisplayArtists extends React.Component {
   render() {
 
-    console.log(this.props.songsByPlaylist);
-    const songs = this.props.songsByPlaylist.map( song=> {
-        return <li>{song.title}</li>
+    const displayArtists = this.props.artists.map((artist, index) => {
+        const link = '/artists/' + (index + 1);
+        return <li><a href={link}>{artist.name}</a></li>
     })
 
     return (
@@ -15,10 +15,10 @@ class PlaylistSongs extends React.Component {
         </head>
 
         <body>
-          <h1>Playlist: {this.props.playlistName}</h1>
+          <h1>Artists: </h1>
           <div>
           <ol>
-              {songs}
+          {displayArtists}
           </ol>
           </div>
         </body>
@@ -27,4 +27,4 @@ class PlaylistSongs extends React.Component {
   }
 }
 
-module.exports = PlaylistSongs;
+module.exports = DisplayArtists;
