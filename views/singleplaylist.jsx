@@ -6,6 +6,7 @@ class Singleplaylist extends React.Component {
 
 
     // Javascript stuff
+    const favouriteSongs = this.props.favouriteSongs;
     const visits = this.props.visits;
 
     let visitbadge;
@@ -35,10 +36,38 @@ class Singleplaylist extends React.Component {
 
     const newSongURL = `/playlist/${playlistID}/newsong`;
 
+    const favouriteURL = `/addfavourites/${playlistID}`
+
     const playlistSongs = this.props.playlistSongs;
 
-    const showSongs = playlistSongs.map((el, i) => {
+    const changeFavBtn = (songID) => {
+        for (let n=0; n<favouriteSongs; n++){
+            if (favouriteSongs.songs_id = songID){
+                console.log('match')
+                return (
+                        <th scope="row">
+                            <form action={favouriteURL} method="post">
+                                <input type="hidden" name="songID" value={songID}></input>
+                                <input type="submit" value="LOVED"></input>
+                            </form>
+                        </th>
+                    )
+            }
+            else{
+                console.log('no match')
+                return(
+                    <th scope="row">
+                        <form action={favouriteURL} method="post">
+                            <input type="hidden" name="songID" value={songID}></input>
+                            <input type="submit" value="favourite"></input>
+                        </form>
+                    </th>
+                    )
+            }
+        }
+    }
 
+    const showSongs = playlistSongs.map((el, i) => {
       return (
         <tr>
           <th scope="row">{i}</th>
@@ -46,11 +75,12 @@ class Singleplaylist extends React.Component {
           <th scope="row">{el.name}</th>
           <th scope="row">{el.album}</th>
           <th scope="row">
-                      <audio controls>
-                        <source src={el.preview_link} type="audio/mp3"></source>
-                        Your browser does not support the audio element.
-                      </audio>
+                    <audio controls>
+                      <source src={el.preview_link} type="audio/mp3"></source>
+                      Your browser does not support the audio element.
+                    </audio>
           </th>
+          {changeFavBtn()}
         </tr>
         )
     })
@@ -82,6 +112,7 @@ class Singleplaylist extends React.Component {
                   <th scope="col">Artist</th>
                   <th scope="col">Album</th>
                   <th scope="col">Preview</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
                 {showSongs}

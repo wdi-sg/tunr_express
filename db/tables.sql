@@ -37,3 +37,9 @@ CREATE TABLE IF NOT EXISTS users (
 	username text,
 	password text
 );
+
+CREATE TABLE IF NOT EXISTS favourites (
+	id serial primary key,
+	songs_id integer,
+	user_id integer
+)

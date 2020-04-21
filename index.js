@@ -597,6 +597,7 @@ app.post('/playlist/:id', (request, response) => {
                     response.send('query error');
                 }
                 else{
+                    console.log(result.rows)
                     const data = {"playlistSongs" : result.rows, "playlistDetails" : playlistDetails, 'visits' : visits};
                     response.render('singleplaylist', data);
                 }
@@ -630,6 +631,10 @@ app.get('/playlist/:id', (request, response) => {
 
     let songDetails;
 
+    let favouriteSongs;
+
+    const userID = request.cookies.user_id;
+
     async function getSongPlaylist() {
         // Get playlist details
         const queryString = `select * from playlist where id=${id}`
@@ -653,6 +658,7 @@ app.get('/playlist/:id', (request, response) => {
             // Inner join 3 tables, song table, artist table, and playlist_song
             let queryString2 = `
                 SELECT
+                    songs.id,
                     songs.title,
                     songs.album,
                     songs.preview_link,
@@ -677,8 +683,24 @@ app.get('/playlist/:id', (request, response) => {
             })
         })
 
-        Promise.all([getPlaylistDetails, getSongDetails]).then(() => {
-            const data = {"playlistSongs" : songDetails, "playlistDetails" : playlistDetails, 'visits' : visits};
+        let getFavouriteSongs = new Promise((resolve, reject) => {
+            let queryString3 = `select songs_id from favourites where user_id=${userID}`
+
+            pool.query(queryString3, (err, result) => {
+                if(err){
+                    console.error('query error: ', err.stack);
+                    response.send('query error');
+                }
+                else{
+                    favouriteSongs = result.rows;
+                    resolve('resolve');
+                }
+            })
+
+        })
+
+        Promise.all([getPlaylistDetails, getSongDetails, getFavouriteSongs]).then(() => {
+            const data = {"playlistSongs" : songDetails, "playlistDetails" : playlistDetails, 'favouriteSongs' : favouriteSongs, 'visits' : visits};
 
             response.render('singleplaylist', data);
         });
@@ -693,14 +715,35 @@ app.get('/playlist/:id', (request, response) => {
 ================
 ================
 ================
-Artost Part
+Favourites Part
 ================
 ================
 ================
 
 ***************/
 
+app.post('/addfavourites/:id', (request, response) => {
+    const playlistID = request.params.id;
 
+    const songID = request.body.songID;
+
+    const userID = request.cookies.user_id;
+
+    // Add song into favourites database
+    let queryString = 'insert into favourites (songs_id, user_id) values ($1, $2) returning *'
+
+    const values=[songID, userID];
+
+    pool.query(queryString, values, (err, results) => {
+        if(err){
+            console.error('query error: ', err.stack);
+            response.send('query error');
+        }
+        else{
+            response.redirect(`/playlist/${playlistID}`)
+        }
+    })
+})
 
 
 
