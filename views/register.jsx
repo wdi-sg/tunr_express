@@ -11,7 +11,7 @@ class Register extends React.Component {
         <body>
             <br/>
             <div className='container'>
-                <h1 className='text-center'>Create Account</h1>
+                <h2 className='text-center'>Create Account</h2>
                 <br/>
                 <div className='row justify-content-center'>
                     <form method='POST' action='/register'>

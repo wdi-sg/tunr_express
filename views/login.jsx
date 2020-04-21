@@ -12,7 +12,7 @@ class Login extends React.Component {
             <br/>
             <div className='container'>
                 <div className='row justify-content-center'>
-                    <h1 className='text-center'>Sign In</h1>
+                    <h2 className='text-center'>Sign In</h2>
                 </div>
                 <br/>
                 <div className='row justify-content-center'>

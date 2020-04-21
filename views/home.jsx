@@ -60,6 +60,10 @@ class Home extends React.Component {
                         <button className='btn btn-success'><a href='/playlists/' className='text-white text-decoration-none'>List of Playlists</a></button>
                     </div>
                 </div>
+                <br/>
+                <div className='row justify-content-center'>
+                    <button className='btn btn-info'><a href='/favorites/' className='text-white text-decoration-none'>Favorites</a></button>
+                </div>
             </div>
             <br/><br/><br/>
             <div className='row justify-content-center'>

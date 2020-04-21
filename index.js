@@ -56,7 +56,7 @@ app.use(cookieParser());
 ////   Home     ////
 ///////////////////
 app.get('/artists/', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let visitCounter = request.cookies['visitCounter'];
         if (visitCounter === undefined) {
             visitCounter = 1;
@@ -77,7 +77,7 @@ app.get('/artists/', (request, response) => {
 ////   //List of all Artists  ////
 /////////////////////////////////
 app.get('/artists/list', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
         pool.query(queryString, (err, result) => {
@@ -102,7 +102,7 @@ app.get('/artists/list', (request, response) => {
 ////  List of all songs  //
 //////////////////////////
 app.get('/artists/songs/', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let queryString = 'SELECT * FROM songs';
 
         pool.query(queryString, (err, result) => {
@@ -121,7 +121,7 @@ app.get('/artists/songs/', (request, response) => {
 ////  List of playlists  ///
 ///////////////////////////
 app.get('/playlists/', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let queryString = 'SELECT * FROM playlist';
 
         pool.query(queryString, (err, result) => {
@@ -145,7 +145,7 @@ app.get('/playlists/', (request, response) => {
 ///  Add new playlist   ///
 //////////////////////////
 app.get('/playlists/new', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let queryString = 'SELECT * FROM songs';
 
         pool.query(queryString, (err, result) => {
@@ -196,7 +196,7 @@ app.post('/playlists/', (request, response) => {
 ////  Add / Remove songs to/from playlist  ////
 //////////////////////////////////////////////
 app.get('/playlists/:id/newsong', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let queryPlaylistString = 'SELECT * FROM playlist WHERE id=' + request.params.id;
 
         //Get name and id of playlist
@@ -282,7 +282,7 @@ app.post('/playlists/:id', (request, response) => {
 ///   Edit Playlist Name   ///
 /////////////////////////////
 app.get('/playlists/:id/edit', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let playlistId = request.params.id;
         let queryString = 'SELECT * FROM playlist WHERE id=' + playlistId;
 
@@ -325,7 +325,7 @@ app.put('/playlists/:id', (request, response) => {
 ////  Individual playlist  /////
 ///////////////////////////////
 app.get('/playlists/:id', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let queryString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link FROM songs INNER JOIN playlist_song ON (playlist_song.song_id = songs.id) WHERE playlist_song.playlist_id =' + request.params.id;
 
         //Get details of added songs to display on page
@@ -375,7 +375,7 @@ app.delete('/playlists/:id', (request, response) => {
 ////  Create new artist (from home)  ///
 ///////////////////////////////////////
 app.get('/artists/new', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         const data = {
             visitCounter: visitCounter
         }
@@ -386,7 +386,7 @@ app.get('/artists/new', (request, response) => {
 });
 
 app.post('/artists', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         const newArtist = request.body;
 
         let values = [newArtist.name, newArtist.photo_url, newArtist.nationality];
@@ -416,7 +416,7 @@ app.post('/artists', (request, response) => {
 ////  Add new song (from home)  ///
 //////////////////////////////////
 app.get('/artists/songs/new', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let queryString = 'SELECT * FROM artists ORDER BY id ASC'
 
         pool.query(queryString, (err, result) => {
@@ -475,7 +475,7 @@ app.post('/artists/songs', (request, response) => {
 ////    Edit song     ////
 /////////////////////////
 app.get('/artists/:id/songs/:songId/edit', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let artistId = request.params.id;
         let songId = request.params.songId;
         let querySongString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) WHERE songs.artist_id =' + artistId + 'AND songs.id =' + songId;
@@ -539,10 +539,10 @@ app.put('/artists/:id/songs/:songId', (request, response) => {
 })
 
 ///////////////////////////////////////////////////////
-////  Add new song to playlist(from artist's page)  //
+////  Add new song to playlist(from individual song page)  //
 /////////////////////////////////////////////////////
 app.get('/artists/:id/songs/:songId/playlists', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let songId = request.params.songId;
         let queryString = 'SELECT * FROM playlist';
 
@@ -564,17 +564,18 @@ app.get('/artists/:id/songs/:songId/playlists', (request, response) => {
         response.redirect('/');
     }
 })
-// WORK IN PROGRESSS
+
+//WORK IN PROGRESS
 // app.post('/playlists/:id', (request, response) => {
-//     response.send(result.rows)
+//      response.send(result.rows)
 // })
-////WORK IN PROGRESSSSSSS
+//WORK IN PROGRESS
 
 ////////////////////////////////////////////
 ////  Add new song (from artist's page)  //
 //////////////////////////////////////////
 app.get('/artists/:id/songs/new', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         const id = request.params.id;
         const queryString = 'SELECT * FROM artists WHERE id=' + id;
 
@@ -600,7 +601,7 @@ app.get('/artists/:id/songs/new', (request, response) => {
 ////   Individual song   ////
 ////////////////////////////
 app.get('/artists/:id/songs/:songId', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let artistId = request.params.id;
         let songId = request.params.songId;
         let queryString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) WHERE songs.artist_id =' + artistId + 'AND songs.id =' + songId;
@@ -646,7 +647,7 @@ app.delete('/artists/:id/songs/:songId', (request, response) => {
 ////   Display all artist's songs   ////
 ///////////////////////////////////////
 app.get('/artists/:id/songs', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let id = request.params.id;
         let querySongString = 'SELECT * FROM songs WHERE artist_id=' + id;
         //let queryString = 'SELECT songs.id, songs.title, songs.preview_link, songs.artwork, song.artist_id, artists.id', artists.name, artists.photo_url, artists.nationality FROM songs INNER JOIN artists ON (songs.artist_id = artists.id)
@@ -684,7 +685,7 @@ app.get('/artists/:id/songs', (request, response) => {
 ////   Edit artist details   ////
 ////////////////////////////////
 app.get('/artists/:id/edit', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         let id = request.params.id;
         let queryString = 'SELECT * FROM artists WHERE id=' + id;
 
@@ -740,7 +741,7 @@ app.delete('/artists/:id', (request, response) => {
 ////  Individual artist  ////
 ////////////////////////////
 app.get('/artists/:id', (request, response) => {
-    if (request.cookies['logged in'] === 'true') {
+    if (request.cookies['loggedIn'] === sha256('true')) {
         const queryString = 'SELECT * FROM artists ORDER BY id ASC';
 
         pool.query(queryString, (err, result) => {
@@ -770,6 +771,68 @@ app.get('/artists/:id', (request, response) => {
     }
 })
 
+//////////////////////////////////
+////  Add song to Favorites  ////
+////////////////////////////////
+app.get('/favorites/new', (request, response) => {
+    if (request.cookies['loggedIn'] === sha256('true')) {
+        let queryString = 'SELECT * FROM songs';
+
+        pool.query(queryString, (err, result) => {
+            if (err) {
+                console.log('Query Error', err.stack);
+                response.send('An error occurred when creating favorites 😢');
+            } else {
+                const data = {
+                    allSongs: result.rows,
+                    visitCounter: request.cookies['visitCounter']
+                }
+            response.render('new_favorites', data)
+            }
+        })
+    } else {
+        response.redirect('/');
+    }
+})
+
+app.post('/favorites', (request, response) => {
+    const favoritedSongId = request.body.favoritedSongId;
+    const userId = request.cookies['userId'];
+
+    let queryString = 'INSERT INTO favorites (song_id, user_id) VALUES ($1, $2)';
+    let values = [favoritedSongId, userId];
+
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.log('Query Error', err.stack);
+            response.send('An error occurred with updating favorites 😢');
+        } else {
+            response.redirect('/favorites/');
+        }
+    })
+})
+
+//////////////////////
+////  Favorites  ////
+////////////////////
+app.get('/favorites/', (request, response) => {
+    if (request.cookies['loggedIn'] === sha256('true')) {
+        let queryString = 'SELECT songs.id, songs.title, songs.album, songs.preview_link, artists.name AS artist_name FROM songs INNER JOIN artists ON (songs.artist_id = artists.id) INNER JOIN favorites ON (songs.id = favorites.song_id)'
+
+        pool.query(queryString, (err, result) => {
+            console.log(result.rows)
+            const data = {
+                favoritedSongs: result.rows,
+                userId: request.cookies['userId'],
+                visitCounter: request.cookies['visitCounter']
+            }
+            response.render('all_favorites', data)
+        })
+    } else {
+        response.redirect('/');
+    }
+})
+
 //////////////////
 ////  Login  ////
 ////////////////
@@ -794,7 +857,9 @@ app.post('/login', (request, response) => {
             } else if (result.rows[0].username === username) {
                 //Check if password is correct
                 if (result.rows[0].password === hash) {
-                    response.cookie('logged in', true)
+                    response.cookie('username', result.rows[0].username);
+                    response.cookie('userId', result.rows[0].id);
+                    response.cookie('loggedIn', sha256('true'))
                     response.redirect('/artists/');
                 } else {
                     response.send('Incorrect username/ password.')

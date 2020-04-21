@@ -1,10 +1,10 @@
 const React = require('react');
-class Song_To_Playlist_Direct extends React.Component {
+
+class New_Favorites extends React.Component {
     render () {
 
-        const playlists = this.props.playlists;
+        const allSongs = this.props.allSongs;
         const visitCounter = this.props.visitCounter;
-        const songId = this.props.songId;
 
         //Render page visit badges
         const visitCounterImageList = {
@@ -26,8 +26,8 @@ class Song_To_Playlist_Direct extends React.Component {
             visitCounterMessage = 'Veteran badge unlocked';
         }
 
-        const allPlaylists = playlists.map(playlist => {
-            return (<option>{playlist.name}</option>)
+        const allSongsList = allSongs.map(song => {
+            return(<option value={song.id}>{song.title}</option>)
         })
 
         return (
@@ -38,26 +38,34 @@ class Song_To_Playlist_Direct extends React.Component {
             <body>
                 <br/>
                 <div className='container'>
-                    <h2 className='text-center'>Add to Playlist</h2>
-                    <h5 className='text-center'>Select a playlist to add the song to.</h5>
+                    <div className='row justify-content-center'>
+                        <h2 className='text-center'>Add Favorites</h2>
+                    </div>
                     <br/>
                     <div className='row justify-content-center'>
-                        <form method='POST' action='/playlists/:id'>
-                            <select>
-                                <option></option>
-                                {allPlaylists}
-                            </select>
+                        <h5 className='text-center'>Select a song to add to Favorites.</h5>
+                    </div>
+                    <br/>
+                    <div className='row justify-content-center'>
+                        <form method='POST' action='/favorites'>
+                            <div className="form-check">
+                                <div className='row justify-content-center'>
+                                    <select style={{width: "200px", height: "30px"}} name='favoritedSongId'>
+                                        {allSongsList}
+                                    </select>
+                                </div>
+                            </div>
                             <br/><br/>
                             <div className='row justify-content-center'>
-                                <input type='submit' className='btn btn-primary' value='Submit'/>
+                                <input type="submit" className='btn btn-primary' value="Submit"/>
+                            </div>
+                            <br/>
+                            <div className='row justify-content-center'>
+                                <button className='btn btn-secondary'><a href='/favorites/' className='text-white'>Back to Favorites</a></button>
                             </div>
                         </form>
+                        <br/>
                     </div>
-                    <br/>
-                    <div className='row justify-content-center'>
-                        <button className='btn btn-secondary'><a href='/artists/songs' className='text-white text-decoration-none'>Back to Song List</a></button>
-                    </div>
-                    <br/>
                 </div>
                 <br/><br/><br/>
                 <div className='row justify-content-center'>
@@ -75,4 +83,4 @@ class Song_To_Playlist_Direct extends React.Component {
     }
 }
 
-module.exports = Song_To_Playlist_Direct;
+module.exports = New_Favorites;
