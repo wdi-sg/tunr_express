@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS playlist_songs;
-DROP TABLE IF EXISTS playlists;
 DROP TABLE IF EXISTS songs;
-DROP TABLE IF EXISTS artists;
+DROP TABLE IF EXISTS artists, playlists, users, sessions;
 
 CREATE TABLE artists (
   id SERIAL PRIMARY KEY,
@@ -28,4 +27,16 @@ CREATE TABLE playlist_songs (
   id SERIAL PRIMARY KEY,
   playlist_id INTEGER REFERENCES playlists(id) ON DELETE CASCADE,
   song_id INTEGER REFERENCES songs(id) ON DELETE CASCADE
+);
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username TEXT,
+  password TEXT,
+  salt TEXT
+);
+
+CREATE TABLE sessions (
+  id CHAR(64) PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
