@@ -205,6 +205,11 @@ app.get('/register', (request, response) => {
   response.render('register');
 });
 
+
+app.get('/login', (request, response) => {
+  response.render('login');
+});
+
 //POST requests
 app.post('/artists', (request, response) => {
   let queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
@@ -260,6 +265,29 @@ app.post('/register', (request, response) => {
     }else {
       response.cookie('username', username);
       response.redirect('/artists');
+    }
+  });
+});
+
+
+app.post('/login', (request, response) => {
+  let username = request.body.username;
+  let password = sha256(request.body.password);
+  let queryString = "SELECT * FROM users";
+  pool.query(queryString, (error, result) => {
+    if(error) {
+      console.log('Query error: ', error.stack);
+      response.send('query error');
+    }else {
+      for(let i=0; i<result.rows.length; i++){
+        if(result.rows[i].password === password){
+          response.cookie('username', username);
+          response.redirect('/artists');
+        }
+        if(result.rows === undefined){
+          response.redirect('/login');
+        }
+      }
     }
   });
 });
