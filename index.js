@@ -123,7 +123,7 @@ app.get('/artists/:id/songs', (request, response) => {
                 cookie: visits
             }
             console.log('query result: ', result.rows);
-            response.render('artistSongs', data);
+            response.render('artistsongs', data);
         };
     });
 });
@@ -258,13 +258,38 @@ app.post('/login', (request, response) => {
         } else {
             if (encPw === result.rows[0].password){
             console.log('query result: ', result);
-            response.cookie('loggedin', true)
-            response.send('Welcome!!!');
+            response.cookie('loggedin', true);
+            response.cookie('user name', request.body.userId);
+            response.cookie('user id', result.rows[0].id);
+            response.redirect('/users/'+result.rows[0].id);
             } else {
                 response.send('Either your user ID or password is incorrect. Please try again')
             }
         }
     })
+});
+
+app.get('/users/:id', (request, response) => {
+    var isLogged = request.cookies['loggedin'];
+    console.log('*********check the value here!!!!***** ' + isLogged);
+    if(isLogged == 'true'){
+        let queryString = 'SELECT songs.title, songs.artist_id, album FROM songs INNER JOIN user_fav ON (songs.id = user_fav.song_id) WHERE user_fav.user_id = $1';
+        const values=[parseInt(request.params.id)];
+        pool.query(queryString, values, (err,result)=> {
+            if (err) {
+                console.log('error: ', err.stack);
+                response.send('query error');
+            } else {
+                var data = {
+                    songs: result.rows,
+                }
+                console.log('query result: ', result.rows);
+                response.render('userlogged',data);
+            };
+        });
+    } else {
+        response.send('please proceed to log in.')
+    }
 });
 
 /**
