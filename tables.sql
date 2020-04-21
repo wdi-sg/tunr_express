@@ -24,3 +24,8 @@ CREATE TABLE IF NOT EXISTS playlist_song (
     song_id TEXT,
     playlist_id TEXT
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    username TEXT,
+    password TEXT
+);

@@ -1,5 +1,6 @@
 console.log("starting up!!");
 
+const sha256 = require('js-sha256');
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
@@ -91,23 +92,78 @@ const addPlaylist = (request, response) => {
 }
 
 const addSong = (request, response) => {
-  userEntry = request.body;
-  name = userEntry.name;
-  const queryString = 'insert into playlist (name) values ($1) returning id'
-  let values = [name]
-  pool.query(queryString, values, (err, result) => {
+    userEntry = request.body;
+    name = userEntry.name;
+    const queryString = 'insert into playlist (name) values ($1) returning id'
+    let values = [name]
+    pool.query(queryString, values, (err, result) => {
 
-      if (err) {
-          console.error('query error:', err.stack);
-          response.send('query error');
-      } else {
-          // console.log('query result:', result);
-          console.log(result.rows[0].id)
-          link = '/playlist/' + result.rows[0].id;
-          response.redirect(link);
-      }
-  });
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            // console.log('query result:', result);
+            console.log(result.rows[0].id)
+            link = '/playlist/' + result.rows[0].id;
+            response.redirect(link);
+        }
+    });
 }
+app.get('/register', (request, response) => {
+    response.render('register')
+});
+
+app.post('/register', (request, response) => {
+    userName = request.body.username;
+    passWord = request.body.password;
+    loginStatus = sha256('false');
+    const whenQueryDone = (queryError, result) => {
+        if (queryError) {
+            console.log(queryError, 'error');
+            response.status(500);
+            response.send('error');
+        } else {
+            response.cookie('username', userName);
+            response.cookie('password', passWord);
+            //response.cookie('loggedIn',loginStatus);
+            response.cookie('loggedIn', 'false');
+            response.redirect('/');
+        }
+    };
+
+    const queryString = "INSERT INTO users (username,password) values ($1,$2)";
+    values = [userName,passWord]
+    pool.query(queryString,values, whenQueryDone)
+});
+
+app.get('/login', (request, response) => {
+    response.render('login')
+});
+
+app.post('/login', (request, response) => {
+    userName = request.body.username;
+    passWord = request.body.password;
+    const queryString = 'SELECT username from users where username = ($1)'
+    values = [userName]
+    pool.query(queryString, values, (err, result) => {
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send('query error');
+        } else {
+            const query = 'SELECT password from users where username = ($1)'
+            data = [result.rows.name]
+            pool.query(query, data, (err, result) => {
+                if (err) {
+                    console.error('query error:', err.stack);
+                    response.send('query error');
+                } else {
+                  response.cookie('loggedIn','true');
+                  response.redirect('/');
+                }
+            });
+        }
+    });
+});
 
 app.get('/artists', (request, response) => {
     const whenQueryDone = (queryError, result) => {
@@ -120,7 +176,7 @@ app.get('/artists', (request, response) => {
             //     artists: result.rows
             // };
             var expires = {
-              expires: new Date(Date.now() + 5000)
+                expires: new Date(Date.now() + 5000)
             }
             var visits = request.cookies['visits'];
             if (visits === undefined) {
@@ -129,10 +185,10 @@ app.get('/artists', (request, response) => {
                 visits = parseInt(visits) + 1;
             }
             const data = {
-              artists: result.rows,
-              num : visits
-          };
-            response.cookie('visits', visits,expires);
+                artists: result.rows,
+                num: visits
+            };
+            response.cookie('visits', visits, expires);
             response.render('home', data);
         }
     };
@@ -156,14 +212,14 @@ app.get('/playlist', (request, response) => {
         }
     };
 
-    const queryString = "SELECT id,name FROM playlist";
+    const queryString = "SELECT * FROM playlist";
     pool.query(queryString, whenQueryDone)
 });
 
 app.get('/artists/new', (request, response) => {
     // respond with HTML page with form to create new pokemon
     var expires = {
-      expires: new Date(Date.now() + 5000)
+        expires: new Date(Date.now() + 5000)
     }
     var visits = request.cookies['visits'];
     if (visits === undefined) {
@@ -172,9 +228,9 @@ app.get('/artists/new', (request, response) => {
         visits = parseInt(visits) + 1;
     }
     const data = {
-      num : visits
-  };
-    response.cookie('visits', visits,expires);
+        num: visits
+    };
+    response.cookie('visits', visits, expires);
     response.render('new', data);
 });
 
@@ -194,7 +250,7 @@ app.get('/artists/:id', (request, response) => {
             response.send('query error');
         } else {
             var expires = {
-              expires: new Date(Date.now() + 5000)
+                expires: new Date(Date.now() + 5000)
             }
             var visits = request.cookies['visits'];
             if (visits === undefined) {
@@ -203,10 +259,10 @@ app.get('/artists/:id', (request, response) => {
                 visits = parseInt(visits) + 1;
             }
             const data = {
-              artist: result.rows,
-              num : visits
-          };
-            response.cookie('visits', visits,expires);
+                artist: result.rows,
+                num: visits
+            };
+            response.cookie('visits', visits, expires);
             //console.log(data)
             // console.log('query result:', result.rows);
             response.render('artist', data);
@@ -216,10 +272,10 @@ app.get('/artists/:id', (request, response) => {
 
 app.get('/playlist/:id', (request, response) => {
     let userInput = request.params.id;
-    const queryString = 'SELECT songs.title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) =  WHERE playlist_id = $1;'
+    const queryString = 'SELECT songs.title FROM songs INNER JOIN playlist_song ON (songs.id = playlist_song.song_id) WHERE playlist_song.playlist_id = $1;'
     values = [userInput]
     pool.query(queryString, values, (err, result) => {
-
+        console.log(result.rows)
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
@@ -282,22 +338,22 @@ app.get('/artists/:id/songs', (request, response) => {
                     console.error('query error:', err.stack);
                     response.send('query error');
                 } else {
-                  var expires = {
-                    expires: new Date(Date.now() + 5000)
-                  }
-                  var visits = request.cookies['visits'];
-                  if (visits === undefined) {
-                      visits = 1;
-                  } else {
-                      visits = parseInt(visits) + 1;
-                  }
-                  const data = {
-                    artist: artistResult.rows[0].name,
-                    song: result.rows,
-                    num : visits
-                  };
-                  response.cookie('visits', visits,expires);
-                  response.render('songs', data);
+                    var expires = {
+                        expires: new Date(Date.now() + 5000)
+                    }
+                    var visits = request.cookies['visits'];
+                    if (visits === undefined) {
+                        visits = 1;
+                    } else {
+                        visits = parseInt(visits) + 1;
+                    }
+                    const data = {
+                        artist: artistResult.rows[0].name,
+                        song: result.rows,
+                        num: visits
+                    };
+                    response.cookie('visits', visits, expires);
+                    response.render('songs', data);
 
                 }
             });
