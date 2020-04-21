@@ -90,26 +90,150 @@ app.get('/registration', (request, response) => {
 
 //post user details to DB
 app.post('/register',(request,response)=>{
-    const query = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
-
-    const hashedPassword = sha256(request.body.password);
-    const insertValues = [request.body.name, hashedPassword];
-    pool.query(query,insertValues,(aerr, addUserResult)=>{
-        if (aerr) {
-            console.error('query error:', aerr.stack);
+    /*let getUserQuery = 'SELECT * FROM users WHERE name = $1';
+    const values1 = [request.body.name];
+    pool.query(getUserQuery, values1, (error, loginResult)=>{
+        if( error ){
+            console.error('query error:', error.stack);
             response.send( 'query error' );
         } else {
-            response.cookie('username', request.body.name);
-            response.cookie('logged in', 'true');
-            console.log('query result:', addUserResult);
-            //response.send(addResult.rows);
+            if( loginResult.rows[0].name === request.body.name ){
+                response.send("User already exists");
+            }else{*/
+                const query = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
 
-            response.redirect('/');
+                const hashedPassword = sha256(request.body.password);
+                const insertValues = [request.body.name, hashedPassword];
+                pool.query(query,insertValues,(aerr, addUserResult)=>{
+                    if (aerr) {
+                        console.error('query error:', aerr.stack);
+                        response.send( 'query error' );
+                    } else {
+                        response.cookie('name', request.body.name);
+                        response.cookie('logged in', 'true');
+                        console.log('query result:', addUserResult);
+                        //response.send(addResult.rows);
+
+                        response.redirect('/');
+                    }
+                })
+            });
+        //}
+    //})
+
+//});
+
+//LOGIN
+
+//form to login
+app.get('/login', (request, response) => {
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
+
+    response.cookie('visits', visits);
+        const data = {
+            badge: visits
+    }
+  // respond with HTML page with form to create new song
+    response.render('login',data);
+});
+
+//post data into DB for log in
+app.post('/loggedin',(request,response)=>{
+    let getUserQuery = 'SELECT * FROM users WHERE name = $1';
+    const values = [request.body.name];
+    console.log(request.body.name);
+  pool.query(getUserQuery, values, (error, loginResult)=>{
+    if( error ){
+            console.error('query error:', error.stack);
+            response.send( 'query error' );
+        } else {
+            if( loginResult.rows.length > 0 ){
+                let requestPassword = request.body.password;
+
+                if(sha256( requestPassword) === loginResult.rows[0].password){
+                     response.cookie('name', request.body.name);
+                    response.cookie('login', 'true');
+                    response.redirect('/');
+                }else{
+                    response.status(403);
+                    response.send("Wrong password");
+                }
+            }else{
+          // nothing matched
+                response.status(403);
+                response.send("No matching result");
+            }
         }
 
     })
 
 });
+
+//FAVORITES
+
+//add song to favorites
+app.get('/favorites/new', (request, response) => {
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
+
+response.cookie('visits', visits);
+const data = {
+    badge: visits
+}
+  // respond with HTML page with form to create new song
+  response.render('newfavorites',data);
+});
+
+//post into DB values from favorites
+app.post('/favorites',(request,response)=>{
+    const query = 'INSERT INTO favorites (song_id, user_id) VALUES ($1, $2) RETURNING *';
+    const insertValues = [request.body.song_id, request.body.user_id];
+    pool.query(query,insertValues,(aerr, addFavResult)=>{
+        if (aerr) {
+            console.error('query error:', aerr.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', addFavResult);
+            response.send(addFavResult.rows);
+            //response.redirect('/artists/' + addResult.rows[0].id)
+        }
+
+    })
+
+});
+
+//display all favorites
+app.get('/favorites/:id',(request,response)=>{
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
+    if(request.cookies["logged in"] === 'true'){
+        const queryString = 'SELECT songs.title,song_id from favorites INNER JOIN songs ON (songs.id = favorites.song_id) WHERE favorites.user_id = ' + request.params.id;
+        pool.query(queryString, (err, indexFavResult) => {
+
+        if (err) {
+            console.error('query error:', err.stack);
+            response.send( 'query error' );
+        } else {
+            console.log('query result:', indexFavResult);
+            response.send(indexFavResult.rows);
+        }
+        })
+    }
+    else {
+    response.send("Not Logged in!!")
+    }
+
+});
+/*const indexData = {
+
+            songs: indexFavResult.rows.title,
+            badge: visits
+        };
+
+        response.render('indexfav',indexData);*/
+
+
 
 //ARTISTS
 
@@ -138,10 +262,6 @@ app.get('/artists/',(request,response)=>{
     })
 
 });
-
-//LOGIN
-
-//render form to login
 
 //create form for adding new artist
 app.get('/artists/new', (request, response) => {
