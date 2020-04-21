@@ -50,6 +50,67 @@ app.engine("jsx", reactEngine);
  * ===================================
  */
 
+//================ Registration ==================
+app.get("/register", (req, res) => {
+  res.render("registrationForm");
+});
+
+app.post("/registeredAccount", (req, res) => {
+  const whenQueryDone = (queryErr, result) => {
+    if (queryErr) {
+      console.log(queryErr);
+    } else {
+      console.log(result.rows[0]);
+    }
+    const data = {
+      newUser: result.rows[0],
+    };
+    // res.send("Thank you for signing up");
+    res.render("accountCreated", data);
+  };
+
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const values = [username, password];
+  const queryString =
+    "INSERT INTO users (name,password) VALUES ($1, $2) RETURNING *";
+  pool.query(queryString, values, whenQueryDone);
+});
+
+// ============= Log in ========================
+
+app.get("/login", (req, res) => {
+  res.render("loginForm");
+});
+
+app.post("/", (req, res) => {
+  const whenQueryDone = (queryErr, result) => {
+    if (queryErr) {
+      console.log(queryErr);
+    } else {
+      console.log(result.rows[0]);
+    }
+    // res.send("hello");
+    if (result.rows.length > 0) {
+      // res.send("Hellllooo");
+      let reqPassword = req.body.password;
+      if (reqPassword === result.rows[0].password) {
+        res.cookie("loginCookie", true);
+        res.redirect("/");
+      } else {
+        res.send("incorrect password");
+      }
+    } else {
+      res.send("No such user");
+    }
+  };
+
+  const values = [req.body.username];
+  const queryString = "SELECT * FROM users WHERE name = $1";
+  pool.query(queryString, values, whenQueryDone);
+});
+
 //============ add new playlist form ===============
 app.get("/playlist/:id", (req, res) => {
   let visits = req.cookies["visits"];
@@ -314,18 +375,35 @@ app.post("/artists", (request, response) => {
 });
 
 app.get("/", (request, response) => {
-  let visits = request.cookies["visits"];
-  if (visits === undefined) {
-    visits = 0;
-  } else if (visits) {
-    console.log("Hellllooooooo this is from cookies counter");
-    console.log(visits);
-    console.log(typeof visits);
-    visits++;
+  if (request.cookies["loginCookie"] === "true") {
+    let visits = request.cookies["visits"];
+    if (visits === undefined) {
+      visits = 0;
+    } else if (visits) {
+      console.log("Hellllooooooo this is from cookies counter");
+      console.log(visits);
+      console.log(typeof visits);
+      visits++;
+    }
+    const data = { counter: visits };
+    response.cookie("visits", visits);
+    response.render("home", data);
+  } else {
+    response.send("Please log in");
   }
-  const data = { counter: visits };
-  response.cookie("visits", visits);
-  response.render("home", data);
+  // let visits = request.cookies["visits"];
+  // if (visits === undefined) {
+  //   visits = 0;
+  // } else if (visits) {
+  //   console.log("Hellllooooooo this is from cookies counter");
+  //   console.log(visits);
+  //   console.log(typeof visits);
+  //   visits++;
+  // }
+
+  // const data = { counter: visits };
+  // response.cookie("visits", visits);
+  // response.render("home", data);
 });
 
 app.get("/new", (request, response) => {
