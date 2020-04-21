@@ -64,6 +64,22 @@ app.engine('jsx', reactEngine);
 //   response.render('new');
 // });
 
+app.get('/', (request, response) => {
+  
+  response.redirect("/login");
+  
+});
+app.get('/login', (request, response) => {
+  
+  response.render("login");
+  
+});
+
+app.get('/register', (request, response) => {
+  
+  response.render("register");
+  
+});
 // View list of artists
 app.get('/artists', (request, response) => {
   // respond with HTML page with form to create new ....
