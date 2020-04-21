@@ -23,7 +23,7 @@ class AddedSongToSinglePlaylist extends React.Component {
           <h5>Add a song to this playlist:</h5>
           <form action={path} method="POST">
             <input
-              //   type="hidden"
+              type="hidden"
               name="playlistNum"
               value={this.props.playlistInfo.id}
             ></input>
@@ -32,6 +32,7 @@ class AddedSongToSinglePlaylist extends React.Component {
             <br />
             <button type="submit">Add selected song to playlist</button>
           </form>
+          <footer>Number of visits: {this.props.counter}</footer>
         </body>
       </html>
     );

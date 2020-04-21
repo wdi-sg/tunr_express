@@ -52,8 +52,20 @@ app.engine("jsx", reactEngine);
 
 //============ add new playlist form ===============
 app.get("/playlist/:id", (req, res) => {
+  let visits = req.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    visits++;
+  }
   if (req.params.id === "new") {
-    res.render("newPlaylist");
+    const data = {
+      counter: visits,
+    };
+    res.cookie("visits", visits);
+    res.render("newPlaylist", data);
   } else {
     //============== Get playlist's info ====================
     const whenQueryDone = (queryErr, result) => {
@@ -64,8 +76,10 @@ app.get("/playlist/:id", (req, res) => {
       }
       const data = {
         playlistInfo: result.rows[0],
+        counter: visits,
       };
 
+      res.cookie("visits", visits);
       res.render("singlePlaylist", data);
     };
     const queryString = "SELECT * FROM playlist WHERE id = " + req.params.id;
@@ -75,6 +89,14 @@ app.get("/playlist/:id", (req, res) => {
 
 //=========== Where data submitted from add-new-playlist form posted to ==============
 app.post("/playlist", (request, response) => {
+  let visits = request.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    visits++;
+  }
   console.log(request.body);
 
   const whenQueryDone = (queryErr, result) => {
@@ -85,7 +107,9 @@ app.post("/playlist", (request, response) => {
     }
     const data = {
       justAddedPlaylist: result.rows[0],
+      counter: visits,
     };
+    response.cookie("visits", visits);
     response.render("justAddedPlaylist", data);
   };
   const newlyAddedPlaylist = request.body.newPlaylist;
@@ -116,6 +140,7 @@ app.get("/playlist", (request, response) => {
     }
     const data = {
       individualPlaylist: result.rows,
+      counter: visits,
     };
     response.cookie("visits", visits);
 
@@ -128,6 +153,15 @@ app.get("/playlist", (request, response) => {
 
 //=========== form for adding a song to a playlist==============
 app.get("/playlist/:id/newsong", (req, res) => {
+  let visits = req.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    console.log(typeof visits);
+    visits++;
+  }
   const whenQueryDone = (queryErr, result) => {
     if (queryErr) {
       console.log(queryErr);
@@ -141,7 +175,9 @@ app.get("/playlist/:id/newsong", (req, res) => {
         const data = {
           playlistInfo: result.rows[0],
           songlist: songResult.rows,
+          counter: visits,
         };
+        res.cookie("visits", visits);
         res.render("addSongToSinglePlaylist", data);
       });
       // const data = {
@@ -163,16 +199,27 @@ app.get("/playlist/:id/newsong", (req, res) => {
 
 //============= Posting a song to selected playlist ==============
 app.post("/playlist/:id", (request, response) => {
+  let visits = request.cookies["visits"];
+  if (visits === undefined) {
+    visits = 0;
+  } else if (visits) {
+    console.log("Hellllooooooo this is from cookies counter");
+    console.log(visits);
+    console.log(typeof visits);
+    visits++;
+  }
   const whenQueryDone = (queryErr, result) => {
     if (queryErr) {
       console.log(queryErr);
     } else {
       console.log(result.rows[0]);
     }
-    // const data = {
-    //   playlistNum: request.params.id,
-    // };
-    response.send("Added");
+    const data = {
+      addedSong: result.rows[0],
+      counter: visits,
+    };
+    response.cookie("visits", visits);
+    response.render("addedToPlaylist", data);
   };
   const addedSongId = request.body.songNum;
   const playlistAddedTo = request.body.playlistNum;

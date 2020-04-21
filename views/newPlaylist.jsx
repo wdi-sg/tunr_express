@@ -16,6 +16,7 @@ class NewPlaylist extends React.Component {
             <br />
             <button type="submit">Add Playlist</button>
           </form>
+          <footer>Number of visits: {this.props.counter}</footer>
         </body>
       </html>
     );

@@ -12,6 +12,7 @@ class SinglePlaylist extends React.Component {
           </span>
           <p>Playlist's name: </p>
           <h4>{this.props.playlistInfo.name}</h4>
+          <footer>Number of visits: {this.props.counter}</footer>
         </body>
       </html>
     );

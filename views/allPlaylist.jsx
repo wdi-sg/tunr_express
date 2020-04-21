@@ -17,6 +17,9 @@ class AllPlaylist extends React.Component {
         <body>
           <h3>All playlists</h3>
           {playlistName}
+          <footer>
+            <p>Number of visits: {this.props.counter}</p>
+          </footer>
         </body>
       </html>
     );
