@@ -1,24 +1,19 @@
 var React = require("react");
 
-class Home extends React.Component {
+class AllPlaylists extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
 
-    let artist = this.props.artists.map(x=>{
-        var id = x.id;
+    let playlists = this.props.playlist.map(x=>{
         var name = x.name;
-        var photo = x.photo_url;
-        var nationality = x.nationality;
+        var id = x.id
 
-    return  <div className="card">
-                <img src={photo} className="card-img-top" alt="artists_image"/>
-                  <div className="card-body">
-                    <h5 className="card-title">{name}</h5>
-                    <p className="card-text">{nationality}</p>
-                    <a href={'/artists/'+id} className="btn btn-dark">See More!</a>
-                  </div>
-            </div>
+    return  <form method='GET' action={'/playlist/'+id}>
+                <button class="list-group-item list-group-item-action">{name}</button>
+            </form>
+
+
 });
 
 
@@ -31,9 +26,9 @@ class Home extends React.Component {
         <body>
         <Navbar/>
           <div>
-          <h1 className="col-md-auto display-4">Our Artists</h1>
-            <div className="cards">
-                {artist}
+          <h1 className="col-md-auto display-4">Your Playlists</h1>
+            <div class="list-group listz">
+              {playlists}
             </div>
           </div>
 
@@ -46,4 +41,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = AllPlaylists;

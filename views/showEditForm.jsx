@@ -1,5 +1,5 @@
 var React = require('react');
-class New extends React.Component {
+class EditForm extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
@@ -15,11 +15,11 @@ class New extends React.Component {
 
         <main>
           <div>
-            <h1 className="col-md-auto display-4">Add A New Artist</h1>
-            <form method='POST' action='/artists' className="forms">
+            <h1 className="col-md-auto display-4">Edit Artist #{this.props.id} Details</h1>
+            <form method='POST' action={'/artists/'+this.props.id+"?_method=put"} className="forms">
               <div class="form-group">
                 <label for="exampleFormControlInput1">Name</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="e.g. Bon Jovi" required/>
+                <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder={this.props.name} required/>
               </div>
               <div class="form-group">
                 <label for="exampleFormControlInput1">Image</label>
@@ -27,9 +27,9 @@ class New extends React.Component {
               </div>
               <div class="form-group">
                 <label for="exampleFormControlInput1">Nationality</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" name="nationality" placeholder="e.g. Singapore" required/>
+                <input type="text" class="form-control" id="exampleFormControlInput1" name="nationality" placeholder={this.props.nationality} required/>
               </div>
-              <button type="submit" class="btn btn-dark">Enter Artists</button>
+              <button type="submit" class="btn btn-dark">Edit Artists</button>
             </form>
           </div>
         </main>
@@ -43,4 +43,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = EditForm;

@@ -1,0 +1,42 @@
+h1, h3{
+	text-align: center;
+	margin: 5% auto 5%;
+}
+
+.alert{
+	text-align: center;
+}
+
+.name{
+	color: white;
+	margin: 0 5%;
+}
+
+.cards{
+	text-align: center;
+}
+
+
+.card{
+	width: 18rem;
+	display: inline-block;
+}
+
+.forms{
+	padding: 0 20%;
+}
+
+.listz{
+	text-align: center;
+	width: 70%;
+	margin: 0 auto;
+}
+
+.addSong{
+	margin: 5% auto;
+	text-align: center;
+}
+
+.music{
+	width: 100%;
+}

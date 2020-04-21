@@ -1,25 +1,28 @@
 var React = require("react");
 
-class Home extends React.Component {
+class Favorites extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
 
-    let artist = this.props.artists.map(x=>{
-        var id = x.id;
-        var name = x.name;
-        var photo = x.photo_url;
-        var nationality = x.nationality;
+    let favSongs = this.props.favoriteSongs.map(x=>{
+        var title = x.title;
+        var album = x.album;
+        var preview = x.preview_link;
 
     return  <div className="card">
-                <img src={photo} className="card-img-top" alt="artists_image"/>
-                  <div className="card-body">
-                    <h5 className="card-title">{name}</h5>
-                    <p className="card-text">{nationality}</p>
-                    <a href={'/artists/'+id} className="btn btn-dark">See More!</a>
-                  </div>
+              <div className="card-body">
+                <h5 className="card-title">{title}</h5>
+                <p className="card-text">{album}</p>
+                <audio className="music" controls>
+                  <source src={preview} type="audio/ogg"/>
+                  <source src={preview} type="audio/mpeg"/>
+                  Your browser does not support the audio tag.
+                </audio>
+              </div>
             </div>
-});
+
+    });
 
 
     return (
@@ -31,10 +34,13 @@ class Home extends React.Component {
         <body>
         <Navbar/>
           <div>
-          <h1 className="col-md-auto display-4">Our Artists</h1>
-            <div className="cards">
-                {artist}
+            <h1 className="col-md-auto display-4">{this.props.name}'s Favorite Songs</h1>
+            <div class="cards">
+              {favSongs}
             </div>
+            <form method='GET' action={'/favorites/new'} className="forms addSong">
+              <button type="submit" class="btn btn-dark">Add songs to your list of favorites</button>
+            </form>
           </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -46,4 +52,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = Favorites;

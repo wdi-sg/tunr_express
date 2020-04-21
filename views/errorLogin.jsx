@@ -1,8 +1,6 @@
 var React = require('react');
-class New extends React.Component {
+class Login extends React.Component {
   render() {
-
-    const Navbar = require("./navbar.jsx");
 
     return (
       <html>
@@ -11,25 +9,29 @@ class New extends React.Component {
             <link rel="stylesheet" href="/style.css"></link>
         </head>
         <body>
-        <Navbar/>
 
         <main>
           <div>
-            <h1 className="col-md-auto display-4">Add A New Artist</h1>
-            <form method='POST' action='/artists' className="forms">
+            <div class="alert alert-danger alert" role="alert">
+              Your Password or Username is incorrect
+            </div>
+            <h1 className="col-md-auto display-4">Welcome to Tunr App</h1>
+            <form method='POST' action='/register' className="forms">
+              <h3>Login:</h3>
               <div class="form-group">
                 <label for="exampleFormControlInput1">Name</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="e.g. Bon Jovi" required/>
+                <input type="text" class="form-control" id="exampleFormControlInput1" name="name" required/>
               </div>
               <div class="form-group">
-                <label for="exampleFormControlInput1">Image</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" name="photo_url" placeholder="Enter Image URL here" required/>
+                <label for="exampleFormControlInput1">Password</label>
+                <input type="password" class="form-control" id="exampleFormControlInput1" name="password" required/>
               </div>
-              <div class="form-group">
-                <label for="exampleFormControlInput1">Nationality</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" name="nationality" placeholder="e.g. Singapore" required/>
-              </div>
-              <button type="submit" class="btn btn-dark">Enter Artists</button>
+              <button type="submit" class="btn btn-dark">Login</button>
+            </form>
+
+            <br/>
+            <form method='GET' action='/register' className="forms">
+              <button type="submit" class="btn btn-dark">Not a user yet? Register here</button>
             </form>
           </div>
         </main>
@@ -43,4 +45,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Login;

@@ -1,26 +1,9 @@
 var React = require("react");
 
-class Home extends React.Component {
+class EmptyPlaylist extends React.Component {
   render() {
 
     const Navbar = require("./navbar.jsx");
-
-    let artist = this.props.artists.map(x=>{
-        var id = x.id;
-        var name = x.name;
-        var photo = x.photo_url;
-        var nationality = x.nationality;
-
-    return  <div className="card">
-                <img src={photo} className="card-img-top" alt="artists_image"/>
-                  <div className="card-body">
-                    <h5 className="card-title">{name}</h5>
-                    <p className="card-text">{nationality}</p>
-                    <a href={'/artists/'+id} className="btn btn-dark">See More!</a>
-                  </div>
-            </div>
-});
-
 
     return (
       <html>
@@ -31,10 +14,13 @@ class Home extends React.Component {
         <body>
         <Navbar/>
           <div>
-          <h1 className="col-md-auto display-4">Our Artists</h1>
-            <div className="cards">
-                {artist}
-            </div>
+            <h1 className="col-md-auto display-4">Playlist #{this.props.playlistNum}</h1>
+
+            <h3 className="col-md-auto display-5">There are no songs in this playlist yet</h3>
+
+            <form method='GET' action={'/playlist/'+this.props.playlistNum+'/newsong'} className="addSong">
+              <button type="submit" class="btn btn-dark">Add A Song</button>
+            </form>
           </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -46,4 +32,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = EmptyPlaylist;
