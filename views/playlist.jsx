@@ -26,7 +26,10 @@ class playlist extends React.Component {
             <div class='container'>
                 <div class='d-flex mb-5 mt-3'><h2><u>Welcome, {this.props.username}</u></h2>
                     <div class='ml-auto'>
+                    <form method="post" action="/logout?_method=delete">
                         <button class="btn btn-dark rounded-pill" style={{width:"100px"}}>Log out</button>
+
+                        </form>
                     </div>
                 </div>
                 <div class='d-flex'>

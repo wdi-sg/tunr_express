@@ -96,9 +96,7 @@ app.post('/login', (request, response) => {
   console.log(request.body)
 
   let getUserQuery = "SELECT * FROM users WHERE name=$1";
-
   const values = [request.body.name];
-
   pool.query(getUserQuery, values, (error, result)=>{
     if( error ){
       console.log("ERRRRRRRRRROR");
@@ -113,23 +111,29 @@ app.post('/login', (request, response) => {
       // we have a match with the name
       // response.send("heeeyyyy");heeeyyyy
 
-      let requestPassword = request.body.password;
+        let requestPassword = request.body.password;
 
-      if(sha256( requestPassword) === result.rows[0].password){
-        response.cookie('logged in', 'true');
-        response.redirect('/playlist')
-      }else{
-
-        response.status(403);
-        response.send("sorry!!!!!!!");
-      }
-
+        if(sha256( requestPassword) === result.rows[0].password){
+            response.cookie('logged in', 'true');
+            response.cookie('username',result.rows[0].name)
+            response.cookie('userid',result.rows[0].id)
+            response.redirect('/playlist')
+        }else{
+            data={
+                status: "pwwrong"
+            }
+             // nothing matched
+            response.status(403);
+            response.render('login',data)
+        }
     }else{
-      // nothing matched
-      response.status(403);
-      response.send("sorry!");
-    }
 
+        data={
+                status: "userwrong"
+        }
+        response.status(403);
+        response.render('login',data)
+    }
   })
   // send response with some data (a string)
 });
@@ -139,6 +143,8 @@ app.delete('/logout', (request, response)=>{
     response.redirect('/')
 });
 
+//favorites
+app.get('/favorites')
 
 //Artists
 app.get('/artists', (request, response) => {
@@ -148,7 +154,7 @@ app.get('/artists', (request, response) => {
 
         if (err) {
             console.error('query error:', err.stack);
-            response.send( 'query error' );
+            response.send( 'query error');
         } else {
             console.log('query result:', result);
             response.send(result.rows);

@@ -2,7 +2,7 @@ var React = require('react');
 
 class UsersNew extends React.Component {
   render() {
-
+    let msg;
     let userButtons = (<div><p><a href="/register">register</a></p>
                        <p><a href="/login">login</a></p></div>);
 
