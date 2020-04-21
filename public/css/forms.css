@@ -258,3 +258,10 @@
 		display: flex;
 		justify-content: center;
 }
+
+/**/
+
+.logout-form {
+		overflow-y: hidden;
+		height: 3rem;
+}

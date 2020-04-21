@@ -4,6 +4,7 @@ const router = new Router();
 const path = require('path');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 router.use(cookieParser());
 

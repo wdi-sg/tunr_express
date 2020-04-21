@@ -67,20 +67,18 @@ app.use('/', async (req, res, next) => {
 
 app.use('/auth', authRoutes);
 
-app.get('/', (req, res, next) => {
+app.get('/', async (req, res, next) => {
 
     if (req.session.userId) {
 
         const currentUser = authController.getUserInfo(req.session.userId);
 
-        res.cookie('userId', req.session.userId);
+        await authController.visitsCookieCounter(req, res);
 
-        authController.visitsCookieCounter(req, res);
+        res.cookie('userId', req.session.userId);
     }
 
     next();
-
-
 })
 
 app.get('/', (req, res) => {
@@ -88,9 +86,13 @@ app.get('/', (req, res) => {
     //redirect to homepage with auth routes if user is not logged in
 
     if (req.session.userId) {
+
         res.render('home', { 'singleArtist': req.featuredArtist });
+
     } else {
+
         res.redirect('/auth');
+
     }
 
 });

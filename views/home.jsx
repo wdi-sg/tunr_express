@@ -20,7 +20,7 @@ class Home extends React.Component {
                         </div>
                     </div>
                     <div className="login-register__wrapper">
-                            <form type="hidden" method="POST" action={`/auth/logout`} className="add-form">
+                            <form type="hidden" method="POST" action={`/auth/logout`} className="add-form logout-form">
                             <button type="submit" className="logout-btn"><p>Logout</p></button>
                             </form>
                     </div>

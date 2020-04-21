@@ -7,5 +7,3 @@ module.exports = class User {
         this.password = password;
     }
 }
-
-module.exports = User;
