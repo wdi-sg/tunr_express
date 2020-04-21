@@ -241,6 +241,32 @@ app.post('/register', (request, response) => {
     })
 });
 
+app.get('/login', (request, response) => {
+    response.render('login');
+});
+
+app.post('/login', (request, response) => {
+    let encPw = sha256(request.body.password);
+    console.log('**************this is the hashed password*********');
+    console.log(encPw);
+    let queryString1 = 'SELECT * FROM users WHERE user_id = $1'
+    const values1 = [request.body.userId];
+    pool.query(queryString1, values1, (err,result)=> {
+        if (err) {
+            console.log('error: ', err.stack);
+            response.send('query error');
+        } else {
+            if (encPw === result.rows[0].password){
+            console.log('query result: ', result);
+            response.cookie('loggedin', true)
+            response.send('Welcome!!!');
+            } else {
+                response.send('Either your user ID or password is incorrect. Please try again')
+            }
+        }
+    })
+});
+
 /**
  * ===================================
  * Listen to requests on port 3000
