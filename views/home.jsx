@@ -2,6 +2,7 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
+
         // console.log('home.jsx')
         let cookiesVisits = parseInt(this.props.cookies.visits);
         if(isNaN(cookiesVisits)) {
@@ -9,6 +10,22 @@ class Home extends React.Component {
         } else {
             cookiesVisits = cookiesVisits+1;
         }
+
+        let userButtons = (
+                <div>
+                    <p><a href="/register">register</a></p>
+                    <p><a href="/login">login</a></p>
+                </div>
+                );
+
+        if(this.props.cookies['logged in'] === "true"){
+            userButtons = (
+                <form action="/logout?_method=delete" method="POST">
+                    <input type="submit" value="log-out"/>
+                </form>
+                );
+        };
+
     return (
       <html>
         <head>
@@ -17,17 +34,12 @@ class Home extends React.Component {
         <body>
           <h1>Tunr Express</h1>
             <div>
-                <a href="/artists">Artists</a>
-            </div>
-            <div>
-                <a href="/songs">Songs</a>
-            </div>
-            <div>
-                <a href="/playlists">My Playlist</a>
+                <p><a href="/artists">Artists</a></p>
+                <p><a href="/songs">Songs</a></p>
+                <p><a href="/playlists">My Playlist</a></p>
             </div>
             <br />
-            <p><a href="/register">Register</a></p>
-            <p><a href="/login">Log-in</a></p>
+            {userButtons}
             <br/>
             <div>
                 <p>Visits: <span className="cookiesV">{cookiesVisits}</span></p>

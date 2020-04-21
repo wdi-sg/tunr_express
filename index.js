@@ -137,7 +137,6 @@ app.post('/login', (req, res) => {
 })
 
 
-
 //------------------------------------------------------
 // INDEX. List out all ARTIST in HTML.
 // - DONE (to artists.jsx) -
@@ -676,6 +675,16 @@ app.delete('/songs/:id', (req, res) => {
 });
 
 //------------------------------------------------------
+// DELETE Log-in (To log out)
+// - DONE -
+//------------------------------------------------------
+app.delete('/logout', (request, response)=>{
+  response.clearCookie('logged in');
+  response.clearCookie('user');
+  response.redirect('/');
+});
+
+//------------------------------------------------------
 // HOME
 // - DONE (to home.jsx) -
 //------------------------------------------------------
@@ -690,7 +699,8 @@ app.get('/', (req, res) => {
 
     visits = visits + 1;
     res.cookie('visits', visits);
-    data = {
+
+    const data = {
         cookies: req.cookies
     };
 
