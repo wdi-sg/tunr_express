@@ -6,6 +6,9 @@ class DisplayOneSong extends React.Component {
     let song = this.props;
     let link = "/songs/" + song.id;
     let href2 = link + "/add";
+    const regex = new RegExp("https://");
+    const isPreviewLink = regex.test(song.preview_link);
+    const isArtworkLink = regex.test(song.artwork);
 
     const displayOneSong = (
       <div className="container">
@@ -22,12 +25,16 @@ class DisplayOneSong extends React.Component {
                 <li>
                   Preview:
                   <br></br>
-                  <img src={song.preview_link} height="300" width="300"></img>
+                  {isPreviewLink ? (
+                    <img src={song.preview_link} height="300" width="300"></img>
+                  ) : null}
                 </li>
                 <li>
                   Artwork:
                   <br></br>
-                  <img src={song.artwork} height="300" width="300"></img>
+                  {isArtworkLink ? (
+                    <img src={song.artwork} height="300" width="300"></img>
+                  ) : null}
                 </li>
               </ul>
             </form>
@@ -43,7 +50,11 @@ class DisplayOneSong extends React.Component {
                 className="form-control"
               />
               <br></br>
-              <input className="btn btn-info" type="submit" value="Add To Favorites" />
+              <input
+                className="btn btn-info"
+                type="submit"
+                value="Add To Favorites"
+              />
               <br></br>
             </form>
           </div>

@@ -256,6 +256,7 @@ app.get("/songs", (request, response) => {
 
 //DISPLAY FORM TO ADD NEW SONG
 app.get("/songs/new", (request, response) => {
+  console.log('at GET songs/new');
   let queryText = `SELECT * FROM artists ORDER BY name`;
   pool.query(queryText, (err, result) => {
     // console.log(result.rows);
@@ -268,14 +269,16 @@ app.get("/songs/new", (request, response) => {
 
 //CAPTURE NEW SONG DATA AND DISPLAY NEWLY ADDED SONG
 app.post("/songs/new", (request, response) => {
+  console.log('at POST songs/new/');
   console.log(request.body);
   obj = parseSingleQuote(request.body);
   let artist_id = parseInt(request.body.artist_id);
   let queryText = `INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES ('${obj.title}', '${obj.album}', '${obj.preview_link}', '${obj.artwork}', ${artist_id}) RETURNING *`;
-  console.log(queryText);
+  // console.log(queryText);
   pool.query(queryText, (err, result) => {
-    console.log(result.rows);
-    let link = "http://127.0.0.1:3000/songs/" + result.rows[0].id;
+    // console.log(result.rows);
+    console.log('id: ', result.rows[0].id);
+    let link = "/songs/" + result.rows[0].id;
     response.redirect(link);
   });
 });
@@ -317,10 +320,14 @@ app.get("/songs/:sid/add", (request, response) => {
 
 //VIEW ONE SONG
 app.get("/songs/:sid", (request, response) => {
+  console.log('at GET songs/:sid');
+  console.log(request.params);
   let songId = parseInt(request.params.sid);
   let queryText = `SELECT songs.id, songs.title, songs.album, songs.preview_link, songs.artwork, songs.artist_id, artists.name FROM songs JOIN artists ON (songs.artist_id = artists.id) WHERE songs.id=${songId}`;
+  console.log(queryText);
   pool.query(queryText, (err, result) => {
-    // console.log(result.rows);
+    console.log(err);
+    console.log(result.rows);
     response.render("display-one-song", result.rows[0]);
   });
 });
@@ -340,7 +347,7 @@ app.post("/playlist", (request, response) => {
       return;
     });
   }
-  response.redirect("http://127.0.0.1:3000/playlist");
+  response.redirect("/playlist");
 });
 
 //VIEW ALL PLAYLISTS
@@ -366,7 +373,7 @@ app.post("/playlist/new", (request, response) => {
   pool.query(queryText, (err, result) => {
     let artistObj = result.rows[0];
     console.log(artistObj);
-    response.redirect("http://127.0.0.1:3000/playlist");
+    response.redirect("/playlist");
   });
 });
 
@@ -425,7 +432,7 @@ app.post("/playlist/:plid", (request, response) => {
     } else {
       queryText = `INSERT INTO playlist_song (playlist_id, song_id) VALUES (${playlistId}, ${selectedSongId})`;
       pool.query(queryText, (err, results) => {
-        response.redirect("http://127.0.0.1:3000/playlist/" + playlistId);
+        response.redirect("/playlist/" + playlistId);
       });
     }
   });
@@ -476,12 +483,34 @@ app.get("/cookieplaylist", (request, response) => {
   }
 });
 
-app.get("/favourites", (request, response) => {
-
+app.get("/favorites", (request, response) => {
+  if (!request.cookies || !request.cookies.userid) {
+    response.send("Error: You are not logged in.");
+  } else {
+    let userid = parseInt(request.cookies.userid);
+    let queryText = `SELECT favorites.song_id, favorites.user_id, songs.id, songs.title, songs.album, songs.preview_link, songs.artist_id FROM favorites JOIN songs ON (favorites.song_id = songs.id) WHERE favorites.user_id = ${userid}`;
+    console.log(queryText);
+    pool.query(queryText, (err, result) => {
+      console.log(result.rows);
+      let obj = {
+        songsArr: result.rows,
+      };
+      response.render("display-favorites", obj);
+    });
+  }
 });
 
 app.post("/favorites", (request, response) => {
   console.log(request.body);
+  let songid = parseInt(request.body.songid);
+  let userid = parseInt(request.cookies.userid);
+  console.log(userid);
+  console.log(songid);
+  let queryText = `INSERT INTO favorites (song_id, user_id) VALUES (${songid}, ${userid})`;
+  pool.query(queryText, (err, result) => {
+    // response.redirect("http://127.0.0.1:3000/favorites");
+    response.redirect("/favorites");
+  });
 });
 
 //------------------------------

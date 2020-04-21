@@ -73,7 +73,7 @@ class Navbar extends React.Component {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="">
+              <a class="nav-link" href="/favorites">
                 My Favorite Songs
               </a>
             </li>
