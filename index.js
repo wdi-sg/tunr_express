@@ -101,6 +101,8 @@ app.post("/", (request, response) => {
         response.cookie("loggedin", true);
         response.cookie("viewCountBrow", viewCount);
         response.cookie("timestampBrow", timestamp);
+        response.cookie("userid", result.rows[0].id);
+        response.cookie("username", loginUsername);
         response.render("home");
       } else {
         let obj = {
@@ -121,6 +123,8 @@ app.get("/logout", (request, response) => {
   let obj = {
     comments: "Logout success!",
   };
+  response.clearCookie("userid");
+  response.clearCookie("username");
   response.clearCookie("loggedin");
   response.render("logout", obj);
 });
