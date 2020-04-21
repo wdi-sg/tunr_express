@@ -541,7 +541,9 @@ app.get(`/logout`, (req, res) => {
     req.cookies.isLoggedIn = false;
     req.cookies.currentUser = "";
     res.cookie(`isLoggedIn`, false);
-    res.cookie(`currentUser`, "")
+    res.cookie(`currentUser`, null);
+    res.cookie(`currentUserId`, null);
+
 
     res.redirect(`/`)
 
@@ -566,6 +568,7 @@ app.post(`/login`, (req, res) => {
                 res.render(`login`, data)
             } else {
                 res.cookie(`currentUser`, usernameInput);
+                res.cookie(`currentUserId`, result.rows[0].id);
                 res.cookie(`isLoggedIn`, true);
                 res.redirect(`/`);
             }
@@ -598,6 +601,7 @@ app.post(`/register`, (req, res) => {
             return console.log(`Query error:`, err)
         } else {
             res.cookie(`currentUser`, usernameInput);
+            res.cookie(`currentUserId`, result.rows[0].id);
             res.cookie(`isLoggedIn`, true);
             res.redirect(`/`)
         }
