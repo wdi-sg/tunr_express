@@ -81,6 +81,16 @@ class Song extends Model {
     }
   }
 
+  // hasOne => artist, has Many =>artists
+  get relations () {
+    return {
+      'artist': {
+        type: ' hasOne',
+        fk  : 'artist_id'
+      }
+    }
+  }
+
 }
 
 module.exports = Song

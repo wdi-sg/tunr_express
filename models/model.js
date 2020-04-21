@@ -53,6 +53,14 @@ class Model {
     return data.map(item => new this().data = item)
   }
 
+
+  // params: {String} name of relationship defined in this.relations()
+  // effect: this.data.relation
+  fetchChild(childName){
+
+
+  }
+
   // TODO: if any field is null or empty, remove
   // @returns inserted row id
   save () {
@@ -64,6 +72,7 @@ class Model {
     let statement = prepareInsertStmt(tableName, columns, values)
     return db._execute(statement, values)
   }
+
 
   // TODO: if any field is null or empty, remove
   update () {
