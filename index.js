@@ -86,30 +86,54 @@ app.get('/artists/new', (request, response) => {
 
 app.post('/artists', (request, response) => {
 
-let string = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
+    let addQuery = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
 
-value = [request.body.name, request.body.photo_url, request.body.nationality];
+    addForm = [request.body.name, request.body.photo_url, request.body.nationality];
 
-whendone = (err, result) => {
-    if(err){
-        console.log(err);
-        console.log("there is an error when creating new artist");
-    }else{
-    console.log("++++++++++++++++++++");
-    console.log("Succeeded");
-    console.log(result.rows[0].id)
-    response.redirect("/artists/" + result.rows[0].id);
+    whendone = (err, result) => {
+        if(err){
+            console.log(err);
+            console.log("there is an error when creating new artist");
+        }else{
+        console.log("++++++++++++++++++++");
+        console.log("Succeeded");
+        console.log(result.rows[0].id)
+        response.redirect("/artists/" + result.rows[0].id);
+        }
+
     }
 
-}
-
-    pool.query(string, value, whendone)
+    pool.query(addQuery, addForm, whendone)
 })
 
 
 app.get('/artists/:id', (request, response) => {
     let artistID = request.params.id
+
+    let findArtist = "SELECT * FROM artists WHERE id =" + artistID;
     console.log(artistID);
+
+    let whenQuerydone = (err, result) => {
+        if(err){
+            console.log("/////////////////////");
+            console.log(err);
+            console.log("/////////////////////");
+        }else{
+            console.log("-------------");
+            console.log("Artist found!");
+            console.log(result.rows[0].id);
+
+            const showData = {
+                id: result.rows[0].id,
+                name: result.rows[0].name,
+                photo_url: result.rows[0].photo_url,
+                nationality: result.rows[0].nationality
+            }
+            response.render("show",showData)
+        }
+    }
+    pool.query(findArtist, whenQuerydone);
+    // response.send("This page is viewing : " + artistID);
 })
 
 /**
