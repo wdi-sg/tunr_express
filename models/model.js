@@ -70,7 +70,6 @@ class Model {
       this.data[childName] = relationClass.constructor.deSerialize(res)
       return this
     }
-
   }
 
   // TODO: if any field is null or empty, remove

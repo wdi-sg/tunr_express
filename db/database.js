@@ -18,19 +18,6 @@ class Database {
       client.release()
     }
   }
-
-  // async save (obj) {
-  //   if (!obj instanceof Model) {
-  //     throw Error('Invalid model')
-  //   }
-  //   const tableName = obj.getResourceName()
-  //   const { [obj.getPrimaryKey()]: _, ...data } = obj.data
-  //   const columns = Object.keys(data)
-  //   const values = Object.values(data)
-  //   let text = insert(tableName,columns,values)
-  //   return this._execute(text, values)
-  // }
-
 }
 
 const createDB = ((conn) => {

@@ -12,13 +12,7 @@ const showCreateSong = ((req, res) => {
 })
 
 const addNewSong = ((req, res) => {
-  const {
-     title,
-     album,
-     preview_link,
-     artwork,
-     artist_id
-  } = req.body
+  const { title, album, preview_link, artwork, artist_id } = req.body
   const song = new Song(-1, title, album, preview_link, artwork,artist_id)
   song.save()
     .then(data=>console.log)
@@ -38,8 +32,9 @@ const editSong = ((req, res) => {
 })
 
 const updateSong = ((req, res) => {
+  const song = new Song();
 
-  res.json('edit Song')
+  res.json('update Song')
 })
 
 const removeSong = ((req, res) => {
