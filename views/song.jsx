@@ -48,7 +48,10 @@ class song extends React.Component {
 
             <div class="row">
                 <div class={"col-12 text-center"}>
-                    <h2>Preview(Try later): {this.props.song[0].preview_link}</h2>
+
+                    <audio controls>
+                    <source src={this.props.song[0].preview_link} />
+                    </audio>
                 </div>
             </div>
 
