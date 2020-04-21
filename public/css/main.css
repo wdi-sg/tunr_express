@@ -180,8 +180,6 @@ main {
 		color: #49494b
 }
 
-
-
 .login-register__wrapper>a {
 		display: flex;
 		justify-content: center;
@@ -199,6 +197,12 @@ main {
 		font-size: 0.8rem;
 		text-transform: uppercase;
 		border: 2px solid lightgrey;
+}
+
+.login-register__wrapper>a.favourites-link {
+		height: 50%;
+		margin: 10px 0;
+		width: 150px;
 }
 
 .login-register__wrapper>a:hover {
@@ -505,6 +509,54 @@ main {
 		color: white;
 }
 
+.single-song__container button {
+		font-size: 0.6rem;
+		cursor: pointer;
+		border-radius: 0px;
+		text-decoration: none;
+		margin: 0px 12px 24px 0;
+		padding: 12px 18px;
+		line-height: 19px;
+		min-width: 150px;
+		max-width: 200px;
+		width: 3 s0%;
+		text-transform: uppercase;
+		font-family: 'IBM Plex Sans', sans-serif;
+		font-weight: 400;
+		letter-spacing: 3px;
+		border: solid 2px #49494b;
+		background: transparent;
+		color: #49494b;
+		-webkit-transition: all .1s linear;
+		-moz-transition: all .1s linear;
+		-ms-transition: all .1s linear;
+		-o-transition: all .1s linear;
+		transition: all .1s linear;
+		outline: none;
+		box-sizing: border-box;
+}
+
+.single-song__container button:hover {
+		background-color: #49494b;
+		color: white;
+		border-radius: 30px;
+		transition: all .4s ease-out;
+		-webkit-transition: all .4s ease-out;
+		-moz-transition: all .4s ease-out;
+		-ms-transition: all .4s ease-out;
+		-o-transition: all .4s ease-out;
+}
+
+.single-song__container button:active {
+		background-color: #49494b;
+		color: lightgrey;
+		transition: all .1s linear;
+		-webkit-transition: all .1s linear;
+		-moz-transition: all .1s linear;
+		-ms-transition: all .1s linear;
+		-o-transition: all .1s linear;
+}
+
 /*playlists*/
 
 .single-playlist__container {
@@ -549,4 +601,38 @@ main {
 		color: #49494b;
 		/*		margin: 12px 0;*/
 		margin-bottom: 12px;
+}
+
+/*favourites*/
+.favourites__header {
+		display: flex;
+		flex-direction: column;
+		width: 50%;
+		justify-content: space-around;
+		align-items: center;
+		padding: 12px 0;
+		margin-bottom: 12px;
+		border-bottom: 1px #49494b dotted;
+}
+
+.favourites__header>h2 {
+		width: 100%;
+		padding: 10px 0;
+		text-align: center;
+		font-size: 1.6rem;
+		font-weight: 600;
+		letter-spacing: 0.1rem;
+		color: #49494b;
+		/*		margin: 12px 0;*/
+}
+
+.favourites__header>h4 {
+		width: 100%;
+		padding: 10px 0;
+		text-align: center;
+		font-size: 1rem;
+		font-weight: 600;
+		letter-spacing: 0.1rem;
+		color: #49494b;
+		/*		margin: 12px 0;*/
 }

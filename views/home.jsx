@@ -36,6 +36,7 @@ class Home extends React.Component {
                             <form type="hidden" method="POST" action={`/auth/logout`} className="add-form logout-form">
                             <button type="submit" className="logout-btn"><p>Logout</p></button>
                             </form>
+                            <a href='./favourites' className="favourites-link"><p>Favourites</p></a>
                     </div>
                     <div className="featured-artist">
                         <h2 className="featured-artist__header">Featured Artist</h2>

@@ -55,8 +55,10 @@ class AllSongs extends React.Component {
                         <a href="/" className="nav__link home-link"><p>Home</p></a>
                     </div>
                     <main>
-                        <h2>Favourites</h2>
-                        <h4>{`User: ${this.props.currentUser.email}`}</h4>
+                    <div className="favourites__header">
+                        <h2 className="favourites__header-text">Favourites</h2>
+                        <h4 className="favourites__header-user">{`User: ${this.props.currentUser.email}`}</h4>
+                    </div>
                         {displaySongInfo()}
                     </main>
                 </body>

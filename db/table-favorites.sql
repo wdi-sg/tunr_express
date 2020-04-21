@@ -1,5 +1,5 @@
 CREATE TABLE favourites (
 	id serial PRIMARY KEY,
-	user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+	user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
 	song_id INTEGER REFERENCES songs(id) ON DELETE CASCADE
 );

@@ -34,7 +34,6 @@ module.exports.getAllFavourites = async (req, res) => {
 
     const { rows } = await db.query(queryT);
 
-    console.log(rows.length);
 
     if (rows.length == 0) {
         res.render('./favourites/favourites-all', {

@@ -106,8 +106,6 @@ app.get('/', async (req, res) => {
 
 app.use('/favourites', favouritesRoutes);
 
-
-
 app.use('/artists', artistsRoutes);
 
 app.use('/playlists', playlistsRoutes);
