@@ -13,6 +13,7 @@ class Home extends React.Component {
           <p>Number of visits:</p>
           <p>{this.props.badge}</p>
 
+
         </body>
       </html>
     );

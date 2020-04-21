@@ -34,8 +34,11 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+//cookies
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+//authenticate
+var sha256 = require('js-sha256');
 
 // Routes
 
@@ -50,7 +53,7 @@ app.get('/', (request, response) => {
     }else{
   // if a cookie exists, make a value thats 1 bigger
         visits = parseInt( visits ) + 1;
-        if(visits === 50){
+        if(visits === 10){
             visits_badge = "newbie";
             response.send('<html><img src = "https://d1yn1kh78jj1rr.cloudfront.net/image/preview/rDtN98Qoishumwih/ribbon-badge-award_zk6uMLOd_SB_PM.jpg"/></html>');
 
@@ -70,7 +73,45 @@ app.get('/', (request, response) => {
   //response.send('visits ' + visits);
 });
 
-//ARTITS
+// REGISTER USER
+
+//form to register new user
+app.get('/registration', (request, response) => {
+    var visits = request.cookies['visits'];
+    response.cookie('visits', visits);
+
+    response.cookie('visits', visits);
+        const data = {
+            badge: visits
+    }
+  // respond with HTML page with form to create new song
+    response.render('register',data);
+});
+
+//post user details to DB
+app.post('/register',(request,response)=>{
+    const query = 'INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *';
+
+    const hashedPassword = sha256(request.body.password);
+    const insertValues = [request.body.name, hashedPassword];
+    pool.query(query,insertValues,(aerr, addUserResult)=>{
+        if (aerr) {
+            console.error('query error:', aerr.stack);
+            response.send( 'query error' );
+        } else {
+            response.cookie('username', request.body.name);
+            response.cookie('logged in', 'true');
+            console.log('query result:', addUserResult);
+            //response.send(addResult.rows);
+
+            response.redirect('/');
+        }
+
+    })
+
+});
+
+//ARTISTS
 
 //display all arists
 app.get('/artists/',(request,response)=>{
@@ -97,6 +138,10 @@ app.get('/artists/',(request,response)=>{
     })
 
 });
+
+//LOGIN
+
+//render form to login
 
 //create form for adding new artist
 app.get('/artists/new', (request, response) => {
