@@ -8,6 +8,7 @@ clean:
 	psql -a -d $(DB_NAME) -f artist_data.sql
 	psql -a -d $(DB_NAME) -f songs.sql
 	psql -a -d $(DB_NAME) -f playlists.sql
+	psql -a -d $(DB_NAME) -f users.sql
 
 db:
 	psql -d postgres -tc "select 1 from pg_database where datname = '$(DB_NAME)'" | grep -q 1 || createdb $(DB_NAME)
@@ -22,5 +23,6 @@ seed: tables
 	psql -a -d $(DB_NAME) -f artist_data.sql
 	psql -a -d $(DB_NAME) -f songs.sql
 	psql -a -d $(DB_NAME) -f playlists.sql
+	psql -a -d $(DB_NAME) -f users.sql
 
 .PHONY: all clean db dropdb tables seed
