@@ -210,6 +210,32 @@ app.get('/login', (request, response) => {
   response.render('login');
 });
 
+
+app.get('/favorites/new', (request, response) => {
+  response.render('favoritesnew');
+});
+
+
+app.get('/favorites', (request, response) => {
+  // query database for all artist
+  if(request.cookies['username'] === undefined){
+    response.redirect("/login");
+  }
+  let queryString = "SELECT songs.title FROM songs INNER JOIN favorites ON (songs.id = favorites.song_id) WHERE favorites.user_id = " + request.cookies["userid"];
+  pool.query(queryString, (err, res) => {
+    if(err){
+      response.redirect("/login");
+    }else {
+      console.log(res.rows);
+      let data = {
+        "songs": res.rows,
+      };
+      response.render('favorites', data);
+    }
+  });
+});
+
+
 //POST requests
 app.post('/artists', (request, response) => {
   let queryString = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)";
@@ -282,12 +308,29 @@ app.post('/login', (request, response) => {
       for(let i=0; i<result.rows.length; i++){
         if(result.rows[i].password === password){
           response.cookie('username', username);
+          response.cookie('userid', result.rows[i].id);
           response.redirect('/artists');
         }
         if(result.rows === undefined){
           response.redirect('/login');
         }
       }
+    }
+  });
+});
+
+
+app.post('/favorites', (request, response) => {
+  let songId = request.body.songid;
+  let userId = request.cookies['userid'];
+  let queryString = "INSERT INTO favorites (song_id, user_id) VALUES ($1, $2)";
+  let values = [songId, userId];
+  pool.query(queryString, values, (error, result) => {
+    if(error) {
+      console.log('Query error: ', error.stack);
+      response.send('query error');
+    }else {
+      response.redirect('/favorites');
     }
   });
 });
