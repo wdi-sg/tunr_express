@@ -34,9 +34,16 @@ let options = {
 // handle visit counter
 const twiddleVisitCount = require('./modules/visitcounter.js');
 app.use(twiddleVisitCount);
+
+// check for authentication
+const makeQuery = require('./modules/makequery');
+
 // route modules
 const root = require('./modules/routes.js');
 app.use('/', root);
+
+// bounce unauthenticated users out
+// res.redirect ('/login');
 
 const artists = require('./modules/routeartists.js');
 app.use('/artists', artists);
