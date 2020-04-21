@@ -1,7 +1,7 @@
 const React = require('react');
 const Template = require('./template');
 
-class Content extends Template {
+class ContentPage extends Template {
   constructor(props) {
     super(props);
     this.title = "Content Title";
@@ -15,4 +15,4 @@ class Content extends Template {
   }
 }
 
-module.exports = Content;
+module.exports = ContentPage;
