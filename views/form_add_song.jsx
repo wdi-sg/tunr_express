@@ -18,17 +18,23 @@ class AddSong extends React.Component {
 		})
 
 		return (
-			<form action={link} method="POST">
-				<p>
-				Playlist Id: {this.props.id}<br/>
-				Playlist Name: {this.props.name}<br/>
-				Choose a song:<br/>
-				<select name="song_id">
-					{songs}
-				</select><br/>
-				<input type="submit" value="Add New Song"/>
-				</p>
-			</form>
+			<body>
+				<form action={link} method="POST">
+					<p>
+					Playlist Id: {this.props.id}<br/>
+					Playlist Name: {this.props.name}<br/>
+					Choose a song:<br/>
+					<select name="song_id">
+						{songs}
+					</select><br/><br/>
+					<input type="submit" value="Add New Song"/>
+					</p>
+				</form>
+				<p id="visits" data-visits={this.props.visits}>
+				Number of visits: {this.props.visits}<br/>
+				</p> 
+			<script src="/script.js"></script>
+			</body>
 		)
 	}
 	

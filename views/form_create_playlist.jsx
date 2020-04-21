@@ -4,10 +4,17 @@ class NewPlaylist extends React.Component {
 	render () {
 
 		return (
-			<form action="/playlist" method="POST">
-			<input type="text" name="name"/>
-			<input type="submit" value="Add New Playlist"/>
-			</form>
+			<body>
+				<div>
+					<form action="/playlist" method="post">
+					<input type="text" name="name"/>
+					<input type="submit" value="Create New Playlist"/>
+					</form>
+				</div>
+				<p id="visits" data-visits={this.props.visits}>
+				Number of visits: {this.props.visits}<br/>
+				</p> 
+			</body>
 		)
 	}
 	

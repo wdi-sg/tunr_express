@@ -7,7 +7,7 @@ class ShowPlaylist extends React.Component {
 			return <li>{song.title}</li>
 		})
 		return (
-			<div>
+			<body>
 				<p>
 				Playlist Id: {this.props.id}<br/>
 				Playlist Name: {this.props.name}<br/>
@@ -15,10 +15,16 @@ class ShowPlaylist extends React.Component {
 					<ul>
 						{songs}
 					</ul>
-				<a href={'/playlist/'+this.props.id+'/newsong'}>Choose songs to be added to this playlist</a><br/>
-				<a href="/playlist">See all playlists</a>
+					<a href={'/playlist/'+this.props.id+'/newsong'}>Choose songs to be added to this playlist</a><br/>
 				</p>
-			</div>
+				<a href="/playlist">
+					<input type="button" value="Back to all playlists"/>
+				</a>
+				<p id="visits" data-visits={this.props.visits}>
+				Number of visits: {this.props.visits}<br/>
+				</p> 
+			<script src="/script.js"></script>
+			</body>
 		)
 	}
 }

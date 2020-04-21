@@ -3,6 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const app = express();
 const pg = require('pg');
+const cookieParser = require('cookie-parser');
 
 // this line below, sets a layout look to your express project
 const reactEngine = require('express-react-views').createEngine();
@@ -29,40 +30,58 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
-app.use(express.json());
+//allows express to parse incoming requests with urlencoded payloads; based on body parser
 app.use(express.urlencoded({
   extended: true
 }));
 
-// Express Routes for Playlists
+//allows express to serve static files from the public directory
+app.use(express.static('public'));
 
-// renders a form to create new playlist
-app.get('/playlist/new', (req, res) => {
-	res.render('form_create_playlist');
-})
+//tells express to user cookie parser
+app.use(cookieParser());
 
-// show all playlists
+////////////////// Express Routes for Playlists////////////////
+
+// show all playlists (home)
 app.get('/playlist', (req, res) => {
 	const queryString = 'SELECT * FROM playlists;'
+	console.log(req);
+	let visits = req.cookies['visits'];
+
+	//set cookie
+	if (!visits) {
+		visits  = 1;
+	} else {
+		visits = parseInt(visits) + 1;
+	}
 
 	pool.query(queryString, (err, result) => {
 		if (err) {
 			console.error('query error:', err.stack);
 			res.send('query error');
 		} else {
-			data = {'playlists': result.rows}
-			res.render('home', data);
+			data = {'playlists': result.rows, 'visits': visits}
+			res.cookie('visits', visits).render('home', data);
 		}
 	})
 })
 
+
+// renders a form to create new playlist
+app.get('/playlist/new', (req, res) => {
+	data = {'visits': req.cookies['visits']}
+	res.render('form_create_playlist', data);
+})
+
+
 // show a specific playlist with id
 app.get('/playlist/:id', (req, res) => {
 	const queryString = `SELECT songs.title
-											 FROM songs
-											 INNER JOIN playlist_song
-											 ON (playlist_song.song_id = songs.id)
-											 WHERE playlist_song.playlist_id = $1;`
+						 FROM songs
+						 INNER JOIN playlist_song
+						 ON (playlist_song.song_id = songs.id)
+						 WHERE playlist_song.playlist_id = $1;`
 	const values = [req.params.id];
 
 	pool.query(queryString, values, (err, result) => {
@@ -70,7 +89,8 @@ app.get('/playlist/:id', (req, res) => {
 			console.error('query error:', err.stack);
 			res.send('query error');
 		} else {
-			data = {'id': req.params.id, 'songs': result.rows}
+			data = {'id': req.params.id, 'songs': result.rows, 'visits': req.cookies['visits']};
+
 			const secondQuery = 'SELECT name FROM playlists WHERE id=$1;'
 			pool.query(secondQuery, values, (err, result) => {
 				if (err) {
@@ -78,6 +98,7 @@ app.get('/playlist/:id', (req, res) => {
 					res.send('query error');
 				} else {
 					data.name = result.rows[0].name;
+
 					console.log(data);
 					res.render('show_playlist', data);
 				}
@@ -90,6 +111,7 @@ app.get('/playlist/:id', (req, res) => {
 // accepts post request to create new playlist in playlist table
 app.post('/playlist', (req, res) => {
 	const queryString = `INSERT INTO playlists (name) VALUES ($1) RETURNING id;`;
+
 	const values = [req.body.name];
 
 	pool.query(queryString, values, (err, result) => {
@@ -112,7 +134,7 @@ app.get('/playlist/:id/newsong', (req, res) => {
 			res.send('query error');
 		} else {
 			console.log(result.rows)
-			data = {'id': req.params.id, 'songs': result.rows}
+			data = {'id': req.params.id, 'songs': result.rows, 'visits': req.cookies['visits']};
 			const secondQuery = 'SELECT name FROM playlists;'
 			pool.query(secondQuery, (err, result) => {
 				if (err) {

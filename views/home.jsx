@@ -10,18 +10,23 @@ class Home extends React.Component {
     return (
       <html>
         <head />
+        <link rel="stylesheet" href="style.css"/>
         <body>
-          <h1>Welcome to Tunr!</h1>
+          <h1>Playlist Generator</h1>
           <p>
             Available playlists:<br/>
             <ul>
               {playlists}
             </ul>
           </p>
-            <form action="/playlist" method="POST">
-              <input type="text" name="name"/>
-              <input type="submit" value="Add New Playlist"/>
-            </form>
+          <form action="/playlist" method="post">
+            <input type="text" name="name"/>
+            <input type="submit" value="Create New Playlist"/>
+          </form>
+          <p id="visits" data-visits={this.props.visits}>
+            Number of visits: {this.props.visits}<br/>
+          </p> 
+        <script src="/script.js"></script>
         </body>
       </html>
     );
