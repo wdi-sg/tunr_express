@@ -26,6 +26,9 @@ class Home extends React.Component {
                 <a href="/playlists">My Playlist</a>
             </div>
             <br />
+            <p><a href="/register">Register</a></p>
+            <p><a href="/login">Log in</a></p>
+            <br/>
             <div>
                 <p>Visits: <span className="cookiesV">{cookiesVisits}</span></p>
                 <p className="badge-title">User's Badge</p>

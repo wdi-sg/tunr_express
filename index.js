@@ -1,4 +1,5 @@
 const pg = require('pg');
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -83,6 +84,29 @@ app.use(cookieParser());
 
 // '/' MAIN (HOME PAGE)
 //jsx: home
+
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+app.post('/register', (req, res) => {
+    console.log(req.body);
+    const whenQueryDone = (usersQError, usersQResult) => {
+        if (usersQError) {
+            res.status(500);
+            res.send('usersQ db Error');
+        } else {
+            req.cookies.user = req.body.name;
+            res.redirect('/');
+        }
+    }
+    const usersQ = "INSERT INTO users (name, password) values ($1, $2) returning *";
+
+    let hash = sha256(req.body.password);
+    const usersValues = [req.body.name, hash];
+    pool.query(usersQ, usersValues, whenQueryDone);
+});
+
 
 //------------------------------------------------------
 // INDEX. List out all ARTIST in HTML.

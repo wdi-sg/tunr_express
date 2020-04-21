@@ -32,3 +32,8 @@ CREATE TABLE IF NOT EXISTS playlist_song (
     song_id INTEGER,
     playlist_id INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    password VARCHAR
+);
