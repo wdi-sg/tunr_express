@@ -1,0 +1,32 @@
+body {
+	font-size: 30px;
+	margin: 0;
+	padding: 0;
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+
+
+.login-page-button {
+	margin: 5px;
+	width: 180px;
+}
+
+.navbar-home {
+	margin-bottom: 10px;
+}
+
+.new-artist {
+	margin: 10px;
+
+}
+
+button.new-artist-button {
+	margin: 10px;
+}
+
+.home-footer {
+	margin-top: 500px;
+	text-align: center;
+}
