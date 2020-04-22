@@ -6,7 +6,7 @@ class PlaylistIndex extends React.Component {
 
 const playlistIndex = this.props.playlists.map((playlist, index)=> {
     const link = '/playlists/' + (index + 1);
-    return <li><a href={link}>{playlist.name}</a></li>
+    return <li className="list-group-item"><a href={link}>{playlist.name}</a></li>
 })
 
 
@@ -18,11 +18,13 @@ const playlistIndex = this.props.playlists.map((playlist, index)=> {
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous"/>
       </head>
         <body>
+        <div class="jumbotron">
+              <h1 className="display-4">List of Playlists</h1>
+        </div>
           <div>
-          <h1> List of Playlists </h1>
-          <ol>
-          {playlistIndex}
-          </ol>
+          <ul class="list-group list-group-flush">
+            {playlistIndex}
+            </ul>
           </div>
           <footer className="home-footer">
             <p> No of visits: {this.props.cookieCount}</p>

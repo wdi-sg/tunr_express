@@ -6,9 +6,24 @@ body {
 	margin: 0 auto;
 }
 
-.home-container {
+
+
+.login-page-button {
+	margin: 5px;
+	width: 180px;
+}
+
+.navbar-home {
+	margin-bottom: 10px;
+}
+
+.new-artist {
 	margin: 10px;
-	padding: 10px;
+
+}
+
+button.new-artist-button {
+	margin: 10px;
 }
 
 .home-footer {

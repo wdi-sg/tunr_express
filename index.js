@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 
 // Initialise postgres client
@@ -47,13 +48,137 @@ app.engine('jsx', reactEngine);
 
 /**
  * ===================================
+ * Log in and registration
+ * ===================================
+ */
+
+app.get('/home', (req, res) => {
+    res.render('home');
+})
+app.get('login-page', (req, res) => {
+    res.render('login-page');
+})
+
+app.get('/register', (req, res) => {
+    if(req.cookie && req.cookies.loggedIn) {
+        const loggedIn = req.cookies.loggedIn;
+        res.render('/login', {'loggedIn' : loggedIn});
+    }
+        res.cookie('loggedIn', 'false');
+        res.render('register', {'loggedIn' : 'false'});
+})
+
+app.get('/login', (req, res) => {
+    if(req.cookie && req.cookies.loggedIn) {
+        const loggedIn = req.cookies.loggedIn;
+        res.render('/login', {'loggedIn' : loggedIn});
+    }
+        res.cookie('loggedIn', 'false');
+        res.render('login', {'loggedIn' : 'false'});
+})
+
+//STORES USER'S DETAILS IF SUCCESS. Redirect to login page for user to login.
+app.post('/register', (req, res) => {
+
+    const registerQuery = "INSERT INTO users(name, password) VALUES($1, $2) RETURNING *";
+
+    const hashedPassword = sha256(req.body.password);
+    const values = [req.body.name, hashedPassword];
+
+    pool.query(registerQuery, values, (queryError, result) => {
+        if(queryError) {
+            console.log("Query ERROR AT REGISTRATION");
+            console.log(queryError);
+        }
+
+        console.log("REGISTRATION SUCCESS!");
+        res.render('login-page');
+    })
+})
+
+app.post('/login', (req, res) => {
+
+    const name = req.body.name;
+    const password = sha256(req.body.password);
+
+    const queryString = "SELECT * FROM users WHERE name=$1";
+
+    const values = [name, password];
+
+    pool.query(queryString, [name], (queryError, result) => {
+        if(queryError) {
+            console.log("ERRRROR LOGGING IN");
+            console.log(queryError);
+        }
+
+        console.log(result.rows[0])
+
+        if(result.rows[0]) {
+            let hash = result.rows[0].password;
+
+            if(hash === password) {
+                res.cookie('loggedIn', 'true');
+                res.redirect(302, 'home');
+            }
+        } else {
+            res.send("Wrong password");
+        }
+    })
+
+
+})
+
+
+
+
+
+
+
+/**
+ * ===================================
  * Routes
  * ===================================
  */
 
 app.get('/', (req, res) => {
-  res.render('new');
+  res.render('login-page');
 });
+
+app.get('/favorites', (req, res) => {
+    res.render('favorites');
+})
+
+app.post('/favorites', (req, res) => {
+
+    const song_id = parseInt(req.body.songId);
+
+    const queryString = "INSERT INTO favorites(song_id) VALUES($1) RETURNING *";
+
+    const values = [song_id];
+
+    pool.query(queryString, values, (queryError, result) => {
+        if(queryError) {
+            console.log("ERRRRRRROROROROROROR");
+            console.log(queryError);
+        }
+        console.log("FAVORITED A SONG!");
+
+        const favoritesString = "SELECT songs.title FROM songs INNER JOIN favorites ON (favorites.song_id = songs.id) WHERE favorites.song_id=" + song_id;
+
+        pool.query(favoritesString, (queryError, favoritesSongs) => {
+
+            if(queryError) {
+            console.log("ERRRRRRROROROROROROR");
+            console.log(queryError);
+            }
+            const data = {
+                songs: favoritesSongs
+            }
+            res.render('favorites');
+        })
+    })
+
+})
 
 app.get('/artists', (req, res) => {
 // get the currently set cookie
@@ -75,12 +200,6 @@ app.get('/artists', (req, res) => {
     }
     res.render('home', data);
   }
-
-
-
-
-
-
 })
 
 
@@ -142,7 +261,7 @@ app.get("/playlist-index", (req, res) => {
             res.status(500);
             res.send("DB ERROR");
         } else {
-
+          console.log("OVER HEREEEEEE");
           console.log(playlistResult.rows[0]);
 
             // get the currently set cookie
@@ -156,14 +275,20 @@ app.get("/playlist-index", (req, res) => {
             visits = parseInt(visits) + 1;
               //set the cookie
               res.cookie('visits', visits);
+            }
             const data = {
                 playlists: playlistResult.rows,
                 cookieCount: visits
             }
-            res.render('playlist-index', data);
+                res.render('playlist-index', data);
         }
-    }
-}
+
+        }
+
+
+
+
+
     const queryString = "SELECT * FROM playlist";
     pool.query(queryString, whenQueryDone);
 })
@@ -187,8 +312,8 @@ app.get('/playlists/:id', (req, res) => {
             pool.query(songs, (queryError, allSongs) => {
                 if(queryError) {
                     console.log("QUERY ERROR where request for all SONGS made");
-                }
-                console.log("SENDING PLAYLIST AND SONGS DATA");
+                } else {
+                      console.log("SENDING PLAYLIST AND SONGS DATA");
                  // get the currently set cookie
                   var visits = req.cookies['visits'];
                   // see if there is a cookie
@@ -200,8 +325,7 @@ app.get('/playlists/:id', (req, res) => {
                   visits = parseInt(visits) + 1;
                     //set the cookie
                     res.cookie('visits', visits);
-
-
+            }
                 const data = {
                 playlistIndex: playlistId,
                 songs: allSongs.rows,
@@ -209,7 +333,9 @@ app.get('/playlists/:id', (req, res) => {
                 cookieCount: visits
             }
                 res.render('new-song', data);
-            };
+                }
+
+
         })
     }
 }
@@ -260,7 +386,7 @@ app.get("/artists/:id", (req, res) => {
             res.status(500);
             res.send("DATABASE ERROR");
         } else {
-            const queryJoinString = "SELECT songs.title, songs.artist_id FROM songs INNER JOIN artists ON(artists.id = songs.artist_id) WHERE artists.id ="+req.params.id;
+            const queryJoinString = "SELECT songs.title, songs.artist_id, songs.id FROM songs INNER JOIN artists ON(artists.id = songs.artist_id) WHERE artists.id ="+req.params.id;
             pool.query(queryJoinString, (songQueryError, songResult) => {
                 if(songQueryError) {
                     console.log(songQueryError);
@@ -281,7 +407,6 @@ app.get("/artists/:id", (req, res) => {
 })
 
 app.get('/display-artists', (req, res) => {
-
     const whenQueryDone = (queryError, artistResult) => {
         if(queryError) {
             console.log("ERROR: COULD NOT ADD SONG TO ARTIST!");
@@ -295,14 +420,13 @@ app.get('/display-artists', (req, res) => {
            res.render('display-artists', data);
         }
     }
-
-
     const queryString = "SELECT * FROM artists";
 
     pool.query(queryString, whenQueryDone);
+})
 
-
-
+app.get('/new', (req,res) => {
+    res.render('new');
 })
 
 app.post("/artist/new", (req, res) => {

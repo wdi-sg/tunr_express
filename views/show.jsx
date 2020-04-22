@@ -3,9 +3,19 @@ var React = require("react");
 class Show extends React.Component {
   render() {
 
-    console.log(this.props.songs.id);
+
+    console.log(this.props.songs);
+    console.log(this.props.songs[10].id);
+    //console.log(this.props.artists);
+
          const songsByArtist = this.props.songs.map( song => {
-        return <li>{song.title}</li>
+        return (<li>
+            {song.title}
+            <input type="hidden"  name="songId"/>
+            <button type="submit" value={song.id}>Favorite</button>
+           </li>
+            )
+
     })
 
 
@@ -30,9 +40,11 @@ let artistInfo = this.props.artists.map(artist => {
         </p>
         </form>
         <p>Songs: </p>
+        <form method="POST" action="/favorites">
         <ol>
         {songsByArtist}
         </ol>
+        </form>
         </div>
         )
     })
@@ -40,6 +52,7 @@ let artistInfo = this.props.artists.map(artist => {
     return (
       <html>
       <head>
+      <link rel="stylesheet" href="style.css"/>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous" />
         </head>
         <body>
