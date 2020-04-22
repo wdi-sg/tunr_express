@@ -36,7 +36,8 @@ const visitCounter = require('./modules/visitcounter.js');
 app.use(visitCounter);
 
 // check for authentication
-const makeQuery = require('./modules/makequery');
+const checkAuth = require('./modules/checkauth.js');
+app.use(checkAuth);
 
 // route modules
 const root = require('./modules/routes.js');
@@ -44,6 +45,8 @@ app.use('/', root);
 
 // bounce unauthenticated users out
 // res.redirect ('/login');
+const gatekeeper = require('./modules/gatekeeper');
+app.use(gatekeeper);
 
 const artists = require('./modules/routeartists.js');
 app.use('/artists', artists);
