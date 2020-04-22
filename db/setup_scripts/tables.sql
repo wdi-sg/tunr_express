@@ -55,6 +55,16 @@ create table if not exists playlist_song
 );
 
 
+create table "user"
+(
+	id serial not null
+		constraint user_pk
+			primary key,
+	user_name text not null,
+	password text not null
+);
+
+
 
 insert into artist (id, name) VALUES (DEFAULT, DEFAULT)
 
