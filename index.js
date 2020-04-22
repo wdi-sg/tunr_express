@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const pg = require('pg');
 const cookieParser = require('cookie-parser');
+const sha256 = require('js-sha256');
 
 // this line below, sets a layout look to your express project
 const reactEngine = require('express-react-views').createEngine();
@@ -38,15 +39,124 @@ app.use(express.urlencoded({
 //allows express to serve static files from the public directory
 app.use(express.static('public'));
 
+// initialization to use method-override
+const methodOverride = require('method-override')
+app.use(methodOverride('_method'));
+
 //tells express to user cookie parser
 app.use(cookieParser());
 
+
+
+
+
+
 ////////////////// Express Routes for Playlists////////////////
+
+// registration
+app.get('/register', (req, res) => {
+	if (req.cookies['logged_in'] === sha256('yes_true')){
+		res.redirect('/playlist');
+	} else {
+		res.render('register');
+	}
+})
+
+app.post('/registered', (req, res) => {
+	const insertQuery = 'INSERT INTO users (name, password) SELECT $1, $2 WHERE NOT EXISTS (SELECT 1 FROM users WHERE users.name = $1) RETURNING *;';
+	values = [req.body.name, sha256(req.body.password)]
+
+	pool.query(insertQuery, values, (err, result) => {
+		if (err) {
+			console.error('query error:', err.stack);
+			res.send('query error');
+		} else {
+			if (!result.rows[0]){
+				res.redirect('/login')
+			} else {
+				res.cookie('logged_in', sha256('yes_true'));
+				res.cookie('user', req.body.name);
+				res.redirect('/playlist');
+			}
+		};	
+	})
+})
+
+// login
+app.get('/login', (req, res) => {
+	if (req.cookies['logged_in'] === sha256('yes_true')){
+		res.redirect('/playlist');
+	}
+
+	res.render('login');
+})
+
+app.post('/logged', (req, res) => {
+	if (req.cookies['logged_in'] === sha256('yes_true')){
+		res.redirect('/playlist');
+	}
+
+	const userQuery = 'SELECT users.password FROM users WHERE users.name=$1;';
+	values = [req.body.name]
+
+	pool.query(userQuery, values, (err, result) => {
+		if (err) {
+			console.error('query error:', err.stack);
+			res.send('query error');
+		} else {
+			if (result.rows[0].password === sha256(req.body.password)){
+				res.cookie('user', req.body.name)
+				res.cookie('logged_in', sha256('yes_true'));
+				res.redirect('/playlist');
+			} else {
+				res.send('wrong user or password');
+			}
+		}
+	})
+})
+
+// logout
+app.delete('/log_out', (req, res) => {
+	res.clearCookie('user');
+	res.clearCookie('logged_in');
+	res.send('You have successfully logged out');
+})
+
+// favorites
+app.get('/favorites/new', (req, res) => {
+	const queryString = 'SELECT * FROM songs;';
+
+	pool.query(queryString, (err, result) => {
+		if (err) {
+			console.error('query error:', err.stack);
+			res.send('query error');
+		} else {
+			const data = {'songs': result.rows}
+			res.render('favorites', data)
+		}
+	})
+})
+
+// accepts post request to create favorites
+app.post('/favorites', (req, res) => {
+	const queryString = `INSERT INTO playlists (name) VALUES ($1) RETURNING id;`;
+
+	const values = [req.cookies['user'], req.body.song_id];
+
+	pool.query(queryString, values, (err, result) => {
+	  if (err) {
+	    console.error('query error:', err.stack);
+	    res.send( 'query error' );
+	  } else {
+	    res.redirect('favorites');
+		}
+	})
+})
+
 
 // show all playlists (home)
 app.get('/playlist', (req, res) => {
 	const queryString = 'SELECT * FROM playlists;'
-	console.log(req);
 	let visits = req.cookies['visits'];
 
 	//set cookie
@@ -98,8 +208,6 @@ app.get('/playlist/:id', (req, res) => {
 					res.send('query error');
 				} else {
 					data.name = result.rows[0].name;
-
-					console.log(data);
 					res.render('show_playlist', data);
 				}
 			})
@@ -133,7 +241,6 @@ app.get('/playlist/:id/newsong', (req, res) => {
 			console.error('querry error:', err.stack);
 			res.send('query error');
 		} else {
-			console.log(result.rows)
 			data = {'id': req.params.id, 'songs': result.rows, 'visits': req.cookies['visits']};
 			const secondQuery = 'SELECT name FROM playlists;'
 			pool.query(secondQuery, (err, result) => {
@@ -155,7 +262,6 @@ app.post('/playlist/:id', (req, res) => {
 	const values = [req.body.song_id, req.params.id]
 
 	pool.query(queryString, values, (err, result) => {
-			console.log(result.rows[0])
 		if (err) {
 			console.error('querry error:', err.stack);
 			res.send('query error');
