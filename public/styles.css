@@ -1,0 +1,26 @@
+body {
+  background: #111111;
+  color: white;
+}
+
+img {
+  max-width: 293px;
+}
+
+.card {
+  background: #252524;
+  width: 350px;
+  max-height: 600px !important;
+}
+
+h6 a {
+  color: white;
+}
+
+h6 a:hover {
+  color: #88b800;
+}
+
+.new-playlist {
+  margin-top: 300px;
+}

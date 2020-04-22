@@ -1,13 +1,14 @@
-var React = require("react");
+const React = require("react");
 const Layout = require("./layout");
 
-class New extends React.Component {
+class Edit extends React.Component {
   render() {
-    console.log(this.props);
+    const artist = this.props.artists;
+    const editPath = "/artists/" + artist.id + "?_method=put";
     return (
       <Layout username={this.props.username}>
         <div className="container">
-          <form action="/artists" method="POST">
+          <form action={editPath} method="POST">
             <div class="form-group">
               <label for="exampleInputEmail1">Artist Name</label>
               <input
@@ -16,16 +17,18 @@ class New extends React.Component {
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 name="name"
+                placeholder={artist.name}
                 required
               />
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Photo URL</label>
               <input
-                type="text"
+                type="url"
                 class="form-control"
                 id="exampleInputPassword1"
                 name="photoURL"
+                placeholder={artist.photo_url}
                 required
               />
             </div>
@@ -36,6 +39,7 @@ class New extends React.Component {
                 class="form-control"
                 id="exampleInputPassword1"
                 name="nationality"
+                placeholder={artist.nationality}
                 required
               />
             </div>
@@ -49,4 +53,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Edit;

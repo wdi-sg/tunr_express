@@ -1,41 +1,35 @@
-var React = require("react");
+const React = require("react");
 const Layout = require("./layout");
 
-class New extends React.Component {
+class Register extends React.Component {
   render() {
-    console.log(this.props);
+    const route = this.props.route;
+    const header = this.props.header
     return (
       <Layout username={this.props.username}>
         <div className="container">
-          <form action="/artists" method="POST">
+        <h1 className="display-1 text-center">{header}</h1>
+          <form action={route} method="POST">
             <div class="form-group">
-              <label for="exampleInputEmail1">Artist Name</label>
+              <label for="exampleInputEmail1">Username</label>
               <input
                 type="text"
                 class="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
-                name="name"
+                name="username"
+                placeholder="Username"
                 required
               />
             </div>
             <div class="form-group">
-              <label for="exampleInputPassword1">Photo URL</label>
+              <label for="exampleInputPassword1">Password</label>
               <input
-                type="text"
+                type="password"
                 class="form-control"
                 id="exampleInputPassword1"
-                name="photoURL"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="exampleInputPassword1">Nationality</label>
-              <input
-                type="text"
-                class="form-control"
-                id="exampleInputPassword1"
-                name="nationality"
+                name="password"
+                placeholder="Password"
                 required
               />
             </div>
@@ -49,4 +43,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Register;
