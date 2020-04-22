@@ -32,8 +32,8 @@ let options = {
 };
 
 // handle visit counter
-const twiddleVisitCount = require('./modules/visitcounter.js');
-app.use(twiddleVisitCount);
+const visitCounter = require('./modules/visitcounter.js');
+app.use(visitCounter);
 
 // check for authentication
 const makeQuery = require('./modules/makequery');

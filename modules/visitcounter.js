@@ -1,4 +1,4 @@
-const twiddleVisitCount = function (req, res, next)  {
+const visitCounter = function (req, res, next)  {
   let visitCount = req.cookies['visits'];
   if (visitCount === undefined) {
     visitCount = 1;
@@ -11,4 +11,4 @@ const twiddleVisitCount = function (req, res, next)  {
   next();
 };
 
-module.exports = twiddleVisitCount;
+module.exports = visitCounter;
