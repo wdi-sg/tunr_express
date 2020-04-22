@@ -77,10 +77,10 @@ class Register extends React.Component {
                                 <br />
 
                     Password:&emsp;
-                    <input type="text" name="password" placeholder="password" />
+                    <input type="password" name="password" placeholder="password" />
                                 <br />
                     Confirm Password:&emsp;
-                    <input type="text" name="confirm" placeholder="confirm password" />
+                    <input type="password" name="confirm" placeholder="confirm password" />
                                 <br />
                                 <button className="btn btn-success w-50 ml-auto mr-auto" type="submit"> Sign Up </button>
                                 <br />

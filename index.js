@@ -84,14 +84,10 @@ app.get('/register', (request, response) => {
 
 });
 app.get('/logout', (request, response) => {
-  var userId = "";
-  var username = "";
 
-
-
-  response.cookie('username', username);
-  response.cookie('userId', userId);
-  response.cookie('loggedin', false);
+  response.cookie('username', "");
+  response.cookie('userId', "");
+  response.cookie('loggedin', "");
   response.redirect("/login");
 });
 
