@@ -3,10 +3,12 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
+const cookieParser = require("cookie-parser");
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'marcustan',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -41,6 +43,7 @@ const reactEngine = require('express-react-views').createEngine();
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', reactEngine);
+app.use(cookieParser());
 
 /**
  * ===================================
@@ -49,23 +52,245 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
+
   // query database for all pokemon
 
+    let visits = request.cookies["visits"];
+    if (visits === undefined){
+      visits = 1;
+    } else {
+      visits++;
+    }
+    response.cookie(`visits`, visits)
+
+    const data = {
+      count : visits
+    }
+
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  response.render('home', data);
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+// Show all artists 
+
+//
+
+app.get('/artists/', (request, response) => {
+  // query database for all artists
+  pool.query('SELECT * FROM artists', (error, result) => {
+    if (error) {
+      console.log('query error');
+    } else {
+   
+      const artists = result.rows;
+      // respond with HTML page displaying all artist
+      response.render('artists', {"artists": artists});
+    }
+  })
 });
 
+
+// Form for a single artist 
+
+app.get('/artists/new', (request, response) => {
+  // respond with HTML page with form to create new artist
+
+  let visits = request.cookies["visits"];
+  if (visits === undefined){
+    visits = 1;
+  } else {
+    visits++;
+  }
+  response.cookie(`visits`, visits)
+
+  const data = {
+    count : visits
+  }
+  response.render('new', data);
+});
+
+// Create a new artist
+
+app.post('/artists', (request, response) => {
+  const name = request.body.name;
+  const photo_url = request.body.photo_url;
+  const nationality = request.body.nationality;
+
+  const values = [name, photo_url, nationality];
+
+  const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)';
+
+  pool.query(queryString, values, (error, result) => {
+    if (error) {
+      console.log('query error');
+    } else {
+      response.render('success');
+    }
+  });
+})
+
+// See a single artist 
+
+app.get('/artists/:id', (request, response) => {
+  const artistId = request.params.id;
+
+  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
+    if (error) {
+      console.log('query error');
+    } else {
+      let visits = request.cookies["visits"];
+      if (visits === undefined){
+        visits = 1;
+      } else {
+        visits++;
+      }
+      response.cookie(`visits`, visits)
+  
+      const data = {
+        count : visits,
+        artist : result.rows[0]
+      }
+  
+      response.render('single', data);
+    }
+  });
+});
+
+/**
+ * ===================================
+ * Part 2 Playlists Stuff
+ * ===================================
+ */
+
+app.get('/playlists/', (request, response) => {
+  response.render('playlists');
+});
+
+app.get('/playlists/new', (request, response) => {
+  pool.query('SELECT * FROM songs', (error, result) => {
+    if (error) {
+      console.log('query error');
+    } else {
+      const songList = result.rows;
+      response.render('new_playlist', {"songList": songList});
+    }
+  })
+})
+
+app.post('/playlists', (request, response) => {
+  const name = request.body.name;
+  const songs = request.body.songs;
+
+  pool.query('INSERT INTO playlist (name) VALUES ($1) RETURNING id', [name], (error, result) => {
+    if (error) {
+      console.log('playlist insery error');
+    } else {
+      const playlist_id = result.rows[0].id;
+
+      pool.query('SELECT id, title FROM songs', (error, result) => {
+        if (error) {
+          console.log('query error');
+        } else {
+          const songList = result.rows;
+
+          const songId = songs.map(song => {
+            for (let i = 0; i < songList.length; i++) {
+              if (songList[i].title === song) {
+                return songList[i].id;
+              }
+            }
+          })
+
+          songId.forEach(songId => {
+            pool.query('INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1, $2)', [songId, playlist_id], (error, result) => {
+              if (error) {
+                console.log('error inserting');
+              } else {
+                console.log('done!');
+              }
+            })
+          })
+
+          response.render('success');
+        }
+      })
+    }
+  })
+})
+
+/**
+ * ===================================
+ * Part 3 Registration
+ * ===================================
+ */
+
+app.get('/register', (request, response) => {
+  if (request.cookies && request.cookies.loggedIn === 'true') {
+    response.send('you are already logged in');
+  } else {
+    response.cookie('loggedIn', 'false');
+    response.render('register');
+  }
+});
+
+app.get('/login', (request, response) => {
+  if (request.cookies && request.cookies.loggedIn === 'true') {
+    response.send('you are already logged in');
+  } else {
+    response.cookie('loggedIn', 'false');
+    response.render('login');
+  }
+});
+
+app.post('/register', (request, response) => {
+  const username = request.body.username;
+  const password = sha256(request.body.password);
+
+  pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password], (error, result) => {
+    if (error) {
+      console.log('registration error: ', error.message, error.stack);
+    } else {
+      response.cookie('loggedIn', 'true');
+      response.redirect(302, '/');
+    }
+  })
+});
+
+app.post('/login', (request, response) => {
+  const username = request.body.username;
+  const password = sha256(request.body.password);
+
+  pool.query('SELECT * FROM users WHERE username=$1', [username], (error, result) => {
+    if (error) {
+      console.log('log in error: ', error.message, error.stack);
+    } else {
+      if (result.rows[0]) {
+        const hash = result.rows[0].password;
+
+        if (password === hash) {
+          response.cookie('loggedIn', 'true');
+          response.redirect(302, '/');
+        } else {
+          response.send('incorrect password, please try again');
+        }
+      } else {
+        response.send('incorrect username, please try again');
+      }
+    }
+  })
+});
+
+app.post('/logout', (request, response) => {
+  response.cookie('loggedIn', 'false');
+  response.redirect(302, '/');
+});
 
 /**
  * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
+
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
