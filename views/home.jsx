@@ -5,7 +5,6 @@ class Home extends Template {
   constructor(props) {
     super(props);
     this.title = "Tunr";
-    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
   }
 
   renderContent() {

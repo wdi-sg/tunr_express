@@ -5,7 +5,6 @@ class ArtistView extends Template {
   constructor(props) {
     super(props);
     this.title = props.artist.name;
-    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
   }
 
   renderContent() {

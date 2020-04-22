@@ -5,7 +5,6 @@ class ArtistDelete extends Template {
   constructor(props) {
     super(props);
     this.title = `Delete ${this.props.name}`;
-    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
   }
 
   renderContent() {

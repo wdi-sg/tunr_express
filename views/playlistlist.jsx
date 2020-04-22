@@ -5,7 +5,6 @@ class PlaylistList extends Template {
   constructor(props) {
     super(props);
     this.title = "Playlists";
-    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
   }
 
   renderContent() {

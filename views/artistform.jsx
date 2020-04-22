@@ -5,7 +5,6 @@ class ArtistForm extends Template {
   constructor(props) {
     super(props);
     this.title = props.new ? "Add Artist" : "Update Artist";
-    this.count = props.sitecount || "YOU DIDN'T PASS A COUNTER (sitecount)";
   }
 
   renderContent() {
