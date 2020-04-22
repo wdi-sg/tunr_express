@@ -23,6 +23,7 @@ class Home extends React.Component {
       </html>
     );
   }
+  console.log("end of html");
 }
 
 module.exports = Home;

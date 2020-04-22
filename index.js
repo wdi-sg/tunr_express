@@ -77,8 +77,6 @@ app.get('/artists/', (request, response) => {
 
 });
 
-
-
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new artists
   response.render('new');
@@ -104,8 +102,7 @@ app.post('/artists', (request, response) => {
     }
 
     pool.query(addQuery, addForm, whendone)
-})
-
+});
 
 app.get('/artists/:id', (request, response) => {
     let artistID = request.params.id
@@ -134,6 +131,41 @@ app.get('/artists/:id', (request, response) => {
     }
     pool.query(findArtist, whenQuerydone);
     // response.send("This page is viewing : " + artistID);
+});
+
+app.get('/playlists/new', (request, response) => {
+    console.log("loading new playlist page");
+    response.render('newplaylist');
+});
+
+app.get('/playlists', (request, response) => {
+
+});
+
+app.get('/register', (request, response) => {
+    console.log("opening register page");
+
+    response.render('register');
+})
+
+app.post('/register', (request,response) => {
+    console.log("Receiving account details...");
+    console.log(request.body.username);
+    console.log(request.body.password);
+
+    let registerQuery = "INSERT INTO users (username, password) VALUES ($1, $2) return *";
+
+    let registerInput = [request.body.username,request.body.password];
+    let whendone = (error, result) => {
+        if(error){
+            console.log(error);
+            console.log("Failed to query registration")
+        }else{
+            response.send('account information received!');
+        }
+    }
+    pool.query(registerQuery,registerInput, whendone);
+
 })
 
 /**
