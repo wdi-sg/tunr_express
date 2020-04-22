@@ -3,7 +3,7 @@ console.log("starting up!!");
 const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
-
+const cookieParser = require('cookie-parser');
 // Initialise postgres client
 const configs = {
   user: 'shane',
@@ -27,7 +27,7 @@ pool.on('error', function (err) {
 // Init express app
 const app = express();
 
-
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -153,14 +153,18 @@ app.post('/register', (request,response) => {
     console.log(request.body.username);
     console.log(request.body.password);
 
-    let registerQuery = "INSERT INTO users (username, password) VALUES ($1, $2) return *";
+    let registerQuery = "INSERT INTO users (username, password) VALUES ($1, $2)";
 
     let registerInput = [request.body.username,request.body.password];
     let whendone = (error, result) => {
+        console.log(result.rows[0]);
         if(error){
             console.log(error);
             console.log("Failed to query registration")
         }else{
+            let loginStatus = "logged In";
+            // set cookie
+            response.cookie('Authenticate', loginStatus);
             response.send('account information received!');
         }
     }
