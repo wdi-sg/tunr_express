@@ -23,4 +23,7 @@ const makeQuery = async function (query, values) {
   }
 };
 
-module.exports = makeQuery;
+module.exports = {
+  makeQuery: makeQuery,
+  pool: pool
+};

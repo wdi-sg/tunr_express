@@ -6,7 +6,7 @@ const hash = require('node_hash');
 const rsP = require('./rsp.js');
 
 // helper functions
-const makeQuery = require('./makequery');
+const db = require('./db');
 
 router.get('/', (req, res) => {
   let data = {
@@ -32,7 +32,7 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res) => {
   let form = req.body;
   let userCheckQuery = "SELECT * FROM users WHERE username = $1";
-  let existUsers = await makeQuery(userCheckQuery, [form.username]);
+  let existUsers = await db.makeQuery(userCheckQuery, [form.username]);
   if (existUsers.length > 0) {
     let data = {
       title: "Register for Tunr",
@@ -58,7 +58,7 @@ router.post('/register', async (req, res) => {
       "(username, password, salt) " +
       "VALUES ($1, $2, $3)";
 
-  await makeQuery(userQuery, values);
+  await db.makeQuery(userQuery, values);
   res.redirect('/');
 });
 
@@ -76,7 +76,7 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   let form = req.body;
   let authQuery = "SELECT * FROM users WHERE username = $1";
-  let authResults = await makeQuery(authQuery, [form.username]);
+  let authResults = await db.makeQuery(authQuery, [form.username]);
   let saltedPass = hash.sha256(form.password, authResults[0].salt);
 
   if (authResults.length > 0 && authResults[0].password === saltedPass) {
@@ -91,7 +91,7 @@ router.post('/login', async (req, res) => {
       sesId,
       authResults[0].id
     ];
-    await makeQuery(sessionQuery, sessionValues);
+    await db.makeQuery(sessionQuery, sessionValues);
     res.cookie('session', sesId);
     res.redirect('/');
   }

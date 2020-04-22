@@ -20,6 +20,9 @@ app.use(express.urlencoded({
   extended: true
 }));
 
+// database
+const db = require('./modules/db');
+
 // mount ./static onto virt path / (for subfolders)
 app.use('/', express.static('./static'));
 let options = {
@@ -59,4 +62,15 @@ app.use('/songs', songs);
 
 // start server listen
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Listening on port " + PORT));
+const server = app.listen(PORT, () => console.log("Listening on port " + PORT));
+
+const onClose = function(){
+  console.log("closing");
+  server.close(() => {
+    console.log('Process terminated');
+    db.pool.end( () => console.log('Shut down db connection pool'));
+  });
+};
+
+process.on('SIGTERM', onClose);
+process.on('SIGINT', onClose);

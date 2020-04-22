@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 // helper functions
-const makeQuery = require('./makequery');
+const db = require('./db');
 
 router.get('/', async (req, res) => {
   let artistQuery = "SELECT * FROM artists ORDER BY id";
-  let artists = await makeQuery(artistQuery);
+  let artists = await db.makeQuery(artistQuery);
   let data = {
     artistlist: artists,
     sitecount: req.visitCount,
@@ -40,7 +40,7 @@ router.post('/new', async (req, res) => {
       "INSERT INTO artists (name, photo_url, nationality) " +
       "VALUES ($1, $2, $3) " +
       "RETURNING id";
-  let newArtistId = await makeQuery(insertQuery, newArtistValues);
+  let newArtistId = await db.makeQuery(insertQuery, newArtistValues);
 
   res.redirect(`/artists/${newArtistId[0].id}`);
 });
@@ -51,13 +51,13 @@ router.get('/:id', async (req, res) => {
       "SELECT * FROM artists " +
       "WHERE id >= $1 " +
       "ORDER BY id LIMIT 2";
-  let artistResult = await makeQuery(artistQuery, artistId);
+  let artistResult = await db.makeQuery(artistQuery, artistId);
 
   let prevArtistQuery =
       "SELECT * FROM artists " +
       "WHERE id < $1 " +
       "ORDER BY id DESC LIMIT 1";
-  let prevArtistResult = await makeQuery(prevArtistQuery, artistId);
+  let prevArtistResult = await db.makeQuery(prevArtistQuery, artistId);
 
   let prevArtist = prevArtistResult.length === 0 ? 0 : prevArtistResult[0].id;
   let nextArtist = artistResult.length === 1 ? 0 : artistResult[1].id;
@@ -79,7 +79,7 @@ router.get('/:id/edit', async (req, res) => {
   let artistQuery =
       "SELECT * FROM artists " +
       "WHERE id = $1";
-  let artistResult = await makeQuery(artistQuery, artistId);
+  let artistResult = await db.makeQuery(artistQuery, artistId);
   let data = {
     id: artistResult[0].id,
     name: artistResult[0].name,
@@ -108,14 +108,14 @@ router.put('/:id', async (req, res) => {
       "($2, $3, $4) " +
       "WHERE id = $1";
 
-  await makeQuery(updateArtist, artistInfo);
+  await db.makeQuery(updateArtist, artistInfo);
   res.redirect(`/artists/${req.body.id}`);
 });
 
 router.get('/:id/delete', async (req, res) => {
   let artistId = [req.params.id];
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
-  let artistName = await makeQuery(artistQuery, artistId);
+  let artistName = await db.makeQuery(artistQuery, artistId);
 
   let songQuery =
       "SELECT id, title, album " +
@@ -123,7 +123,7 @@ router.get('/:id/delete', async (req, res) => {
       "WHERE artist_id = $1 " +
       "ORDER BY album, id";
 
-  let songResults = await makeQuery(songQuery, artistId);
+  let songResults = await db.makeQuery(songQuery, artistId);
 
   let data = {
     name: artistName[0].name,
@@ -146,7 +146,7 @@ router.delete('/:id', async (req, res) => {
       "DELETE FROM artists " +
       "WHERE id = $1";
 
-  let deleteResult = await makeQuery(deleteQuery, artistInfo);
+  let deleteResult = await db.makeQuery(deleteQuery, artistInfo);
   if (deleteResult.name === "error") {
     let data = {
       errorinfo: deleteResult
@@ -161,7 +161,7 @@ router.delete('/:id', async (req, res) => {
 router.get('/:id/songs', async (req, res) => {
   let artistId = [req.params.id];
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
-  let artistName = await makeQuery(artistQuery, artistId);
+  let artistName = await db.makeQuery(artistQuery, artistId);
 
   let songQuery =
       "SELECT id, title, album " +
@@ -169,7 +169,7 @@ router.get('/:id/songs', async (req, res) => {
       "WHERE artist_id = $1 " +
       "ORDER BY album, id";
 
-  let songResults = await makeQuery(songQuery, artistId);
+  let songResults = await db.makeQuery(songQuery, artistId);
 
   let data = {
     name: artistName[0].name,
@@ -186,7 +186,7 @@ router.get('/:id/songs', async (req, res) => {
 router.get('/:aid/songs/new', async (req, res) => {
   let artistId = req.params.aid;
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
-  let artistName = await makeQuery(artistQuery, [artistId]);
+  let artistName = await db.makeQuery(artistQuery, [artistId]);
 
   let data = {
     id: artistId,
@@ -210,7 +210,7 @@ router.get('/:aid/songs/:sid', async (req, res) => {
       "SELECT * FROM songs " +
       "WHERE id = $1";
 
-  let songInfo = await makeQuery(songQuery, [songId]);
+  let songInfo = await db.makeQuery(songQuery, [songId]);
 
   let data = {
     aid: req.params.aid,

@@ -1,4 +1,4 @@
-const makeQuery = require('./makequery');
+const db = require('./db');
 
 const checkAuth = async (req, res, next) => {
   let session = req.cookies['session'];
@@ -12,7 +12,7 @@ const checkAuth = async (req, res, next) => {
         "INNER JOIN users " +
         "ON (sessions.user_id = users.id)" +
         "WHERE sessions.id = $1";
-    let sessionResults = await makeQuery(sessionQuery, [session]);
+    let sessionResults = await db.makeQuery(sessionQuery, [session]);
     if (sessionResults.length > 0) {
       console.log("OK");
       req.authed = true;

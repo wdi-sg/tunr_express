@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 // helper functions
-const makeQuery = require('./makequery');
+const db = require('./db');
 
 router.get('/', async (req, res) => {
   let playlistQuery = "SELECT * FROM playlists";
-  let playlistResults = await makeQuery(playlistQuery);
+  let playlistResults = await db.makeQuery(playlistQuery);
 
   let data = {
     playlists: playlistResults,
@@ -44,8 +44,8 @@ router.get('/:id', async (req, res) => {
       "WHERE playlist_songs.playlist_id = $1";
 
   let nameQuery = "SELECT name FROM playlists WHERE id = $1";
-  let playlistName = await makeQuery(nameQuery, value);
-  let playlistResults = await makeQuery(playlistQuery, value);
+  let playlistName = await db.makeQuery(nameQuery, value);
+  let playlistResults = await db.makeQuery(playlistQuery, value);
 
   let data = {
     listname: playlistName[0].name,
