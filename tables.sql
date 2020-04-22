@@ -24,6 +24,12 @@ CREATE TABLE IF NOT EXISTS songs (
   playlist_id INTEGER
   );
 
+  CREATE TABLE IF NOT EXISTS userTable (
+  uid SERIAL PRIMARY KEY,
+  username TEXT UNIQUE,
+  password TEXT
+  );
+
 SELECT songs.id
 FROM songs
 INNER JOIN playlist_song 

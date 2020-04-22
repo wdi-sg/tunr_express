@@ -69,9 +69,9 @@ class Login extends React.Component {
                     </nav>
                     <div className="container-fluid">
                         <h1 className="text-center w-75 ml-auto mr-auto bg-dark text-light"><em><u>Login</u></em></h1>
-                        <div className="container w-25 ml-auto mr-auto pl-0 pr-0">
+                        <div className="container w-50 ml-auto mr-auto pl-0 pr-0">
                             <br />
-                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5" method="POST" action={`/artists`}>
+                            <form className="card bg-light pl-5 pr-5 pt-5 pb-5" method="POST" action={`/login`}>
                                 Username:&emsp;
                     <input type="text" name="username" placeholder="name" />
                                 <br />

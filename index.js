@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require('cookie-parser')
+var sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -64,22 +65,79 @@ app.engine('jsx', reactEngine);
 //   response.render('new');
 // });
 
+//Login and Register functions
+
 app.get('/', (request, response) => {
-  
+
   response.redirect("/login");
-  
+
 });
 app.get('/login', (request, response) => {
-  
+
   response.render("login");
-  
+
 });
 
 app.get('/register', (request, response) => {
-  
+
   response.render("register");
-  
+
 });
+
+app.post('/register', (request, response) => {
+  var password = sha256(request.body.password);
+  var confirm = sha256(request.body.confirm);
+  console.log(request.body.username);
+
+  if (password == confirm) {
+    const queryString = 'INSERT INTO userTable (username, password) VALUES ($1, $2) RETURNING uid'
+    const values = [request.body.username, password];
+    pool.query(queryString, values, (err, result) => {
+
+      if (err) {
+        console.error('query error2:', err.stack);
+        response.send('query error');
+      } else {
+        var username = request.body.username
+        var userId = result.rows[0].uid;
+
+        response.cookie('username', username);
+        response.cookie('userId', userId);
+        response.cookie('loggedin', true);
+        response.redirect('/artists');
+
+      }
+    });
+  }
+
+
+});
+
+app.post('/login', (request, response) => {
+  var password = sha256(request.body.password);
+  var username = request.body.username;
+  const queryString = `SELECT * FROM userTable WHERE username = '${username}'`
+  pool.query(queryString, (err, result) => {
+
+    if (err) {
+      console.error('query error2:', err.stack);
+      response.send('query error');
+    } else {
+      var checkPassword = result.rows[0].password;
+      if (checkPassword == password) {
+        var username = request.body.username
+        var userId = result.rows[0].uid;
+
+        response.cookie('username', username);
+        response.cookie('userId', userId);
+        response.cookie('loggedin', true);
+        response.redirect('/artists');
+      }
+    }
+
+  });
+});
+
 // View list of artists
 app.get('/artists', (request, response) => {
   // respond with HTML page with form to create new ....
@@ -107,7 +165,7 @@ app.get('/artists', (request, response) => {
 
       // set the cookie
       response.cookie('visits', visits);
-
+      // console.log(result.rows);
       var output = {
         'artists': result.rows,
         'visits': visits
@@ -123,10 +181,10 @@ app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new ....
   var visits = request.cookies['visits'];
 
-      var output = {
-        'visits': visits
-      }
-  response.render('new-artist',output);
+  var output = {
+    'visits': visits
+  }
+  response.render('new-artist', output);
 });
 
 app.post('/artists', (request, response) => {
@@ -510,7 +568,7 @@ app.get('/playlists/new', (request, response) => {
   var output = {
     'visits': visits
   }
-  response.render('new-playlist',output);
+  response.render('new-playlist', output);
 });
 
 app.post('/playlists', (request, response) => {
@@ -576,7 +634,7 @@ app.get('/playlists/:song_id/newsong', (request, response) => {
         var visits = request.cookies['visits'];
 
 
-      output.visits = visits;
+        output.visits = visits;
         response.render('add-to-playlist', output);
       }
     });
