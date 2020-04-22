@@ -4,7 +4,7 @@ const router = express.Router();
 // helper functions
 const makeQuery = require('./makequery');
 
-router.get('/', async function (req, res) {
+router.get('/', async (req, res) => {
   let playlistQuery = "SELECT * FROM playlists";
   let playlistResults = await makeQuery(playlistQuery);
 
@@ -16,7 +16,7 @@ router.get('/', async function (req, res) {
   res.render('playlistlist', data);
 });
 
-router.get('/new', async function (req, res) {
+router.get('/new', async (req, res) => {
   let data = {
     id: 0,
     name: "",
@@ -28,7 +28,7 @@ router.get('/new', async function (req, res) {
   res.render('playlistform', data);
 });
 
-router.get('/:id', async function (req, res) {
+router.get('/:id', async (req, res) => {
   let value = [req.params.id];
   let playlistQuery =
       "SELECT songs.id, songs.title, songs.album, artists.name " +

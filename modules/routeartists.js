@@ -4,7 +4,7 @@ const router = express.Router();
 // helper functions
 const makeQuery = require('./makequery');
 
-router.get('/', async function (req, res) {
+router.get('/', async (req, res) => {
   let artistQuery = "SELECT * FROM artists ORDER BY id";
   let artists = await makeQuery(artistQuery);
   res.render('artistlist', {artistlist: artists, sitecount: req.visitCount});
@@ -22,7 +22,7 @@ router.get('/new', (req, res) => {
   res.render('artistform', data);
 });
 
-router.post('/new', async function (req, res) {
+router.post('/new', async (req, res) => {
   let newArtistValues = [
     req.body.name,
     req.body.photo_url,
@@ -49,7 +49,7 @@ router.get('/testerror', (req, res) => {
   res.render('errorpage', data);
 });
 
-router.get('/:id', async function (req, res) {
+router.get('/:id', async (req, res) => {
   let artistId = [req.params.id];
   let artistQuery =
       "SELECT * FROM artists " +
@@ -76,7 +76,7 @@ router.get('/:id', async function (req, res) {
   res.render('artistview', data);
 });
 
-router.get('/:id/edit', async function (req, res) {
+router.get('/:id/edit', async (req, res) => {
   let artistId = [req.params.id];
   let artistQuery =
       "SELECT * FROM artists " +
@@ -94,7 +94,7 @@ router.get('/:id/edit', async function (req, res) {
   res.render('artistform', data);
 });
 
-router.put('/:id', async function (req, res) {
+router.put('/:id', async (req, res) => {
   let artistInfo = [
     Number(req.body.id),
     req.body.name,
@@ -112,7 +112,7 @@ router.put('/:id', async function (req, res) {
   res.redirect(`/artists/${req.body.id}`);
 });
 
-router.get('/:id/delete', async function (req, res) {
+router.get('/:id/delete', async (req, res) => {
   let artistId = [req.params.id];
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
   let artistName = await makeQuery(artistQuery, artistId);
@@ -135,7 +135,7 @@ router.get('/:id/delete', async function (req, res) {
   res.render('artistdelete', data);
 });
 
-router.delete('/:id', async function (req, res) {
+router.delete('/:id', async (req, res) => {
   let artistInfo = [
     Number(req.params.id),
   ];
@@ -156,7 +156,7 @@ router.delete('/:id', async function (req, res) {
   res.redirect('/artists');
 });
 
-router.get('/:id/songs', async function (req, res) {
+router.get('/:id/songs', async (req, res) => {
   let artistId = [req.params.id];
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
   let artistName = await makeQuery(artistQuery, artistId);
@@ -179,7 +179,7 @@ router.get('/:id/songs', async function (req, res) {
   res.render('artistsonglist', data);
 });
 
-router.get('/:aid/songs/new', async function (req, res) {
+router.get('/:aid/songs/new', async (req, res) => {
   let artistId = req.params.aid;
   let artistQuery = "SELECT name FROM artists WHERE id = $1";
   let artistName = await makeQuery(artistQuery, [artistId]);
@@ -193,11 +193,11 @@ router.get('/:aid/songs/new', async function (req, res) {
   res.render('artistsongform', data);
 });
 
-router.post('/:aid/songs/new', async function (req, res) {
+router.post('/:aid/songs/new', async (req, res) => {
   res.send(req.body);
 });
 
-router.get('/:aid/songs/:sid', async function (req, res) {
+router.get('/:aid/songs/:sid', async (req, res) => {
   let songId = req.params.sid;
 
   let songQuery =

@@ -4,7 +4,7 @@ const router = express.Router();
 // helper functions
 const makeQuery = require('./makequery');
 
-router.get('/', async function (req, res) {
+router.get('/', async (req, res) => {
   let songQuery =
       "SELECT songs.title, songs.album, artists.name FROM songs " +
       "INNER JOIN artists " +
@@ -19,7 +19,7 @@ router.get('/', async function (req, res) {
   res.render('songlist', data);
 });
 
-router.get('/new', async function (req, res) {
+router.get('/new', async (req, res) => {
   res.render('songform', {sitecount: req.visitCount});
 });
 
