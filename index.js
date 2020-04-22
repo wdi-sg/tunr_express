@@ -140,7 +140,7 @@ app.post('/login', (request, response) => {
 
 app.delete('/logout', (request, response)=>{
     response.clearCookie('logged in');
-    response.redirect('/')
+    response.redirect('/playlist')
 });
 
 //favorites
@@ -171,53 +171,62 @@ app.get('/favorites/new', (request, response)=>{
 
 app.get('/favorites', (request, response)=>{
 
-    var username = request.cookies['username']
-    var visits = request.cookies['visits'+request.params.id];
-    var userid = request.cookies['userid']
-    if( visits === undefined ){
-        visits = 1;
-    }else{
-        visits = parseInt( visits ) + 1;
-    }
-    response.cookie('visits'+request.params.id, visits);
+    if( request.cookies['logged in'] === 'true'){
 
-    const whenQueryDone = (queryError, result) => {
-        if(queryError){
-            console.log("======ERROR======")
-            console.log(queryError);
-            response.send('db error');
+        var username = request.cookies['username']
+        var visits = request.cookies['visits'+request.params.id];
+        var userid = request.cookies['userid']
+        if( visits === undefined ){
+            visits = 1;
+        }else{
+            visits = parseInt( visits ) + 1;
         }
-        else{
-            const whenQueryDone = (queryError, result2) => {
-                if(queryError){
-                    console.log("======ERROR======")
-                    console.log(queryError);
-                    response.send('db error');
-                } else {
-                    data = {
-                        id:request.params.id,
-                        rows:result.rows,
-                        name:request.body.name,
-                        visits:visits,
-                        playlist:result2.rows[0].name,
-                        username:username
-                    }
-                        console.log(result2.rows)
-                        response.render('favoriteSongs',data)
-                }
+        response.cookie('visits'+request.params.id, visits);
+
+        const whenQueryDone = (queryError, result) => {
+            if(queryError){
+                console.log("======ERROR======")
+                console.log(queryError);
+                response.send('db error');
             }
-            values = [userid];
-            const queryString = "SELECT * FROM favorites where id = $1";
-            pool.query(queryString, values, whenQueryDone)
+            else{
+                const whenQueryDone = (queryError, result2) => {
+                    if(queryError){
+                        console.log("======ERROR======")
+                        console.log(queryError);
+                        response.send('db error');
+                    } else {
+                        data = {
+                            id:request.params.id,
+                            rows:result.rows,
+                            name:request.body.name,
+                            visits:visits,
+                            playlist:result2.rows[0].name,
+                            username:username
+                        }
+                            console.log(result2.rows)
+                            response.render('favoriteSongs',data)
+                    }
+                }
+                values = [userid];
+                const queryString = "SELECT * FROM favorites where id = $1";
+                pool.query(queryString, values, whenQueryDone)
+            }
         }
+        let values = [userid]
+        const queryString="SELECT * FROM songs inner join favorites on (song_id = songs.id) where user_id = $1";
+        // const queryString="SELECT * FROM songs "+
+        // "WHERE songs.id IN(SELECT song_id FROM "+
+        // "playlist INNER JOIN favorites ON "+
+        // "(playlist.id = playlist_id) WHERE playlist_id = $1)"
+        pool.query(queryString, values, whenQueryDone)
+
+    }else{
+        response.status(403);
+        response.send("not allowed");
     }
-    let values = [userid]
-    const queryString="SELECT * FROM songs inner join favorites on (song_id = songs.id) where user_id = $1";
-    // const queryString="SELECT * FROM songs "+
-    // "WHERE songs.id IN(SELECT song_id FROM "+
-    // "playlist INNER JOIN favorites ON "+
-    // "(playlist.id = playlist_id) WHERE playlist_id = $1)"
-    pool.query(queryString, values, whenQueryDone)
+
+
 });
 
 //Add songs to new playlist
@@ -327,6 +336,14 @@ app.get('/playlist/new/', (request, response) => {
 //Each Playlist
 app.get('/playlist', (request, response) => {
 
+
+    let loggedIn = false
+
+
+    if( request.cookies['logged in'] === 'true'){
+        loggedIn = true;
+    }
+
     var username = request.cookies['username'];
     var visits = request.cookies['visits'];
     if( visits === undefined ){
@@ -345,7 +362,8 @@ app.get('/playlist', (request, response) => {
             data = {
                 rows: result.rows,
                 visits: visits,
-                username: username
+                username: username,
+                loggedIn:loggedIn
             }
             response.render('playlist',data);
         }

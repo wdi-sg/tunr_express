@@ -3,6 +3,29 @@ var React = require("react");
 class playlist extends React.Component {
   render() {
     //console.log(this.props.rows)
+    let userButtons = (
+        <div class='my-2 d-flex justify-content-end'>
+                <div>
+                    <form method="get" action="/register">
+                        <input type="submit" value="Register" class="btn btn-dark rounded-pill" style={{width:"100px"}}/>
+                    </form>
+                </div>
+                <div>
+                    <form method="get" action="/login">
+                        <input type="submit" value="Login" class="ml-2 btn btn-dark rounded-pill" style={{width:"100px"}}/>
+                    </form>
+                </div>
+        </div>);
+
+    if( this.props.loggedIn === true){
+        userButtons = (
+            <div class='d-flex mb-5 mt-3'><h2><u>Welcome, {this.props.username}</u></h2>
+                <div class='ml-auto'>
+                    <form method="post" action="/logout?_method=delete">
+                        <button class="btn btn-dark rounded-pill" style={{width:"100px"}}>Log out</button>
+                    </form>
+                </div>
+            </div>)}
     let playlist = this.props.rows.map ((element) => {
         return (
             <div>
@@ -11,7 +34,7 @@ class playlist extends React.Component {
                 </form>
             </div>
         )
-    })
+    });
 
     return (
         <html>
@@ -24,14 +47,7 @@ class playlist extends React.Component {
         </head>
         <body>
             <div class='container'>
-                <div class='d-flex mb-5 mt-3'><h2><u>Welcome, {this.props.username}</u></h2>
-                    <div class='ml-auto'>
-                    <form method="post" action="/logout?_method=delete">
-                        <button class="btn btn-dark rounded-pill" style={{width:"100px"}}>Log out</button>
-
-                        </form>
-                    </div>
-                </div>
+                    {userButtons}
                 <div class='d-flex'>
                     <div>
                         <form method="get" action="/playlist/new">
