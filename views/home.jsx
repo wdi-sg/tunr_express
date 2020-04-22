@@ -2,6 +2,7 @@ var React = require("react");
 
 class Home extends React.Component {
   render() {
+    const playlist_list = this.props.playlists;
     const playlists = playlist_list.map(playlist => {
       const link = `/playlist/${playlist.id}`
       return <li><a href={link}>{playlist.name}</a></li>

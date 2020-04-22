@@ -132,14 +132,14 @@ app.get('/favorites/new', (req, res) => {
 			res.send('query error');
 		} else {
 			const data = {'songs': result.rows}
-			res.render('favorites', data)
+			res.render('create_favorites', data)
 		}
 	})
 })
 
 // accepts post request to create favorites
 app.post('/favorites', (req, res) => {
-	const queryString = `INSERT INTO playlists (name) VALUES ($1) RETURNING id;`;
+	const queryString = 'INSERT INTO favorites (user_id, song_id) SELECT id, $2 FROM users WHERE name=$1';
 
 	const values = [req.cookies['user'], req.body.song_id];
 
@@ -148,7 +148,7 @@ app.post('/favorites', (req, res) => {
 	    console.error('query error:', err.stack);
 	    res.send( 'query error' );
 	  } else {
-	    res.redirect('favorites');
+	    res.send('show_favorites');
 		}
 	})
 })
