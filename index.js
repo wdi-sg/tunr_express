@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const pg = require('pg');
 const cookieParser = require("cookie-parser");
+const sha256 = require('js-sha256');
 
 // Initialise postgres client
 const configs = {
@@ -217,13 +218,79 @@ app.post('/playlists', (request, response) => {
   })
 })
 
+/**
+ * ===================================
+ * Part 3 Registration
+ * ===================================
+ */
 
+app.get('/register', (request, response) => {
+  if (request.cookies && request.cookies.loggedIn === 'true') {
+    response.send('you are already logged in');
+  } else {
+    response.cookie('loggedIn', 'false');
+    response.render('register');
+  }
+});
+
+app.get('/login', (request, response) => {
+  if (request.cookies && request.cookies.loggedIn === 'true') {
+    response.send('you are already logged in');
+  } else {
+    response.cookie('loggedIn', 'false');
+    response.render('login');
+  }
+});
+
+app.post('/register', (request, response) => {
+  const username = request.body.username;
+  const password = sha256(request.body.password);
+
+  pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password], (error, result) => {
+    if (error) {
+      console.log('registration error: ', error.message, error.stack);
+    } else {
+      response.cookie('loggedIn', 'true');
+      response.redirect(302, '/');
+    }
+  })
+});
+
+app.post('/login', (request, response) => {
+  const username = request.body.username;
+  const password = sha256(request.body.password);
+
+  pool.query('SELECT * FROM users WHERE username=$1', [username], (error, result) => {
+    if (error) {
+      console.log('log in error: ', error.message, error.stack);
+    } else {
+      if (result.rows[0]) {
+        const hash = result.rows[0].password;
+
+        if (password === hash) {
+          response.cookie('loggedIn', 'true');
+          response.redirect(302, '/');
+        } else {
+          response.send('incorrect password, please try again');
+        }
+      } else {
+        response.send('incorrect username, please try again');
+      }
+    }
+  })
+});
+
+app.post('/logout', (request, response) => {
+  response.cookie('loggedIn', 'false');
+  response.redirect(302, '/');
+});
 
 /**
  * ===================================
  * Listen to requests on port 3000
  * ===================================
  */
+
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
