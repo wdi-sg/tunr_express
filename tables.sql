@@ -13,3 +13,14 @@ CREATE TABLE Songs (
     artwork TEXT,
     artist_id INTEGER
 );
+
+CREATE TABLE Playlist (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+);
+
+CREATE TABLE Playlist_Song (
+    id SERIAL PRIMARY KEY,
+    song_id INTEGER,
+    playlist_id INTEGER
+);
