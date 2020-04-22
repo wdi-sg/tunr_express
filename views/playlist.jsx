@@ -4,7 +4,7 @@ class playlist extends React.Component {
   render() {
     //console.log(this.props.rows)
     let userButtons = (
-        <div class='my-2 d-flex justify-content-end'>
+        <div class='my-3 d-flex justify-content-end'>
                 <div>
                     <form method="get" action="/register">
                         <input type="submit" value="Register" class="btn btn-dark rounded-pill" style={{width:"100px"}}/>
@@ -19,7 +19,7 @@ class playlist extends React.Component {
 
     if( this.props.loggedIn === true){
         userButtons = (
-            <div class='d-flex mb-5 mt-3'><h2><u>Welcome, {this.props.username}</u></h2>
+            <div class='d-flex my-3'><h2><u>Welcome, {this.props.username}</u></h2>
                 <div class='ml-auto'>
                     <form method="post" action="/logout?_method=delete">
                         <button class="btn btn-dark rounded-pill" style={{width:"100px"}}>Log out</button>
