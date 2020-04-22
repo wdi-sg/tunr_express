@@ -3,7 +3,7 @@ const router = express.Router();
 
 // user auth
 const hash = require('node_hash');
-const rsP = require('./crypt.js');
+const rsP = require('./rsp.js');
 
 // helper functions
 const makeQuery = require('./makequery');
