@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'ari',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -49,16 +49,37 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
+  // query database for all songs
 
   // respond with HTML page displaying all pokemon
   response.render('home');
 });
 
-app.get('/new', (request, response) => {
+app.get('/new_artist', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  response.render('new_artist');
 });
+
+
+// for view counter
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+// get the currently set cookie
+var visits = request.cookies['visits'];
+
+// see if there is a cookie
+if( visits === undefined ){
+
+  // set a default value if it doesn't exist
+  visits = 1;
+}else{
+
+  // if a cookie exists, make a value thats 1 bigger
+  visits = parseInt( visits ) + 1;
+}
+
+// set the cookie
+response.cookie('visits', visits);
 
 
 /**
