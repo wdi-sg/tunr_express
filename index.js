@@ -53,10 +53,12 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+// redirect empty route to the main page
 app.get('/', (request, response) => {
     response.redirect('/artists/');
 })
 
+// route to show all artists
 app.get('/artists/', (request, response) => {
   // query database for all pokemon
     let text = "SELECT * FROM artists";
@@ -76,12 +78,12 @@ app.get('/artists/', (request, response) => {
     })
 
 });
-
+// route to create new artists
 app.get('/artists/new', (request, response) => {
   // respond with HTML page with form to create new artists
   response.render('new');
 });
-
+// handling the added artist request
 app.post('/artists', (request, response) => {
 
     let addQuery = "INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *";
@@ -103,7 +105,7 @@ app.post('/artists', (request, response) => {
 
     pool.query(addQuery, addForm, whendone)
 });
-
+// route to one artist based on artist id
 app.get('/artists/:id', (request, response) => {
     let artistID = request.params.id
 
@@ -132,42 +134,45 @@ app.get('/artists/:id', (request, response) => {
     pool.query(findArtist, whenQuerydone);
     // response.send("This page is viewing : " + artistID);
 });
-
+// route to create new playlists
 app.get('/playlists/new', (request, response) => {
     console.log("loading new playlist page");
     response.render('newplaylist');
 });
-
+// route to show all playlists
 app.get('/playlists', (request, response) => {
 
 });
-
+// route to register new user
 app.get('/register', (request, response) => {
     console.log("opening register page");
 
     response.render('register');
 })
-
+// handling request to add new user
 app.post('/register', (request,response) => {
     console.log("Receiving account details...");
     console.log(request.body.username);
     console.log(request.body.password);
-
+    // query path
     let registerQuery = "INSERT INTO users (username, password) VALUES ($1, $2)";
-
+    // data received from the form in /register
     let registerInput = [request.body.username,request.body.password];
     let whendone = (error, result) => {
         console.log(result.rows[0]);
+        // check for query error
         if(error){
             console.log(error);
             console.log("Failed to query registration")
         }else{
-            let loginStatus = "logged In";
             // set cookie
+            let loginStatus = "logged In";
             response.cookie('Authenticate', loginStatus);
+            // reply to user
             response.send('account information received!');
         }
     }
+    // run query to add user information to the database users
     pool.query(registerQuery,registerInput, whendone);
 
 })
