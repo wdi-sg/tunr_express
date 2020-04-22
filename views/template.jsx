@@ -7,7 +7,9 @@ class Template extends React.Component {
   constructor(props) {
     super(props);
     this.title = "Tunr";
-    this.count = "PLACEHOLDER COUNT"
+    this.count = props.sitecount || "PLACEHOLDER COUNT",
+    this.auth = props.auth,
+    this.username = props.username || "Guest"
   }
 
   render() {
@@ -22,7 +24,7 @@ class Template extends React.Component {
               <div className="row my-3">
                 <div className="col-8 offset-2">
 
-                  <Nav />
+                  <Nav auth={this.auth}/>
 
                   {this.renderContent()}
 
@@ -31,7 +33,7 @@ class Template extends React.Component {
             </div>
           </main>
 
-          <Foot count={this.count} />
+          <Foot data={{count: this.count, user: this.username}} />
         </body>
       </html>
     );
