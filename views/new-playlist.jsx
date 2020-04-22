@@ -16,7 +16,9 @@ class NewPlaylist extends React.Component {
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div className="navbar-nav">
                 <a className="nav-item nav-link " href="/artists">Artists </a>
-                <a className="nav-item nav-link active" href="/playlists">Playlists<span class="sr-only">(current)</span></a>
+                <a className="nav-item nav-link active" href="/playlists">Playlists<span class="sr-only">
+                  (current)</span></a>
+                  <a className="nav-item nav-link ml-5 text-light btn btn-danger" href="/logout">Logout </a>
               </div>
             </div>
           </nav>

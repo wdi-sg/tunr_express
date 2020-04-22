@@ -21,6 +21,7 @@ class NewSong extends React.Component {
               <div className="navbar-nav">
                 <a className="nav-item nav-link active" href="/artists">Artists <span className="sr-only">(current)</span></a>
                 <a className="nav-item nav-link" href="/playlists">Playlists</a>
+                <a className="nav-item nav-link ml-5 text-light btn btn-danger" href="/logout">Logout </a>
               </div>
             </div>
           </nav>

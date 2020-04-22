@@ -83,6 +83,17 @@ app.get('/register', (request, response) => {
   response.render("register");
 
 });
+app.get('/logout', (request, response) => {
+  var userId = "";
+  var username = "";
+
+
+
+  response.cookie('username', username);
+  response.cookie('userId', userId);
+  response.cookie('loggedin', false);
+  response.redirect("/login");
+});
 
 app.post('/register', (request, response) => {
   var password = sha256(request.body.password);
@@ -140,6 +151,11 @@ app.post('/login', (request, response) => {
 
 // View list of artists
 app.get('/artists', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   // respond with HTML page with form to create new ....
   const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists'
 
@@ -174,10 +190,16 @@ app.get('/artists', (request, response) => {
       // response.send( output);
     }
   });
+}
 });
 
 // View new artist form page
 app.get('/artists/new', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   // respond with HTML page with form to create new ....
   var visits = request.cookies['visits'];
 
@@ -185,9 +207,16 @@ app.get('/artists/new', (request, response) => {
     'visits': visits
   }
   response.render('new-artist', output);
+
+}
 });
 
 app.post('/artists', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString = 'INSERT INTO artists (name, photo_url, nationality) VALUES ($1, $2, $3)'
   const values = [request.body.name, request.body.photo_url, request.body.nationality];
   pool.query(queryString, values, (err, result) => {
@@ -214,9 +243,15 @@ app.post('/artists', (request, response) => {
       });
     }
   });
-});
+
+}});
 
 app.get('/artists/:id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   var artistId = request.params.id;
   const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
   pool.query(queryString, (err, result) => {
@@ -244,9 +279,14 @@ app.get('/artists/:id', (request, response) => {
       // response.send(output);
     }
   });
-});
+}});
 
 app.get('/artists/:id/edit', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   // respond with HTML page with form to create new ....
   var artistId = request.params.id;
   const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists'
@@ -276,9 +316,14 @@ app.get('/artists/:id/edit', (request, response) => {
       // response.send(output);
     }
   });
-});
+}});
 
 app.put('/artists/:id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   var artistId = request.params.id;
   const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
 
@@ -327,9 +372,14 @@ app.put('/artists/:id', (request, response) => {
       });
     }
   })
-})
+}})
 
 app.delete('/artists/:id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   var artistId = request.params.id;
   const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
 
@@ -377,9 +427,14 @@ app.delete('/artists/:id', (request, response) => {
       });
     }
   })
-})
+}})
 
 app.get('/artists/:id/songs', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   var artistId = request.params.id;
   const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists';
   pool.query(queryString, (err, result) => {
@@ -416,8 +471,14 @@ app.get('/artists/:id/songs', (request, response) => {
       })
     }
   });
-});
+}});
+
 app.get('/artists/:id/songs/new', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   // respond with HTML page with form to create new ....
   var id = { 'id': request.params.id };
   var visits = request.cookies['visits'];
@@ -437,9 +498,14 @@ app.get('/artists/:id/songs/new', (request, response) => {
   response.cookie('visits', visits);
   id.visits = visits;
   response.render('new-song', id);
-});
+}});
 
 app.post('/artists/songs', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString = `SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS artistid, * FROM artists`;
   pool.query(queryString, (err, result) => {
     if (err) {
@@ -472,9 +538,14 @@ app.post('/artists/songs', (request, response) => {
       });
     }
   });
-});
+}});
 
 app.get('/artists/:artist_id/songs/edit/:song_id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString = `SELECT * FROM songs WHERE id = ${request.params.song_id}`;
   pool.query(queryString, (err, result) => {
 
@@ -495,9 +566,14 @@ app.get('/artists/:artist_id/songs/edit/:song_id', (request, response) => {
     }
   });
 
-});
+}});
 
 app.put('/artists/:artist_id/songs/:song_id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString = `UPDATE songs SET title = $1, album = $2, preview_link = $3, artwork = $4 WHERE id = ${request.params.song_id}`;
   const values = [request.body.title, request.body.album, request.body.preview_link, request.body.artwork];
   pool.query(queryString, values, (err, result) => {
@@ -516,9 +592,14 @@ app.put('/artists/:artist_id/songs/:song_id', (request, response) => {
     }
   });
 
-});
+}});
 
 app.delete('/artists/:artist_id/songs/:song_id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString = `DELETE FROM songs WHERE id = ${request.params.song_id}`;
   pool.query(queryString, (err, result) => {
 
@@ -536,9 +617,14 @@ app.delete('/artists/:artist_id/songs/:song_id', (request, response) => {
     }
   });
 
-});
+}});
 
 app.get('/playlists', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   // respond with HTML page with form to create new ....
   const queryString = 'SELECT ROW_NUMBER() OVER (ORDER BY id ASC) AS playlistid, * FROM playlist'
 
@@ -560,18 +646,28 @@ app.get('/playlists', (request, response) => {
       // response.send( output);
     }
   });
-});
+}});
 
 app.get('/playlists/new', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   // respond with HTML page with form to create new ....
   var visits = request.cookies['visits'];
   var output = {
     'visits': visits
   }
   response.render('new-playlist', output);
-});
+}});
 
 app.post('/playlists', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString = 'INSERT INTO playlist (name) VALUES ($1)'
   const values = [request.body.name];
   pool.query(queryString, values, (err, result) => {
@@ -588,8 +684,14 @@ app.post('/playlists', (request, response) => {
       // response.send( output);
     }
   })
-});
+}});
+
 app.post('/playlists/:song_id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString = 'INSERT INTO playlist_song (song_id, playlist_id) VALUES ($1 , $2)'
   const values = [request.params.song_id, request.body.playlist];
   pool.query(queryString, values, (err, result) => {
@@ -603,10 +705,15 @@ app.post('/playlists/:song_id', (request, response) => {
       // response.send(request.body.playlist);
     }
   })
-});
+}});
 
 
 app.get('/playlists/:song_id/newsong', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   const queryString
     = `SELECT *,songs.id AS song_id 
   FROM songs
@@ -639,9 +746,14 @@ app.get('/playlists/:song_id/newsong', (request, response) => {
       }
     });
   });
-});
+}});
 
 app.get('/playlists/:playlist_id', (request, response) => {
+  var loggedin = request.cookies['loggedin'];
+  if(loggedin == false || loggedin == undefined){
+    response.redirect('login');
+  }
+  else{
   // respond with HTML page with form to create new ....
   const queryString
     = `SELECT  ROW_NUMBER() OVER (ORDER BY ps.id ASC) AS trackid, ps.playlist_id, p.name AS playlist_name, ps.song_id, s.title, s.album, a.name AS artist_name, s.artist_id, s.preview_link, s.artwork
@@ -668,7 +780,7 @@ app.get('/playlists/:playlist_id', (request, response) => {
       // response.send( output);
     }
   });
-});
+}});
 /**
  * ===================================
  * Listen to requests on port 3000
