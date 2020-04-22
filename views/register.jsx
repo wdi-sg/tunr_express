@@ -1,5 +1,5 @@
 var React = require('react');
-class New extends React.Component {
+class Register extends React.Component {
   render() {
     return (
       <html>
@@ -7,22 +7,18 @@ class New extends React.Component {
         </head>
         <body>
           <div>
-            <h1>Add a new artist</h1>
+            <h1>Register Account</h1>
           </div>
           <div>
             <div>
-              <form method="POST" action="/artists">
+              <form method="POST" action="/register">
                 <div>
                   Name:
-                  <input type="text" name="name"></input>
+                  <input type="text" name="username"></input>
                 </div>
                 <div>
-                  Photo URL:
-                  <input type="text" name="photourl"></input>
-                </div>
-                <div>
-                  Nationality:
-                  <input type="text" name="nationality"></input>
+                  Password:
+                  <input type="text" name="password"></input>
                 </div>
                 <div>
                   <input type="submit" value="submit"></input>
@@ -36,4 +32,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Register;
