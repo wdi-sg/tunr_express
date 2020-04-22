@@ -1,16 +1,27 @@
-var React = require("react");
+var React = require('react');
 
-class Home extends React.Component {
+class UsersNew extends React.Component {
   render() {
+
+    let userButtons = (<div><p><a href="/registration">register</a></p>
+                       <p><a href="/login">login</a></p></div>);
+
+    if( this.props.loggedIn === true){
+        userButtons = (<form action="/logout?_method=delete" method="POST">
+                        <input type="submit" value="logout"/>
+                </form>);
+    }
+
     return (
       <html>
-        <head />
         <body>
-          <h1>Welcome!</h1>
+          <h1>home</h1>
+          {userButtons}
+          <script src="script.js"></script>
         </body>
       </html>
     );
   }
 }
 
-module.exports = Home;
+module.exports = UsersNew;
