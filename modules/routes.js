@@ -9,11 +9,24 @@ const makeRandString = require('./crypt.js');
 const makeQuery = require('./makequery');
 
 router.get('/', (req, res) => {
-  res.render('home', {sitecount: req.visitCount});
+  let data = {
+    sitecount: req.visitCount,
+    username: req.authed ? req.username : "",
+    auth: req.authed
+  };
+
+  res.render('home', data);
 });
 
 router.get('/register', (req, res) => {
-  res.render('registerform', {sitecount: req.visitCount});
+  let data = {
+    title: "Register for Tunr",
+    button: "Register",
+    action: "/register",
+    sitecount: req.visitCount,
+    error: ""
+  };
+  res.render('userform', data);
 });
 
 router.post('/register', (req, res) => {
@@ -21,7 +34,14 @@ router.post('/register', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-  res.render('loginform', {sitecount: req.visitCount});
+  let data = {
+    title: "Log In to Tunr",
+    button: "Log In",
+    action: "/login",
+    sitecount: req.visitCount,
+    error: ""
+  };
+  res.render('userform', data);
 });
 
 router.post('/login', (req, res) => {
@@ -29,7 +49,26 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/testpage', (req, res) => {
-  res.render('template-content', {sitecount: req.visitCount});
+  let data = {
+    sitecount: req.visitCount,
+    username: req.username
+  };
+  console.log("data", data);
+  res.render('template-content', data);
+});
+
+router.get('/testerror', (req, res) => {
+  let data = {
+    errorinfo: {
+      line1: "HERE",
+      line2: "ANOTHER",
+      line3: "YEAH OKAY",
+      sitecount: req.visitCount,
+      username: req.username,
+      auth: req.authed
+    }
+  };
+  res.render('errorpage', data);
 });
 
 module.exports = router;

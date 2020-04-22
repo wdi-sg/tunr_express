@@ -13,7 +13,9 @@ router.get('/', async (req, res) => {
 
   let data = {
     songs: songResults,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('songlist', data);

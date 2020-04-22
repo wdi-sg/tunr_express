@@ -7,7 +7,13 @@ const makeQuery = require('./makequery');
 router.get('/', async (req, res) => {
   let artistQuery = "SELECT * FROM artists ORDER BY id";
   let artists = await makeQuery(artistQuery);
-  res.render('artistlist', {artistlist: artists, sitecount: req.visitCount});
+  let data = {
+    artistlist: artists,
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
+  };
+  res.render('artistlist', data);
 });
 
 router.get('/new', (req, res) => {
@@ -17,7 +23,9 @@ router.get('/new', (req, res) => {
     photo_url: "",
     nationality: "",
     new: true,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
   res.render('artistform', data);
 });
@@ -70,7 +78,9 @@ router.get('/:id', async (req, res) => {
     artist: artistResult[0],
     prevArtistId: prevArtist,
     nextArtistId: nextArtist,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('artistview', data);
@@ -88,7 +98,9 @@ router.get('/:id/edit', async (req, res) => {
     photo_url: artistResult[0].photo_url,
     nationality: artistResult[0].nationality,
     new: false,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('artistform', data);
@@ -129,7 +141,9 @@ router.get('/:id/delete', async (req, res) => {
     name: artistName[0].name,
     id: req.params.id,
     songs: songResults,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('artistdelete', data);
@@ -173,7 +187,9 @@ router.get('/:id/songs', async (req, res) => {
     name: artistName[0].name,
     id: req.params.id,
     songs: songResults,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('artistsonglist', data);
@@ -187,7 +203,9 @@ router.get('/:aid/songs/new', async (req, res) => {
   let data = {
     id: artistId,
     name: artistName[0].name,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('artistsongform', data);
@@ -209,7 +227,9 @@ router.get('/:aid/songs/:sid', async (req, res) => {
   let data = {
     aid: req.params.aid,
     song: songInfo[0],
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('artistsongview', data);

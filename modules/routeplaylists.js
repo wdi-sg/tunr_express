@@ -10,7 +10,9 @@ router.get('/', async (req, res) => {
 
   let data = {
     playlists: playlistResults,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('playlistlist', data);
@@ -23,7 +25,9 @@ router.get('/new', async (req, res) => {
     photo_url: "",
     nationality: "",
     new: true,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
   res.render('playlistform', data);
 });
@@ -46,7 +50,9 @@ router.get('/:id', async (req, res) => {
   let data = {
     listname: playlistName[0].name,
     playlist: playlistResults,
-    sitecount: req.visitCount
+    sitecount: req.visitCount,
+    username: req.username,
+    auth: req.authed
   };
 
   res.render('playlistview', data);
