@@ -125,15 +125,14 @@ app.post('/register', (request, response) => {
         } else {
             response.cookie('username', userName);
             response.cookie('password', passWord);
-            //response.cookie('loggedIn',loginStatus);
-            response.cookie('loggedIn', 'false');
+            response.cookie('loggedIn', loginStatus);
             response.redirect('/');
         }
     };
 
     const queryString = "INSERT INTO users (username,password) values ($1,$2)";
-    values = [userName,passWord]
-    pool.query(queryString,values, whenQueryDone)
+    values = [userName, passWord]
+    pool.query(queryString, values, whenQueryDone)
 });
 
 app.get('/login', (request, response) => {
@@ -143,24 +142,35 @@ app.get('/login', (request, response) => {
 app.post('/login', (request, response) => {
     userName = request.body.username;
     passWord = request.body.password;
-    const queryString = 'SELECT username from users where username = ($1)'
+    const queryString = 'SELECT * from users where username = ($1)'
     values = [userName]
     pool.query(queryString, values, (err, result) => {
         if (err) {
             console.error('query error:', err.stack);
             response.send('query error');
         } else {
-            const query = 'SELECT password from users where username = ($1)'
-            data = [result.rows.name]
-            pool.query(query, data, (err, result) => {
-                if (err) {
-                    console.error('query error:', err.stack);
-                    response.send('query error');
-                } else {
-                  response.cookie('loggedIn','true');
-                  response.redirect('/');
-                }
-            });
+            if (result.rows[0] == undefined) {
+                response.send('wrong username')
+            } else {
+                const query = 'SELECT * from users where username = ($1)'
+                value = [result.rows[0]]
+                pool.query(query, value, (err, result) => {
+                    if (err) {
+                        console.error('query error:', err.stack);
+                        response.send('query error');
+                    } else {
+                        if (result.rows[0] == undefined) {
+                            response.send('wrong password')
+                        } else {
+                            var expires = {
+                                expires: new Date(Date.now() + 60000)
+                            }
+                            response.cookie('loggedIn', sha256('true'), expires);
+                            response.redirect('/');
+                        }
+                    }
+                });
+            }
         }
     });
 });
