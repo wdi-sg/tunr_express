@@ -4,6 +4,7 @@ const configs = {
     user: 'zachariah',
     host: '127.0.0.1',
     database: 'tunr_db',
+    password: 'zachariah',
     port: 5432,
 };
 
