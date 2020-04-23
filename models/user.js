@@ -1,0 +1,9 @@
+const db = require('../util/database.js');
+
+module.exports = class User {
+
+    constructor(email, password) {
+        this.email = email;
+        this.password = password;
+    }
+}
