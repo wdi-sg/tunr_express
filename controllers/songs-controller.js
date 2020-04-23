@@ -67,8 +67,6 @@ module.exports.putArtistSongById = async (req, res) => {
         req.song.id
     );
 
-    console.log(req.body);
-
     res.redirect(`./${req.song.position}`);
 
 }

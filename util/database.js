@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
 const configs = {
-    user: 'zachariah',
+    user: 'postgres',
     host: '127.0.0.1',
     database: 'tunr_db',
     port: 5432,
@@ -26,7 +26,7 @@ module.exports = {
             const client = await pool.connect();
             console.log('connected!');
 
-            const res = await pool.query(queryText, queryValues);
+            const res = await client.query(queryText, queryValues);
 
             client.release();
             console.log('client released!');
@@ -36,5 +36,5 @@ module.exports = {
         } catch (e) {
             console.log(`Error\n` + e.message, e.stack);
         }
-    },
+    }
 }
