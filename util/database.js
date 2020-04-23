@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
 const configs = {
-    user: 'postgres',
+    user: 'zachariah',
     host: '127.0.0.1',
     database: 'tunr_db',
     port: 5432,
