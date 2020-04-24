@@ -39,6 +39,7 @@ app.use(methodOverride('_method'));
 
 app.use(cookieParser());
 
+app.use(express.static('public'))
 
 // Set react-views to be the default view engine
 const reactEngine = require('express-react-views').createEngine();
@@ -234,11 +235,29 @@ app.get('/artists/:id', (req, res) => {
             res.status(500);
             res.send('query error');
         } else {
-            const data = {artistInfo : result.rows[0], visits: req.cookies['visits']};
+            const data = {artistInfo : result.rows[0], visits: req.cookies['visits'], user_id: req.cookies['user_id']};
             res.render('artist', data);
         }
     })
 });
+
+//Likes route
+app.post('/likes', (req, res) => {
+    //console.log(req.body)
+    const values = [req.body.artist_id, req.body.user_id]
+    const queryString = "INSERT INTO likes (artist_id, user_id) VALUES ($1, $2) RETURNING *"
+
+    pool.query(queryString, values, (err, result) => {
+        if (err){
+            console.error('query error', err.stack);
+            res.status(500);
+            res.send('query error');
+        } else {
+            const data = {artistInfo : result.rows[0], visits: req.cookies['visits'], user_id: req.cookies['user_id']};
+            res.render('artist', data);
+        }
+    })
+})
 
 //Form for creating new playlist
 app.get('/playlist/new', (req, res) => {

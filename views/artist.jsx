@@ -8,7 +8,6 @@ class Artist extends React.Component {
     const editLink = "/artists/" + this.props.artistInfo.id + "/edit";
     const songLink = "/artists/" + this.props.artistInfo.id + "/songs";
     const viewCount = this.props.visits;
-
     return (
       <html>
         <head><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossOrigin="anonymous"></link></head>
@@ -25,8 +24,15 @@ class Artist extends React.Component {
           <form method="GET" action={editLink} className = "container">
                 <button type="submit" className="btn btn-primary">Edit Artist Details</button>
           </form>
-          <h1>View Count: {viewCount}</h1>
+          <br />
+          <br />
+          <button className="btn btn-primary" id="like">Like this Artist</button>
         </body>
+        <script>
+            let userid = `{this.props.user_id}`;
+            let artistid = `{this.props.artistInfo.id}`;
+        </script>
+        <script src="/script.js"></script>
       </html>
     );
   }
