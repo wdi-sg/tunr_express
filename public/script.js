@@ -1,4 +1,4 @@
-let likeButtonHandler = () =>{
+let likeButtonHandler = function(){
     var data = { "artist_id": artistid, "user_id": userid};
 
     var request = new XMLHttpRequest();   // new HttpRequest instance
