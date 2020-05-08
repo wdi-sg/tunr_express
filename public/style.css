@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --beigish: #f7e5df;
+  --pinkish: #f67280;
+  --purplish: #c06c84;
+  --purbluish: #6c5b7b;
+  --bluish: #355c7d;
+}
+
+body {
+  background-color: var(--beigish);
+  margin: 2rem;
+}
+
+h1 {
+  font-family: "Pacifico", cursive;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+h2,
+h3 {
+  font-family: "Caveat", cursive;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.main-container {
+  display: flex;
+  align-items: center;
+}
+
+.post-container {
+  font-family: "Lato", sans-serif;
+  color: var(--beigish);
+  line-height: 1.5rem;
+  letter-spacing: 0.03rem;
+  text-align: justify;
+  border-radius: 0.2rem;
+  border: none;
+  width: 10%;
+  padding: 2rem;
+  overflow: scroll;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.post-container:not(:nth-child(2)) {
+  flex-grow: 1;
+  background-color: var(--purbluish);
+  height: 30rem;
+}
+
+.post-container:nth-child(2) {
+  flex-grow: 2;
+  background-color: var(--purplish);
+  height: 35rem;
+}
+
+/* If screen size is more than 667px wide, set the font-size of <post-container> */
+@media screen and (min-width: 667px) {
+  .post-container {
+    font-size: 1rem;
+  }
+}
+
+/* On screens that are 1024px wide or less, go from THREE columns to TWO columns */
+@media screen and (max-width: 1024px) {
+  .main-container {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .post-container:not(:nth-child(2)) {
+    order: 2;
+    width: 45%;
+  }
+
+  .post-container:nth-child(2) {
+    order: 1;
+    width: 100%;
+    height: inherit;
+    max-height: 35rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-container:nth-child(1) {
+    margin-right: 0.5rem;
+  }
+
+  .post-container:nth-child(3) {
+    margin-left: 0.5rem;
+  }
+}
+
+/* On screens that are 667px wide or less, make the columns STACK and font-size BIGGER */
+@media screen and (max-width: 667px) {
+  .post-container:nth-child(1),
+  .post-container:nth-child(3) {
+    width: 100%;
+    margin: 0.5rem auto;
+  }
+
+  .post-container:nth-child(1),
+  .post-container:nth-child(2),
+  .post-container:nth-child(3) {
+    font-size: 1.2rem;
+    width: 100%;
+    margin: 0.5rem auto;
+    height: inherit;
+    max-height: 35rem;
+  }
+
+  .post-container:nth-child(3) {
+    order: 2;
+  }
+
+  .post-container:nth-child(1) {
+    order: 3;
+  }
+}
