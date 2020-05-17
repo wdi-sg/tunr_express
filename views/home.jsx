@@ -1,16 +1,32 @@
-var React = require("react");
+var React = require('react');
+var Layout = require('./components/layout.jsx');
 
 class Home extends React.Component {
   render() {
-    return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
-    );
+    const artistCards = this.props.artists.map(artists =>{
+        let artistPage = "/artist/"+artists.id;
+        return (
+            <div className = "artistCards">
+                <a href = {artistPage}>
+                    <img src = {artists.photo_url}/>
+                    <h1>Name: {artists.name}</h1>
+                </a>
+                <h1>Nationality: {artists.nationality}</h1>
+            </div>
+        )
+    });
+
+    return(
+        <Layout>
+            <div className = "container">
+                <div class = "artistContainer">
+                    {artistCards}
+                </div>
+            </div>
+        </Layout>
+    )
   }
 }
+
 
 module.exports = Home;
