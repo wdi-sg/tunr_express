@@ -4,9 +4,13 @@ class Home extends React.Component {
   render() {
     return (
       <html>
-        <head />
+      <head>
+          <title>
+              Home
+          </title>
+      </head>
         <body>
-          <h1>Welcome!</h1>
+          <h1>Welcome to your own personal play list!!!</h1>
         </body>
       </html>
     );
