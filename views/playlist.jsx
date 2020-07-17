@@ -1,14 +1,14 @@
 var React = require("react");
 
-class New extends React.Component {
+class Playlist extends React.Component {
   render() {
     return (
       <html>
-        <head />
+        <head>
+        </head>
         <body>
-          <h3>Add A New Artist!</h3>
-           <form action="/artists" method="POST">
-                        <p>Name Of Artist:</p>
+            <form action="/playlist" method="POST">
+                        <p>Name Of Playlist:</p>
                       <input type="text" name="name"/><br/>
                         <p>URL Of Photo:</p>
                       <input type="text" name="photo_url"/><br/>
@@ -22,4 +22,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Playlist;
