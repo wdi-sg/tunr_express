@@ -1,14 +1,30 @@
 var React = require("react");
+var Default = require("./layout/default");
 
 class Home extends React.Component {
   render() {
+
+    let artists = this.props.artists.map(item=>{
+
+        let url = "/artist/"+item.id;
+        return <div className="artist-div">
+
+            <a href={url}><img className="artist-pic" src={item.photo_url}/></a>
+            <p>Name: {item.name}</p>
+            <p>Nationality: {item.nationality}</p>
+        </div>
+    })
+
+
     return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
+      <Default title={this.props.title} cookieLogin={this.props.cookieLogin}>
+          <form  action="/artist/new">
+                <input type="submit" value="Add New Artist"/>
+          </form>
+      <div className="main-container">
+        {artists}
+        </div>
+      </Default>
     );
   }
 }
