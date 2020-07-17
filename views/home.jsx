@@ -1,14 +1,12 @@
 var React = require("react");
+const Template = require('./template.jsx');
 
 class Home extends React.Component {
   render() {
     return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
+      <Template>
+          <h1>This is Home</h1>
+      </Template>
     );
   }
 }
