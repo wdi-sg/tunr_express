@@ -1,6 +1,6 @@
 var React = require("react");
 
-class New extends React.Component {
+class NewPlaylist extends React.Component {
   render() {
     return (
       <html>
@@ -11,12 +11,12 @@ class New extends React.Component {
         </head>
         <body>
          <main class="form-row" style={{ margin: '50px auto',  width: '500px', fontFamily: 'Montserrat'}} >
-        <h3 class="text-center" style={{width: '500px'}}>Add New Artist: </h3><br/>
+        <h3 class="text-center" style={{width: '500px'}}>Add New Playlist: </h3><br/>
 
-          <form method="post" action="/artists" style={{width: '500px'}} ><br/><br/>
-            Artist Name: <input type="text" name="name" style={{width: '500px'}} /><br/><br/>
-            Nationality: <input type="text" name="nationality" style={{width: '500px'}} /><br/><br/>
-            Image URL: <input type="text" name="url"  style={{width: '500px'}}/><br/><br/>
+          <form method="post" action="/playlist" style={{width: '500px'}} ><br/><br/>
+            Playlist Name: <input type="text" name="playlistName" style={{width: '500px'}} /><br/><br/>
+            Song: <input type="text" name="song" style={{width: '500px'}} /><br/><br/>
+
             <input type="submit" value="Submit" class="btn btn-primary btn-block" style={{width: '500px'}} />
           </form>
 
@@ -27,4 +27,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = NewPlaylist;
