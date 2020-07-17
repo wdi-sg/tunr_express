@@ -1,0 +1,257 @@
+body {
+	font-family: 'Darker Grotesque', sans-serif;	/* weight 400 and 600 */
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+}
+
+body.logging-in {
+	font-family: 'Darker Grotesque', sans-serif;
+	text-align: center;
+}
+
+body.logging-in h1 {
+	color: rgb(251, 90, 133);
+	font-size: 60px;
+	font-weight: 600;
+}
+
+body.logging-in p {
+	color: rgb(53, 191, 248);
+	font-size: 40px;
+}
+
+#logo {
+	max-height: 100px;
+	margin: 50px 0;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background: linear-gradient(90deg, rgba(251, 90, 133, 1) 0%, rgba(201, 116, 162, 1) 35%, rgba(53, 191, 248, 1) 100%);
+}
+
+li {
+	display: inline-block;
+	color: white;
+	font-size: 18px;
+	margin: 0px 5px;
+}
+
+li a {
+	display: block;
+	font-size: 18px;
+	color: white;
+	text-align: center;
+	padding: 20px 16px;
+	text-decoration: none;
+}
+
+li a:hover {
+	color: black;
+	background-color: rgba(255, 255, 255, 0.8);
+}
+
+span#divider {
+    color: white;
+}
+
+p.login-span {
+	color: white;
+	font-weight: 600;
+  position: absolute;
+  top: 5px;
+  right: 40px
+}
+
+/* container holding all the artist cards */
+#artist-container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	padding: 0 30px;
+}
+
+#song-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: flex-end;
+}
+
+/* individual artist cards */
+.artist-card {
+	width: 150px;
+	margin: 10px 20px 40px 20px;
+	padding: 10px 30px;
+}
+
+.song-card {
+	display: flex;
+	justify-content: center;
+	width: 300px;
+	height: 200px;
+	align-items: flex-end;
+}
+
+.artist-card a, .song-card a {
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+	color: inherit;
+}
+
+.artist-card p, .song-card p {
+	font-family: 'Darker Grotesque', sans-serif;
+	font-size: 12pt;
+	font-weight: 300;
+	margin: 5px;
+	word-wrap: break-word;
+}
+
+.song-card h2 {
+	font-family: 'Darker Grotesque', sans-serif;
+	font-size: 15pt;
+	font-weight: 400;
+	margin: 5px;
+}
+
+.artist-card h2 {
+	font-family: 'Darker Grotesque', sans-serif;
+	font-size: 15pt;
+	font-weight: 400;
+	margin: 5px;
+	position: relative;
+}
+
+.artist-card h2:after {
+	position: absolute;
+	content: '';
+	height: 2px;
+	bottom: -10px;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	width: 50%;
+	background: #42B0D6;
+	-o-transition: .5s;
+	-ms-transition: .5s;
+	-moz-transition: .5s;
+	-webkit-transition: .5s;
+	transition: .5s;
+}
+
+/* hover animation */
+.artist-card h2:hover:after {
+	width: 80%;
+	background: #F243B3;
+}
+
+/*.artist-card img {
+	width: 100%;
+	border-radius: 10px;
+}*/
+
+.img-thumbnail {
+	width: 100%;
+	background-size: cover;
+	background-position: center;
+	position: relative;
+	padding: 0;
+	transition: 0.5s;
+	margin-bottom: 2rem;
+	border-radius: 20%
+}
+
+.img-thumbnail:after {
+	content: "";
+	display: block;
+	padding-bottom: 100%;
+}
+
+.song-card img {
+	width: 100%;
+	border-radius: 10px;
+}
+
+img.solo-artist {
+	max-width: 300px;
+	border-radius: 10%;
+}
+
+p.solo-artist {
+	font-size: 20px;
+}
+
+.edit-artist img {
+	max-width: 300px;
+	border-radius: 10%;
+}
+
+form {
+	margin: 15px;
+}
+
+form.login-form {
+	position: absolute;
+  top: 5px;
+	display: inline-block;
+}
+
+/*drop-down select*/
+/*select {
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 18px;
+	height: 32px;
+	width: 300px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	margin: 12px;
+}*/
+
+/*all form submit buttons*/
+input[type="submit"] {
+	font-size: 13px;
+	color: #ffffff;
+	display: block;
+	margin: 18px auto;
+	text-align: center;
+	border-radius: 30px;
+	background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);
+	/*border: 3px solid #d8d4d4;*/
+/*	height: 33px;
+	width: 84px;*/
+}
+
+input[type="submit"].login-submit {
+	font-size: 13px;
+	color: #ffffff;
+	display: inline-block;
+	margin: 0px 5px;
+	text-align: center;
+	border-radius: 30px;
+	background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);
+}
+
+.edit-artist h2, .create-artist h2, .create-song h2 {
+	font-size: 12pt;
+	margin: 30px 0px 10px 0;
+}
+
+.edit-artist img, .create-artist img, .create-artist img {
+	margin-bottom: -20px;
+}
+
+footer {
+	height: 30px;
+  display: block;
+  background: linear-gradient(90deg, rgba(251, 90, 133, 0.8) 0%, rgba(201, 116, 162, 0.8) 35%, rgba(53, 191, 248, 0.8) 100%);
+}
+
+footer p {
+	color: white;
+
+}
