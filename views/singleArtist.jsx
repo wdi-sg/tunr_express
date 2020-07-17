@@ -1,21 +1,21 @@
 var React = require('react');
+
 const ArtistInfo = require('./components/artistsDetail.jsx');
-class Home extends React.Component {
+
+class Artist extends React.Component {
   render() {
-    console.log(this.props);
-    let listOfArtist = this.props.artists.map(artist => {
-      return <ArtistInfo display ={artist} id = {this.props.artists.id}/>
-      console.log(id);
-      });
+    console.log("single artist");
+    console.log(this.props.data)
     return (
+     
       <html lang="en">
         <head>
-            <link href="https://fonts.googleapis.com/css?family=Dosis|Work+Sans&display=swap" rel="stylesheet"/>
-            <link rel="stylesheet" type="text/css" href="/style.css"/>
-         
+          <link href="https://fonts.googleapis.com/css?family=Dosis&display=swap" rel="stylesheet"/>
+            <link rel="stylesheet" type="text/css" href="/style1.css"/>
+        
         </head>
         <body>
-
+        
           <header>
             <h1> Artist List</h1>
               <nav>
@@ -27,15 +27,18 @@ class Home extends React.Component {
               </nav>
           </header>
 
-          <div className = "main">
-            
-            {listOfArtist}
+          <div className ="artist">
+              <p>{this.props.data.name}</p>
+              <img src = {this.props.data.photo_url} />
+              <p>{this.props.data.nationality}</p>
           </div>
+
           <footer> © 2019 Song-collection GA All rights reserved.</footer>
+         
         </body>
       </html>
-    );
-  };
-
+    );  
+  }
 }
-module.exports = Home;
+
+module.exports = Artist;
