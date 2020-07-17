@@ -6,7 +6,7 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'huiyu',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
@@ -48,18 +48,96 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-app.get('/', (request, response) => {
-  // query database for all pokemon
-
+app.get('/', (req, res) => {
   // respond with HTML page displaying all pokemon
-  response.render('home');
+  res.render('home');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('/artists', (req, res) =>{
+    const queryString = 'SELECT * FROM artists';
+
+    pool.query(queryString, (err, result) => {
+      if (err) {
+        console.error('query error:', err.stack);
+        res.send( 'query error' );
+      } else {
+        console.log('query result:', result);
+        let str = "<h3>Click on artist name to view details</h3>";
+        for (let i=0; i<result.rows.length; i++){
+            str = str + `
+            <a href="/artists/${result.rows[i].id}">${result.rows[i].name}</a></br>
+            `
+        }
+        res.send(str);
+      }
+    });
 });
 
+app.get('/artists/add', (req, res) =>{
+    res.render('new');
+});
+
+app.post('/artists', (req, res) =>{
+    const queryString = 'INSERT into artists (name, photo_url, nationality) VALUES ($1, $2, $3) RETURNING *';
+    let values = [req.body.name, req.body.photo_url, req.body.nationality];
+    pool.query(queryString, values, (err, res) =>{
+        if(err){
+            console.error('query error :', err.stack);
+            res.send('query error');
+        }else{
+            // res.redirect('/artists/'); WHY CANT WORK??
+            console.log("add done");
+        }
+    })
+})
+
+app.get('/artists/:id', (req, res) =>{
+    const queryString = 'SELECT * FROM artists WHERE id =' + req.params.id;
+    pool.query(queryString, (err, result) =>{
+        if(err){
+            console.error('query error:', err.stack);
+            res.send('query error');
+        }else{
+            let str = `
+            Name: ${result.rows[0].name}</br>
+            Photo: ${result.rows[0].photo_url}</br>
+            Nationality: ${result.rows[0].nationality}</br>
+            <a href="/artists/${req.params.id}/edit">Edit this artist</a></br>
+            `
+            res.send(str);
+        }
+    });
+});
+
+app.get('/artists/:id/edit', (req, res) =>{
+    const queryString = 'SELECT * FROM artists WHERE id =' + req.params.id;
+
+    pool.query(queryString, (err, result) =>{
+        if(err){
+            console.error('query error:', err.stack);
+            res.send('query error');
+        }else{
+            let data = result.rows[0];
+            res.render('edit', data);
+        }
+    });
+});
+
+app.put('/artists/:id', (req,res) => {
+    const queryString = 'UPDATE artists SET name = req.body.name, url_photo = req.body.photo_url, nationality = req.body.nationality) WHERE id=' + req.params.id;
+    pool.query(queryString, (err, res) => {
+        if(err){
+            console.log('query error: ', err.stack);
+            res.send('query error');
+        }else{
+            console.log("edit done");
+        }
+    })
+})
+
+app.get('/new', (req, res) => {
+  res.render('new');
+});
 
 /**
  * ===================================
@@ -69,13 +147,13 @@ app.get('/new', (request, response) => {
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
 let onClose = function(){
-  
+
   console.log("closing");
-  
+
   server.close(() => {
-    
+
     console.log('Process terminated');
-    
+
     pool.end( () => console.log('Shut down db connection pool'));
   })
 };
