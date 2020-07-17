@@ -1,16 +1,16 @@
-var React = require("react");
+var React = require('react');
+var DefaultLayout = require('./layouts/default');
 
-class Home extends React.Component {
-  render() {
-    return (
-      <html>
-        <head />
-        <body>
-          <h1>Welcome!</h1>
-        </body>
-      </html>
-    );
-  }
+class Artists extends React.Component {
+	render() {
+		return (
+			<DefaultLayout>
+				<div className="row my-5">
+					{/*{songs}*/}
+				</div>
+			</DefaultLayout>
+		);
+	}
 }
 
-module.exports = Home;
+module.exports = Artists;

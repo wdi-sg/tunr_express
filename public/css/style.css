@@ -1,0 +1,78 @@
+.buttons {
+    margin: 2rem 0;
+}
+.btn {
+    width: 140px;
+}
+.buttons > *{
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+a {
+    color: #333;
+}
+a:hover {
+    text-decoration: none;
+    color: #333;
+}
+.img-thumbnail {
+    width:100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    padding: 0;
+    transition: 0.5s;
+    margin-bottom: 2rem;
+}
+.img-thumbnail:after {
+    content: "";
+    display: block;
+    padding-bottom:100%;
+}
+
+a .img-thumbnail:hover {
+    opacity: 0.66666;
+}
+.img-thumbnail .caption {
+    position: absolute;
+    background: rgba(0,0,0,0.5);
+    text-align: center;
+    font-size: 1.5rem;
+    width: 100%;
+    color: #fff;
+    padding: 0.5rem;
+    bottom: 0;
+    margin: 0;
+}
+
+textarea.form-control {
+    height: 8rem;
+}
+
+.form-title {
+    margin-bottom: 2rem;
+}
+
+.btn-fav {
+    width: auto;
+    color: #666;
+    position: absolute;
+    right: 0;
+}
+.btn-fav i{
+    font-weight: 400;
+}
+.btn-fav.faved i{
+    font-weight: 800;
+}
+@media screen and (min-width: 768px) {
+    .container-fluid {
+        margin-top: 2rem;
+        padding: 0 4rem;
+    }
+    .navbar {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+}
