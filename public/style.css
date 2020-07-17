@@ -1,0 +1,36 @@
+.bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+
+}
+
+.jumbotron {
+	padding: 1rem 2rem;
+}
+
+a.btn.btn-primary.my-2, a.btn.btn-secondary.my-2 {
+	margin:5px 5px;
+}
+
+/*div.card.mb-4.shadow-sm {
+	height: 430px;
+}*/
+
+/*img.img-thumbnail.my-card {
+	height: 50%;
+}*/
+
+/*.audio-tag {
+	width: 100%;
+	border: solid 1px red;
+}*/
