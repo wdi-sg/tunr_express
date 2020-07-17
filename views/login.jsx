@@ -1,6 +1,6 @@
 var React = require("react");
 
-class New extends React.Component {
+class Register extends React.Component {
   render() {
     return (
       <html>
@@ -8,12 +8,10 @@ class New extends React.Component {
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
         </head>
         <body>
-          <h3 className="text-center">CREATE NEW ARTIST</h3>
-          <form method="POST" action="/artist?_method=POST" className="text-center">
-                <p>Name</p><input name="name" size="45"/>
-                <p>Photo URL</p><input name="photo_url" size="45"/>
-                <p>Nationality</p><input name="nationality" size="45"/>
-                <p></p>
+          <h3 className="text-center">Login</h3>
+          <form method="POST" action="/login?_method=POST" className="text-center">
+                <p>User Name</p><input name="username" size="25"/>
+                <p>Password</p><input name="password" size="25"/>
                 <p><input value="Submit" type="submit"/></p>
             </form>
         </body>
@@ -22,4 +20,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Register;
