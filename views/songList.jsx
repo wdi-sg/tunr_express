@@ -1,18 +1,16 @@
 var React = require("react");
 
-class Home extends React.Component {
+class songList extends React.Component {
   render() {
 
-    const artist = this.props.artist.map(element=> {
-        return(<div className="card text-center bg-light mb-3 border-dark mb-3" style={{ width: 300, margin: 10 }}>
-                    <img className="card-img-top" src={element.photo_url} alt="Card image cap" />
-                    <div className="card-body">
-                        <h5 className="card-title">{element.name}</h5>
-                        <p className="card-text">{element.nationality}</p>
-                        <a href={"/artists/"+element.id} class="btn btn-info align-bottom">View Artist</a>
-                    </div>
+    const song = this.props.songs.map(element => {
+      return(<div class="media mb-3">
+                <img src={element.artwork} class="mr-3" alt="..." style={{maxHeight: 100}}/>
+                <div class="media-body">
+                <h5 class="mt-0">{element.title}</h5>
+                <p>Album: {element.album}</p>
                 </div>
-        )
+              </div>)
     });
 
     return (
@@ -27,10 +25,19 @@ class Home extends React.Component {
         <body style={{backgroundImage : 'url("https://wallpaperaccess.com/full/646093.png")', backgroundPosition : "center", backgroundRepeat : "no-repeat", backgroundSize : "cover", height : "100vh", backgroundAttachment : "fixed"}}>
 
         <div className="container mx-auto">
-                <h1 className="text-center mt-5" style={{fontFamily : "Lora, serif", color:'white'
-}}>This Season's Hottest Artists</h1>
+                <h1 className="text-center my-5" style={{fontFamily : "Lora, serif", color:'white'
+}}>Song List</h1>
             <div className = "row mt-3" style={{ justifyContent : "center" }}>
-                {artist}
+                <div className="card text-center">
+                  <div className="card-header">
+                    {this.props.artist.name}
+                  </div>
+                  <div className="card-body">
+                    {song}
+                    <a href={"/artists/"+this.props.artist.id} className="btn btn-primary mr-3">Back to Artist</a>
+                    <a href={"/artists/"+this.props.artist.id+"/songs/new"} className="btn btn-success mr-3">Add New Song</a>
+                  </div>
+                </div>
             </div>
         </div>
 
@@ -43,4 +50,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = songList;
