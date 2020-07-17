@@ -1,0 +1,35 @@
+body{
+	background-image: url(https://ak6.picdn.net/shutterstock/videos/17003866/thumb/1.jpg);
+	background-size: contain;
+	background-attachment: fixed;
+	background-position: center;
+	text-align: center;
+	color:white;
+}
+.containertop{
+	margin:50px auto;
+}
+
+.giphy-embed{
+	width:100%;
+}
+
+.container{
+	width:1000px;
+	margin:20px auto;
+}
+
+h1,h3{
+	text-align: center;
+	font-family: 'Luckiest Guy', cursive;
+	color:red;
+}
+.button{
+	font-weight: bold;
+	font-size: 40px;
+	color:red;
+	font-family: 'Permanent Marker', cursive;
+}
+.button:hover{
+	color:white;
+	text-decoration: none;

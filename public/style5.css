@@ -1,0 +1,52 @@
+body{
+	background-image: url(https://ak6.picdn.net/shutterstock/videos/17003866/thumb/1.jpg);
+	background-size: contain;
+	background-attachment: fixed;
+	background-position: center;
+	text-align: center;
+	color:white;
+}
+
+.individualStyle{
+    display :block;
+    margin:10px 40px;
+}
+
+audio{
+	display:none;
+}
+
+p:hover audio{
+	display:inline-block;
+}
+
+.containertop{
+	margin:20px auto;
+}
+.button{
+	color:red;
+	font-family: 'Permanent Marker', cursive;
+}
+.button:hover{
+	color:white;
+	text-decoration: none;
+}
+
+.giphy-embed{
+	width:100%;
+}
+
+a{
+	font-size:30px;
+}
+
+h1{
+	margin-bottom: 30px;
+	color:red;
+}
+
+img{
+	height:400px;
+	width:400px;
+	border-radius: 10%;
+}

@@ -1,0 +1,52 @@
+body{
+	background-image: url(https://ak6.picdn.net/shutterstock/videos/17003866/thumb/1.jpg);
+	background-size: contain;
+	background-attachment: fixed;
+	background-position: center;
+	text-align: center;
+	color:white;
+	font-size: 20px;
+}
+.containertop{
+	margin:30px auto;
+	font-family: 'Permanent Marker', cursive;
+}
+
+.title{
+	border-right: 5px solid white;
+	border-left: 5px solid white;
+}
+
+.container{
+	width:1000px;
+	margin:20px auto;
+}
+.containerbtm{
+	margin-top: 50px;
+}
+
+h1{
+	color:red;
+}
+
+.button{
+	color:red;
+	font-size: 30px;
+}
+
+.button:hover{
+	color:white;
+	text-decoration: none;
+}
+
+img{
+	margin:30px auto;
+	width:500px;
+	height:300px;
+	border-radius: 10%;
+}
+
+.containermid{
+	margin:50px auto;
+	font-family: 'Fira Sans Extra Condensed', sans-serif;
+}

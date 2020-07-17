@@ -14,10 +14,9 @@ class Home extends React.Component {
             var urlNew = '/homepage/new';
             var mapArtistData = this.props.result.map(artist=>{
             var url = '/homepage/'+artist.id;
-            var urllogin = '/login'
             return(
                 <div style={individualStyle}>
-                    <a href={urllogin}>
+                    <a href={url}>
                         <img style={imageStyle} src ={artist.photo_url}/>
                     </a>
                     <p>Artist Name: {artist.name}</p>
@@ -42,14 +41,7 @@ class Home extends React.Component {
                 <h1>WELCOME TO TUNR_DB</h1>
             </div>
             <div className="newArtist col-4">
-                <form method='post' action='/login'>
-                  <input type='text' name='name' placeholder='username'/>
-                  <br />
-                  <input type='password' name='password' placeholder='password'/>
-                  <br />
-                  <input type='submit' value='Login'/>
-                </form>
-                <a href='/create'>Create Account</a>
+                <a className="button"href={urlNew}><h3>!!Add New Artist!!</h3></a>
             </div>
         </div>
           <div className="container">
