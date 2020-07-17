@@ -1,23 +1,24 @@
-const React = require("react");
+const React = require('react');
 const Layout = require('./layout');
 
-class New extends React.Component {
+class Edit extends React.Component {
     render() {
+        let {id, name, photo_url, nationality} = this.props;
         return (
             <Layout>
 
-                <form method="POST" action="/artists">
+                <form method="POST" action={"/artists/"+id+"?_method=put"}>
                     <div className="form-group">
                         <label>Artist Name</label>
-                        <input className="form-control form-control-lg" type="text" placeholder="e.g. Maroon HTML 5" name="name" required/>
+                        <input className="form-control form-control-lg" type="text" value={name} name="name" required/>
                     </div>
                     <div className="form-group">
                         <label>URL</label>
-                        <input className="form-control" type="url" placeholder="e.g. http://www.image.com/banana.jpg" name="photo_url"/>
+                        <input className="form-control" type="url" value={photo_url} name="photo_url"/>
                     </div>
                     <div className="form-group">
                         <label>Nationality</label>
-                        <input className="form-control" type="text" placeholder="e.g. Javascriptian" name="nationality" required/>
+                        <input className="form-control" type="text" value={nationality} name="nationality" required/>
                     </div>
                     <input type="submit" className="btn btn-success btn-block" value="Submit"/>
                 </form>
@@ -27,4 +28,4 @@ class New extends React.Component {
     };
 };
 
-module.exports = New;
+module.exports = Edit;
