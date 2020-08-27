@@ -13,7 +13,7 @@ class Update_song extends React.Component {
             <img src={artwork} alt="song artwork" width="75"/>
             <div>Album: {album}</div>
             <div>Artist ID: {artist_id}</div>
-            <div><audio controls><source src={preview_link} type="audio/mpeg/m4a"/></audio></div>
+            <div><audio controls><source src={preview_link} type="audio/mpeg"/></audio></div>
             <br/>
             <br/>
           </div>

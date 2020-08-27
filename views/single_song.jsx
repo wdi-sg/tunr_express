@@ -14,7 +14,7 @@ class Single_song extends React.Component {
                 <img src={song.artwork} alt="song artwork" width="100"/>
                 <div>Artist: {song.name}</div>
                 <div>Album: {song.album}</div>
-                <div><audio controls><source src={song.preview_link} type="audio/mpeg/m4a"/></audio></div>
+                <div><audio controls><source src={song.preview_link} type="audio/mpeg"/></audio></div>
                 <br/>
                 <br/>
                 <div>

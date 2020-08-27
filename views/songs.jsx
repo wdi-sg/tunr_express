@@ -10,7 +10,7 @@ class Songs extends React.Component {
         <td>{song.name}</td>
         <td>{song.title}</td>
         <td>{song.album}</td>
-        <td><audio controls><source src={song.preview_link} type="audio/mpeg/m4a"/></audio></td>
+        <td><audio controls><source src={song.preview_link} type="audio/mpeg"/></audio></td>
         <td><img src={song.artwork} alt="song artwork" width="50"/></td>
     </tr>
     })
