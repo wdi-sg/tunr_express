@@ -12,7 +12,8 @@ class Home extends React.Component {
       <html>
         <head />
         <body>
-          <h1>Welcome!</h1>
+          <h1>Artists</h1>
+          <a href="/songs/"><button>Browse by song instead</button></a>
           <ul>
           {artistHTML}
           </ul>
