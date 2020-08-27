@@ -54,8 +54,8 @@ app.get('/', (request, response) => {
 
 //See all artists
 app.get('/artists/', async (request, response) => {
-  const results = await pool.query("select * from artists")
-  response.render('index', {data:results.rows});
+  const result = await pool.query("select * from artists")
+  response.render('index', {data:result.rows});
 });
 
 //Display the form for a single artist
@@ -64,7 +64,19 @@ app.get('/artists/new', (request, response) => {
 });
 
 //Create a new artist
-app.post('/artists', (request, response) => {
+app.post('/artists', async (request, response) => {
+  let query =
+  `INSERT INTO artists
+  (name, photo_url, nationality)
+  VALUES ($1, $2, $3)`
+
+  let values = [
+  request.body.name,
+  request.body.photo_url,
+  request.body.nationality,
+  ]
+
+  const result = await pool.query(query, values)
   response.redirect('/artists/');
 });
 
