@@ -67,7 +67,23 @@ app.get('/artists', (request , response) => {
     })
 })
 
+app.get('/artists/new', (request, response) => {
+    response.send(`<form method="POST" action="/artists/new">
+                <input type="text" name="name" placeholder="Name"/>
+                <input type="text" name="photo_url" placeholder="Photo URL"/>
+                <input type="text" name="nationality" placeholder="nationality"/>
+                <input type="Submit" value="submit"/>
+            </form>`)
+})
 
+app.post('/artists/new', (request, response) =>{
+    let input = request.body;
+    let insertQuery = `INSERT INTO artists (name,photo_url,nationality) VALUES ('${input.name}','${input.photo_url}','${input.nationality}')`
+    pool.query(insertQuery, (err, res) => {
+        if(err){response.send(err)}
+        response.send("Successfully Added!");
+    })
+})
 
 
 
@@ -78,15 +94,6 @@ app.get('/new', (request, response) => {
   // respond with HTML page with form to create new pokemon
   response.render('new');
 });
-
-
-// const displayArtists=(req)=> {
-//     pool.query(req, (err, response) => {
-//     console.log(response);
-//     return response;
-//     })
-// }
-
 
 
 
