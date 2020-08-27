@@ -130,6 +130,38 @@ app.get("/artist/:id/songs",(req,response)=>{
 })
 })
 
+// EDIT FEATURE GET, THEN PUT
+app.get('/artists/:id/edit', (request, response) => {
+  const artistId = request.params.id;
+
+  pool.query('SELECT * FROM artists WHERE id=$1', [artistId], (error, result) => {
+    if (error) {
+      console.log('artist query error: ', error.message, error.stack);
+    } else {
+        console.log(result.rows)
+      const artist = result.rows[0].name;
+      const artistId = result.rows[0].id;
+      const obj = {"artist": artist, "id": artistId };
+      console.log(obj)
+
+      response.render('edit', obj);
+    }
+  });
+});
+
+app.put('/artists/:id',(request,response) => {
+    let values = [request.body.artistName, request.body.photoURL, request.body.nationality, request.params.id]
+  let query = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4"
+    pool.query(query,values,(err,res)=>{
+        if(err){
+            console.log('err at edit query', err);
+        } else{
+            response.send("You Successfully updated the information")
+        }
+    })
+})
+
+
 /**
  * ===================================
  * Listen to requests on port 3000
