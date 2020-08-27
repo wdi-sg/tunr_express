@@ -16,11 +16,14 @@ export default class Profile extends React.Component { //component is capitalize
                       </ul>
                     </div>
                     <div>
+                    <a href={`/artists/${id}/songs/new`}>Add Song</a>
+                    <br />
                         <a href={`/artists/${id}/delete`}>Delete Artist</a>
                         <br />
                         <a href={`/artists/${id}/edit`}>Update Artist</a>
                          <br />
                         <a href={`/artists/`}>Home</a>
+                        <br />
                     </div>
                 </body>
             </html>
