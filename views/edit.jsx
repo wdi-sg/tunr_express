@@ -4,7 +4,8 @@ class Edit extends React.Component {
   render() {
     const artist = this.props.artist;
     const id =this.props.id;
-    const urlHere ="/artists/" + id + "?_method=put"
+    const urlHere ="/artists/" + id + "?_method=put";
+    let deleteURL = "/artists/"+id+"?_method=delete"
 
 
     return (
@@ -25,6 +26,12 @@ class Edit extends React.Component {
 
                <input type="submit" value="Submit"/>
             </form>
+            <br/><br/>
+          <form method="POST" action={deleteURL}>
+          <input type="submit" value="DELETE ARTIST"/>
+
+          </form>
+          <br/><br/>
 
         </body>
       </html>

@@ -161,6 +161,19 @@ app.put('/artists/:id',(request,response) => {
     })
 })
 
+//DELETE FEATURE
+app.delete('/artists/:id', (request, response) => {
+  let queryText="DELETE from artists WHERE id=$1"
+  let id = [request.params.id];
+  pool.query(queryText, id, (err, res)=>{
+    if(err){
+        console.log(err.message)
+        response.send("Error occurred")
+    } else {
+            response.send("Artist successfully deleted." )
+        }
+  })
+});
 
 /**
  * ===================================
