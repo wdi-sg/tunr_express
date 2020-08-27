@@ -66,6 +66,17 @@ app.get('/artists', (request , response) => {
         response.send(`<h1>Artists</h1> <ol>${artistList}</ol>`);
     })
 })
+app.get('/songs', (request , response) => {
+    let queryShow = "SELECT * FROM songs"
+    pool.query(queryShow, (err, res) => {
+        if(err){console.log(err);}
+        let songList = []
+        res.rows.forEach(item => {
+            songList += (`<li> ${item.title} </li> <br>`)
+        })
+        response.send(`<h1>Song List</h1> <ol>${songList}</ol>`);
+    })
+})
 
 app.get('/artists/new', (request, response) => {
     response.send(`<form method="POST" action="/artists/new">
@@ -74,6 +85,36 @@ app.get('/artists/new', (request, response) => {
                 <input type="text" name="nationality" placeholder="nationality"/>
                 <input type="Submit" value="submit"/>
             </form>`)
+})
+
+app.get('/songs/new', (request, response) => {
+    response.send(`<form method="POST" action="/songs/new">
+                <input type="text" name="title" placeholder="Title"/>
+                <input type="text" name="album" placeholder="album"/>
+                <input type="text" name="preview_link" placeholder="preview_link"/>
+                <input type="text" name="artwork" placeholder="artwork"/>
+                <input type="text" name="artist_id" placeholder="artist_id"/>
+                <input type="Submit" value="submit"/>
+            </form>`)
+})
+app.get('/songs/new/:id', (request, response) => {
+    let index = request.params.id;
+    response.send(`<form method="POST" action="/songs/new">
+                <input type="text" name="title" placeholder="Title"/>
+                <input type="text" name="album" placeholder="album"/>
+                <input type="text" name="preview_link" placeholder="preview_link"/>
+                <input type="text" name="artwork" placeholder="artwork"/>
+                <input type="text" name="artist_id" value='${index}'/>
+                <input type="Submit" value="submit"/>
+            </form>`)
+})
+app.post('/songs/new', (request, response) =>{
+    let input = request.body;
+    let insertQuery = `INSERT INTO songs (title,album,preview_link,artwork,artist_id) VALUES ('${input.title}','${input.album}','${input.preview_link}','${input.artwork}','${input.artist_id}')`
+    pool.query(insertQuery, (err, res) => {
+        if(err){response.send("Did not add successfully.")}
+        response.send("Successfully Added!");
+    })
 })
 app.post('/artists/new', (request, response) =>{
     let input = request.body;
@@ -84,13 +125,51 @@ app.post('/artists/new', (request, response) =>{
     })
 })
 
+
 app.get('/artists/:id', (request, response) =>{
-    let getArtist = (`SELECT name,photo_url,nationality FROM Artists WHERE id=${request.params.id}`)
+    let index = request.params.id;
+    let getArtist = (`SELECT name,photo_url,nationality FROM Artists WHERE id=${index}`)
     pool.query(getArtist, (err, res) => {
         if(err || request.params.id == 0){response.send("Invalid Id")}
+        else{
         response.send(`<h1> ${res.rows[0].name} </h1>
-                       <img src= ${res.rows[0].photo_url} width='500'>
-                       <div>Nationality: ${res.rows[0].nationality}.</div>`);
+                       <img src= ${res.rows[0].photo_url} width='500'/>
+                       <div>Nationality: ${res.rows[0].nationality}.</div>
+                       <br>
+                       <form method ="POST" action='/artists/${index}?_method=delete'>
+                            <input type="Submit" value="Delete this Artist"/>
+                       </form>`);}
+    })
+})
+app.get('/songs/:id', (request, response) =>{
+    let index = request.params.id;
+    let getSong = (`SELECT title,album,preview_link,artwork,artist_id FROM songs WHERE id=${index}`)
+    pool.query(getSong, (err, res) => {
+        if(err || request.params.id == 0){response.send("Invalid Id")}
+        else{
+        response.send(`<h1> ${res.rows[0].title} </h1>
+                       <img src= ${res.rows[0].artwork} width='500'/>
+                       <div>${res.rows[0].album}</div>
+                       <div><${res.rows[0].preview_link}/div>
+                       <br>
+                       <form method ="POST" action='/songs/${index}?_method=delete'>
+                            <input type="Submit" value="Delete this Song"/>
+                       </form>`);}
+    })
+})
+
+app.get('/songs/:id/edit', (request,response) => {
+    let index = request.params.id;
+    let getArtist = (`SELECT title,album,preview_link,artwork,artist_id FROM songs WHERE id='${index}'`)
+    pool.query(getArtist, (err, res) => {
+        let index2 = res.rows[0].id;
+        response.send(`<form method='POST' action='/songs/${index}?_method=put'>
+                <input type="text" name="title" value='${res.rows[0].title}'>
+                <input type="text" name="album" value='${res.rows[0].album}'>
+                <input type="text" name="preview_link" value='${res.rows[0].preview_link}'>
+                <input type="text" name="artwork" value='${res.rows[0].artwork}'>
+                <input type="Submit" value="submit"/>
+                </form>`)
     })
 })
 app.get('/artists/:id/edit', (request,response) => {
@@ -105,9 +184,15 @@ app.get('/artists/:id/edit', (request,response) => {
                 <input type="Submit" value="submit"/>
                 </form>`)
     })
-                // <input type="text" name="id" placeholder="" value={id}/>
 })
 
+app.put('/songs/:id',(request, response) => {
+    let input = request.body;
+    let index = request.params.id;
+    let editQuery = `UPDATE songs SET title='${input.title}',album='${input.album}',preview_link='${input.preview_link}',artwork='${input.artwork}' WHERE id=${index}`
+    pool.query(editQuery, (err, res) =>{if(err) console.log(err)})
+    response.send("Successfully Updated!");
+})
 app.put('/artists/:id',(request, response) => {
     let input = request.body;
     let index = request.params.id;
@@ -116,12 +201,44 @@ app.put('/artists/:id',(request, response) => {
     response.send("Successfully Updated!");
 })
 
+app.delete('/songs/:id', (request, response) => {
+    let index = request.params.id;
+    let deleteQuery = `DELETE FROM songs WHERE id='${index}'`
+    pool.query(deleteQuery, (err, res)=>{
+        response.send("Deleted!")
+})
+})
+app.delete('/artists/:id', (request, response) => {
+    let index = request.params.id;
+    let deleteQuery = `DELETE FROM artists WHERE id='${index}'`
+    pool.query(deleteQuery, (err, res)=>{
+        response.send("Deleted!")
+})
+})
+
+app.get('/artists/:id/songs', (request, response) => {
+    let index = request.params.id;
+    let query = `SELECT songs.title,artists.name FROM songs INNER JOIN artists ON songs.artist_id='${index}' WHERE artists.id='${index}'`;
+    // let query = `SELECT songs.title FROM songs WHERE songs.artist_id='${index}'`;
+    pool.query(query, (err, res)=> {
+        let songList = [];
+        let artist;
+        res.rows.forEach(item => {
+            songList += (`<li> ${item.title} </li> <br>`)
+            if(item.name) {
+                artist = item.name;
+            }
+        })
+        response.send(`<h1>${artist}</h1> <ol>${songList}</ol> <a href='/songs/new/${index}'>Create a new song</a>`)
+    })
+})
 
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
-});
+
+// app.get('/new', (request, response) => {
+//   // respond with HTML page with form to create new pokemon
+//   response.render('new');
+// });
 
 
 
@@ -130,20 +247,20 @@ app.get('/new', (request, response) => {
  * ===================================
  * Listen to requests on port 3000
  * ===================================
- */
+//  */
 const server = app.listen(3000, () => console.log('~~~ Tuning in to the waves of port 3000 ~~~'));
 
-let onClose = function(){
+// let onClose = function(){
 
-  console.log("closing");
+//   console.log("closing");
 
-  server.close(() => {
+//   server.close(() => {
 
-    console.log('Process terminated');
+//     console.log('Process terminated');
 
-    pool.end( () => console.log('Shut down db connection pool'));
-  })
-};
+//     pool.end( () => console.log('Shut down db connection pool'));
+//   })
+// };
 
-process.on('SIGTERM', onClose);
-process.on('SIGINT', onClose);
+// process.on('SIGTERM', onClose);
+// process.on('SIGINT', onClose);
