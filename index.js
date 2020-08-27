@@ -53,8 +53,9 @@ app.get('/', (request, response) => {
 });
 
 //See all artists
-app.get('/artists/', (request, response) => {
-  response.render('index');
+app.get('/artists/', async (request, response) => {
+  const results = await pool.query("select * from artists")
+  response.render('index', {data:results.rows});
 });
 
 //Display the form for a single artist
