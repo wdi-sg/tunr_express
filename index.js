@@ -85,11 +85,37 @@ app.get('/artists/:id', async (request, response) => {
   let query =
   `select *
   from artists
-  where id = ${request.params.id}`
+  where id = $1`
 
-  const result = await pool.query(query);
+  const result = await pool.query(query, [request.params.id]);
   response.render('show', {...result.rows[0]});
 });
+
+//See a single artist songs
+app.get('/artists/:id/songs', async (request, response) => {
+  let query =
+  `select
+    artists.id,
+    name,
+    photo_url,
+    nationality,
+    title,
+    album,
+    preview_link,
+    artwork
+    from
+    artists
+    inner join
+    songs
+    on
+    artists.id = songs.artist_id
+    where
+    artists.id = $1`
+
+  const result = await pool.query(query,[request.params.id]);
+  response.render('artistSongs', {data:result.rows});
+});
+
 
 //Display the form for editing a single artist
 app.get('/artists/:id/edit', async (request, response) => {
