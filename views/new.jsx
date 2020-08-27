@@ -1,16 +1,15 @@
 var React = require("react");
 
-class New extends React.Component {
+export default class New extends React.Component {
   render() {
-    return (
-      <html>
-        <head />
-        <body>
-          <h3>Form Goes Here!</h3>
-        </body>
-      </html>
-    );
+        return (
+<form method="POST" action="/artists" >
+    Name:  <input type="text" name="name" /> <br /> <br />
+    Photo Url: <input type="text" name="photo_url" /> <br /> <br />
+    Nationality:  <input type="text" name="nationality" /> <br /> <br />
+    <input type="submit" value="Submit" />
+</form>
+            );
   }
 }
 
-module.exports = New;

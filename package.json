@@ -8,16 +8,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.generalassemb.ly/ga-wdi-exercises/tunr_sinatra.git"
+    "url": "git+https://github.com/chewjta/tunr_express.git"
   },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chewjta/tunr_express/issues"
+  },
+  "homepage": "https://github.com/chewjta/tunr_express#readme",
   "dependencies": {
-    "express": "^4.16.3",
-    "express-react-views": "^0.10.5",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "express-react-views": "^0.11.0",
     "method-override": "^3.0.0",
-    "pg": "^7.4.3",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "pg": "^8.3.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }
