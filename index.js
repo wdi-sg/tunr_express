@@ -79,6 +79,20 @@ app.post("/artists",(req,response) =>{
     })
 })
 
+//DISPLAY SINGLE ARTIST
+app.get("/artist/:id",(req,response)=>{
+    let id = parseInt(req.params.id);
+    let queryText = `SELECT * FROM artists WHERE id=${id}`;
+    pool.query(queryText,(err,res)=>{
+        if(err){
+            console.log(err,"error at query")
+        } else{
+            let obj = res.rows[0]
+            response.render("artist",obj);
+        }
+    })
+})
+
 /**
  * ===================================
  * Listen to requests on port 3000
