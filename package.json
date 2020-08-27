@@ -4,7 +4,9 @@
   "description": "We're going to be building Tunr, the worlds #1 music catalog / player (those Spotify haters can't keep up with us).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "nodemon index.js"
+
   },
   "repository": {
     "type": "git",
