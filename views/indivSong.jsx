@@ -11,7 +11,7 @@ class Song extends React.Component {
         <head />
         <body>
           <h1>{song.title} by <a href={artistURL}>{song.artist_name}</a></h1>
-          <a href={editFormURL}><button>Edit this Song!</button></a><br/>
+          <a href={editFormURL}><button>Edit this Song!</button></a><br/><br/>
           <img src={song.artwork}/><br/>
           <p>Album: {song.album}</p>
           <p><a href={song.preview_link}>Song Preview</a></p>

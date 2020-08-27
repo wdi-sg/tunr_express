@@ -11,7 +11,7 @@ class Artist extends React.Component {
         <head />
         <body>
           <h1>{artist.name}</h1>
-          <a href={editFormURL}><button>Edit this artist!</button></a><br/>
+          <a href={editFormURL}><button>Edit this artist!</button></a><br/><br/>
           <img src={artist.photo_url}/><br/>
           <p>Nationality: {artist.nationality}</p>
           <a href={songsURL}>See this artist's songs</a><br/><br/>

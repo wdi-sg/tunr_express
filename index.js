@@ -126,23 +126,45 @@ app.delete('/artists/:id', (request, response) => {
         console.log(err.message)
         response.send("Error occurred")
     } else {
-        response.send("Artist successfully deleted.<a href='/artists/'>Back to homepage.</a>" )
+        let queryText2 = "DELETE from songs WHERE artist_id=$1"
+        pool.query(queryText2, artistId, (err, res)=>{
+            response.send("Artist successfully deleted.<a href='/artists/'>Back to homepage.</a>" )
+        })
     }
   })
 });
 
 app.get('/artists/:id/songs', (request, response)=>{
-    let queryText = "SELECT * FROM songs LEFT JOIN (SELECT id AS artist_ids, name AS artist_name FROM artists) AS artistB ON songs.artist_id=artistB.artist_ids WHERE artist_id=$1"
+    let queryText = "SELECT * FROM songs INNER JOIN (SELECT id AS artist_ids, name AS artist_name FROM artists) AS artistB ON songs.artist_id=artistB.artist_ids WHERE artist_id=$1"
     let artistId = [request.params.id]
     pool.query(queryText, artistId, (err, res)=>{
         if(err){
             console.log(err.message)
             response.send("Error occurred")
         } else {
-            response.render('artistSongs', res)
+            if(res.rows.length==0){
+                let artistnewSongURL = "/artists/" + request.params.id + "/songs/new"
+                response.send(`No songs for this artist yet!  <a href=${artistnewSongURL}>Add a new song for this artist.</a>`)
+            } else {
+                response.render('artistSongs', res)
+            }
+
         }
     })
 
+})
+
+app.get('/artists/:id/songs/new', (request, response)=>{
+    let queryText = "SELECT * FROM artists WHERE id=$1"
+    let artistId = [request.params.id]
+    pool.query(queryText, artistId, (err, res)=>{
+        if(err){
+            console.log(err.message)
+            response.send("error occurred.")
+        } else {
+            response.render('newArtistSong', res)
+        }
+    })
 })
 
 app.get('/songs/', (request, response) => {
@@ -213,7 +235,6 @@ app.get('/songs/:id/edit', (request, response) => {
                 response.send("Error occurred.")
             } else {
                 res.artists = res2.rows
-                console.log(res)
                 response.render('editSongs', res);
             }
         })
@@ -230,7 +251,7 @@ app.put('/songs/:id', (request, response) => {
         console.log(err)
         response.send("Error occurred. Data not updated.")
     } else {
-        response.send("Song created successfully! <a href='/songs/'>Back to homepage.</a>")
+        response.send("Song edited successfully! <a href='/songs/'>Back to homepage.</a>")
     }
   })
 

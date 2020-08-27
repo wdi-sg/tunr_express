@@ -5,7 +5,7 @@ class Home extends React.Component {
         let allArtists = this.props.rows
         let artistHTML = allArtists.map((item)=>{
             let artistURL = "/artists/" + item.id
-            return <a href={artistURL}><li>{item.name}</li></a>
+            return <li><a href={artistURL}>{item.name}</a></li>
         })
 
     return (

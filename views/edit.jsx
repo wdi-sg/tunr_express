@@ -21,6 +21,7 @@ class Edit extends React.Component {
           <br/><br/>
           <form method="POST" action={deleteURL}>
           <input type="submit" value="DELETE ARTIST"/>
+          <p>Note: deleting this artist will delete all of their songs, too.</p>
           </form>
           <br/><br/>
           <button><a href="/artists/">Cancel (Back to homepage)</a></button>
