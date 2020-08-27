@@ -82,22 +82,59 @@ app.post('/artists', (request, response) => {
 
 app.get('/artists/:id', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  let artistId = [request.params.id]
+  let queryText = "SELECT * FROM artists WHERE id=$1"
+  pool.query(queryText, artistId, (err, res)=>{
+    if(err){
+        console.log(err)
+        response.send("Error occurred.")
+    } else {
+        response.render('indivArtist', res)
+    }
+  })
 });
 
 app.get('/artists/:id/edit', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  let artistId = [request.params.id]
+  let queryText = "SELECT * FROM artists WHERE id=$1"
+  pool.query(queryText, artistId, (err, res)=>{
+    if(err){
+        console.log(err.message)
+        response.send("Error occurred")
+    } else {
+        response.render('edit', res)
+    }
+  })
 });
 
-app.put('/artists/:id/edit', (request, response) => {
+app.put('/artists/:id', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  let values = [request.body.artistName, request.body.photoURL, request.body.nationality, request.params.id]
+  let queryText = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4"
+  pool.query(queryText, values, (err, res)=>{
+    if(err){
+        console.log(err.message)
+        response.send("Error occurred, artist not updated.")
+    } else {
+        response.send("Artist successfully updated. <a href='/artists/'>Back to homepage.</a>")
+    }
+  })
+
 });
 
-app.delete('/artists/:id/edit', (request, response) => {
+app.delete('/artists/:id', (request, response) => {
   // respond with HTML page with form to create new pokemon
-  response.render('new');
+  let queryText="DELETE from artists WHERE id=$1"
+  let artistId = [request.params.id]
+  pool.query(queryText, artistId, (err, res)=>{
+    if(err){
+        console.log(err.message)
+        response.send("Error occurred")
+    } else {
+        response.send("Artist successfully deleted.<a href='/artists/'>Back to homepage.</a>" )
+    }
+  })
 });
 
 
