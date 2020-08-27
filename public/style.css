@@ -1,0 +1,165 @@
+body {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+a {
+    color: rgb(109,208,126, 1);
+    text-decoration: none;
+}
+
+a:hover {
+    background: rgb(109,208,126, 1);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+h1 {
+    transform: translateY(-2px);
+    background: rgb(109,208,126, 1);
+    color: #31062d;
+    line-height: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 768px;
+    margin: 10vh auto;
+}
+
+.artists {
+    margin: 30px auto;
+    text-align: center;
+}
+
+.artists ul li {
+    list-style: none;
+    display: inline-block;
+    padding: 5px 15px;
+    border: 2px solid rgb(109,208,126, 1);
+    margin: 10px;
+    cursor: pointer;
+}
+
+.artists ul a {
+    color: #222222;
+}
+
+.artists ul li:hover {
+    color: #ffffff;
+}
+
+.form-row {
+    margin: 25px 0;
+}
+
+.artist-name {
+    font-weight: bold;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+}
+
+.artist {
+    display: flex;
+    justify-content: space-between;
+}
+
+.artist-image,
+.artist-description {
+    width: 45%;
+}
+
+.artist-image img {
+    max-width: 100%;
+    display: block;
+}
+
+.songs {
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-align: center;
+    min-height: 30px;
+    margin-top: 5px;
+    font-size: 18px;
+    font-family: 'Playfair Display', serif;
+    border: 2px solid rgb(109,208,126, 1);
+}
+
+input[type="text"] {
+    margin-top: 8px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-align: center;
+    min-height: 30px;
+    min-width: 80%;
+    font-size: 18px;
+    font-family: 'Playfair Display', serif;
+    border: 1px solid rgb(109,208,126, 1);
+}
+
+.input-text:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.button-submit {
+    background: rgb(109,208,126, 1);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
+}
+
+.button-submit:hover {
+    background: #000000;
+    cursor: pointer;
+}
+
+.button-edit,
+.button-delete {
+    width: 37%;
+    margin: 0;
+    display: inline-block;
+}
+
+.button-edit {
+    background: rgb(109,208,126, 1);
+    padding: 10px 20px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
+}
+
+.button-edit:hover {
+    background: #000000;
+    cursor: pointer;
+}
+
+.button-delete {
+    background: #555555;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #ffffff;
+    font-family: 'Playfair Display', serif;
+}
+
+.button-delete:hover {
+    background: #000000;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    padding-top: 10px;
+    border-top: 2px dotted #eeeeee;
+}
