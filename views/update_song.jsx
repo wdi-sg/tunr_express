@@ -1,28 +1,24 @@
 var React = require("react");
 
-class New extends React.Component {
+class Update_song extends React.Component {
   render() {
+    let {id, title, album, preview_link, artwork, artist_id} = this.props[0];
     return (
       <html>
         <head />
         <body>
-          <h2>Add a new artist</h2>
+          <h2>Edit this song</h2>
           <div>
-            <form method="POST" action="/artists">
-              Name: <input type="text" name="name" id="name"/>
-              <br/>
-              Photo Url: <input type="text" name="photo_url" id="photo"/>
-              <br/>
-              Nationality: <input type="text" name="nationality" id="nationality"/>
-              <br/>
-              <input type="submit" value="Submit"/>
-            </form>
+            <h2>{title}</h2>
+            <img src={artwork} alt="song artwork" width="75"/>
+            <div>Album: {album}</div>
+            <div>Artist ID: {artist_id}</div>
+            <div><audio controls><source src={preview_link} type="audio/mpeg/m4a"/></audio></div>
+            <br/>
+            <br/>
           </div>
-          <br/>
-          <br/>
-          <h2>Add a new song</h2>
           <div>
-            <form method="POST" action="/songs">
+            <form method="POST" action={`/artists/${id}?_method=PUT`}>
               Title: <input type="text" name="title" id="title"/>
               <br/>
               Album: <input type="text" name="album" id="album"/>
@@ -42,4 +38,4 @@ class New extends React.Component {
   }
 }
 
-module.exports = New;
+module.exports = Update_song;
