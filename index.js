@@ -93,6 +93,43 @@ app.get("/artist/:id",(req,response)=>{
     })
 })
 
+//DISPLAY ALL ARTIST
+app.get("/artists/",(req,response)=>{
+    let queryText = 'SELECT name,id FROM artists';
+    pool.query(queryText,(err,res)=>{
+        if(err){
+            console.log(err,"error at query")
+        } else{
+            let obj = res.rows;
+            response.render('artists', obj);
+
+        }
+    })
+})
+
+//DISPLAY ALL SONGS IN ARTIST
+app.get("/artist/:id/songs",(req,response)=>{
+    let id = req.params.id
+    let query = `SELECT name FROM artists WHERE id =${id}`;
+    pool.query(query,(err,result)=>{
+        if(err){
+            console.log(err,"error at query")
+        } else{
+            let artist = result.rows[0];
+
+    let queryText = `SELECT title FROM songs WHERE artist_id ='${id}'`;
+    pool.query(queryText,(err,res)=>{
+        if(err){
+            console.log(err,"error at query")
+        } else{
+            let songs = res.rows;
+            response.render('artistsongs',{"songs": songs, "artist": artist})
+        }
+    })
+}
+})
+})
+
 /**
  * ===================================
  * Listen to requests on port 3000
