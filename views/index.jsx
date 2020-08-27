@@ -1,17 +1,17 @@
 var React = require("react");
 
-class New extends React.Component {
+class Index extends React.Component {
   render() {
     return (
       <html>
         <head />
         <body>
-          <h3>Form Goes Here!</h3>
-          <p>Display the form for a single artist</p>
+          <h3>Index!</h3>
+          <p>See all the artists</p>
         </body>
       </html>
     );
   }
 }
 
-module.exports = New;
+module.exports = Index;

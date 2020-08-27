@@ -49,15 +49,42 @@ app.engine('jsx', reactEngine);
  */
 
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  response.redirect('/artists/');
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
+//See all artists
+app.get('/artists/', (request, response) => {
+  response.render('index');
+});
+
+//Display the form for a single artist
+app.get('/artists/new', (request, response) => {
   response.render('new');
+});
+
+//Create a new artist
+app.post('/artists', (request, response) => {
+  response.redirect('/artists/');
+});
+
+//See a single artist
+app.get('/artists/:id', (request, response) => {
+  response.render('show');
+});
+
+//Display the form for editing a single artist
+app.get('/artists/:id/edit', (request, response) => {
+  response.render('edit');
+});
+
+//Update a artist
+app.put('/artists/:id', (request, response) => {
+  response.redirect('/artists/');
+});
+
+//Remove a artist
+app.delete('/artists/:id', (request, response) => {
+  response.redirect('/artists/');
 });
 
 
