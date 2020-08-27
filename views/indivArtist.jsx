@@ -4,6 +4,7 @@ class Artist extends React.Component {
   render() {
         let artist = this.props.rows[0]
         let editFormURL="/artists/"+artist.id+"/edit"
+        let songsURL = "/artists/"+artist.id+"/songs"
 
     return (
       <html>
@@ -13,6 +14,7 @@ class Artist extends React.Component {
           <a href={editFormURL}><button>Edit this artist!</button></a><br/>
           <img src={artist.photo_url}/><br/>
           <p>Nationality: {artist.nationality}</p>
+          <a href={songsURL}>See this artist's songs</a>
 
         </body>
       </html>

@@ -61,12 +61,10 @@ app.get('/artists/', (request, response) => {
 });
 
 app.get('/artists/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   response.render('new');
 });
 
 app.post('/artists', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   let queryText = "INSERT INTO artists(name,photo_url,nationality) VALUES($1,$2,$3)"
   let values = [request.body.artistName, request.body.photoURL, request.body.nationality]
   pool.query(queryText, values, (err, res)=>{
@@ -81,7 +79,6 @@ app.post('/artists', (request, response) => {
 });
 
 app.get('/artists/:id', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   let artistId = [request.params.id]
   let queryText = "SELECT * FROM artists WHERE id=$1"
   pool.query(queryText, artistId, (err, res)=>{
@@ -95,7 +92,6 @@ app.get('/artists/:id', (request, response) => {
 });
 
 app.get('/artists/:id/edit', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   let artistId = [request.params.id]
   let queryText = "SELECT * FROM artists WHERE id=$1"
   pool.query(queryText, artistId, (err, res)=>{
@@ -109,7 +105,6 @@ app.get('/artists/:id/edit', (request, response) => {
 });
 
 app.put('/artists/:id', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   let values = [request.body.artistName, request.body.photoURL, request.body.nationality, request.params.id]
   let queryText = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4"
   pool.query(queryText, values, (err, res)=>{
@@ -124,7 +119,6 @@ app.put('/artists/:id', (request, response) => {
 });
 
 app.delete('/artists/:id', (request, response) => {
-  // respond with HTML page with form to create new pokemon
   let queryText="DELETE from artists WHERE id=$1"
   let artistId = [request.params.id]
   pool.query(queryText, artistId, (err, res)=>{
@@ -136,6 +130,20 @@ app.delete('/artists/:id', (request, response) => {
     }
   })
 });
+
+app.get('/artists/:id/songs', (request, response)=>{
+    let queryText = "SELECT * FROM songs INNER JOIN (SELECT id, name AS artist_name FROM artists) AS artistB ON songs.artist_id=artistB.id WHERE artist_id=$1"
+    let artistId = [request.params.id]
+    pool.query(queryText, artistId, (err, res)=>{
+        if(err){
+            console.log(err.message)
+            response.send("Error occurred")
+        } else {
+            response.render('artistSongs', res)
+        }
+    })
+
+})
 
 
 
