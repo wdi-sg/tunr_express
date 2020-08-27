@@ -76,7 +76,7 @@ app.post('/artists', async (request, response) => {
   request.body.nationality,
   ]
 
-  const result = await pool.query(query, values)
+  const append = await pool.query(query, values)
   response.redirect('/artists/');
 });
 
@@ -92,13 +92,36 @@ app.get('/artists/:id', async (request, response) => {
 });
 
 //Display the form for editing a single artist
-app.get('/artists/:id/edit', (request, response) => {
-  response.render('edit');
+app.get('/artists/:id/edit', async (request, response) => {
+  let query =
+  `select *
+  from artists
+  where id = ${request.params.id}`
+
+  const result = await pool.query(query);
+  response.render('edit', {...result.rows[0]});
 });
 
 //Update a artist
-app.put('/artists/:id', (request, response) => {
-  response.redirect('/artists/');
+app.put('/artists/:id', async (request, response) => {
+
+  let query=
+  `update artists
+  set
+  name=$1,
+  photo_url=$2,
+  nationality=$3
+  where id=$4`
+
+   let values = [
+  request.body.name,
+  request.body.photo_url,
+  request.body.nationality,
+  request.params.id,
+  ]
+
+  const update = await pool.query(query, values);
+  response.redirect(`/artists/${request.params.id}`);
 });
 
 //Remove a artist
