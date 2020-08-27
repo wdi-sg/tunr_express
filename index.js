@@ -89,11 +89,32 @@ app.get('/artists/:id', (request, response) =>{
     pool.query(getArtist, (err, res) => {
         if(err || request.params.id == 0){response.send("Invalid Id")}
         response.send(`<h1> ${res.rows[0].name} </h1>
-                       <img src= ${res.rows[0].photo_url} width='500'/>
+                       <img src= ${res.rows[0].photo_url} width='500'>
                        <div>Nationality: ${res.rows[0].nationality}.</div>`);
     })
 })
+app.get('/artists/:id/edit', (request,response) => {
+    let index = request.params.id;
+    let getArtist = (`SELECT name,photo_url,nationality,id FROM artists WHERE id='${index}'`)
+    pool.query(getArtist, (err, res) => {
+        let index2 = res.rows[0].id;
+        response.send(`<form method='POST' action='/artists/${index2}?_method=put'>
+                <input type="text" name="name" value='${res.rows[0].name}'>
+                <input type="text" name="photo_url" value='${res.rows[0].photo_url}'>
+                <input type="text" name="nationality" value='${res.rows[0].nationality}'>
+                <input type="Submit" value="submit"/>
+                </form>`)
+    })
+                // <input type="text" name="id" placeholder="" value={id}/>
+})
 
+app.put('/artists/:id',(request, response) => {
+    let input = request.body;
+    let index = request.params.id;
+    let editQuery = `UPDATE artists SET name='${input.name}',photo_url='${input.photo_url}',nationality='${input.nationality}' WHERE id=${index}`
+    pool.query(editQuery, (err, res) =>{if(err) console.log(err)})
+    response.send("Successfully Updated!");
+})
 
 
 
