@@ -16,7 +16,11 @@ class Edit extends React.Component {
             <br/>
             Nationality: <input type="text" name="nationality" defaultValue={nationality}/>
             <br/>
-            <input type="submit"/>
+            <input type="submit" value="SUBMIT"/>
+          </form>
+
+          <form method="POST" action={`/artists/${id}?_method=delete`}>
+            <input type="submit" value="DELETE"/>
           </form>
         </body>
       </html>

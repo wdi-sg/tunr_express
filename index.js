@@ -125,7 +125,11 @@ app.put('/artists/:id', async (request, response) => {
 });
 
 //Remove a artist
-app.delete('/artists/:id', (request, response) => {
+app.delete('/artists/:id', async (request, response) => {
+  let query=
+  `delete from artists
+  where id = $1`
+  let deletion = await pool.query(query, [request.params.id])
   response.redirect('/artists/');
 });
 
