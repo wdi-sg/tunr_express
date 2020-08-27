@@ -81,8 +81,14 @@ app.post('/artists', async (request, response) => {
 });
 
 //See a single artist
-app.get('/artists/:id', (request, response) => {
-  response.render('show');
+app.get('/artists/:id', async (request, response) => {
+  let query =
+  `select *
+  from artists
+  where id = ${request.params.id}`
+
+  const result = await pool.query(query);
+  response.render('show', {...result.rows[0]});
 });
 
 //Display the form for editing a single artist
