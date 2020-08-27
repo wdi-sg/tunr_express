@@ -75,17 +75,24 @@ app.get('/artists/new', (request, response) => {
                 <input type="Submit" value="submit"/>
             </form>`)
 })
-
 app.post('/artists/new', (request, response) =>{
     let input = request.body;
     let insertQuery = `INSERT INTO artists (name,photo_url,nationality) VALUES ('${input.name}','${input.photo_url}','${input.nationality}')`
     pool.query(insertQuery, (err, res) => {
-        if(err){response.send(err)}
+        if(err){response.send("Did not add successfully.")}
         response.send("Successfully Added!");
     })
 })
 
-
+app.get('/artists/:id', (request, response) =>{
+    let getArtist = (`SELECT name,photo_url,nationality FROM Artists WHERE id=${request.params.id}`)
+    pool.query(getArtist, (err, res) => {
+        if(err || request.params.id == 0){response.send("Invalid Id")}
+        response.send(`<h1> ${res.rows[0].name} </h1>
+                       <img src= ${res.rows[0].photo_url} width='500'/>
+                       <div>Nationality: ${res.rows[0].nationality}.</div>`);
+    })
+})
 
 
 
