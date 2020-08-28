@@ -6,7 +6,10 @@ class NewArtistSongs extends React.Component {
 
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/style.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"/>
+        </head>
         <body>
         <h3>Add a new song for {artist.name}</h3>
           <form method="POST" action="/songs">
@@ -28,8 +31,7 @@ class NewArtistSongs extends React.Component {
 
           <input type="submit"/>
           </form>
-          <br/><br/>
-          <button><a href="/songs/">Back to homepage</a></button>
+          <a href="/songs/"><button>Back to homepage</button></a>
         </body>
       </html>
     );

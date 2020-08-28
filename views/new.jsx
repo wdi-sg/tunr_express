@@ -4,8 +4,12 @@ class New extends React.Component {
   render() {
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/style.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"/>
+        </head>
         <body>
+        <h1>Add a new artist</h1>
           <form method="POST" action="/artists">
           <label>Artist Name: </label>
           <input type="text" name="artistName" /><br/><br/>
@@ -15,8 +19,7 @@ class New extends React.Component {
           <input type="text" name="nationality"/><br/><br/>
           <input type="submit"/>
           </form>
-          <br/><br/>
-          <button><a href="/artists/">Back to homepage</a></button>
+          <a href="/artists/"><button>Back to homepage</button></a>
         </body>
       </html>
     );

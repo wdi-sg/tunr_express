@@ -8,7 +8,10 @@ class Song extends React.Component {
 
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/style.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"/>
+        </head>
         <body>
           <h1>{song.title} by <a href={artistURL}>{song.artist_name}</a></h1>
           <a href={editFormURL}><button>Edit this Song!</button></a><br/><br/>

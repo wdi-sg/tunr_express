@@ -7,7 +7,10 @@ class Edit extends React.Component {
     let deleteURL = "/artists/"+artist.id+"?_method=delete"
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/style.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"/>
+        </head>
         <body>
           <form method="POST" action={putURL}>
           <label>Artist Name: </label>
@@ -18,13 +21,13 @@ class Edit extends React.Component {
           <input type="text" name="nationality"defaultValue={artist.nationality}/><br/><br/>
           <input type="submit"/>
           </form>
-          <br/><br/>
-          <form method="POST" action={deleteURL}>
-          <input type="submit" value="DELETE ARTIST"/>
-          <p>Note: deleting this artist will delete all of their songs, too.</p>
-          </form>
-          <br/><br/>
-          <button><a href="/artists/">Cancel (Back to homepage)</a></button>
+          <a href="/artists/"><button>Cancel (Back to homepage)</button></a>
+          <div className="delete">
+              <form method="POST" action={deleteURL}>
+              <input type="submit" value="DELETE ARTIST"/>
+              <p>Note: deleting this artist will delete all of their songs, too.</p>
+              </form>
+          </div>
         </body>
       </html>
     );

@@ -8,8 +8,12 @@ class NewSongs extends React.Component {
     })
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/style.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"/>
+        </head>
         <body>
+          <h1>Add a new song</h1>
           <form method="POST" action="/songs">
           <label>Song Title: </label>
           <input type="text" name="songTitle" /><br/><br/>
@@ -30,9 +34,10 @@ class NewSongs extends React.Component {
           <p> If artist is not present, add a new artist <a href="/artists/new">here</a></p>
 
           <input type="submit"/>
+
           </form>
-          <br/><br/>
-          <button><a href="/songs/">Back to homepage</a></button>
+           <a href="/songs/"><button>Back to homepage</button></a>
+
         </body>
       </html>
     );

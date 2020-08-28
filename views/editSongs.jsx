@@ -15,7 +15,10 @@ class EditSongs extends React.Component {
 
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/style.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"/>
+        </head>
         <body>
           <form method="POST" action={putURL}>
           <label>Song Title: </label>
@@ -39,12 +42,12 @@ class EditSongs extends React.Component {
 
           <input type="submit"/>
           </form>
-          <br/><br/>
-          <form method="POST" action={deleteURL}>
-          <input type="submit" value="DELETE SONG"/>
-          </form>
-          <br/><br/>
-          <button><a href="/songs/">Back to homepage</a></button>
+          <a href="/songs/"><button>Back to homepage</button></a>
+          <div className="delete">
+              <form method="POST" action={deleteURL}>
+              <input type="submit" value="DELETE SONG"/>
+              </form>
+          </div>
         </body>
       </html>
     );

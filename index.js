@@ -19,7 +19,8 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method'))
+app.use(express.static(__dirname + '/public'));
 
 
 // Set react-views to be the default view engine

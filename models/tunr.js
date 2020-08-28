@@ -1,7 +1,7 @@
 module.exports = (dbPoolInstance) =>{
 
     let getAllArtists = (callback)=>{
-      let queryText = "SELECT * FROM artists"
+      let queryText = "SELECT * FROM artists ORDER BY name"
       dbPoolInstance.query(queryText, (err, res)=>{
         callback(err, res)
       })
@@ -43,7 +43,7 @@ module.exports = (dbPoolInstance) =>{
     }
 
     let getSongsByArtist = (id, callback)=>{
-        let queryText = "SELECT * FROM songs INNER JOIN (SELECT id AS artist_ids, name AS artist_name FROM artists) AS artistB ON songs.artist_id=artistB.artist_ids WHERE artist_id=$1"
+        let queryText = "SELECT * FROM songs INNER JOIN (SELECT id AS artist_ids, name AS artist_name FROM artists) AS artistB ON songs.artist_id=artistB.artist_ids WHERE artist_id=$1 ORDER BY songs.title"
         dbPoolInstance.query(queryText, id, (err, res)=>{
             callback(err, res)
         })
@@ -51,7 +51,7 @@ module.exports = (dbPoolInstance) =>{
     }
 
     let getAllSongs = (callback)=>{
-        let queryText = "SELECT * FROM songs"
+        let queryText = "SELECT * FROM songs ORDER BY title"
         dbPoolInstance.query(queryText, (err, res)=>{
             callback(err,res)
         })
@@ -100,7 +100,8 @@ module.exports = (dbPoolInstance) =>{
         getSongsByArtist,
         postNewSong,
         getSong,
-        updateSong
+        updateSong,
+        deleteSong
     }
 
 }

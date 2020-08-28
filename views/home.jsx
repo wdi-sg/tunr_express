@@ -10,16 +10,18 @@ class Home extends React.Component {
 
     return (
       <html>
-        <head />
+        <head>
+            <link rel="stylesheet" type="text/css" href="/css/style.css" />
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet"/>
+        </head>
         <body>
           <h1>Artists</h1>
           <a href="/songs/"><button>Browse by song instead</button></a>
+          <a href="/artists/new"><button>Add a new artist</button></a>
           <ul>
           {artistHTML}
           </ul>
 
-          <br/><br/>
-          <a href="/artists/new"><button>Add a new artist</button></a>
         </body>
       </html>
     );
