@@ -63,10 +63,10 @@ pool.on('error', function (err) {
 
 
 const allArtistsModelsFunction = require('./models/artists');
-
 const artistsModelsObject = allArtistsModelsFunction( pool );
 
-
+const allSongsModelsFunction = require('./models/songs');
+const songsModelsObject = allSongsModelsFunction( pool );
 
 /*
  * ===================================================
@@ -95,5 +95,6 @@ module.exports = {
    */
 
   // users: userModelsObject,
-  artists: artistsModelsObject
+  artists: artistsModelsObject,
+  songs: songsModelsObject
 };

@@ -7,8 +7,7 @@ module.exports = (db) => {
    */
 
   const artistSongs = (request, response) => {
-    let {id} = request.params;
-      db.artists.getArtistSongs(id,(err, res) => {
+      db.songs.getSongsList((err, res) => {
         if(err){response.send("unable to save your data!")} else {
         response.render('artists/songprofile', { songs: res.rows });
     }
@@ -103,6 +102,27 @@ const deleteArtist = (request,response) => {
     })
 }
 
+const artistNewSong = (request,response) => {
+    let {id} = request.params;
+    db.artists.getArtistNewSong(id,(err,res)=>{
+        if(err){
+            response.status(500).send("Oops we did not find the student you were looking for")
+        } else {
+            response.render('artists/artistnewsong',res.rows[0]);
+        }
+    })
+  }
+
+const addArtistNewSong = (request,response) => {
+    let {title, album, preview_link, artwork, artist_id} = request.body;
+    db.artists.getAddArtistNewSong(title, album, preview_link, artwork, artist_id,(err,res)=>{
+                if(err){
+            response.status(500).send("Oops we did not find the student you were looking for")
+        } else {
+            response.send(`Song ${title} was added to the db successfully!`)
+        }
+    })
+}
 
 
   /**
@@ -119,7 +139,9 @@ const deleteArtist = (request,response) => {
     editArtist,
     updateArtist,
     deleteArtist,
-    artistDeleted
+    artistDeleted,
+    artistNewSong,
+    addArtistNewSong
     //if both key and values are the same you can just do this.
   };
 

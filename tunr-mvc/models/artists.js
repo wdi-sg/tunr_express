@@ -77,6 +77,20 @@ let getArtistDeleted = (id,name,callback) => {
     })
 }
 
+let getArtistNewSong = (id,callback) => {
+    let query = `SELECT * FROM artists INNER JOIN songs ON artists.id = songs.artist_id WHERE artist_id='${id}'`;
+    dbPoolInstance.query(query,(error, queryResult) => {
+        callback(error,queryResult)
+    })
+}
+
+let getAddArtistNewSong = (title, album, preview_link, artwork,artist_id,callback) => {
+    let values = [title, album, preview_link, artwork,artist_id];
+    const query = `INSERT INTO songs (title, album, preview_link, artwork, artist_id) VALUES($1,$2,$3,$4,$5)`
+    dbPoolInstance.query(query,values,(error, queryResult) => {
+        callback(error,queryResult)
+    })
+}
 
 
   return {
@@ -88,6 +102,8 @@ let getArtistDeleted = (id,name,callback) => {
     getEditArtist,
     getUpdateArtist,
     getDeleteArtist,
-    getArtistDeleted
+    getArtistDeleted,
+    getArtistNewSong,
+    getAddArtistNewSong
   };
 };
