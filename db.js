@@ -14,6 +14,8 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
+
+//link all models function to db (pool)
 const allTunrModelsFunction = require('./models/tunr')
 const tunrModelsObject = allTunrModelsFunction(pool)
 

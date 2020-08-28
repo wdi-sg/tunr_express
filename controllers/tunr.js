@@ -1,14 +1,12 @@
 module.exports = (db) =>{
     let allArtists = (request, response) => {
-      let queryText = "SELECT * FROM artists"
-      db.pool.query(queryText, (err, res)=>{
-        if(err){
-            console.log(err.message)
-            response.send("error occured")
-        } else {
-            response.render('home', res)
-        }
-      })
+        db.tunr.getAllArtists((err, res) =>{
+            if(err){
+                response.send("Error occurred.")
+            } else {
+                response.render('home', res)
+            }
+        })
     }
 
     let newArtistForm = (request, response) => {
@@ -16,9 +14,9 @@ module.exports = (db) =>{
     }
 
     let createNewArtist = (request, response) => {
-      let queryText = "INSERT INTO artists(name,photo_url,nationality) VALUES($1,$2,$3)"
-      let values = [request.body.artistName, request.body.photoURL, request.body.nationality]
-      db.pool.query(queryText, values, (err, res)=>{
+      let x = request.body
+      let values = [x.artistName, x.photoURL, x.nationality]
+      db.tunr.postNewArtist(values, (err, res)=>{
         if(err){
             console.log(err)
             response.send("Error occurred. Data not added.")
@@ -26,13 +24,11 @@ module.exports = (db) =>{
             response.send("Artist created successfully! <a href='/artists/'>Back to homepage.</a>")
         }
       })
-
     }
 
     let artistPage = (request, response) => {
       let artistId = [request.params.id]
-      let queryText = "SELECT * FROM artists WHERE id=$1"
-      db.pool.query(queryText, artistId, (err, res)=>{
+      db.tunr.getArtist(artistId, (err, res)=>{
         if(err){
             console.log(err)
             response.send("Error occurred.")
@@ -44,8 +40,7 @@ module.exports = (db) =>{
 
     let editArtistPage = (request, response) => {
       let artistId = [request.params.id]
-      let queryText = "SELECT * FROM artists WHERE id=$1"
-      db.pool.query(queryText, artistId, (err, res)=>{
+      db.tunr.getArtist(artistId, (err, res)=>{
         if(err){
             console.log(err.message)
             response.send("Error occurred")
@@ -56,9 +51,9 @@ module.exports = (db) =>{
     }
 
     let editArtist = (request, response) => {
-      let values = [request.body.artistName, request.body.photoURL, request.body.nationality, request.params.id]
-      let queryText = "UPDATE artists SET name=$1, photo_url=$2, nationality=$3 WHERE id=$4"
-      db.pool.query(queryText, values, (err, res)=>{
+      let x = request.body
+      let values = [x.artistName, x.photoURL, x.nationality, request.params.id]
+      db.tunr.updateArtist(values, (err, res)=>{
         if(err){
             console.log(err.message)
             response.send("Error occurred, artist not updated.")
@@ -69,15 +64,13 @@ module.exports = (db) =>{
     }
 
     let deleteArtist = (request, response) => {
-      let queryText="DELETE from artists WHERE id=$1"
       let artistId = [request.params.id]
-      db.pool.query(queryText, artistId, (err, res)=>{
+      db.tunr.deleteArtist(artistId, (err, res)=>{
         if(err){
             console.log(err.message)
             response.send("Error occurred")
         } else {
-            let queryText2 = "DELETE from songs WHERE artist_id=$1"
-            db.pool.query(queryText2, artistId, (err, res)=>{
+            db.tunr.deleteSongsByArtist(artistId, (err, res)=>{
                 response.send("Artist successfully deleted.<a href='/artists/'>Back to homepage.</a>" )
             })
         }
@@ -85,9 +78,8 @@ module.exports = (db) =>{
     }
 
     let artistSongPage = (request, response)=>{
-        let queryText = "SELECT * FROM songs INNER JOIN (SELECT id AS artist_ids, name AS artist_name FROM artists) AS artistB ON songs.artist_id=artistB.artist_ids WHERE artist_id=$1"
         let artistId = [request.params.id]
-        db.pool.query(queryText, artistId, (err, res)=>{
+        db.tunr.getSongsByArtist(artistId, (err, res)=>{
             if(err){
                 console.log(err.message)
                 response.send("Error occurred")
@@ -104,9 +96,8 @@ module.exports = (db) =>{
     }
 
     let newSongByArtist = (request, response)=>{
-        let queryText = "SELECT * FROM artists WHERE id=$1"
         let artistId = [request.params.id]
-        db.pool.query(queryText, artistId, (err, res)=>{
+        db.tunr.getArtist(artistId, (err, res)=>{
             if(err){
                 console.log(err.message)
                 response.send("error occurred.")
@@ -118,7 +109,7 @@ module.exports = (db) =>{
 
     let allSongs = (request, response) => {
       let queryText = "SELECT * FROM songs"
-      db.pool.query(queryText, (err, res)=>{
+      db.tunr.getAllSongs((err, res)=>{
         if(err){
             console.log(err.message)
             response.send("error occured")
@@ -129,8 +120,7 @@ module.exports = (db) =>{
     }
 
     let newSongForm = (request, response) => {
-        let queryText = "SELECT * FROM artists"
-        db.pool.query(queryText, (err, res)=>{
+        db.tunr.getAllArtists((err, res)=>{
             if(err){
                 console.log(err.message)
                 response.send("Error occurred.")
@@ -142,10 +132,9 @@ module.exports = (db) =>{
     }
 
     let createNewSong = (request, response) => {
-      let queryText = "INSERT INTO songs(title,album,preview_link,artwork,artist_id) VALUES($1,$2,$3,$4,$5)"
       let x = request.body
       let values = [x.songTitle, x.album, x.previewLink, x.artwork, x.artistID]
-      db.pool.query(queryText, values, (err, res)=>{
+      db.tunr.postNewSong(values, (err, res)=>{
         if(err){
             console.log(err)
             response.send("Error occurred. Data not added.")
@@ -153,13 +142,11 @@ module.exports = (db) =>{
             response.send("Song created successfully! <a href='/artists/'>Back to homepage.</a>")
         }
       })
-
     }
 
     let songPage = (request, response) => {
       let songId = [request.params.id]
-      let queryText = "SELECT * FROM songs INNER JOIN (SELECT id AS artist_ids, name AS artist_name FROM artists) AS artist on songs.artist_id=artist.artist_ids WHERE songs.id=$1"
-      db.pool.query(queryText, songId, (err, res)=>{
+      db.tunr.getSong(songId, (err, res)=>{
         if(err){
             console.log(err)
             response.send("Error occurred.")
@@ -170,15 +157,13 @@ module.exports = (db) =>{
     }
 
     let editSongPage = (request, response) => {
-      let artistId = [request.params.id]
-      let queryText = "SELECT * FROM songs WHERE songs.id=$1"
-      db.pool.query(queryText, artistId, (err, res)=>{
+      let songId = [request.params.id]
+      db.tunr.getSong(songId, (err, res)=>{
         if(err){
             console.log(err.message)
             response.send("Error occurred")
         } else {
-            let queryText2 = "SELECT * FROM artists"
-            db.pool.query(queryText2, (err2, res2)=>{
+            db.tunr.getAllArtists((err2, res2)=>{
                 if(err2){
                     console.log(err.message)
                     response.send("Error occurred.")
@@ -192,10 +177,9 @@ module.exports = (db) =>{
     }
 
     let editSong = (request, response) => {
-      let queryText = "UPDATE songs SET title=$1,album=$2,preview_link=$3,artwork=$4,artist_id=$5 WHERE id=$6"
       let x = request.body
       let values = [x.songTitle, x.album, x.previewLink, x.artwork, x.artistID, request.params.id]
-      db.pool.query(queryText, values, (err, res)=>{
+      db.tunr.updateSong(values, (err, res)=>{
         if(err){
             console.log(err)
             response.send("Error occurred. Data not updated.")
@@ -207,9 +191,8 @@ module.exports = (db) =>{
     }
 
     let deleteSong = (request, response) => {
-      let queryText="DELETE from songs WHERE id=$1"
-      let artistId = [request.params.id]
-      pool.query(queryText, artistId, (err, res)=>{
+      let songId = [request.params.id]
+      db.tunr.deleteSong(songId, (err, res)=>{
         if(err){
             console.log(err.message)
             response.send("Error occurred")
