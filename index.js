@@ -101,10 +101,26 @@ app.put('/artists/:id', (req, res) => {
     pool
     .query("UPDATE artists SET name = $2, photo_url = $3, nationality = $4 WHERE id = $1;", values)
         .then(result => res.send("Entry updated successfully."))
-        .catch(err => console.log("put", err.stack))
+        .catch(err => console.log("error", err.stack))
 })
 
+app.get('/delete', (req, res) => {
+    res.render('delete');
+})
 
+app.delete('/delete', (req,res) => {
+    pool
+    .query(`DELETE FROM artists WHERE id = ${req.body.id};`)
+        .then(result => res.send("Artist entry deleted."))
+        .catch(err => console.log("error", err.stack))
+})
+
+app.get('/artists/:id/songs', (req, res) => {
+    pool
+        .query(`SELECT * FROM songs WHERE artist_id = ${req.params.id};`)
+        .then(result => res.send(result.rows))
+        .catch(err => console.log("error", err.stack))
+})
 
 /**
  * ===================================
