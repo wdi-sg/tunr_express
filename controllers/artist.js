@@ -28,7 +28,7 @@ module.exports = (db) => {
                 console.log("-- Error in newArtist controller", err.message)
             } else {
                 if (result === true) {
-                    res.redirect('./artists/artists');
+                    res.redirect('/artists/');
                 }
             }
         })
@@ -64,7 +64,7 @@ module.exports = (db) => {
                 console.log("-- Error in updateEditArtist controller", err.message)
             } else {
                 if (result === true) {
-                    res.redirect('./artists/artists');
+                    res.redirect('/artists/');
                 }
             }
         })
@@ -78,7 +78,7 @@ module.exports = (db) => {
                 console.log("-- Error in deleteArtist controller", err.message)
             } else {
                 if (result === true) {
-                    res.redirect('./artists/artists');
+                    res.redirect('/artists/');
                 }
             }
         })

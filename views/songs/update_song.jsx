@@ -18,16 +18,16 @@ class Update_song extends React.Component {
             <br/>
           </div>
           <div>
-            <form method="POST" action={`/artists/${id}?_method=PUT`}>
-              Title: <input type="text" name="title" id="title"/>
+            <form method="POST" action={`/songs/${id}?_method=PUT`}>
+              Title: <input type="text" name="title" defaultValue={`${title}`} id="title"/>
               <br/>
-              Album: <input type="text" name="album" id="album"/>
+              Album: <input type="text" name="album" defaultValue={`${album}`} id="album"/>
               <br/>
-              Preview_link: <input type="text" name="preview_link" id="preview_link"/>
+              Preview_link: <input type="text" name="preview_link" defaultValue={`${preview_link}`} id="preview_link"/>
               <br/>
-              Artwork: <input type="text" name="artwork" id="artwork"/>
+              Artwork: <input type="text" name="artwork" defaultValue={`${artwork}`} id="artwork"/>
               <br/>
-              Artist ID: <input type="text" name="artist_id" id="artist_id"/>
+              Artist ID: <input type="text" name="artist_id" defaultValue={`${artist_id}`} id="artist_id"/>
               <br/>
               <input type="submit" value="Submit"/>
             </form>

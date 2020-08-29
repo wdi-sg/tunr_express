@@ -8,10 +8,10 @@ module.exports = (dbPoolInstance) => {
         dbPoolInstance.query(query, (queryErr, queryResult) => {
             if (queryErr) {
                 console.log("-- Error in selectAllArtist model", queryErr.message)
-                callback(queryErr, queryResult);
+                callback(queryErr, null);
             } else {
                 console.log(queryResult)
-                callback(queryErr, queryResult);
+                callback(null, queryResult);
             }
         })
     };

@@ -36,13 +36,13 @@ module.exports = (dbPoolInstance) => {
                 console.log("-- Error in selectSingleSong model", queryErr.message)
                 callback(queryErr, null);
             } else {
-                callback(null, queryResult.row);
+                callback(null, queryResult.rows);
             }
         })
     }
 
     let updateSong = (id, values, callback) => {
-        let query = `UPDATE songs SET title = $1, album = $2, preview_link = $3, arkwork = $4, artist_id = $5 WHERE id = ${id}`
+        let query = `UPDATE songs SET title = $1, album = $2, preview_link = $3, artwork = $4, artist_id = $5 WHERE id = ${id}`
 
         dbPoolInstance.query(query, values, (queryErr, queryResult) => {
             if (queryErr) {

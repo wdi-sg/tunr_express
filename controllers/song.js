@@ -64,7 +64,7 @@ module.exports = (db) => {
                 console.log("-- Error in updateEditSong controller", err.message)
             } else {
                 if (result === true) {
-                    res.redirect('./songs/songs');
+                    res.redirect('/songs/');
                 }
             }
         })
@@ -78,7 +78,7 @@ module.exports = (db) => {
                 console.log("-- Error in deleteSong controller", err.message)
             } else {
                 if (result === true) {
-                    res.redirect('./songs/songs');
+                    res.redirect('/songs/');
                 }
             }
         })
