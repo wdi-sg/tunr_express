@@ -1,16 +1,12 @@
 module.exports = (app, allModels) => {
 
 
-  /*
-   *  =========================================
-   *  =========================================
-   *  =========================================
-   *  =========================================
-   *    ALL ROUTES FOR POKEMON CONTROLLER
-   *  =========================================
-   *  =========================================
-   *  =========================================
-   */
+
+/**
+ * ===================================
+ * Artists Routes
+ * ===================================
+ */
 
   // require the controller
   const artistsControllerCallbacks = require('./controllers/artists')(allModels);
@@ -29,6 +25,12 @@ app.post('/artists/:id/songs', artistsControllerCallbacks.addArtistNewSong);
   app.get('/artists/:id/delete', artistsControllerCallbacks.deleteArtist);
   app.delete('/artists/:id', artistsControllerCallbacks.artistDeleted);
 
+//
+/**
+ * ===================================
+ * Songs Routes
+ * ===================================
+ */
 
 const songsControllerCallbacks = require('./controllers/songs')(allModels);
 
@@ -42,9 +44,20 @@ app.get('/songs/:id/delete',songsControllerCallbacks.deleteSong);
 app.delete('/songs/:id',songsControllerCallbacks.songDeleted);
 
 
+/**
+ * ===================================
+ * Playlist Routes
+ * ===================================
+ */
+
+const playlistControllerCallbacks = require('./controllers/playlist')(allModels);
+
+
+app.get('/playlist/:id',playlistControllerCallbacks.individualPlaylist);
+app.get('/playlist/new',playlistControllerCallbacks.newPlaylist);
+app.post('/playlist',playlistControllerCallbacks.createPlaylist);
 
 
 
-  //app.get('/pokemons/:id', pokemons.getPokemon);
 };
 

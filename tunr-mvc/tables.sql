@@ -1,6 +1,10 @@
-CREATE TABLE IF NOT EXISTS students (
+CREATE TABLE IF NOT EXISTS playlist (
     id SERIAL PRIMARY KEY,
-    name TEXT,
-    phone TEXT,
-    email TEXT
+    name TEXT
+);
+
+CREATE TABLE IF NOT EXISTS playlist_song (
+    id SERIAL PRIMARY KEY,
+    song_id INTEGER,
+    playlist_id INTEGER
 );

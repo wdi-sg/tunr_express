@@ -68,6 +68,9 @@ const artistsModelsObject = allArtistsModelsFunction( pool );
 const allSongsModelsFunction = require('./models/songs');
 const songsModelsObject = allSongsModelsFunction( pool );
 
+const allPlaylistModelsFunction = require('./models/playlist');
+const playlistModelsObject = allPlaylistModelsFunction( pool );
+
 /*
  * ===================================================
  * ===================================================
@@ -96,5 +99,6 @@ module.exports = {
 
   // users: userModelsObject,
   artists: artistsModelsObject,
-  songs: songsModelsObject
+  songs: songsModelsObject,
+  playlist: playlistModelsObject
 };
