@@ -1,6 +1,7 @@
 // all db does is to link pool to model and export to app
 // since db is wrapping model/queries,
 // use model.querymethod to invoke the model
+console.log('-- Setting up database --');
 
 // configure pg
 const pg = require('pg');

@@ -89,7 +89,7 @@ app.js
 - the input flow will start from the routes specified
 
 
-[] index.js
+- app.js
 	[] init express app
 	[] set up middleware
 	[] set react-views to be default view engine
@@ -97,18 +97,29 @@ app.js
 		[] import db
 		[] import routes
 		[] import the controller
-		[] link all to complete app methods
-[] db
+		[] link all to complete app methods for routes
+	[] listen on port 3000
+	- handle server end
+		[] shut down db connection pool
+- db
 	[] config pg
 	[] create pool
 	[] link pool instances to models
 	[] export model object
-[] models
-	[] requires pool instances as a paramater
+- models
+	[] requires pool instances as a parameter
 	[] create crud functions
 	[] separate callback used by pool.query
 	and make a parameter provided by the controller
 	[] export the crud functions
-
-[] views
+- controllers
+	[] create callback function for the routes
+	[] get data from user if needed
+	[] manipulate data by invoking model
+	[] pass a callback to the model
+	[] decide on the view to be rendered
+	[] export the functions
+- views
 	[] use react jsx to render pages
+- routes
+	[] set up url paths
