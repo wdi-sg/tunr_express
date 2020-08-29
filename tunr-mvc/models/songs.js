@@ -16,7 +16,7 @@ let getSongsList = (callback)=> {
 }
 
 let getNewSong = (callback) => {
-    let query = "SELECT * FROM songs"
+    let query = "SELECT * FROM artists"
     dbPoolInstance.query(query,(error, queryResult) => {
         callback(error,queryResult)
     })
@@ -68,6 +68,19 @@ let getSongDeleted = (id,title,callback) => {
 }
 
 
+let getAddSongsToPlaylists = (callback) => {
+     let query = `SELECT * FROM playlist`;
+    dbPoolInstance.query(query,(error, queryResult) => {
+        callback(error,queryResult)
+    })
+}
+
+let getSongsAddedToPlaylists = (id,songId,callback) => {
+    let query = `INSERT INTO playlist_song (song_id,playlist_id) VALUES ('${songId}',${id})`;
+    dbPoolInstance.query(query,(error, queryResult) => {
+        callback(error,queryResult)
+    })
+}
 
   return {
     getSongsList,
@@ -77,6 +90,8 @@ let getSongDeleted = (id,title,callback) => {
     getEditSong,
     getUpdateSong,
     getDeleteSong,
-    getSongDeleted
+    getSongDeleted,
+    getAddSongsToPlaylists,
+    getSongsAddedToPlaylists
   };
 };

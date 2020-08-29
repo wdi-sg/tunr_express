@@ -34,6 +34,31 @@ const individualPlaylist = (request,response) => {
 }
 
 
+const newSongToPlaylist = (request,response) => {
+    let {id} = request.params
+    db.playlist.getNewSongToPlaylist((err,res)=>{
+                if(err){
+                    console.log(err)
+            response.status(500).send("Oops we did not find the student you were looking for")
+        } else {
+            response.render('playlist/newsong',{id})
+        }
+    })
+}
+
+
+const updateSongToPlaylist = (request,response) => {
+    let {name,id,playlist_id} = request.body;
+    db.playlist.getUpdateSongToPlaylist(id,playlist_id,(err,res)=>{
+                if(err){
+                    console.log(err)
+            response.status(500).send(err.detail)
+        } else {
+            response.send(`Song ${name} was added to the playlist successfully!`)
+        }
+    })
+}
+
 //   const songsList = (request, response) => {
 //       db.songs.getSongsList((err, res) => {
 //         if(err){response.send("unable to save your data!")} else {
@@ -72,7 +97,9 @@ const individualPlaylist = (request,response) => {
   return {
   newPlaylist,
   createPlaylist,
-  individualPlaylist
+  individualPlaylist,
+  newSongToPlaylist,
+  updateSongToPlaylist
   };
 }
 

@@ -7,7 +7,8 @@ module.exports = (db) => {
    */
 
   const artistSongs = (request, response) => {
-      db.songs.getSongsList((err, res) => {
+    let {id} = request.params;
+      db.artists.getArtistSongs(id,(err, res) => {
         if(err){response.send("unable to save your data!")} else {
         response.render('artists/songprofile', { songs: res.rows });
     }

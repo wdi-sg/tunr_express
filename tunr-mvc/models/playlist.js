@@ -25,7 +25,23 @@ let getIndividualPlaylist = (id,callback)=> {
 }
 
 
-// let query = `SELECT * FROM artists INNER JOIN songs ON artists.id = songs.artist_id WHERE artist_id='${id}'`;
+
+let getNewSongToPlaylist = (callback) => {
+    let query = `SELECT * FROM playlist_song`;
+    dbPoolInstance.query(query,(error, queryResult) => {
+        callback(error,queryResult)
+    })
+}
+
+
+let getUpdateSongToPlaylist = (id,playlist_id,callback) => {
+    let values=[id,playlist_id]
+    let query = `INSERT INTO playlist_song (song_id,playlist_id) VALUES ($1,$2)`;
+    dbPoolInstance.query(query,values,(error, queryResult) => {
+        callback(error,queryResult)
+    })
+}
+
 
 // let getSongsList = (callback)=> {
 //     let query = `SELECT * FROM songs`;
@@ -37,12 +53,6 @@ let getIndividualPlaylist = (id,callback)=> {
 
 
 
-// let getEditSong = (id,callback) => {
-//     let query = `SELECT * FROM songs WHERE id='${id}'`;
-//     dbPoolInstance.query(query,(error, queryResult) => {
-//         callback(error,queryResult)
-//     })
-// }
 
 // let getUpdateSong = (id,title, album, preview_link, artwork,callback) => {
 //     let values = [id,title, album, preview_link, artwork];
@@ -71,6 +81,8 @@ let getIndividualPlaylist = (id,callback)=> {
   return {
     getNewPlaylist,
     getCreatePlaylist,
-    getIndividualPlaylist
+    getIndividualPlaylist,
+    getNewSongToPlaylist,
+    getUpdateSongToPlaylist
   };
 };

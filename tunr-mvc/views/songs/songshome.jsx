@@ -4,7 +4,7 @@ export default class Songshome extends React.Component {
   render() {
         let {songs} = this.props;
         let songList = songs.map(item=>{
-            return <li> <a href={`/songs/${item.id}`}>{item.title}</a> <br />
+            return <li> <a href={`/songs/${item.id}`}>{item.title}</a> <br /> <a href={`/songs/addtoplaylist/${item.id}`}><button>Add To Playlist </button></a>
                         </li>
         })
     return (

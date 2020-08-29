@@ -33,7 +33,8 @@ app.post('/artists/:id/songs', artistsControllerCallbacks.addArtistNewSong);
  */
 
 const songsControllerCallbacks = require('./controllers/songs')(allModels);
-
+app.get('/songs/addtoplaylist/:id',songsControllerCallbacks.addSongsToPlaylists);
+app.post('/songs/songaddedtoplaylist',songsControllerCallbacks.songsAddedToPlaylists);
 app.get('/songs/',songsControllerCallbacks.songsList);
 app.get('/songs/new',songsControllerCallbacks.newSong);
 app.post('/songs',songsControllerCallbacks.createSong);
@@ -51,13 +52,12 @@ app.delete('/songs/:id',songsControllerCallbacks.songDeleted);
  */
 
 const playlistControllerCallbacks = require('./controllers/playlist')(allModels);
-
-
-app.get('/playlist/:id',playlistControllerCallbacks.individualPlaylist);
 app.get('/playlist/new',playlistControllerCallbacks.newPlaylist);
+app.get('/playlist/:id/newsong',playlistControllerCallbacks.newSongToPlaylist)
+app.get('/playlist/:id',playlistControllerCallbacks.individualPlaylist);
+
 app.post('/playlist',playlistControllerCallbacks.createPlaylist);
-
-
+app.post('/playlist/newsong',playlistControllerCallbacks.updateSongToPlaylist)
 
 };
 
