@@ -61,17 +61,19 @@ module.exports = (allModels) => {
                 console.log(err, '-- editSingle');
                 res.status(500).send('Bad user');
             } else {
+                console.log(result, '-- editSingle')
                 res.render('song/edit', { ...result[0] })
             }
         })
     }
 
     let updateSingleControlCallback = (req, res) => {
-        let values = [req.body.name,
-            req.body.photo_url,
-            req.body.nationality,
-            req.params.id,
-        ]
+        let values = [req.body.title,
+                      req.body.album,
+                      req.body.preview_link,
+                      req.body.artwork,
+                      req.body.artist_name,
+                      req.params.id,]
         allModels.song.updateSingle(values, (err, result) => {
             if (err) {
                 console.log(err, '-- updateSingle');
@@ -102,6 +104,20 @@ module.exports = (allModels) => {
         res.redirect(301, '/songs/');
     }
 
+    let newArtistSongControlCallback = (req, res) => {
+        let artist_id = req.params.id;
+        allModels.song.newArtistSong(artist_id, (err, result) =>{
+            if(err) {
+                console.log(err, '-- newArtistSong');
+                res.status(500).send('Server error')
+            } else if (result == null) {
+                res.status(500).send('No artist found')
+            } else {
+                res.render('song/new', {...result[0]});
+            }
+        })
+    }
+
     return {
         createSingle: createSingleControlCallback,
         read: readControlCallback,
@@ -110,6 +126,7 @@ module.exports = (allModels) => {
         updateSingle: updateSingleControlCallback,
         destroySingle: destroySingleControlCallback,
         newForm: newFormControlCallback,
+        newArtistSong: newArtistSongControlCallback,
         redirectHome: redirectHomeControlCallback,
     }
 }

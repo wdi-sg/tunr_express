@@ -2,8 +2,8 @@ var React = require("react");
 
 class artistSongs extends React.Component {
   render() {
-    let {id, name, photo_url, nationality} = this.props.data[0];
-    let list = this.props.data.map((item)=>{
+    let {id, name, photo_url, nationality} = this.props.result[0];
+    let list = this.props.result.map((item)=>{
         let {title,album,preview_link,artwork} = item;
         return (
             <li>

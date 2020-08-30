@@ -102,9 +102,22 @@ module.exports = (allModels) => {
         res.redirect(301, '/artists/');
     }
 
+    let readSongsControlCallback = (req, res) => {
+        let id = req.params.id;
+        allModels.artist.readSongs(id, (err, result) => {
+            if (err) {
+                console.log(err, '-- readSongs');
+                res.status(500).send('Server error');
+            } else {
+                res.render('artist/artistSongs', {result})
+            }
+        })
+    }
+
     return {
         createSingle: createSingleControlCallback,
         read: readControlCallback,
+        readSongs: readSongsControlCallback,
         readSingle: readSingleControlCallback,
         editSingle: editSingleControlCallback,
         updateSingle: updateSingleControlCallback,

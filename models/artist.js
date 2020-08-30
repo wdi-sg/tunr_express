@@ -84,10 +84,31 @@ module.exports = (poolInstance) => {
         })
     }
 
+    let readSongs = (id, callback) => {
+        let query = `select
+                     artists.id, name, photo_url,
+                     nationality, title, album,
+                     preview_link, artwork
+                     from
+                     artists inner join songs
+                     on
+                     artists.id = songs.artist_id
+                     where artists.id = $1`
+
+        poolInstance.query(query, [id], (err, result) => {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, result.rows)
+            }
+        })
+    }
+
     return {
         createSingle: createSingle,
         read: read,
         readSingle: readSingle,
+        readSongs: readSongs,
         updateSingle: updateSingle,
         destroySingle: destroySingle,
     };

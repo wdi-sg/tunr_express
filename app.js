@@ -41,7 +41,7 @@ createRoutes(app, artistControls, songControls);
 // listen on port 3000 and handle server end
 const PORT = 3000;
 
-const server = app.listen(PORT, () => console.log(`-- Server setup complete! Listening on: PORT '+PORT+' --
+const server = app.listen(PORT, () => console.log(`-- Server setup complete! Listening on: PORT ${PORT} --
 -- type 'rs' to restart server --
 -- try not to break anything now... --`));
 

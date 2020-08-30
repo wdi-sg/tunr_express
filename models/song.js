@@ -7,9 +7,11 @@ module.exports = (poolInstance) => {
      */
     let createSingle = (userInput, callback) => {
         let query =
-            `insert into songs (name, photo_url, nationality)
-        values ($1, $2, $3)
-        returning *`;
+            `insert into songs
+            (title, album, preview_link, artwork, artist_id)
+            values ($1, $2, $3, $4,
+            (select id from artists where name = $5))
+            returning *`;
         poolInstance.query(query, Object.values(userInput), (err, result) => {
             if (err) {
                 callback(err, null);
@@ -41,7 +43,17 @@ module.exports = (poolInstance) => {
 
     // see on artist
     let readSingle = (id, callback) => {
-        let query = 'select * from songs where id = $1';
+        let query = `select
+                     songs.id, songs.title, songs.album,
+                     songs.preview_link, songs.artwork,
+                     songs.artist_id,
+                     artists.name, artists.photo_url,
+                     artists.nationality
+                     from
+                     songs left join artists
+                     on songs.artist_id = artists.id
+                     where songs.id = $1`;
+
         poolInstance.query(query, [id], (err, result) => {
             if (err) {
                 callback(err, null);
@@ -58,10 +70,15 @@ module.exports = (poolInstance) => {
     let updateSingle = (userInput, callback) => {
         let query = `update songs
                      set
-                     name=$1,
-                     photo_url=$2,
-                     nationality=$3
-                     where id=$4`
+                     title=$1,
+                     album=$2,
+                     preview_link=$3,
+                     artwork=$4,
+                     artist_id=
+                     (select id from artists
+                     where name = $5)
+                     where id=$6`
+
         poolInstance.query(query, userInput, (err, result) => {
             if (err) {
                 callback(err, null);
@@ -69,7 +86,6 @@ module.exports = (poolInstance) => {
                 callback(null, null);
             }
         })
-
     }
 
     let destroySingle = (id, callback) => {
@@ -84,10 +100,26 @@ module.exports = (poolInstance) => {
         })
     }
 
+    let newArtistSong = (id, callback) => {
+        let query = `select name from artists
+                     where id = $1`
+
+        poolInstance.query(query, [id], (err, result) => {
+            if (err) {
+                callback(err, null);
+            } else if (result.rows.length > 0) {
+                callback(null, result.rows);
+            } else {
+                callback(null, null);
+            }
+        })
+    }
+
     return {
         createSingle: createSingle,
         read: read,
         readSingle: readSingle,
+        newArtistSong: newArtistSong,
         updateSingle: updateSingle,
         destroySingle: destroySingle,
     };
