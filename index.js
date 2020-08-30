@@ -38,13 +38,6 @@ const allModels = require('./db.js');
 const setRoutes = require('./routes.js');
 // Call and pass app over to routes
 setRoutes(app, allModels);
-/**
- * ===================================
- * Routes
- * ===================================
- */
-
-
 
 
 /**

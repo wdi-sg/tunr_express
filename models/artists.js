@@ -31,7 +31,6 @@ let artistInfo = (id, fromController) => {
 }
 
 let editInfo = (id, fromController) => {
-
     dbPoolInstance.query("SELECT * FROM artists WHERE id = $1;", [id], (err, result) => {
         if (err) {
             console.log("Error", err.stack);

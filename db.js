@@ -15,14 +15,13 @@ pool.on('error', function (err) {
   console.log('idle client error', err.message, err.stack);
 });
 
-
-
 const allArtistsModels = require('./models/artists')
+const allSongsModels = require('./models/songs')
 
 console.log(allArtistsModels);
 
-const artistsModelObject = allArtistsModels( pool )
-
+const artistsModelObject = allArtistsModels(pool)
+const songsModelObject = allSongsModels(pool)
 
 
 module.exports = {
@@ -30,5 +29,6 @@ module.exports = {
         return pool.query(text, params, callback);
     },
     pool,
-    artists: artistsModelObject
+    artists: artistsModelObject,
+    songs: songsModelObject
 }

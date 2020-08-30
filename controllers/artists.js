@@ -1,21 +1,15 @@
 
 module.exports = (db) => {
 
-console.log("controllers triggered");
-
-    let helloWorld = (req, res) => {
-        res.send("Hello World.")
-    }
+    let helloWorld = (req, res) => res.send("Hello World.")
 
     let allArtists = (req, res) => {
         db.artists.getAll((err, result) => {
-            res.render('home', result.rows)
+            res.send(result.rows)
         })
     }
 
-    let newArtistForm = (req, res) => {
-        res.render('new');
-    }
+    let newArtistForm = (req, res) => res.render('artists/new');
 
     let addNewArtist = (req, res) => {
         let values = [req.body.name, req.body.photo_url, req.body.nationality];
@@ -28,7 +22,7 @@ console.log("controllers triggered");
     }
 
     let editArtistInfo = (req, res) => {
-        db.artists.editInfo(req.params.id, (err, result) => res.render('edit', result.rows[0]))
+        db.artists.editInfo(req.params.id, (err, result) => res.render('artists/edit', result.rows[0]))
     }
 
     let updateArtistInfo = (req, res) => {
@@ -36,9 +30,8 @@ console.log("controllers triggered");
         db.artists.updateInfo(values, (err, result) => res.send("Entry updated successfully"))
     }
 
-    let deleteArtistForm = (req, res) => {
-        res.render('delete');
-    }
+    let deleteArtistForm = (req, res) => res.render('artists/delete');
+
 
     let deleteArtist = (req, res) => {
         db.artists.removeEntry(req.body.id, (err, result) => res.send("Artist entry deleted."))
@@ -47,7 +40,6 @@ console.log("controllers triggered");
     let showArtistSongs = (req, res) => {
         db.artists.getSongs(req.params.id, (err, result) => res.send(result.rows))
     }
-
 
     return {
         allArtists,
