@@ -8,7 +8,7 @@ const methodOverride = require('method-override');
 const app = express();
 
 // Set up middleware
-app.use(methodOverride('method')); // for delete and put
+app.use(methodOverride('_method')); // for delete and put
 // app.use(cookieParser());
 app.use(express.static('public')); // for access public files
 app.use(express.json()); // parse data as json object

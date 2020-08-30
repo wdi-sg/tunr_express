@@ -55,8 +55,21 @@ module.exports = (poolInstance) => {
         })
     }
 
-    let update = (userInput, callback) => {
-        // do smth
+    let updateSingle = (userInput, callback) => {
+        let query = `update artists
+                     set
+                     name=$1,
+                     photo_url=$2,
+                     nationality=$3
+                     where id=$4`
+        poolInstance.query(query, userInput, (err, result)=>{
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, null);
+            }
+        })
+
     }
 
     let destroy = (userInput, callback) => {
@@ -67,7 +80,7 @@ module.exports = (poolInstance) => {
         createSingle: createSingle,
         read: read,
         readSingle: readSingle,
-        update: update,
+        updateSingle: updateSingle,
         destroy: destroy,
     };
 }

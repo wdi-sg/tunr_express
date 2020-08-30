@@ -49,7 +49,6 @@ module.exports = (allModels) => {
                 console.log(err, '-- readSingle');
                 res.status(500).send('Bad user');
             } else {
-                console.log('pong');
                 res.render('show', {...result[0]})
             }
         })
@@ -67,6 +66,22 @@ module.exports = (allModels) => {
         })
     }
 
+    let updateSingleControlCallback = (req, res) => {
+        let values =[ req.body.name,
+                      req.body.photo_url,
+                      req.body.nationality,
+                      req.params.id,
+                    ]
+        allModels.model.updateSingle(values, (err, result)=>{
+            if (err) {
+                console.log(err, '-- updateSingle');
+                res.status(500).send('Server error...')
+            } else {
+                res.redirect(303, `/artists/${req.params.id}`)
+            }
+        })
+    }
+
     let newFormControlCallback = (req, res) => {
         res.render('new');
     }
@@ -80,6 +95,7 @@ module.exports = (allModels) => {
         read: readControlCallback,
         readSingle: readSingleControlCallback,
         editSingle: editSingleControlCallback,
+        updateSingle: updateSingleControlCallback,
         newForm: newFormControlCallback,
         redirectHome: redirectHomeControlCallback,
     }

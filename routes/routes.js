@@ -19,4 +19,7 @@ module.exports = (app, allControls) => {
 
     // display form for editing a single artist
     app.get('/artists/:id/edit', allControls.editSingle);
+
+    // update a artist
+    app.put('/artists/:id', allControls.updateSingle);
 }
