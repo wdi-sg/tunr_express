@@ -20,7 +20,7 @@ module.exports = (allModels) => {
     // and invoked as a callback in route
     let createSingleControlCallback = (req, res) => {
         let userInput = req.body;
-        allModels.model.createSingle(userInput, (err, result)=>{
+        allModels.artist.createSingle(userInput, (err, result) => {
             if (err) {
                 console.log(err, '-- create');
                 res.status(500).send('Bad user');
@@ -32,47 +32,47 @@ module.exports = (allModels) => {
     }
 
     let readControlCallback = (req, res) => {
-        allModels.model.read((err, result)=>{
+        allModels.artist.read((err, result) => {
             if (err) {
                 console.log(err, '-- read');
                 res.status(500).send('Bad user');
             } else {
-                res.render('index', {result})
+                res.render('artist/index', { result })
             }
         })
     }
 
     let readSingleControlCallback = (req, res) => {
         let id = req.params.id;
-        allModels.model.readSingle(id, (err, result)=>{
+        allModels.artist.readSingle(id, (err, result) => {
             if (err) {
                 console.log(err, '-- readSingle');
                 res.status(500).send('Bad user');
             } else {
-                res.render('show', {...result[0]})
+                res.render('artist/show', { ...result[0] })
             }
         })
     }
 
     let editSingleControlCallback = (req, res) => {
         let id = req.params.id;
-        allModels.model.readSingle(id, (err, result)=>{
+        allModels.artist.readSingle(id, (err, result) => {
             if (err) {
                 console.log(err, '-- editSingle');
                 res.status(500).send('Bad user');
             } else {
-                res.render('edit', {...result[0]})
+                res.render('artist/edit', { ...result[0] })
             }
         })
     }
 
     let updateSingleControlCallback = (req, res) => {
-        let values =[ req.body.name,
-                      req.body.photo_url,
-                      req.body.nationality,
-                      req.params.id,
-                    ]
-        allModels.model.updateSingle(values, (err, result)=>{
+        let values = [req.body.name,
+            req.body.photo_url,
+            req.body.nationality,
+            req.params.id,
+        ]
+        allModels.artist.updateSingle(values, (err, result) => {
             if (err) {
                 console.log(err, '-- updateSingle');
                 res.status(500).send('Server error...')
@@ -82,8 +82,20 @@ module.exports = (allModels) => {
         })
     }
 
+    let destroySingleControlCallback = (req, res) => {
+        let id = req.params.id;
+        allModels.artist.destroySingle(id, (err, result) => {
+            if (err) {
+                console.log(err, '-- destroySingle');
+                res.status(500).send('Server error')
+            } else {
+                res.redirect(301, '/artists/');
+            }
+        })
+    }
+
     let newFormControlCallback = (req, res) => {
-        res.render('new');
+        res.render('artist/new');
     }
 
     let redirectHomeControlCallback = (req, res) => {
@@ -96,6 +108,7 @@ module.exports = (allModels) => {
         readSingle: readSingleControlCallback,
         editSingle: editSingleControlCallback,
         updateSingle: updateSingleControlCallback,
+        destroySingle: destroySingleControlCallback,
         newForm: newFormControlCallback,
         redirectHome: redirectHomeControlCallback,
     }

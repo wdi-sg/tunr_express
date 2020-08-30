@@ -30,9 +30,11 @@ const allModels = require('./database/db');
 // pass in models to controller callback
 // for the controller logic to decide
 // on which model and view to use
-const allControls = require('./controllers/controller')(allModels);
 
-createRoutes(app, allControls);
+const artistControls = require('./controllers/artist')(allModels);
+const songControls = require('./controllers/song')(allModels)
+
+createRoutes(app, artistControls, songControls);
 
 
 

@@ -20,16 +20,19 @@ pool.on('error', function (err) {
 });
 
 // link pool instances to database queries in models
-const linkModelToPool = require('../models/queries');
 
-const modelObject = linkModelToPool(pool);
+const artistModel = require('../models/artist');
+const artistModelObject = artistModel(pool);
+
+const songModel = require('../models/song');
+const songModelObject = songModel(pool);
 
 // export model object for controller
-
 module.exports = {
     // reference to pool to end connections
     pool: pool,
 
     // useful name please
-    model: modelObject,
+    artist: artistModelObject,
+    song: songModelObject,
 }
