@@ -3,6 +3,7 @@ module.exports = (app, allModels) => {
 //requires artist controller
 const artistController = require('./controllers/artists.js')(allModels);
 const songsController = require('./controllers/songs')(allModels);
+const playlistsController = require('./controllers/playlists')(allModels);
 
 //artists routes
     app.get('/', artistController.helloWorld);
@@ -25,4 +26,9 @@ const songsController = require('./controllers/songs')(allModels);
     app.get('/songs/:id/edit', songsController.editSongInfo);
     app.put('/songs/:id', songsController.updateSongInfo);
     app.delete('/songs/delete', songsController.deleteSong);
+
+//playlists routes
+    app.get('/playlists/new', playlistsController.newPlaylistForm);
+    app.post('/playlists', playlistsController.addNewPlaylist);
+    app.get('/playlists/:id', playlistsController.showPlaylist);
 }

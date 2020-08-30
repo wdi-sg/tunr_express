@@ -17,11 +17,13 @@ pool.on('error', function (err) {
 
 const allArtistsModels = require('./models/artists')
 const allSongsModels = require('./models/songs')
+const allPlaylistsModels = require('./models/playlists')
 
 console.log(allArtistsModels);
 
 const artistsModelObject = allArtistsModels(pool)
 const songsModelObject = allSongsModels(pool)
+const playlistsModelObject = allPlaylistsModels(pool)
 
 
 module.exports = {
@@ -30,5 +32,6 @@ module.exports = {
     },
     pool,
     artists: artistsModelObject,
-    songs: songsModelObject
+    songs: songsModelObject,
+    playlists: playlistsModelObject
 }
