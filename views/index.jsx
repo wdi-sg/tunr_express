@@ -2,8 +2,7 @@ var React = require("react");
 
 class Index extends React.Component {
   render() {
-    console.table(this.props.data);
-    let allName = this.props.data.map((item)=>{
+    let allName = this.props.result.map((item)=>{
         return (
             <div>
                 <h4> {item.name} </h4>

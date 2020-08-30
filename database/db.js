@@ -9,7 +9,7 @@ const pg = require('pg');
 let configs = {
     user: 'Hilman',
     host: '127.0.0.1',
-    database: 'practice',
+    database: 'tunr_db',
     port: 5432,
 };
 

@@ -5,12 +5,12 @@ module.exports = (poolInstance) => {
     callbacks are given by controller
     as model must not interact with views
      */
-    let create = (userInput, callback) => {
+    let createSingle = (userInput, callback) => {
         let query =
-        `insert into students (name)
-        values ($1)
+        `insert into artists (name, photo_url, nationality)
+        values ($1, $2, $3)
         returning *`;
-        poolInstance.query(query, [userInput], (err, result)=> {
+        poolInstance.query(query, Object.values(userInput), (err, result)=> {
             if (err) {
                 callback(err, null);
             } else {
@@ -23,9 +23,26 @@ module.exports = (poolInstance) => {
         })
     }
 
+    // see all the artists
     let read = (callback) => {
-        let query = 'select * from students';
+        let query = 'select * from artists';
         poolInstance.query(query, (err, result)=>{
+            if (err) {
+                callback(err, null);
+            } else {
+                if (result.rows.length > 0){
+                    callback(null, result.rows);
+                } else {
+                    callback(null, null);
+                }
+            }
+        })
+    }
+
+    // see on artist
+    let readSingle = (id, callback) => {
+        let query = 'select * from artists where id = $1';
+        poolInstance.query(query, [id], (err, result)=>{
             if (err) {
                 callback(err, null);
             } else {
@@ -47,8 +64,9 @@ module.exports = (poolInstance) => {
     }
 
     return {
-        create: create,
+        createSingle: createSingle,
         read: read,
+        readSingle: readSingle,
         update: update,
         destroy: destroy,
     };

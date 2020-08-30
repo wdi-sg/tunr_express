@@ -1,3 +1,5 @@
+This is the build step for the mvc structure.
+
 install modules
 
 - express

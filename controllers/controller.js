@@ -18,15 +18,15 @@ module.exports = (allModels) => {
 
     // control logic for create operation
     // and invoked as a callback in route
-    let createControlCallback = (req, res) => {
+    let createSingleControlCallback = (req, res) => {
         let userInput = req.body;
-        allModels.model.create(userInput, (err, result)=>{
+        allModels.model.createSingle(userInput, (err, result)=>{
             if (err) {
-                console.log(err);
+                console.log(err, '-- create');
                 res.status(500).send('Bad user');
             } else {
-                console.log(result);
-                res.render('show', {result})
+                let id = result[0].id;
+                res.redirect(303, `/artists/${id}`)
             }
         })
     }
@@ -34,22 +34,53 @@ module.exports = (allModels) => {
     let readControlCallback = (req, res) => {
         allModels.model.read((err, result)=>{
             if (err) {
-                console.log(err);
+                console.log(err, '-- read');
                 res.status(500).send('Bad user');
             } else {
-                console.log(result);
-                res.render('show', {result})
+                res.render('index', {result})
+            }
+        })
+    }
+
+    let readSingleControlCallback = (req, res) => {
+        let id = req.params.id;
+        allModels.model.readSingle(id, (err, result)=>{
+            if (err) {
+                console.log(err, '-- readSingle');
+                res.status(500).send('Bad user');
+            } else {
+                console.log('pong');
+                res.render('show', {...result[0]})
+            }
+        })
+    }
+
+    let editSingleControlCallback = (req, res) => {
+        let id = req.params.id;
+        allModels.model.readSingle(id, (err, result)=>{
+            if (err) {
+                console.log(err, '-- editSingle');
+                res.status(500).send('Bad user');
+            } else {
+                res.render('edit', {...result[0]})
             }
         })
     }
 
     let newFormControlCallback = (req, res) => {
-        response.render('new')
+        res.render('new');
+    }
+
+    let redirectHomeControlCallback = (req, res) => {
+        res.redirect(301, '/artists/');
     }
 
     return {
-        create: createControlCallback,
+        createSingle: createSingleControlCallback,
         read: readControlCallback,
+        readSingle: readSingleControlCallback,
+        editSingle: editSingleControlCallback,
         newForm: newFormControlCallback,
+        redirectHome: redirectHomeControlCallback,
     }
 }
