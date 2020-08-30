@@ -18,6 +18,7 @@
     "express": "^4.17.1",
     "express-react-views": "^0.10.5",
     "method-override": "^3.0.0",
+    "nodemon": "^2.0.4",
     "pg": "^7.4.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2"
