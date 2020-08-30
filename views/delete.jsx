@@ -7,7 +7,7 @@ class Delete extends React.Component {
         <head />
         <body>
           <h3>Delete Artist</h3>
-          <form method="POST" action="/delete/?_method=delete">
+          <form method="POST" action="/artists/delete/?_method=delete">
                 Artist ID: <input type="text" name="id" placeholder="Input ID of artist to delete"/>
                 <input type="submit" value="submit"/>
             </form>
