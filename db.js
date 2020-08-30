@@ -21,6 +21,9 @@ let artistModelsObject = allArtistFunction(pool);
 const allSongFunction = require('./models/song');
 let songModelsObject = allSongFunction(pool);
 
+const allPlaylistFunction = require('./models/playlist');
+let playlistModelsObject = allPlaylistFunction(pool);
+
 // module export
 
 module.exports = {
@@ -34,5 +37,6 @@ module.exports = {
 
     // add app models here
     artist: artistModelsObject,
-    song: songModelsObject
+    song: songModelsObject,
+    playlist: playlistModelsObject
 };

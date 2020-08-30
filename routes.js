@@ -4,6 +4,8 @@ module.exports = (app, allModels) => {
 
     const songControllerCallback = require('./controllers/song')(allModels);
 
+    const playlistControllerCallback = require('./controllers/playlist')(allModels);
+
     // all routes for artist controller
     app.get('/', artistControllerCallback.root);
 
@@ -25,5 +27,14 @@ module.exports = (app, allModels) => {
     app.get('/songs/:id/edit', songControllerCallback.getEditSongForm);
     app.put('/songs/:id', songControllerCallback.updateEditSong);
     app.delete('/songs/:id', songControllerCallback.deleteSong);
+
+    // all routes for playlist controller
+
+    app.get('/playlist', playlistControllerCallback.allPlaylist);
+    app.get('/playlist/new', playlistControllerCallback.newPlaylistForm);
+    app.post('/playlist', playlistControllerCallback.newPlaylist);
+    app.get('/playlist/:id', playlistControllerCallback.showPlaylistSong);
+    app.get('/playlist/:id/newsong', playlistControllerCallback.newEditPlaylistForm);
+    app.post('/playlist/:id', playlistControllerCallback.addSongToPlaylist);
 
 };
