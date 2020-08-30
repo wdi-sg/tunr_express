@@ -12,5 +12,15 @@ CREATE TABLE IF NOT EXISTS Songs(
     preview_link TEXT,
     artwork TEXT,
     artist_id integer
-)
+);
 
+CREATE TABLE IF NOT EXISTS Playlist(
+    id serial PRIMARY KEY,
+    name TEXT
+);
+
+CREATE TABLE IF NOT EXISTS playlist_songs(
+    id serial PRIMARY KEY,
+    song_id integer,
+    playlist_id integer
+)
