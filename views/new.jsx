@@ -26,6 +26,12 @@ class New extends React.Component {
               <input type = "submit" value = "submit"/>
             </form>
 
+            <h2>Create A New Playlist</h2>
+            <form method='POST' action ='/playlists'>
+              Playlist Name: <input type ='text' name='name'/><br/>
+              <input type = "submit" value = "submit"/>
+            </form>
+
           </div>
         </body>
       </html>
