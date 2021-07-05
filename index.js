@@ -6,11 +6,15 @@ const pg = require('pg');
 
 // Initialise postgres client
 const configs = {
-  user: 'YOURUSERNAME',
+  user: 'postgres',
+  password: 'postgres',
   host: '127.0.0.1',
   database: 'tunr_db',
   port: 5432,
 };
+
+// sudo -u postgres createdb todolist
+// psql -d todolist -U postgres -f tables.sql;
 
 const pool = new pg.Pool(configs);
 
@@ -48,18 +52,89 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+let text = "";
+
+const showArtist =  ( text, response ) => {
+  pool.query(text,(err, res) => {
+    let artists = {};
+    artists.list=[];
+    for(let i = 0; i < res.rows.length; i++){
+            artists.list.push(res.rows[i]);
+        }
+    response.render('artists', artists);
+  });
+}
+
+const showSong =  ( text, response ) => {
+  pool.query(text,(err, res) => {
+    let songs = {};
+    songs.list=[];
+    for(let i = 0; i < res.rows.length; i++){
+            songs.list.push(res.rows[i]);
+        }
+    response.render('songs', songs);
+  });
+}
+
+const editArtist =  ( text, response ) => {
+  pool.query(text,(err, res) => {
+    response.render('editArtist', res.rows);
+  });
+}
+
 app.get('/', (request, response) => {
-  // query database for all pokemon
-
-  // respond with HTML page displaying all pokemon
-  response.render('home');
+  text = 'SELECT * from artists';
+  showArtist(text, response);
 });
 
-app.get('/new', (request, response) => {
-  // respond with HTML page with form to create new pokemon
-  response.render('new');
+app.get('/songs', (request, response) => {
+  text = 'SELECT * from songs';
+  showSong(text, response);
 });
 
+app.get('/artist/:id', (request, response) => {
+  text = `SELECT * from artists WHERE id= ${request.params.id}`;
+  showArtist(text, response);
+});
+
+app.get('/song/:id', (request, response) => {
+  text = `SELECT * from songs WHERE id= ${request.params.id}`;
+  showSong(text, response);
+});
+
+app.get('/artist/:id/songs', (request, response) => {
+  text = `SELECT * from songs WHERE artist_id= ${request.params.id}`;
+  showSong(text, response);
+});
+
+app.get('/create/artist', (request, response) => {
+  response.render('createArtist');
+});
+
+app.post('/create/newArtist', (request, response) => {
+  text = `INSERT INTO artists(name, photo_url, nationality) VALUES ('${request.body.name}', '${request.body.photo_url}', '${request.body.nationality}') RETURNING *`;
+  showArtist(text, response);
+});
+
+app.get('/edit/artist/:id', (request, response) => {
+  text = `SELECT * from artists WHERE id= ${request.params.id}`;
+  editArtist(text, response);
+});
+
+app.post('/edit/editedArtist/:id', (request, response) => {
+  text = `UPDATE artists SET name='${request.body.name}', photo_url='${request.body.photo_url}', nationality='${request.body.nationality}' WHERE id= ${request.params.id} RETURNING *`;
+  console.log(text);
+  showArtist(text, response);
+});
+
+// SELECT artist_id FROM songs WHERE id=${request.params.id}
+// name = res.row[0];
+// SELECT name FROM artists WHERE id={name}
+
+//pending search function
+//pending create artist function
+//pending create song function
+//pending edit function for artist and song
 
 /**
  * ===================================
