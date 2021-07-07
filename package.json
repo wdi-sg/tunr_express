@@ -17,7 +17,7 @@
     "express-react-views": "^0.10.5",
     "method-override": "^3.0.0",
     "pg": "^7.4.3",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
   }
 }
