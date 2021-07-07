@@ -10,14 +10,17 @@
     "type": "git",
     "url": "https://git.generalassemb.ly/ga-wdi-exercises/tunr_sinatra.git"
   },
-  "author": "",
+  "author": "kauvia",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
     "express-react-views": "^0.10.5",
     "method-override": "^3.0.0",
-    "pg": "^7.4.3",
+    "pg": "^7.7.1",
+    "pg-hstore": "^2.3.2",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react-dom": "^16.5.2",
+    "sequelize": "^4.42.0"
   }
 }
