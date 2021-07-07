@@ -21,13 +21,10 @@ class Navigation extends React.Component{
             <nav>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a>
-                    </li>
-                    <li class="nav-item">
                         <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
                     </li>
                     <li class="nav-item">
-                        <a method="GET" href="/playlist"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>View Playlist</a>
+                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Return to view all artist</a>
                     </li>
                 </ul>
             </nav>
@@ -35,38 +32,26 @@ class Navigation extends React.Component{
     }
 }
 
-class Home extends React.Component {
+class AddEdit extends React.Component {
   render() {
 
-    let data = this.props.data
-    // console.log('in the home JSX........:');
-    // console.log(data);
-    let outList = data.map(item=>{
-        return  <div class="card-item">
-                    <div class= "rows">
-                        <img src={item.photo_url}/>
-                        <a class="card-body" href={`/artist/${item.id}`}>
-                            <h4>{item.id}. {item.name}</h4>
-                            <h5>{item.nationality}</h5>
-                        </a>
-                    </div>
-                    <div class="rows">
-                        <a href={`/artist/${item.id}/Songs`}>View All Artist Songs</a><br></br>
-                        <a href={`/artist/${item.id}/edit`}>Edit</a><br></br>
-                        <a href={`/artist/${item.id}/songs/new`}>Add Songs</a><br></br>
-                        <a href={`/artist/${item.id}/delete`}>Delete</a><br></br>
-                    </div>
-                </div>
+    let data = this.props.data[0]
 
-    })
     return (
       <html>
         <Head/>
         <body>
             <Navigation/>
-          <h1>Mildly Comparable Audiophalse</h1>
+          <h1>Mildly Comparable Audiophalse (Song List)</h1>
           <div class="content">
-            {outList}
+            <div class="card-item">
+                    <img src={data.photo_url}/>
+                    <a class="card-body" href={`/artist/${data.id}`}>
+                    <h4>{data.id}. {data.name}</h4>
+                    <h5>{data.nationality}</h5>
+                    </a>
+                    <a href={`/artist/${data.id}/edit`}>Edit</a>
+                </div>
           </div>
         </body>
       </html>
@@ -74,4 +59,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = AddEdit;

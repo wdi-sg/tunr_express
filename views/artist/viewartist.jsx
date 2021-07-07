@@ -21,13 +21,10 @@ class Navigation extends React.Component{
             <nav>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a>
-                    </li>
-                    <li class="nav-item">
                         <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
                     </li>
                     <li class="nav-item">
-                        <a method="GET" href="/playlist"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>View Playlist</a>
+                    <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Return to view all artist</a>
                     </li>
                 </ul>
             </nav>
@@ -35,36 +32,24 @@ class Navigation extends React.Component{
     }
 }
 
-class Home extends React.Component {
+class View extends React.Component {
   render() {
 
     let data = this.props.data
-    // console.log('in the home JSX........:');
-    // console.log(data);
-    let outList = data.map(item=>{
-        return  <div class="card-item">
-                    <div class= "rows">
-                        <img src={item.photo_url}/>
-                        <a class="card-body" href={`/artist/${item.id}`}>
-                            <h4>{item.id}. {item.name}</h4>
-                            <h5>{item.nationality}</h5>
-                        </a>
-                    </div>
-                    <div class="rows">
-                        <a href={`/artist/${item.id}/Songs`}>View All Artist Songs</a><br></br>
-                        <a href={`/artist/${item.id}/edit`}>Edit</a><br></br>
-                        <a href={`/artist/${item.id}/songs/new`}>Add Songs</a><br></br>
-                        <a href={`/artist/${item.id}/delete`}>Delete</a><br></br>
-                    </div>
-                </div>
 
+    let outList = data.map((item,index)=>{
+        return  <div class="card-item">
+                    <a href={`${item.preview_link}`}>
+                    <h4>{index}. {item.album}</h4><h4>{item.title}</h4>
+                    </a>
+                </div>
     })
     return (
       <html>
         <Head/>
         <body>
             <Navigation/>
-          <h1>Mildly Comparable Audiophalse</h1>
+          <h1>Mildly Comparable Audiophalse (Song List)</h1>
           <div class="content">
             {outList}
           </div>
@@ -74,4 +59,4 @@ class Home extends React.Component {
   }
 }
 
-module.exports = Home;
+module.exports = View;

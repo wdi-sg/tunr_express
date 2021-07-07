@@ -23,43 +23,60 @@ class Navigation extends React.Component{
                     <li class="nav-item">
                     <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Return to view all artist</a>
                     </li>
+                    <li class="nav-item">
+                        <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a method="GET" href="/playlist"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>View Playlist</a>
+                    </li>
                 </ul>
             </nav>
         );
     }
 }
 
-class NewArtistForm extends React.Component{
+class Songs extends React.Component {
+  render() {
+
+    // console.log(this.props.data);
+    let songElements = this.props.data.map((o) => {
+        return <li><label><input type="checkbox" name="songs" value={ o.id }/> { o.title }, { o.album }</label></li>
+    });
+
+
+    return (
+        <ul>
+            {songElements}
+        </ul>
+    );
+  }
+}
+
+class NewPlayListForm extends React.Component{
     render(){
 
-            let formAction = '/new/artistadded';
+            let formAction = '/playlist';
 
         return(
             <html>
                 <form method="POST" action={formAction}>
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
-                            <label >Name: </label>
-                            <input type="text" name="name" class="form-control" placeholder="Artist name" required/>
-                        </div>
-                        <div class="col-md-4 mb-3 ml-5">
-                            <label>Photo Url: </label>
-                            <input type="text" name="photo_url" class="form-control" placeholder="Copy & Paste artist photo link!" required/>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Nationality: </label>
-                            <input type="text" name="nationality" class="form-control"  required/>
+                           Playlist Name:  <input type="text" name="title" class="form-control" placeholder="Name your Playlist" required/>
+                            Songs: <Songs data={this.props.data}/><br/>
                         </div>
                     </div>
-                    <input type="submit" value="Submit Artist"  class="btn btn-primary"/>
+                    <input type="submit" value="Create New Playlist"  class="btn btn-primary"/>
                 </form>
             </html>
         )
     }
 }
 
-class NewArist extends React.Component {
+class NewPlayList extends React.Component {
   render() {
+
+
     return (
       <html>
         <Head/>
@@ -68,9 +85,9 @@ class NewArist extends React.Component {
 
           <h1>Mildly Comparable Audiophalse</h1>
           <br></br>
-          <h3>Add New Artist</h3>
+          <h3>NEW PLAYLIST</h3>
           <div class="content">
-            <NewArtistForm/>
+            <NewPlayListForm data={this.props.data}/>
           </div>
         </body>
       </html>
@@ -78,4 +95,4 @@ class NewArist extends React.Component {
   }
 }
 
-module.exports = NewArist;
+module.exports = NewPlayList;

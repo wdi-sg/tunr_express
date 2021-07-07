@@ -5,7 +5,7 @@ class Head extends React.Component{
         return(
             <head>
                 <meta charSet="utf-8"/>
-                <title>TUNR EXPRESS: Add New Artist</title>
+                <title>TUNR EXPRESS: Favourite Some Songs</title>
                 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossOrigin="anonymous"/>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
@@ -23,43 +23,62 @@ class Navigation extends React.Component{
                     <li class="nav-item">
                     <a method="GET" href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Return to view all artist</a>
                     </li>
+                    <li class="nav-item">
+                        <a method="GET" href="/new"><span class=" glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Artist to List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a method="GET" href="/playlist"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>View Playlist</a>
+                    </li>
                 </ul>
             </nav>
         );
     }
 }
 
-class NewArtistForm extends React.Component{
+class Songs extends React.Component {
+  render() {
+
+    // console.log(this.props.data);
+    let songElements = this.props.data.map((o) => {
+        return <li><label><input type="checkbox" name="songs" value={ o.id }/> { o.title }, { o.album }</label></li>
+    });
+
+
+    return (
+        <ul>
+            {songElements}
+        </ul>
+    );
+  }
+}
+
+class FavouriteForm extends React.Component{
     render(){
 
-            let formAction = '/new/artistadded';
+            let formAction = '/favourites';
+            const userId = this.props.data.cookies.userId
 
         return(
             <html>
                 <form method="POST" action={formAction}>
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
-                            <label >Name: </label>
-                            <input type="text" name="name" class="form-control" placeholder="Artist name" required/>
-                        </div>
-                        <div class="col-md-4 mb-3 ml-5">
-                            <label>Photo Url: </label>
-                            <input type="text" name="photo_url" class="form-control" placeholder="Copy & Paste artist photo link!" required/>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Nationality: </label>
-                            <input type="text" name="nationality" class="form-control"  required/>
+                           <input type="text" name="userId" class="form-control invisible" value={userId} />
+                            Songs: <Songs data={this.props.data.dataSongs}/><br/>
                         </div>
                     </div>
-                    <input type="submit" value="Submit Artist"  class="btn btn-primary"/>
+                    <input type="submit" value="Favourite Selected Songs"  class="btn btn-primary"/>
                 </form>
             </html>
         )
     }
 }
 
-class NewArist extends React.Component {
+class NewFavForm extends React.Component {
   render() {
+
+    const data = this.props.data
+
     return (
       <html>
         <Head/>
@@ -68,9 +87,9 @@ class NewArist extends React.Component {
 
           <h1>Mildly Comparable Audiophalse</h1>
           <br></br>
-          <h3>Add New Artist</h3>
+          <h3>Choose Songs to Favourite</h3>
           <div class="content">
-            <NewArtistForm/>
+          <FavouriteForm data={data}/>
           </div>
         </body>
       </html>
@@ -78,4 +97,4 @@ class NewArist extends React.Component {
   }
 }
 
-module.exports = NewArist;
+module.exports = NewFavForm;

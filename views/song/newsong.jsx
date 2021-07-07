@@ -29,26 +29,37 @@ class Navigation extends React.Component{
     }
 }
 
-class NewArtistForm extends React.Component{
+class NewSongForm extends React.Component{
     render(){
+            let artistId = this.props.data.data;
 
-            let formAction = '/new/artistadded';
+            let formAction = `/artist/${artistId}/songs`;
 
         return(
             <html>
                 <form method="POST" action={formAction}>
                     <div class="form-row">
                         <div class="col-md-4 mb-3">
-                            <label >Name: </label>
-                            <input type="text" name="name" class="form-control" placeholder="Artist name" required/>
+                            <label >Song Title: </label>
+                            <input type="text" name="title" class="form-control" placeholder="Song Title" required/>
                         </div>
                         <div class="col-md-4 mb-3 ml-5">
-                            <label>Photo Url: </label>
-                            <input type="text" name="photo_url" class="form-control" placeholder="Copy & Paste artist photo link!" required/>
+                            <label>Album Name: </label>
+                            <input type="text" name="album" class="form-control" placeholder="Album Name" required/>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Nationality: </label>
-                            <input type="text" name="nationality" class="form-control"  required/>
+                            <label>Audio Link: </label>
+                            <input type="text" name="preview_link" class="form-control" placeholder="mp3, youtube links" required/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                            <label >Artwork Link: </label>
+                            <input type="text" name="artwork" class="form-control" placeholder="Song Title" required/>
+                        </div>
+                        <div class="col-md-1 invisible">
+                            <label>Artist ID: </label>
+                            <input type="text" name="artist_id" class="form-control" value={artistId} required/>
                         </div>
                     </div>
                     <input type="submit" value="Submit Artist"  class="btn btn-primary"/>
@@ -58,8 +69,9 @@ class NewArtistForm extends React.Component{
     }
 }
 
-class NewArist extends React.Component {
+class NewSong extends React.Component {
   render() {
+    let data = this.props;
     return (
       <html>
         <Head/>
@@ -68,9 +80,9 @@ class NewArist extends React.Component {
 
           <h1>Mildly Comparable Audiophalse</h1>
           <br></br>
-          <h3>Add New Artist</h3>
+          <h3>Add New Song</h3>
           <div class="content">
-            <NewArtistForm/>
+            <NewSongForm data= {data}/>
           </div>
         </body>
       </html>
@@ -78,4 +90,4 @@ class NewArist extends React.Component {
   }
 }
 
-module.exports = NewArist;
+module.exports = NewSong;
