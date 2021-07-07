@@ -6,8 +6,13 @@ class New extends React.Component {
       <html>
         <head />
         <body>
-          <h3>Form Goes Here!</h3>
-        </body>
+        <form action = "/artists" method = "POST">
+          NAME<br/><input name ="name"></input><br/>
+          PHOTO_URL<br/><input name ="photo_url"></input><br/>  
+          Nationality<br/><input name ="nationality"></input><br/>
+          <input type="submit"></input>
+          </form>
+          </body>
       </html>
     );
   }
